@@ -205,3 +205,29 @@ cython_debug/
 marimo/_static/
 marimo/_lsp/
 __marimo__/
+
+# Project-specific ignores
+
+# Chroma vector database storage (large binary files, don't commit)
+chroma_db/
+
+# Any large or personal data files you don't want in git
+data/*.json    # e.g. exercises.json is big (~1–2 MB) and public anyway — re-download on clone
+data/*.csv
+data/*.pdf     # if you add any later
+
+# Ollama model files (never commit these — huge and user-specific)
+ollama/
+
+# MacOS junk (already partially covered, but good to have explicit)
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# If you later add notebooks or temp files
+*.ipynb
+*.ipynb_checkpoints/
+
+# Virtual environment (already in the template, but confirm)
+venv/
+.venv/
