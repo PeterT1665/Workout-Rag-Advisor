@@ -40,7 +40,7 @@ Build the retrieval layer that loads the persisted index and fetches relevant ex
 
 ---
 
-### Step 2 — Plan Generator (`planner.py`)
+### Step 2 — Plan Generator (`planner.py`) ✅ *complete*
 
 The core logic that turns retrieved exercises into a 7-day structured plan.
 
