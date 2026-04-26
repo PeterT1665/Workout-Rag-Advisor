@@ -63,7 +63,7 @@ The core logic that turns retrieved exercises into a 7-day structured plan.
 
 ---
 
-### Step 3 — CLI Interface (`main.py`)
+### Step 3 — CLI Interface (`main.py`) ✅ *complete*
 
 User-facing entry point using `typer` + `rich`.
 
