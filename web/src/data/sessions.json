@@ -1,0 +1,392 @@
+{
+  "_note": "DRAFT sessions written from general football-training knowledge. To be replaced/refined by the agent's position research (winger/striker/CM, 5-a-side and 7-a-side). Times in seconds.",
+  "sessions": [
+    {
+      "id": "fb-close-control-1v1",
+      "title": "Close control & 1v1",
+      "type": "football",
+      "summary": "Tight-space control, direction changes with the ball, 1v1 reactions with voice cues, finish.",
+      "needs": [
+        "ball",
+        "4-6 markers (bottles/shoes/bags)",
+        "open space or small field"
+      ],
+      "blocks": [
+        {
+          "name": "Jog + dynamic leg swings",
+          "kind": "warmup",
+          "work": 180,
+          "how": "Easy jog, then leg swings front/side, walking lunges with a twist. Keep it relaxed."
+        },
+        {
+          "name": "Hip openers + glute activation",
+          "kind": "warmup",
+          "work": 150,
+          "how": "90/90 hip switches, glute bridges, lateral band-free side steps. Hip and knee insurance."
+        },
+        {
+          "name": "Build-up sprints (no ball)",
+          "kind": "warmup",
+          "work": 12,
+          "rest": 40,
+          "rounds": 3,
+          "how": "10-15 m at 70%, 80%, 90%. Stop if you feel sharp knee pain."
+        },
+        {
+          "name": "Juggling",
+          "kind": "drill",
+          "work": 60,
+          "rest": 30,
+          "rounds": 3,
+          "how": "Round 1 right foot, round 2 left foot, round 3 both feet + thighs. Count your best streak.",
+          "needs": [
+            "ball"
+          ]
+        },
+        {
+          "name": "Sprint + change of direction (no ball)",
+          "kind": "drill",
+          "work": 8,
+          "rest": 45,
+          "rounds": 6,
+          "how": "Sprint 10 m to a marker, plant hard, cut 45-90 degrees, accelerate 5 m. Alternate the cutting foot.",
+          "needs": [
+            "markers"
+          ]
+        },
+        {
+          "name": "Tight-space close control",
+          "kind": "drill",
+          "work": 60,
+          "rest": 30,
+          "rounds": 4,
+          "how": "Stay inside a 3x3 m square. Soles, inside/outside touches, quick turns. Head up.",
+          "needs": [
+            "ball",
+            "markers"
+          ]
+        },
+        {
+          "name": "Dribble + change direction",
+          "kind": "drill",
+          "work": 45,
+          "rest": 30,
+          "rounds": 6,
+          "how": "Drive the ball between markers: cut, drag-back, step-over. Explode out of every turn. Use your left foot on rounds 2 and 4.",
+          "needs": [
+            "ball",
+            "markers"
+          ]
+        },
+        {
+          "name": "Freestyle dribbling",
+          "kind": "drill",
+          "work": 60,
+          "rest": 30,
+          "rounds": 5,
+          "how": "Free play with the ball: feints, rolls, step-overs, whatever you want to own. Try one new move each round.",
+          "needs": [
+            "ball"
+          ]
+        },
+        {
+          "name": "1v1 reaction (voice cues)",
+          "kind": "drill",
+          "work": 40,
+          "rest": 45,
+          "rounds": 8,
+          "cue": true,
+          "how": "Attack a marker as the defender. When you hear LEFT or RIGHT, the defender is committing that way: go the other way and accelerate past.",
+          "needs": [
+            "ball",
+            "markers"
+          ]
+        },
+        {
+          "name": "1v1 then finish",
+          "kind": "drill",
+          "work": 40,
+          "rest": 40,
+          "rounds": 5,
+          "cue": true,
+          "how": "Same cue game, but finish with a shot after you beat the marker. Alternate feet.",
+          "needs": [
+            "ball",
+            "goal or target"
+          ]
+        },
+        {
+          "name": "Cool-down: hips, quads, hamstrings, IT band",
+          "kind": "cooldown",
+          "work": 300,
+          "how": "Hip flexor stretch, quad stretch, hamstring stretch, figure-4 glute stretch, 60 s each side. Breathe slowly."
+        }
+      ]
+    },
+    {
+      "id": "fb-wall-weakfoot-shooting",
+      "title": "Wall passing, weak foot & shooting",
+      "type": "football",
+      "summary": "First touch off the wall (ground and air), left-foot work, shooting still and moving, crossing.",
+      "needs": [
+        "ball",
+        "wall",
+        "goal or target"
+      ],
+      "blocks": [
+        {
+          "name": "Jog + dynamic leg swings",
+          "kind": "warmup",
+          "work": 180,
+          "how": "Easy jog, leg swings, high knees, butt kicks, side shuffles."
+        },
+        {
+          "name": "Hip openers + glute activation",
+          "kind": "warmup",
+          "work": 150,
+          "how": "90/90 hip switches, glute bridges, clamshells."
+        },
+        {
+          "name": "Sprint + change of direction (no ball)",
+          "kind": "drill",
+          "work": 8,
+          "rest": 45,
+          "rounds": 6,
+          "how": "Sprint 10 m, plant, cut, accelerate 5 m. Alternate the cutting foot. Stop if you feel sharp knee pain.",
+          "needs": [
+            "markers"
+          ]
+        },
+        {
+          "name": "Wall passes: ground, both feet",
+          "kind": "drill",
+          "work": 60,
+          "rest": 30,
+          "rounds": 5,
+          "how": "2-3 m from the wall. Round 1 right, 2 left, 3 alternate, 4 one-touch alternate. Pass firm, control with the first touch.",
+          "needs": [
+            "ball",
+            "wall"
+          ]
+        },
+        {
+          "name": "Wall passes: in the air",
+          "kind": "drill",
+          "work": 60,
+          "rest": 30,
+          "rounds": 5,
+          "how": "Throw or volley the ball at the wall and control the rebound out of the air: thigh, instep, chest. Left foot on rounds 2 and 4.",
+          "needs": [
+            "ball",
+            "wall"
+          ]
+        },
+        {
+          "name": "Weak foot (left): receive and pass",
+          "kind": "drill",
+          "work": 60,
+          "rest": 30,
+          "rounds": 5,
+          "how": "Pass off the wall with your left only, receive with your left only. Slow and accurate beats fast and sloppy.",
+          "needs": [
+            "ball",
+            "wall"
+          ]
+        },
+        {
+          "name": "Shooting: stationary",
+          "kind": "drill",
+          "work": 45,
+          "rest": 30,
+          "rounds": 6,
+          "how": "Set the ball, strike low and across the keeper. Alternate right and left. Plant foot next to the ball, head over it.",
+          "needs": [
+            "ball",
+            "goal or target"
+          ]
+        },
+        {
+          "name": "Shooting: on the move",
+          "kind": "drill",
+          "work": 45,
+          "rest": 30,
+          "rounds": 6,
+          "how": "Dribble 5-8 m, take one touch to set, shoot. Left foot on rounds 2 and 4.",
+          "needs": [
+            "ball",
+            "goal or target"
+          ]
+        },
+        {
+          "name": "Crossing and passing",
+          "kind": "drill",
+          "work": 45,
+          "rest": 30,
+          "rounds": 4,
+          "how": "Run along the wing, cross or pass to a target. Alternate lofted and driven. Both feet.",
+          "needs": [
+            "ball",
+            "target"
+          ]
+        },
+        {
+          "name": "Cool-down: hips, quads, hamstrings, IT band",
+          "kind": "cooldown",
+          "work": 300,
+          "how": "Hip flexor, quad, hamstring, figure-4 glute stretch, 60 s each side."
+        }
+      ]
+    },
+    {
+      "id": "fb-partner-passing",
+      "title": "With a partner: one- and two-touch",
+      "type": "football",
+      "summary": "One- and two-touch passing on the ground and in the air, then 1v1s.",
+      "needs": [
+        "ball",
+        "one partner"
+      ],
+      "blocks": [
+        {
+          "name": "Jog + dynamic leg swings",
+          "kind": "warmup",
+          "work": 180,
+          "how": "Easy jog together, leg swings, lunges with a twist."
+        },
+        {
+          "name": "Ground passing: one touch",
+          "kind": "drill",
+          "work": 90,
+          "rest": 30,
+          "rounds": 5,
+          "how": "5-8 m apart, firm pass on the ground. Round 1 right foot, 2 left foot, 3 alternate, 4 move side to side.",
+          "needs": [
+            "ball",
+            "partner"
+          ]
+        },
+        {
+          "name": "Ground passing: two touch",
+          "kind": "drill",
+          "work": 90,
+          "rest": 30,
+          "rounds": 3,
+          "how": "First touch sets the ball to the side, second touch passes. Open up your body to the pass.",
+          "needs": [
+            "ball",
+            "partner"
+          ]
+        },
+        {
+          "name": "Air control: one touch back",
+          "kind": "drill",
+          "work": 60,
+          "rest": 30,
+          "rounds": 4,
+          "how": "Partner tosses or lofts the ball. Control or volley it straight back. Thigh, instep, chest. Alternate feet.",
+          "needs": [
+            "ball",
+            "partner"
+          ]
+        },
+        {
+          "name": "Passing while moving",
+          "kind": "drill",
+          "work": 90,
+          "rest": 30,
+          "rounds": 4,
+          "how": "Pass and move along a line, one touch. Keep the pace up, call for the ball.",
+          "needs": [
+            "ball",
+            "partner"
+          ]
+        },
+        {
+          "name": "1v1 with partner",
+          "kind": "drill",
+          "work": 30,
+          "rest": 60,
+          "rounds": 6,
+          "how": "Real defender. Attacker tries to beat him and finish or cross. Swap roles each round.",
+          "needs": [
+            "ball",
+            "partner",
+            "goal or target"
+          ]
+        },
+        {
+          "name": "Cool-down",
+          "kind": "cooldown",
+          "work": 240,
+          "how": "Hip flexor, quad, hamstring, glute stretch, 45 s each side."
+        }
+      ]
+    },
+    {
+      "id": "recovery-hips",
+      "title": "Recovery: hips, quads, hamstrings",
+      "type": "recovery",
+      "summary": "No ball. Loosen the hips and strengthen around the IT band.",
+      "needs": [
+        "mat",
+        "foam roller (optional)"
+      ],
+      "blocks": [
+        {
+          "name": "Foam roll quads and glutes",
+          "kind": "warmup",
+          "work": 240,
+          "how": "Slow passes, pause on tight spots for 20-30 s. Roll the outer thigh lightly, not hard on the IT band."
+        },
+        {
+          "name": "90/90 hip switches",
+          "kind": "drill",
+          "work": 45,
+          "rest": 15,
+          "rounds": 3,
+          "how": "Sit tall, rotate both knees side to side with control."
+        },
+        {
+          "name": "Couch stretch (hip flexor/quad)",
+          "kind": "drill",
+          "work": 60,
+          "rest": 10,
+          "rounds": 2,
+          "how": "Rear knee on a mat, foot up on the wall or bench. Squeeze the glute. Each side."
+        },
+        {
+          "name": "Hamstring stretch",
+          "kind": "drill",
+          "work": 60,
+          "rest": 10,
+          "rounds": 2,
+          "how": "Lying leg raise with a strap or towel. Each side."
+        },
+        {
+          "name": "Glute bridge",
+          "kind": "drill",
+          "work": 40,
+          "rest": 20,
+          "rounds": 3,
+          "how": "Drive through the heels, pause 2 s at the top."
+        },
+        {
+          "name": "Side-lying leg raise / clamshell",
+          "kind": "drill",
+          "work": 40,
+          "rest": 20,
+          "rounds": 3,
+          "how": "Slow and controlled. Each side. Feel the outer hip, not the lower back."
+        },
+        {
+          "name": "Figure-4 glute stretch",
+          "kind": "cooldown",
+          "work": 60,
+          "rest": 10,
+          "rounds": 2,
+          "how": "Lying down, ankle over opposite knee. Each side."
+        }
+      ]
+    }
+  ]
+}

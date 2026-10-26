@@ -1,0 +1,150 @@
+<!doctype html>
+<html data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=390">
+<title>Mockup G</title>
+<link rel="stylesheet" href="shared.css">
+<script type="importmap">
+{ "imports": {
+  "three": "https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js",
+  "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"
+} }
+</script>
+<style>
+  /* Font B + softer, rounded shapes */
+  :root { --r-btn: 16px; --r-card: 20px; }
+  .w { font-family: var(--wide); font-weight: 900; font-variation-settings: "wdth" 125; text-transform: uppercase; letter-spacing: -.01em; line-height: .95; margin: 0; }
+  .hero { position: relative; margin: -54px -16px 0; height: 640px; overflow: hidden; border-radius: 0 0 28px 28px; }
+  .hero > img.bg { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 50% 40%; }
+  .pill { display: inline-flex; align-items: center; gap: 6px; padding: 5px 12px; border-radius: 999px; font-family: var(--wide); font-weight: 900; font-variation-settings: "wdth" 120; font-size: 12px; letter-spacing: .06em; }
+  .pill.red { background: var(--red); color: #fff; }
+  .pill.glass { background: rgba(255,255,255,.14); color: #fff; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); }
+  .kick { display: inline-flex; align-items: center; gap: 12px; background: var(--red); color: #fff; padding: 0 26px; min-height: 56px; border-radius: var(--r-btn); font-family: var(--wide); font-weight: 900; font-variation-settings: "wdth" 125; font-size: 17px; letter-spacing: .02em; box-shadow: 0 10px 30px rgba(232,33,58,.35); }
+  .ghostbtn { display: inline-flex; align-items: center; min-height: 56px; padding: 0 20px; border-radius: var(--r-btn); background: rgba(255,255,255,.14); color: #fff; font-weight: 600; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); }
+  .sec { display: flex; justify-content: space-between; align-items: baseline; margin: 28px 0 12px; }
+  .sec .more { color: var(--muted); font-size: 14px; font-weight: 600; }
+  .kit { background: var(--surface); border-radius: var(--r-card); padding: 8px 6px 12px; text-align: center; position: relative; }
+  .kit img { width: 100%; aspect-ratio: 1; display: block; }
+  .kit .name { font-family: var(--wide); font-weight: 800; font-variation-settings: "wdth" 112; font-size: 10px; letter-spacing: .05em; text-transform: uppercase; }
+  .kit.packed::after { content: "✓"; position: absolute; top: 8px; right: 8px; width: 20px; height: 20px; display: grid; place-items: center; background: var(--red); color: #fff; font-size: 12px; font-weight: 900; border-radius: 50%; }
+  .carousel { display: flex; gap: 12px; overflow: hidden; margin-right: -16px; }
+  .card { flex: 0 0 250px; border-radius: var(--r-card); overflow: hidden; background: var(--surface); }
+  .card .ph { height: 160px; position: relative; }
+  .card .ph img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .card .ph .pill { position: absolute; left: 10px; top: 10px; }
+  .card .body { padding: 12px 14px 14px; }
+  .card h3 { font-family: var(--wide); font-weight: 900; font-variation-settings: "wdth" 115; font-size: 15px; text-transform: uppercase; margin: 0 0 6px; }
+  .mindset { position: relative; border-radius: var(--r-card); overflow: hidden; height: 230px; }
+  .mindset img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 50% 30%; }
+  .tabbar2 { position: absolute; left: 12px; right: 12px; bottom: 14px; height: 70px; border-radius: 26px; background: rgba(22,24,23,.92); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); display: grid; grid-template-columns: 1fr 1fr 84px 1fr 1fr; align-items: center; box-shadow: 0 10px 30px rgba(0,0,0,.4); }
+  .tabbar2 .t { text-align: center; font-family: var(--wide); font-weight: 800; font-variation-settings: "wdth" 110; font-size: 10px; letter-spacing: .08em; color: var(--muted); }
+  .tabbar2 .t.on { color: #fff; }
+  .tabbar2 .center { justify-self: center; width: 70px; height: 70px; margin-top: -34px; border-radius: 50%; background: var(--red); display: grid; place-items: center; box-shadow: 0 10px 26px rgba(232,33,58,.5); border: 4px solid var(--bg); }
+  .tabbar2 .center img { width: 46px; height: 46px; }
+  .day { text-align: center; }
+  .day .dl { font-family: var(--wide); font-weight: 800; font-variation-settings: "wdth" 112; font-size: 11px; color: var(--muted); }
+  .day .cell { height: 48px; margin-top: 6px; border-radius: 14px; display: grid; place-items: center; background: var(--surface-2); font-family: var(--wide); font-weight: 800; font-variation-settings: "wdth" 108; font-size: 8px; letter-spacing: .03em; color: var(--muted); }
+  .day .cell img { width: 32px; height: 32px; }
+  .day .cell.game { background: var(--red); color: #fff; display: flex; flex-direction: column; justify-content: center; }
+  .day .cell.game img { width: 38px; height: 26px; object-fit: cover; }
+  .day .cell.today { box-shadow: 0 0 0 2px var(--bg), 0 0 0 4px #fff; }
+  .day .cell.rest { background: transparent; border: 1.5px dashed var(--line); }
+</style>
+</head>
+<body>
+<div class="phone" style="padding-bottom:120px">
+  <div class="hero">
+    <img class="bg" src="../private/hero-goat-walkout.jpg" alt="" style="object-position:50% 22%">
+    <div style="position:absolute;inset:0;background:linear-gradient(to bottom,rgba(10,12,11,.6) 0%,rgba(10,12,11,0) 22%,rgba(10,12,11,0) 58%,rgba(10,12,11,.96) 86%)"></div>
+    <div style="position:absolute;left:16px;right:16px;top:54px;display:flex;justify-content:space-between;align-items:center">
+      <div class="w" style="font-size:18px;color:#fff">Training<span style="color:var(--red)"> Agent</span></div>
+      <span class="pill glass">MON 26 OCT</span>
+    </div>
+    <div style="position:absolute;left:16px;right:16px;bottom:22px">
+      <div style="display:flex;gap:8px;align-items:center"><span class="pill red">MD-2</span><span class="pill glass">TODAY · 17:30</span></div>
+      <h1 class="w" style="font-size:32px;color:#fff;margin:12px 0 16px">Close control<br>&amp; 1v1</h1>
+      <div style="display:flex;gap:10px"><span class="kick">KICK OFF <span style="font-size:20px">→</span></span><span class="ghostbtn">62 min · 9 drills</span></div>
+    </div>
+  </div>
+
+  <div class="sec"><div class="w" style="font-size:16px">Kit check</div><span class="more">2 of 4 packed</span></div>
+  <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px">
+    <div class="kit packed"><img id="i-boot" alt=""><div class="name">Boots</div></div>
+    <div class="kit packed"><img id="i-ball" alt=""><div class="name">Ball</div></div>
+    <div class="kit"><img id="i-disc" alt=""><div class="name">6 discs</div></div>
+    <div class="kit"><img id="i-hurdle" alt=""><div class="name">Hurdles</div></div>
+  </div>
+
+  <div class="sec"><div class="w" style="font-size:16px">Today's drills</div><span class="more">View all</span></div>
+  <div class="carousel">
+    <div class="card"><div class="ph"><img src="../private/cones-drill.jpg" alt=""><span class="pill red">VOICE CUES</span></div>
+      <div class="body"><h3>1v1 reaction</h3><div class="muted" style="font-size:14px">8 × 40s · beat the marker on the call</div></div></div>
+    <div class="card"><div class="ph"><img src="../private/gear-flatlay.jpg" alt="" style="object-position:50% 35%"></div>
+      <div class="body"><h3>Dribble + turn</h3><div class="muted" style="font-size:14px">6 × 45s · cuts, drag-backs</div></div></div>
+  </div>
+
+  <div class="sec"><div class="w" style="font-size:16px">This week</div><span class="more">1 game week</span></div>
+  <div style="display:grid;grid-template-columns:repeat(7,1fr);gap:6px">
+    <div class="day"><div class="dl">M</div><div class="cell today"><img class="d-ball" alt=""></div></div>
+    <div class="day"><div class="dl">T</div><div class="cell rest">REST</div></div>
+    <div class="day"><div class="dl">W</div><div class="cell game"><img class="d-goal" alt=""><span>GAME</span></div></div>
+    <div class="day"><div class="dl">T</div><div class="cell">RECOV</div></div>
+    <div class="day"><div class="dl">F</div><div class="cell"><img class="d-ball" alt=""></div></div>
+    <div class="day"><div class="dl">S</div><div class="cell">CHEER</div></div>
+    <div class="day"><div class="dl">S</div><div class="cell">GYM</div></div>
+  </div>
+
+  <div class="sec"><div class="w" style="font-size:16px">Mindset</div><span class="more">Clips & quotes</span></div>
+  <div class="carousel">
+    <div class="card" style="flex-basis:300px"><div class="ph" style="height:150px"><img src="../private/ronaldo-arms-red.jpg" alt="" style="object-position:50% 30%"><span class="pill red">▶ CLIP</span></div>
+      <div class="body"><h3 style="text-transform:none;font-size:16px;line-height:1.15">"Talent without working hard is nothing."</h3><div class="muted" style="font-size:13px">Cristiano Ronaldo</div></div></div>
+    <div class="card" style="flex-basis:300px"><div class="ph" style="height:150px"><img src="../private/ronaldo-arms-bw.jpg" alt="" style="object-position:50% 30%"><span class="pill glass">QUOTE</span></div>
+      <div class="body"><h3 style="text-transform:none;font-size:16px;line-height:1.15">"Your love makes me strong."</h3><div class="muted" style="font-size:13px">Cristiano Ronaldo</div></div></div>
+  </div>
+
+  <div class="sec"><div class="w" style="font-size:16px">Your number 7</div><span class="more">Player card</span></div>
+  <div style="position:relative;border-radius:var(--r-card);overflow:hidden;height:200px">
+    <img src="../private/ronaldo-jerseys.jpg" alt="" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 30%">
+    <div style="position:absolute;inset:0;background:linear-gradient(90deg,rgba(10,12,11,.97) 0%,rgba(10,12,11,.9) 50%,rgba(10,12,11,.25) 100%)"></div>
+    <div style="position:absolute;left:18px;top:18px;bottom:18px;display:flex;flex-direction:column;justify-content:space-between">
+      <div><div class="w" style="font-size:54px;color:#fff;line-height:.85">74</div><div class="pill red" style="margin-top:8px">LW · PETER</div></div>
+      <div style="display:flex;gap:14px;color:#fff;font-family:var(--wide);font-weight:800;font-variation-settings:'wdth' 110;font-size:12px">
+        <span>PAC <b style="color:var(--red)">82</b></span><span>DRI <b style="color:var(--red)">78</b></span><span>SHO <b style="color:var(--red)">71</b></span><span>WF <b style="color:var(--red)">58</b></span></div>
+    </div>
+  </div>
+
+  <div class="tabbar2">
+    <div class="t on">HOME</div><div class="t">WEEK</div>
+    <div class="center"><img id="tab-ball" alt=""></div>
+    <div class="t">PLAYER</div><div class="t">COACH</div>
+  </div>
+</div>
+
+<script type="module">
+import { THREE, makeBall, makeBoot, makeDisc, makeHurdle, makeGoal, studio, contactShadow } from './objects3d.js'
+const ir = new THREE.WebGLRenderer({ antialias: true, alpha: true, preserveDrawingBuffer: true })
+ir.setPixelRatio(1); ir.setSize(360, 360)
+function icon(obj, cam, look, shadow = 2.2, rotY = 0) {
+  const s = new THREE.Scene(); studio(ir, s)
+  obj.rotation.y = rotY; s.add(obj); if (shadow) s.add(contactShadow(shadow, 0.55))
+  const c = new THREE.PerspectiveCamera(30, 1, 0.1, 100); c.position.set(...cam); c.lookAt(...look)
+  ir.render(s, c); return ir.domElement.toDataURL()
+}
+const ballObj = () => { const b = makeBall(); b.position.y = 1; b.rotation.set(0.4, 0.6, 0.1); return b }
+const ball = icon(ballObj(), [2.6, 2.6, 5.2], [0, 0.95, 0], 2.4)
+const ballNoShadow = icon(ballObj(), [2.6, 2.2, 5.2], [0, 1, 0], 0)
+const set = (id, url) => (document.getElementById(id).src = url)
+set('i-ball', ball)
+set('tab-ball', ballNoShadow)
+set('i-boot', icon(makeBoot(), [2.4, 2.2, 4.8], [0, 0.5, 0], 3.2, 0.45))
+set('i-disc', icon(makeDisc({ stack: 5 }), [1.6, 2.0, 2.9], [0, 0.2, 0], 1.8))
+set('i-hurdle', icon(makeHurdle(), [1.8, 1.6, 3.6], [0, 0.3, 0], 2.4, 0.4))
+const goal = icon(makeGoal(), [0, 1.6, 7.5], [0, 1.1, -0.6], 0)
+document.querySelectorAll('.d-ball').forEach((e) => (e.src = ball))
+document.querySelectorAll('.d-goal').forEach((e) => (e.src = goal))
+await Promise.all([...document.images].map((i) => i.complete ? 0 : new Promise((r) => { i.onload = i.onerror = r })))
+window.__ready = true
+</script>
+</body>
+</html>

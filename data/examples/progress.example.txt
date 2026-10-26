@@ -1,0 +1,4 @@
+Progress:
+- Body weight: <kg>
+- Body fat: <%>
+- Key PRs / test results: <...>

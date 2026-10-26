@@ -1,0 +1,150 @@
+<!doctype html>
+<html data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=390">
+<title>Mockup E</title>
+<link rel="stylesheet" href="shared.css">
+<script type="importmap">
+{ "imports": {
+  "three": "https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js",
+  "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"
+} }
+</script>
+<style>
+  /* Font B: wide & heavy */
+  .w { font-family: var(--wide); font-weight: 900; font-variation-settings: "wdth" 125; text-transform: uppercase; letter-spacing: -.01em; line-height: .95; margin: 0; }
+  .hero { position: relative; margin: 0 -16px; height: 360px; overflow: hidden; }
+  .hero canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
+  .hero .over { position: absolute; left: 16px; right: 16px; bottom: 16px; }
+  .skew { transform: skewX(-10deg); }
+  .skew > * { transform: skewX(10deg); }
+  .kick { display: inline-flex; align-items: center; gap: 10px; background: var(--red); color: #fff; padding: 0 26px; min-height: 54px; font-family: var(--wide); font-weight: 900; font-variation-settings: "wdth" 125; font-size: 17px; letter-spacing: .02em; box-shadow: 0 6px 0 #8f0018; }
+  .sticker { display: inline-block; transform: rotate(-4deg); background: var(--red); color: #fff; font-family: var(--wide); font-weight: 900; font-variation-settings: "wdth" 125; font-size: 12px; letter-spacing: .06em; padding: 4px 9px; }
+  .sticker.white { background: #fff; color: #0a0c0b; transform: rotate(3deg); }
+  .obj { width: 100%; aspect-ratio: 1; display: block; }
+  .kit { background: var(--surface); padding: 10px 8px 12px; text-align: center; position: relative; }
+  .kit .name { font-family: var(--wide); font-weight: 800; font-variation-settings: "wdth" 115; font-size: 11px; letter-spacing: .05em; text-transform: uppercase; }
+  .kit.packed::after { content: "✓"; position: absolute; top: 6px; right: 8px; width: 20px; height: 20px; display: grid; place-items: center; background: var(--red); color: #fff; font-size: 12px; font-weight: 900; border-radius: 50%; }
+  .day { text-align: center; }
+  .day .dl { font-family: var(--wide); font-weight: 800; font-variation-settings: "wdth" 115; font-size: 11px; color: var(--muted); }
+  .day .cell { height: 46px; margin-top: 5px; display: grid; place-items: center; background: var(--surface-2); font-family: var(--wide); font-weight: 800; font-variation-settings: "wdth" 110; font-size: 8px; letter-spacing: .03em; position: relative; }
+  .day .cell img { width: 34px; height: 34px; }
+  .day .cell.game { display: flex; flex-direction: column; justify-content: center; gap: 1px; color: #fff; }
+  .day .cell.game img { width: 40px; height: 28px; object-fit: cover; }
+  .day .cell.game { background: var(--red); }
+  .day .cell.today { outline: 2px solid var(--text); outline-offset: 2px; }
+  .day .cell.rest { background: transparent; border: 1px dashed var(--line); color: var(--muted); }
+</style>
+</head>
+<body>
+<div class="phone" style="padding-bottom:110px">
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
+    <div class="w" style="font-size:19px">Training<span style="color:var(--red)"> Agent</span></div>
+    <span class="sticker white">MON 26 OCT</span>
+  </div>
+
+  <div class="hero">
+    <canvas id="scene"></canvas>
+    <div style="position:absolute;left:0;right:0;top:0;height:55%;background:linear-gradient(to bottom,rgba(10,12,11,.85),rgba(10,12,11,0));pointer-events:none"></div>
+    <div style="position:absolute;left:16px;right:16px;top:18px">
+      <div style="display:flex;gap:8px;align-items:center"><span class="sticker">MD-2</span><span class="eyebrow" style="color:#fff">Today · 17:30</span></div>
+      <h1 class="w" style="font-size:31px;color:#fff;margin:10px 0 0;text-shadow:0 2px 12px rgba(0,0,0,.6)">Close control<br>&amp; 1v1</h1>
+    </div>
+    <div style="position:absolute;left:16px;bottom:18px"><span class="kick skew"><span>KICK OFF →</span></span></div>
+  </div>
+
+  <div style="display:flex;justify-content:space-between;align-items:baseline;margin:22px 0 10px">
+    <div class="w" style="font-size:16px">Kit check</div><span class="muted" style="font-size:13px">tap to pack</span>
+  </div>
+  <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px">
+    <div class="kit packed"><img class="obj" id="i-boot" alt="boots"><div class="name">Boots</div></div>
+    <div class="kit packed"><img class="obj" id="i-ball" alt="ball"><div class="name">Ball</div></div>
+    <div class="kit"><img class="obj" id="i-cone" alt="cones"><div class="name">6 cones</div></div>
+    <div class="kit"><img class="obj" id="i-bottle" alt="water"><div class="name">Water</div></div>
+  </div>
+
+  <div class="w" style="font-size:16px;margin:24px 0 10px">This week</div>
+  <div style="display:grid;grid-template-columns:repeat(7,1fr);gap:5px">
+    <div class="day"><div class="dl">M</div><div class="cell today"><img class="d-ball"></div></div>
+    <div class="day"><div class="dl">T</div><div class="cell rest">REST</div></div>
+    <div class="day"><div class="dl">W</div><div class="cell game"><img class="d-goal"><span>GAME</span></div></div>
+    <div class="day"><div class="dl">T</div><div class="cell">RECOV</div></div>
+    <div class="day"><div class="dl">F</div><div class="cell"><img class="d-ball"></div></div>
+    <div class="day"><div class="dl">S</div><div class="cell">CHEER</div></div>
+    <div class="day"><div class="dl">S</div><div class="cell">GYM</div></div>
+  </div>
+
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:16px">
+    <div class="tile"><div class="label">Sessions this month</div><div class="value">9</div>
+      <div class="delta" style="color:var(--good)">▲ 2 vs September</div></div>
+    <div class="tile"><div class="label">Juggling best</div><div class="value">64<span class="unit">touches</span></div>
+      <div class="delta" style="color:var(--good)">▲ 11 vs last test</div></div>
+  </div>
+
+  <div class="tabbar"><div class="tab on">Home</div><div class="tab">Week</div><div class="tab">Player</div><div class="tab">Coach</div></div>
+</div>
+
+<script type="module">
+import { THREE, makeBall, makeCone, makeGoal, makeBoot, makeBottle, studio, contactShadow } from './objects3d.js'
+
+// ---------- hero: clean pitch scene ----------
+const canvas = document.getElementById('scene')
+const W = canvas.clientWidth, H = canvas.clientHeight
+const r = new THREE.WebGLRenderer({ canvas, antialias: true, preserveDrawingBuffer: true })
+r.setPixelRatio(2); r.setSize(W, H, false)
+const scene = new THREE.Scene()
+const sky = document.createElement('canvas'); sky.width = 2; sky.height = 256
+const sg = sky.getContext('2d'), grad = sg.createLinearGradient(0, 0, 0, 256)
+grad.addColorStop(0, '#0a0c0b'); grad.addColorStop(0.5, '#1d0a0e'); grad.addColorStop(0.78, '#7a1a1a'); grad.addColorStop(1, '#e8613a')
+sg.fillStyle = grad; sg.fillRect(0, 0, 2, 256)
+const skyTex = new THREE.CanvasTexture(sky); skyTex.colorSpace = THREE.SRGBColorSpace
+scene.background = skyTex
+scene.fog = new THREE.Fog(0x2a1210, 12, 30)
+studio(r, scene, { warm: true })
+// turf with soft mowing stripes (canvas texture, smooth)
+const tc = document.createElement('canvas'); tc.width = 512; tc.height = 512
+const tx = tc.getContext('2d')
+for (let i = 0; i < 8; i++) { tx.fillStyle = i % 2 ? '#24603a' : '#1f5533'; tx.fillRect(i * 64, 0, 64, 512) }
+const turfTex = new THREE.CanvasTexture(tc); turfTex.colorSpace = THREE.SRGBColorSpace; turfTex.wrapS = turfTex.wrapT = THREE.RepeatWrapping; turfTex.repeat.set(4, 4)
+turfTex.anisotropy = 8
+const turf = new THREE.Mesh(new THREE.PlaneGeometry(60, 60), new THREE.MeshStandardMaterial({ map: turfTex, roughness: 0.95 }))
+turf.rotation.x = -Math.PI / 2; turf.receiveShadow = true; scene.add(turf)
+const line = new THREE.Mesh(new THREE.PlaneGeometry(30, 0.1), new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: 0.9 }))
+line.rotation.x = -Math.PI / 2; line.rotation.z = 0.1; line.position.set(0, 0.01, 1.4); line.receiveShadow = true; scene.add(line)
+const goal = makeGoal(); goal.position.set(1.0, 0, -8); goal.rotation.y = -0.1; scene.add(goal)
+const ball = makeBall(); ball.scale.setScalar(0.5); ball.position.set(1.9, 0.5, 2.2); ball.rotation.set(0.4, 0.7, 0.1); scene.add(ball)
+;[[-1.6, -5.2], [0.4, -4.4], [2.4, -5.4], [4.2, -4.2]].forEach(([x, z], i) => {
+  const c = makeCone(); c.scale.setScalar(0.55); c.position.set(x, 0, z); c.rotation.y = i * 0.7; scene.add(c)
+})
+const cam = new THREE.PerspectiveCamera(42, W / H, 0.1, 100)
+cam.position.set(0.4, 1.7, 7.2); cam.lookAt(0.9, 1.6, -2)
+r.render(scene, cam)
+
+// ---------- icons ----------
+const ir = new THREE.WebGLRenderer({ antialias: true, alpha: true, preserveDrawingBuffer: true })
+ir.setPixelRatio(1); ir.setSize(320, 320)
+function icon(obj, cam, look, shadow = 2.2, rotY = 0) {
+  const s = new THREE.Scene(); studio(ir, s)
+  obj.rotation.y = rotY; s.add(obj); if (shadow) s.add(contactShadow(shadow, 0.55))
+  const c = new THREE.PerspectiveCamera(30, 1, 0.1, 100); c.position.set(...cam); c.lookAt(...look)
+  ir.render(s, c); return ir.domElement.toDataURL()
+}
+const ballObj = () => { const b = makeBall(); b.position.y = 1; b.rotation.set(0.4, 0.6, 0.1); return b }
+const urls = {
+  ball: icon(ballObj(), [2.6, 2.6, 5.2], [0, 0.95, 0], 2.4),
+  cone: icon(makeCone(), [2.4, 2.6, 4.4], [0, 0.6, 0], 2.6),
+  boot: icon(makeBoot(), [2.4, 2.2, 4.8], [0, 0.5, 0], 3.2, 0.45),
+  bottle: icon(makeBottle(), [2.2, 2.4, 4.2], [0, 0.9, 0], 1.6),
+  goal: icon(makeGoal(), [0, 1.6, 7.5], [0, 1.1, -0.6], 0),
+}
+document.getElementById('i-ball').src = urls.ball
+document.getElementById('i-cone').src = urls.cone
+document.getElementById('i-boot').src = urls.boot
+document.getElementById('i-bottle').src = urls.bottle
+document.querySelectorAll('.d-ball').forEach((e) => (e.src = urls.ball))
+document.querySelectorAll('.d-goal').forEach((e) => (e.src = urls.goal))
+window.__ready = true
+</script>
+</body>
+</html>

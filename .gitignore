@@ -231,3 +231,13 @@ ollama/
 # Virtual environment (already in the template, but confirm)
 venv/
 .venv/
+# Reference photos from Pinterest etc. (not licensed for reuse): private, never commit
+design/private/
+
+# Personal data: kept locally, never committed (examples in data/examples/)
+data/goals.md
+data/injuries.txt
+data/progress.txt
+data/profile.md
+# Impeccable's downloaded checker binary (re-downloaded on demand)
+.claude/skills/impeccable/scripts/bin/
