@@ -195,7 +195,9 @@ Not tested on a real iPhone yet: speech/sound with screen on and off, wake lock 
 
 **2026-10-25 21st.dev:** MCP connected (free tier: 2 component downloads/day). Used "Animate Digits" (unlumen) for the session timer and full-time load, adapted in `web/src/components/AnimateDigits.tsx`; `motion` library added; spring-sliding active indicators in the tab bar and sidebar.
 
-Next up: backend (FastAPI + SQLite), Gemini/Groq client (Coach tab), football research tool, sync phone and laptop data, deploy.
+**2026-10-26 deploy prep:** decisions: everything on EC2 (Caddy auto-HTTPS + free DuckDNS address); personal version online behind a password login; repo stays public with personal data moved out of git (`data/examples/` templates; `data/profile.md` private); work pushed on branch `web-app`. Built `backend/` (FastAPI: scrypt password, signed cookie, login throttle, private-photo gate via Caddy forward_auth, SQLite sync with history merge; 9 tests), web login + local-first sync (e2e tested phone/laptop), `deploy/` kit. Local backend port 8788 (8000/8765 used by other projects).
+
+Next up: Peter launches EC2 + Elastic IP + DuckDNS name, then bootstrap/deploy/set password; then Coach agent (Gemini/Groq) and football research.
 
 ## 9. What Peter should be able to explain (interview notes)
 
