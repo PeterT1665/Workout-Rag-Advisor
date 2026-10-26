@@ -1,0 +1,35 @@
+# Caddy gets and renews the HTTPS certificate for this domain automatically.
+__DOMAIN__ {
+	encode zstd gzip
+
+	header {
+		Strict-Transport-Security "max-age=31536000"
+		X-Content-Type-Options nosniff
+		X-Frame-Options DENY
+		Referrer-Policy strict-origin-when-cross-origin
+	}
+
+	# API: login, private-photo gate, sync
+	handle /api/* {
+		reverse_proxy 127.0.0.1:8788
+	}
+
+	# Private photos: only after the backend confirms you're logged in
+	handle /personal/* {
+		forward_auth 127.0.0.1:8788 {
+			uri /api/auth/check
+		}
+		header Cache-Control "private, max-age=86400"
+		root * /srv/training-agent/web
+		file_server
+	}
+
+	# The app itself (single-page app: unknown paths fall back to index.html)
+	handle {
+		root * /srv/training-agent/web
+		@nocache path /index.html /sw.js /registerSW.js /manifest.webmanifest
+		header @nocache Cache-Control "no-cache"
+		try_files {path} /index.html
+		file_server
+	}
+}

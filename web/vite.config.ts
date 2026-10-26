@@ -24,10 +24,11 @@ export default defineConfig({
           { src: 'icon-512.png', sizes: '512x512', type: 'image/png' },
         ],
       },
-      workbox: { globPatterns: ['**/*.{js,css,html,svg,png,woff2}'] },
+      // never cache the API or private photos in the offline cache
+      workbox: { globPatterns: ['**/*.{js,css,html,svg,png,woff2}'], globIgnores: ['personal/**'], navigateFallbackDenylist: [/^\/api\//, /^\/personal\//] },
     }),
   ],
-  server: { host: '0.0.0.0' },
+  server: { host: '0.0.0.0', proxy: { '/api': 'http://localhost:8788' } },
   test: {
     environment: 'jsdom',
     setupFiles: ['./src/test-setup.ts'],

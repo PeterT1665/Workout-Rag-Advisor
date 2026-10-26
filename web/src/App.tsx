@@ -48,6 +48,13 @@ export default function App() {
   const today = useMemo(() => planToday(sessions, games), [games])
 
   useEffect(() => { void openClips() }, [])
+  // another device changed something: re-read synced state
+  const [, setSyncTick] = useState(0)
+  useEffect(() => {
+    const on = () => { setGames(loadGames()); setSettings(loadSettings()); setSyncTick((n) => n + 1) }
+    window.addEventListener('ta-sync', on)
+    return () => window.removeEventListener('ta-sync', on)
+  }, [])
   useEffect(() => { window.scrollTo(0, 0) }, [tab, deskTab, overlay?.name])
 
   const updateSettings = (p: Partial<Settings>) => {

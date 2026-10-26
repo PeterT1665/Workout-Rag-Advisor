@@ -1,6 +1,7 @@
 import { Button, Panel, Screen, Slider, Title, Toggle, TopBar } from '../components/ui'
 import { say } from '../lib/audio'
 import type { Settings } from '../lib/types'
+import { logout, syncEnabled } from '../lib/sync'
 
 export function SettingsView({ settings: s, clipCount, onChange, onMedia, onDone }: {
   settings: Settings; clipCount: number; onChange: (p: Partial<Settings>) => void; onMedia: () => void; onDone: () => void
@@ -27,6 +28,12 @@ export function SettingsView({ settings: s, clipCount, onChange, onMedia, onDone
         <Slider id="cv" label="Clip volume" min={0.2} max={1} step={0.1} value={s.clipVolume} onChange={(v) => onChange({ clipVolume: v })} />
         <Button variant="ghost" className="bg-surface-2" onClick={onMedia}>Clips & quotes ({clipCount} clips)</Button>
       </Panel>
+      {syncEnabled() && (
+        <Panel className="mt-8 flex items-center justify-between gap-4">
+          <p className="m-0 text-sm text-muted">Synced with your other devices.</p>
+          <Button variant="ghost" size="sm" className="bg-surface-2" onClick={async () => { await logout(); location.reload() }}>Log out</Button>
+        </Panel>
+      )}
     </Screen>
   )
 }

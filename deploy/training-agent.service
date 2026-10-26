@@ -1,0 +1,21 @@
+[Unit]
+Description=Training Agent API
+After=network.target
+
+[Service]
+User=training
+Group=training
+WorkingDirectory=/srv/training-agent/backend
+EnvironmentFile=/etc/training-agent.env
+ExecStart=/srv/training-agent/backend/.venv/bin/uvicorn --factory app.main:app_factory --host 127.0.0.1 --port 8788
+Restart=always
+RestartSec=3
+# hardening
+NoNewPrivileges=true
+ProtectSystem=strict
+ProtectHome=true
+PrivateTmp=true
+ReadWritePaths=/srv/training-agent/data
+
+[Install]
+WantedBy=multi-user.target
