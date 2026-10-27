@@ -1,4 +1,4 @@
-"""Training Agent API: login, a gate for private photos, and phone/laptop sync."""
+"""Sport Personal Coach API: login, a gate for private photos, and phone/laptop sync."""
 import asyncio
 from typing import Any
 
@@ -13,7 +13,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     cfg = settings or load()
     if not cfg.password_hash or len(cfg.secret) < 32:
         raise RuntimeError("Set TA_PASSWORD_HASH and TA_SECRET (32+ chars) before starting.")
-    app = FastAPI(title="Training Agent", docs_url=None, redoc_url=None, openapi_url=None)
+    app = FastAPI(title="Sport Personal Coach", docs_url=None, redoc_url=None, openapi_url=None)
     con = db.connect(cfg.db_path)
     throttle = auth.Throttle()
 

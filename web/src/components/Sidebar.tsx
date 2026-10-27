@@ -14,7 +14,7 @@ const ITEMS: { id: DeskTab; label: string; d: string }[] = [
 export function Sidebar({ tab, onTab, onSettings, onKickOff }: { tab: DeskTab | null; onTab: (t: DeskTab) => void; onSettings: () => void; onKickOff: () => void }) {
   return (
     <aside className="sticky top-0 flex h-dvh w-[248px] shrink-0 flex-col border-r border-white/5 bg-[#0d0f0e] px-4 py-7 text-white">
-      <div className="px-3 font-display text-lg uppercase leading-none">Training<br /><span className="text-red-ink">Agent</span></div>
+      <div className="px-3 font-display text-lg uppercase leading-none">Sport Personal<br /><span className="text-red-ink">Coach</span></div>
       <nav className="mt-10 flex flex-col gap-1">
         {ITEMS.map((it) => {
           const on = tab === it.id

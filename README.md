@@ -1,4 +1,4 @@
-# Training Agent
+# Sport Personal Coach
 
 A personal football training app: a laptop planner and an iPhone session companion (PWA), with a RAG-based exercise advisor underneath.
 

@@ -76,7 +76,7 @@ const icsEscape = (s: string) =>
 
 export type IcsEvent = { title: string; start: Date; minutes: number; description?: string; alertMinutes?: number; uid?: string }
 export function makeICS(events: IcsEvent[]) {
-  const lines = ['BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//Training Agent//EN', 'CALSCALE:GREGORIAN']
+  const lines = ['BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//Sport Personal Coach//EN', 'CALSCALE:GREGORIAN']
   events.forEach((e, i) => {
     const end = new Date(e.start.getTime() + e.minutes * 60000)
     lines.push(

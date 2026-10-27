@@ -113,10 +113,10 @@ describe('app', () => {
 
   test('home: kit check toggles and remembers packed items', () => {
     render(<App />)
-    const boots = screen.getByRole('button', { name: /Boots/ })
+    const boots = screen.getByRole('button', { name: /Water/ })
     expect(boots.getAttribute('aria-pressed')).toBe('false')
     fireEvent.click(boots)
-    expect(screen.getByRole('button', { name: /Boots/ }).getAttribute('aria-pressed')).toBe('true')
+    expect(screen.getByRole('button', { name: /Water/ }).getAttribute('aria-pressed')).toBe('true')
     expect(screen.getByText(/1 of \d packed/)).toBeTruthy()
   })
 

@@ -12,8 +12,8 @@ export default defineConfig({
       registerType: 'autoUpdate',
       includeAssets: ['icon-180.png', 'icon-192.png'],
       manifest: {
-        name: 'Training Agent',
-        short_name: 'Training',
+        name: 'Sport Personal Coach',
+        short_name: 'Sport Coach',
         start_url: '/',
         display: 'standalone',
         orientation: 'portrait',

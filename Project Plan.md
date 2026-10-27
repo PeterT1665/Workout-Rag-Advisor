@@ -1,4 +1,4 @@
-# Training Agent — Project Plan (v2)
+# Sport Personal Coach — Project Plan (v2)
 
 _Last updated: 2026-10-16. This replaces the original CLI-only plan. The old plan is in git history._
 

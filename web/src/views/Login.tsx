@@ -23,7 +23,7 @@ export function Login({ onDone }: { onDone: () => void }) {
     <main className="fixed inset-0 grid place-items-center bg-[#0a0c0b] px-5 text-white">
       <form onSubmit={submit} className="rise w-full max-w-sm">
         <img src="/icon-192.png" alt="" className="h-16 w-16 rounded-2xl" />
-        <h1 className="m-0 mt-6 font-display text-4xl uppercase leading-[.9]">Training<br /><span className="text-[var(--red-ink)]">Agent</span></h1>
+        <h1 className="m-0 mt-6 font-display text-4xl uppercase leading-[.9]">Sport Personal<br /><span className="text-[var(--red-ink)]">Coach</span></h1>
         <label htmlFor="pw" className="mt-8 block text-sm text-white/70">Password</label>
         <input id="pw" type="password" autoComplete="current-password" autoFocus value={pw} onChange={(e) => setPw(e.target.value)}
           aria-invalid={!!err} aria-describedby={err ? 'pw-err' : undefined}
