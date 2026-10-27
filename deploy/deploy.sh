@@ -21,6 +21,6 @@ $SSH "$HOST" 'set -e
   [ -d .venv ] || python3 -m venv .venv
   .venv/bin/pip install -q --upgrade pip
   .venv/bin/pip install -q -r requirements.txt
-  if grep -q "^TA_PASSWORD_HASH=.\+" /etc/training-agent.env; then sudo systemctl restart training-agent; else echo "(password not set yet: run training-agent-set-password)"; fi
+  if sudo grep -q "^TA_PASSWORD_HASH=.\+" /etc/training-agent.env; then sudo systemctl restart training-agent; else echo "(password not set yet: run training-agent-set-password)"; fi
   sudo systemctl reload caddy'
 echo "== Done"
