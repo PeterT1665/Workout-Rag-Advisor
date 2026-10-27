@@ -192,8 +192,13 @@ export function CardTile({ onPlayer }: { onPlayer: () => void }) {
   const stats: [string, number][] = [['PAC', 82], ['DRI', 78], ['SHO', 71], ['WF', 58]]
   return (
     <button onClick={onPlayer} className="relative block h-[200px] w-full overflow-hidden rounded-[20px] bg-surface text-left active:scale-[0.99]">
-      {bg && <img src={bg} alt="" className="absolute inset-0 h-full w-full object-cover object-[50%_30%]" />}
-      <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(10,12,11,.97)_0%,rgba(10,12,11,.9)_50%,rgba(10,12,11,.25)_100%)]" />
+      {bg
+        ? <img src={bg} alt="" className="absolute inset-0 h-full w-full object-cover object-[50%_30%]" />
+        : <>
+            <div className="absolute inset-0 bg-[linear-gradient(135deg,#3a0a12_0%,#14090b_55%,#0b0d0c_100%)]" />
+            <span aria-hidden="true" className="absolute -right-2 -bottom-8 select-none font-display text-[220px] leading-none text-transparent [-webkit-text-stroke:2px_rgba(255,255,255,.14)]">7</span>
+          </>}
+      <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(10,12,11,.55)_0%,rgba(10,12,11,.3)_50%,rgba(10,12,11,0)_100%)]" />
       <div className="absolute inset-y-4 left-4 flex flex-col justify-between">
         <div>
           <div className="font-display text-[54px] leading-[.85] text-white">74</div>
