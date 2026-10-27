@@ -197,6 +197,8 @@ Not tested on a real iPhone yet: speech/sound with screen on and off, wake lock 
 
 **2026-10-26 deploy prep:** decisions: everything on EC2 (Caddy auto-HTTPS + free DuckDNS address); personal version online behind a password login; repo stays public with personal data moved out of git (`data/examples/` templates; `data/profile.md` private); work pushed on branch `web-app`. Built `backend/` (FastAPI: scrypt password, signed cookie, login throttle, private-photo gate via Caddy forward_auth, SQLite sync with history merge; 9 tests), web login + local-first sync (e2e tested phone/laptop), `deploy/` kit. Local backend port 8788 (8000/8765 used by other projects).
 
+**2026-10-27 public demo:** `npm run build:demo` (VITE_DEMO=1): no login/sync, daily-refreshed sample history (tests cover Mon-Sun), "Sample data" labels, neutral quotes, 10 licensed Unsplash/Pexels photos with credits in Settings (club-branded hero rejected). `deploy/deploy.sh` serves it on a 2nd name (`DEMO_DOMAIN`) via Caddy with no auth; skips HTTPS until the name points at the server. Personal Ronaldo/Pinterest photos stay behind the login only.
+
 Next up: Peter launches EC2 + Elastic IP + DuckDNS name, then bootstrap/deploy/set password; then Coach agent (Gemini/Groq) and football research.
 
 ## 9. What Peter should be able to explain (interview notes)

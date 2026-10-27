@@ -2,9 +2,11 @@ import { useEffect, useState } from 'react'
 import App from './App'
 import { Login } from './views/Login'
 import { checkAuth, pull, startSync, type AuthState } from './lib/sync'
+import { DEMO, seedDemo } from './lib/demo'
 
 // Decides login vs app. With no backend (dev, or first load offline) the app runs locally without sync.
 export default function Root() {
+  if (DEMO) { seedDemo(); return <App /> } // public demo: no login, no sync
   const [state, setState] = useState<AuthState | 'checking'>('checking')
   const enter = async () => {
     startSync()

@@ -2,6 +2,8 @@ import { Button, Panel, Screen, Slider, Title, Toggle, TopBar } from '../compone
 import { say } from '../lib/audio'
 import type { Settings } from '../lib/types'
 import { logout, syncEnabled } from '../lib/sync'
+import { DEMO, seedDemo } from '../lib/demo'
+import credits from '../data/credits.json'
 
 export function SettingsView({ settings: s, clipCount, onChange, onMedia, onDone }: {
   settings: Settings; clipCount: number; onChange: (p: Partial<Settings>) => void; onMedia: () => void; onDone: () => void
@@ -28,6 +30,24 @@ export function SettingsView({ settings: s, clipCount, onChange, onMedia, onDone
         <Slider id="cv" label="Clip volume" min={0.2} max={1} step={0.1} value={s.clipVolume} onChange={(v) => onChange({ clipVolume: v })} />
         <Button variant="ghost" className="bg-surface-2" onClick={onMedia}>Clips & quotes ({clipCount} clips)</Button>
       </Panel>
+      {DEMO && (
+        <>
+          <Panel className="mt-8 flex items-center justify-between gap-4">
+            <p className="m-0 text-sm text-muted">This is a public demo with sample data. Nothing here is a real training log.</p>
+            <Button variant="ghost" size="sm" className="bg-surface-2" onClick={() => { seedDemo(new Date(), true); location.reload() }}>Reset demo</Button>
+          </Panel>
+          {credits.length > 0 && (
+            <>
+              <h2 className="mt-8 mb-3 font-display text-lg uppercase">Photo credits</h2>
+              <ul className="m-0 flex list-none flex-col gap-1 p-0 text-sm text-muted">
+                {(credits as { photographer: string; source: string; url: string }[]).map((c) => (
+                  <li key={c.url}><a href={c.url} target="_blank" rel="noreferrer" className="underline">{c.photographer}</a> on {c.source}</li>
+                ))}
+              </ul>
+            </>
+          )}
+        </>
+      )}
       {syncEnabled() && (
         <Panel className="mt-8 flex items-center justify-between gap-4">
           <p className="m-0 text-sm text-muted">Synced with your other devices.</p>

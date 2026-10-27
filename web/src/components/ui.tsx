@@ -1,4 +1,5 @@
 import type { ButtonHTMLAttributes, ReactNode } from 'react'
+import { QUOTE_BY } from '../lib/demo'
 
 type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
   variant?: 'primary' | 'ghost' | 'glass'
@@ -36,7 +37,7 @@ export function TopBar({ left, right }: { left?: ReactNode; right?: ReactNode })
 
 export function Pill({ children, tone = 'muted', className = '' }: { children: ReactNode; tone?: 'red' | 'muted' | 'glass'; className?: string }) {
   const t = tone === 'red' ? 'bg-red text-on-red' : tone === 'glass' ? 'bg-white/15 text-white backdrop-blur-md' : 'bg-surface-2 text-muted'
-  return <span className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1 font-display text-[11px] uppercase tracking-wider ${t} ${className}`}>{children}</span>
+  return <span className={`inline-flex items-center gap-1.5 whitespace-nowrap rounded-full px-3 py-1 font-display text-[11px] uppercase tracking-wider ${t} ${className}`}>{children}</span>
 }
 
 // kept for existing screens
@@ -59,7 +60,7 @@ export function QuoteCard({ text }: { text: string }) {
   return (
     <figure className="m-0">
       <blockquote className="m-0 font-display text-xl leading-tight normal-case">“{text}”</blockquote>
-      <figcaption className="mt-2 text-sm text-muted">Cristiano Ronaldo</figcaption>
+      {QUOTE_BY && <figcaption className="mt-2 text-sm text-muted">{QUOTE_BY}</figcaption>}
     </figure>
   )
 }

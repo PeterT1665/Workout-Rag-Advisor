@@ -1,0 +1,18 @@
+
+# Public demo: no login, sample data, licensed photos only (built with VITE_DEMO=1)
+__DEMO_DOMAIN__ {
+	encode zstd gzip
+
+	header {
+		Strict-Transport-Security "max-age=31536000"
+		X-Content-Type-Options nosniff
+		X-Frame-Options DENY
+		Referrer-Policy strict-origin-when-cross-origin
+	}
+
+	root * /srv/training-agent/demo
+	@nocache path /index.html /sw.js /registerSW.js /manifest.webmanifest
+	header @nocache Cache-Control "no-cache"
+	try_files {path} /index.html
+	file_server
+}

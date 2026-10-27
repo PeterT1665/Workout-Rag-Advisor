@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { Button, Pill, SectionHead } from '../components/ui'
 import { BallIcon, GearIcon, KitGlyph } from '../components/icons'
 import { usePersonalImage } from '../lib/personal'
+import { DEMO, QUOTE_BY } from '../lib/demo'
 import { kitFor, loadPacked, togglePacked, type KitItem } from '../lib/kit'
 import { sessionMinutes } from '../lib/logic'
 import { loadQuotes } from '../lib/storage'
@@ -48,9 +49,9 @@ export function Hero({ today, onKickOff, onOpen, onSettings, desktop = false }: 
         ? 'absolute inset-0 bg-[linear-gradient(90deg,rgba(10,12,11,.95)_0%,rgba(10,12,11,.7)_38%,rgba(10,12,11,0)_70%)]'
         : 'absolute inset-0 bg-[linear-gradient(to_bottom,rgba(10,12,11,.6)_0%,rgba(10,12,11,0)_22%,rgba(10,12,11,0)_55%,rgba(10,12,11,.96)_86%)]'} />
       {!desktop && <div className="absolute inset-x-4 top-[max(16px,env(safe-area-inset-top))] flex items-center justify-between">
-        <span className="font-display text-base uppercase text-white [text-shadow:0_1px_8px_rgba(0,0,0,.6)]">Sport Personal Coach</span>
+        <span className="font-display text-sm uppercase leading-[1.05] text-white [text-shadow:0_1px_8px_rgba(0,0,0,.6)]">Sport Personal<br />Coach</span>
         <span className="flex items-center gap-2">
-          <Pill tone="glass">{date}</Pill>
+          <Pill tone="glass">{DEMO ? 'Sample data' : date}</Pill>
           <button onClick={onSettings} aria-label="Settings" className="grid h-10 w-10 place-items-center rounded-full bg-white/15 text-white backdrop-blur-md active:scale-95">
             <GearIcon />
           </button>
@@ -58,7 +59,7 @@ export function Hero({ today, onKickOff, onOpen, onSettings, desktop = false }: 
       </div>}
       <div className={desktop ? 'absolute bottom-8 left-8 max-w-[64%] rise' : 'absolute inset-x-4 bottom-5 rise'}>
         <div className="flex flex-wrap gap-2">
-          {desktop && <Pill tone="glass">{date}</Pill>}
+          {desktop && <Pill tone="glass">{DEMO ? 'Sample data' : date}</Pill>}
           {today.md && <Pill tone="red">{today.md}</Pill>}
           <Pill tone="glass">{when}{today.scheduled && today.slot ? ` · ${SLOT_LABEL[today.slot.kind]}` : ''}</Pill>
         </div>
@@ -121,11 +122,12 @@ export function KitCheck({ session }: { session: Session }) {
 }
 
 // ---------- today's drills ----------
-export function DrillCard({ i, name, meta, cue, onOpen, fluid = false }: { i: number; name: string; meta: string; cue: boolean; onOpen: () => void; fluid?: boolean }) {
-  const photo = usePersonalImage(`drill-${(i % 3) + 1}.jpg`)
+export function DrillCard({ i, name, meta, cue, onOpen, fluid = false, football = true }: { i: number; name: string; meta: string; cue: boolean; onOpen: () => void; fluid?: boolean; football?: boolean }) {
+  const found = usePersonalImage(`drill-${(i % 3) + 1}.jpg`)
+  const photo = football ? found : null // pitch photos only on football drills, not on stretching
   return (
     <button onClick={onOpen} className={`${fluid ? 'w-full' : 'w-[250px] shrink-0 snap-start'} overflow-hidden rounded-[20px] bg-surface text-left transition-transform duration-150 ease-snap active:scale-[0.98]`}>
-      <div className="relative h-[150px] bg-[linear-gradient(160deg,#1f5533,#0f1d14)]">
+      <div className={`relative bg-[linear-gradient(160deg,#1f5533,#0f1d14)] ${photo ? 'h-[150px]' : 'h-[84px]'}`}>
         {photo && <img src={photo} alt="" className="h-full w-full object-cover" />}
         {cue && <Pill tone="red" className="absolute top-2.5 left-2.5">Voice cues</Pill>}
       </div>
@@ -169,7 +171,7 @@ export function MindsetCard({ i, quote, hasClips, onPlayClip, onAddClips, fluid 
     <div className={`${fluid ? 'w-full' : 'w-[300px] shrink-0 snap-start'} overflow-hidden rounded-[20px] bg-surface`}>
       <div className="relative h-[150px] bg-[linear-gradient(160deg,#3a0a12,#0b0d0c)]">
         {photo && <img src={photo} alt="" className="h-full w-full object-cover object-[50%_30%]" />}
-        {i === 0 && (
+        {i === 0 && (hasClips || !DEMO) && (
           <button onClick={hasClips ? onPlayClip : onAddClips}
             className="absolute top-2.5 left-2.5 rounded-full bg-red px-3 py-1 font-display text-[11px] uppercase tracking-wider text-white active:scale-95">
             {hasClips ? '▶ Clip' : '+ Add clips'}
@@ -178,7 +180,7 @@ export function MindsetCard({ i, quote, hasClips, onPlayClip, onAddClips, fluid 
       </div>
       <div className="p-3.5">
         <p className="m-0 font-display text-sm normal-case leading-snug">“{quote}”</p>
-        <p className="m-0 mt-1 text-[13px] text-muted">Cristiano Ronaldo</p>
+        {QUOTE_BY && <p className="m-0 mt-1 text-[13px] text-muted">{QUOTE_BY}</p>}
       </div>
     </div>
   )
@@ -220,7 +222,7 @@ export function Home(p: Props) {
       <div className="no-scrollbar -mx-4 flex snap-x scroll-px-4 gap-3 overflow-x-auto px-4">
         {drills.slice(0, 5).map((b, i) => (
           <DrillCard key={b.name} i={i} name={b.name.replace(/\s*\([^)]*\)/g, '')} cue={!!b.cue}
-            meta={`${b.rounds || 1} × ${b.work}s${b.rest ? ` · rest ${b.rest}s` : ''}`} onOpen={() => p.onOpen(s)} />
+            meta={`${b.rounds || 1} × ${b.work}s${b.rest ? ` · rest ${b.rest}s` : ''}`} football={s.type === 'football'} onOpen={() => p.onOpen(s)} />
         ))}
       </div>
 

@@ -5,6 +5,7 @@ import { sessionForSlot } from '../lib/today'
 import data from '../data/sessions.json'
 import { loadHistory, loadQuotes, weekLoads } from '../lib/storage'
 import { LoadChart } from '../components/LoadChart'
+import { DEMO } from '../lib/demo'
 import type { Today } from '../lib/today'
 import type { Session } from '../lib/types'
 
@@ -32,6 +33,7 @@ export function Dashboard(p: {
         <div>
           <p className="m-0 text-muted">{new Date().toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long' })}</p>
           <h1 className="m-0 mt-1 font-display text-4xl uppercase">{greet}, Peter</h1>
+          {DEMO && <p className="m-0 mt-2 inline-block rounded-full bg-surface-2 px-3 py-1 text-sm">Public demo · sample data, not real training history</p>}
         </div>
       </header>
 
@@ -70,7 +72,7 @@ export function Dashboard(p: {
           <div className="grid grid-cols-3 gap-4">
             {drills.map((b, i) => (
               <DrillCard key={b.name} fluid i={i} name={b.name.replace(/\s*\([^)]*\)/g, '')} cue={!!b.cue}
-                meta={`${b.rounds || 1} × ${b.work}s${b.rest ? ` · rest ${b.rest}s` : ''}`} onOpen={() => p.onOpen(s)} />
+                meta={`${b.rounds || 1} × ${b.work}s${b.rest ? ` · rest ${b.rest}s` : ''}`} football={s.type === 'football'} onOpen={() => p.onOpen(s)} />
             ))}
           </div>
         </section>

@@ -25,3 +25,4 @@ dist-ssr
 
 # Peter's private images (Ronaldo, Pinterest): never commit
 public/personal/
+dist-demo

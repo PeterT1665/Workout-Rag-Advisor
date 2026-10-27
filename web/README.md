@@ -22,3 +22,6 @@ npm run build                    # production build in dist/ (with service worke
 - `src/lib/audio.ts`: speech, beeps, clip playback.
 - `src/views/*`: screens. `src/App.tsx`: navigation.
 - `src/data/sessions.json`: draft sessions (to be replaced by the planning agent).
+
+## Public demo build
+`npm run build:demo` builds a public version (`VITE_DEMO=1`): no login or sync, sample data that stays recent, a "Sample data" label, neutral quotes with no attribution, and only the licensed photos in `public/demo-img/` (credits are listed in Settings, source in `src/data/credits.json`). The private build never includes `demo-img`, and the demo build never includes `personal/` (Peter's private images).
