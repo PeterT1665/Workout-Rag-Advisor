@@ -65,7 +65,7 @@ Not done: Ollama never installed, so no plan has been generated end to end. Prom
 | D30 | **Exercise library with categories; sessions composed from it** (recommended templates + user-built, editable on the phone) | Football: warm-up, ball mastery/dribbling, first touch, passing, shooting/finishing, 1v1, speed & agility, conditioning, cool-down/mobility. Gym: lower strength, upper strength, power/plyo, core, conditioning. |
 | D31 | **Phone-first planning**; laptop = same app, wide layout | |
 | D32 | **Native iPhone app via Capacitor** (wraps the React app), so the timer and voice keep running with the phone locked | Free Apple account = Peter's phone only, reinstall every 7 days; Apple Developer Program (US$99/yr) when friends need it (TestFlight). PWA stays for everyone else. |
-| D33 | **Week planner must handle 3–4+ gym sessions** alongside games and football sessions | Open: on heavy game weeks, lighten gym (default proposal), cut sessions, or only warn. |
+| D33 | **Week planner handles 3–4 gym sessions** alongside 1–2 games and football sessions; **heavy game weeks lighten gym** (fewer sets, no heavy legs the day before a game) rather than cutting sessions | Agreed 2026-11-08. Recovery can share a game day, so it doesn't take a gym slot. |
 
 ## 4. User profile
 
