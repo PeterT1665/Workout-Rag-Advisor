@@ -1,0 +1,9 @@
+// Cloudflare Workers static site. Cloudflare's GitHub build runs `npm run build:demo` then `npx wrangler deploy`.
+{
+  "name": "sport-coach",
+  "compatibility_date": "2026-10-01",
+  "assets": {
+    "directory": "./dist-demo",
+    "not_found_handling": "single-page-application"
+  }
+}

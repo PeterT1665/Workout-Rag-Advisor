@@ -1,10 +1,9 @@
-# Checks every push and pull request. Never deploys.
+# Checks every push and pull request. Deploys are done by Cloudflare's GitHub build on main.
 name: CI
 
 on:
   push:
   pull_request:
-  workflow_call:
 
 jobs:
   web:
