@@ -60,7 +60,7 @@ Not done: Ollama never installed, so no plan has been generated end to end. Prom
 | D25 | **One app, guest mode + accounts** (replaces the separate demo build long term) | Guest data stays in the browser; sample player is an option. |
 | D26 | **Backend: Supabase** (Postgres, auth, private file storage), **Sydney region**. Replaces D4 (own server) | Per-user access enforced in the database (row-level security). Standard Postgres, so it can be moved later. Free tier pauses after ~1 week idle. |
 | D27 | **Website hosting: Cloudflare Pages**, deployed by **GitHub Actions** (tests on every push; deploy only on merge to `main` when `web/` changed). Replaces D3/D10 | Netlify rejected: free plan charges credits per production deploy. EC2 + DuckDNS retired once the new site is live. |
-| D28 | **Sign-in: username + password**, email optional | Supabase needs an email, so usernames map to an internal address; no self-service reset without a real email (Peter resets in the dashboard). Invite-only: public sign-up off. |
+| D28 | **Sign-in: email + password** (changed from username on 2026-11-08) | Supabase's built-in email login, so users can reset their own password. Invite-only: public sign-up off; Peter adds or invites users from the dashboard. Built-in email sender is rate-limited, fine for 3–5 users. |
 | D29 | **Positions:** winger, striker, midfielder, defender; **multiple per player** | Session recommendations per position. |
 | D30 | **Exercise library with categories; sessions composed from it** (recommended templates + user-built, editable on the phone) | Football: warm-up, ball mastery/dribbling, first touch, passing, shooting/finishing, 1v1, speed & agility, conditioning, cool-down/mobility. Gym: lower strength, upper strength, power/plyo, core, conditioning. |
 | D31 | **Phone-first planning**; laptop = same app, wide layout | |
@@ -183,7 +183,7 @@ The agent decides per question: answer from stored knowledge (RAG), look up fres
 1. **Pipeline + hosting:** GitHub Actions (tests, deploy), Cloudflare Pages, Supabase project. Then move the portfolio link, retire EC2 (terminate instance, release the Elastic IP) and the DuckDNS names.
 2. **Player profile + onboarding + guest mode:** positions (multi), foot, game days, colour theme, idol; the app reads everything from the profile instead of Peter's hard-coded details.
 3. **Exercise library + session builder:** categories, recommended templates per position, user-built sessions on the phone; gym library and templates.
-4. **Accounts:** Supabase username/password sign-in, per-user data and sync, private idol uploads, Peter's data moved over. Invite 3–5 friends.
+4. **Accounts:** Supabase email/password sign-in, per-user data and sync, private idol uploads, Peter's data moved over. Invite 3–5 friends.
 5. **Week planner v3:** 3–4+ gym sessions with games and football (D33).
 6. **Native iPhone app (Capacitor):** background timer and voice.
 7. **Coach agent** (Gemini/Groq) + football research.
