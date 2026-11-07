@@ -1,14 +1,16 @@
 # Sport Personal Coach — Project Plan (v2)
 
-_Last updated: 2026-10-16. This replaces the original CLI-only plan. The old plan is in git history._
+_Last updated: 2026-11-08 (v3 direction). v2 started 2026-10-16; the original CLI-only plan is in git history._
 
 ## 1. What this is
 
-A personal training app for one user (Peter), used every day:
+**v3 (agreed 2026-11-08):** a training app for **football players who also train in the gym** to perform better (strength, explosiveness, endurance). Cheerleading is dropped. Built for Peter first, then 3–5 invited friends, designed so it can grow into a startup without a rewrite.
 
-- **Laptop website — the planner.** Chat with an agent that plans the week, schedule and long-term progress. It can search the web and escalate hard questions to a stronger AI.
-- **iPhone PWA — the session companion.** Shows today's session, runs the timer, speaks cues out loud, and exports sessions to the calendar for reminders.
-- **Both talk to one backend** that owns Peter's data.
+- **One app, two ways in.** *Try it*: guest mode, no account, data stays in the visitor's browser, sample player or their own player card (portfolio demo, coffee chats, interviews). *Sign in*: a private account, synced between phone and laptop.
+- **Each user customises their app:** position(s) (winger, striker, midfielder, defender; several allowed), dominant foot, game days, theme colour, their own idol (name, photos, clips, quotes, stored privately).
+- **Phone-first.** Planning and training both work fully on the phone; the laptop layout is the same app on a wide screen.
+- **Exercise library + sessions.** Every drill/exercise lives once in a library, grouped by category; sessions are built from it, either recommended templates (per position, like Upper/Lower or Push/Pull/Legs for gym) or the user's own.
+- **Later:** a Coach agent (Gemini/Groq) on top of the library and the user's data; native iPhone app.
 
 Secondary purpose: a portfolio project. Peter must be able to explain RAG, the agent design and the trade-offs in an interview (see section 9).
 
@@ -49,6 +51,21 @@ Not done: Ollama never installed, so no plan has been generated end to end. Prom
 | D22 | **Photos + 3D, rounded (2026-10-24):** photo backgrounds for atmosphere (red night goal, gear flat-lays, Ronaldo jersey), 3D gear objects on top (ball, cone, boots, water, disc markers, hurdle, speed rings, pole, goal); **rounded buttons/cards** (~16px buttons, ~20px cards, pills for tags), STATSports-style photo carousels, raised round Kick off button in the tab bar | Peter's Pinterest photos live in `design/private/` (git-ignored); swap for Unsplash/Pexels or Peter's own photos before any public/portfolio use. Mockup F = reference (`design/mockups/mockup-f-home.html`). |
 | D23 | **Two builds, personal and public (2026-10-24).** Personal = Peter's private assets (Ronaldo photos, clips, Pinterest pictures) loaded from the device / `design/private/`, never committed. Public/portfolio = licensed or Peter's own photos only. **More Ronaldo in the personal version**: jersey hero, celebration panels in Mindset, jerseys behind the player card. Red sky and red-lit goal hero rejected. New reference photos used for inspiration only (`design/moodboard.md`). | Mockup G = current personal reference. |
 | D11 | Cheap cones will be bought; bottles/shoes/bags used until then | Plan drills so they work with either. |
+
+**v3 decisions (2026-11-08).** These replace D3, D4, D10 and the single-login part of section 6; D5 changes (cheer dropped); D1 gets a native follow-up; D23's two builds become one app with guest mode.
+
+| # | Decision | Notes |
+|---|---|---|
+| D24 | **Audience:** footballers who also go to the gym (3–4+ gym sessions a week is normal). Football + gym only; **cheerleading dropped** | Gym exercises serve football performance and general fitness (strength, explosiveness, endurance). |
+| D25 | **One app, guest mode + accounts** (replaces the separate demo build long term) | Guest data stays in the browser; sample player is an option. |
+| D26 | **Backend: Supabase** (Postgres, auth, private file storage), **Sydney region**. Replaces D4 (own server) | Per-user access enforced in the database (row-level security). Standard Postgres, so it can be moved later. Free tier pauses after ~1 week idle. |
+| D27 | **Website hosting: Cloudflare Pages**, deployed by **GitHub Actions** (tests on every push; deploy only on merge to `main` when `web/` changed). Replaces D3/D10 | Netlify rejected: free plan charges credits per production deploy. EC2 + DuckDNS retired once the new site is live. |
+| D28 | **Sign-in: username + password**, email optional | Supabase needs an email, so usernames map to an internal address; no self-service reset without a real email (Peter resets in the dashboard). Invite-only: public sign-up off. |
+| D29 | **Positions:** winger, striker, midfielder, defender; **multiple per player** | Session recommendations per position. |
+| D30 | **Exercise library with categories; sessions composed from it** (recommended templates + user-built, editable on the phone) | Football: warm-up, ball mastery/dribbling, first touch, passing, shooting/finishing, 1v1, speed & agility, conditioning, cool-down/mobility. Gym: lower strength, upper strength, power/plyo, core, conditioning. |
+| D31 | **Phone-first planning**; laptop = same app, wide layout | |
+| D32 | **Native iPhone app via Capacitor** (wraps the React app), so the timer and voice keep running with the phone locked | Free Apple account = Peter's phone only, reinstall every 7 days; Apple Developer Program (US$99/yr) when friends need it (TestFlight). PWA stays for everyone else. |
+| D33 | **Week planner must handle 3–4+ gym sessions** alongside games and football sessions | Open: on heavy game weeks, lighten gym (default proposal), cut sessions, or only warn. |
 
 ## 4. User profile
 
@@ -113,7 +130,11 @@ Weekly Saturday-morning session: proper warm-up, skill progression within the se
 ### 5.4 Backlog (not now)
 Music / motivational speeches in gym sessions; push notifications; native iOS app; richer voice cues; defender-style audio scenarios.
 
-## 6. Data and privacy design (decision D4)
+## 6. Data and privacy design
+
+**v3 (D26, D28):** each user's data lives in Supabase (Sydney), readable only by that user (row-level security). Idol photos/clips go in private per-user storage, never shared, never used in marketing; the demo keeps licensed photos only. Health data (injuries, soreness, body stats) is sensitive: invite-only sign-up, a delete-my-account option and a short privacy note now; a proper privacy policy and terms (Australian Privacy Act) before any public launch. Free Gemini/Groq tiers may train on what is sent, so for other users strip details or get consent before the Coach agent sends their data.
+
+_v2 design below (single user, own server), kept for history:_
 
 - All personal data (profile, body stats, PRs, injuries, match logs, plans, session history) lives in **SQLite on our own server**, not in a third party.
 - The web app has **forms to update** body weight, body fat, PRs, injuries and match logs — not only by editing files. The agent can also update them from chat ("log: weight 67.5 kg").
@@ -123,6 +144,19 @@ Music / motivational speeches in gym sessions; push notifications; native iOS ap
 - Access control: a single login (password or token) in front of the server, HTTPS, regular backups of the SQLite file.
 
 ## 7. Architecture (target)
+
+**v3:**
+```
+iPhone (PWA now, Capacitor app later) + laptop browser: one React app
+              │ static files                         │ HTTPS (auth, data, uploads)
+   Cloudflare Pages ◄── GitHub Actions          Supabase (Sydney)
+   (deploy on merge to main)                     Postgres + RLS, Auth, Storage
+                                                     │ later
+                                             Coach agent + RAG (where it runs: TBD;
+                                             TypeScript function, hosted Python, or small server)
+```
+
+_v2 architecture (FastAPI + SQLite on EC2), kept for history:_
 
 ```
 iPhone PWA (session view, timer, voice cues, .ics export)
@@ -144,6 +178,18 @@ Laptop web app (agent chat, plan, progress, data forms)
 The agent decides per question: answer from stored knowledge (RAG), look up fresh info on the web, or read/update Peter's data. Existing Python code (ingest/query/planner) becomes the knowledge and planning modules behind the API.
 
 ## 8. Build order
+
+**v3 phases:**
+1. **Pipeline + hosting:** GitHub Actions (tests, deploy), Cloudflare Pages, Supabase project. Then move the portfolio link, retire EC2 (terminate instance, release the Elastic IP) and the DuckDNS names.
+2. **Player profile + onboarding + guest mode:** positions (multi), foot, game days, colour theme, idol; the app reads everything from the profile instead of Peter's hard-coded details.
+3. **Exercise library + session builder:** categories, recommended templates per position, user-built sessions on the phone; gym library and templates.
+4. **Accounts:** Supabase username/password sign-in, per-user data and sync, private idol uploads, Peter's data moved over. Invite 3–5 friends.
+5. **Week planner v3:** 3–4+ gym sessions with games and football (D33).
+6. **Native iPhone app (Capacitor):** background timer and voice.
+7. **Coach agent** (Gemini/Groq) + football research.
+8. **Startup readiness:** privacy policy, terms, analytics, error monitoring, payments if needed.
+
+_v2 build order, kept for history:_
 
 **Phase 0 — Decisions & research (no code)**
 - Close the open questions in section 10.
@@ -199,7 +245,9 @@ Not tested on a real iPhone yet: speech/sound with screen on and off, wake lock 
 
 **2026-10-27 public demo:** `npm run build:demo` (VITE_DEMO=1): no login/sync, daily-refreshed sample history (tests cover Mon-Sun), "Sample data" labels, neutral quotes, 10 licensed Unsplash/Pexels photos with credits in Settings (club-branded hero rejected). `deploy/deploy.sh` serves it on a 2nd name (`DEMO_DOMAIN`) via Caddy with no auth; skips HTTPS until the name points at the server. Personal Ronaldo/Pinterest photos stay behind the login only.
 
-Next up: Peter launches EC2 + Elastic IP + DuckDNS name, then bootstrap/deploy/set password; then Coach agent (Gemini/Groq) and football research.
+**2026-10-27 to 11-07:** demo live at sport-coach-demo.duckdns.org (on Peter's portfolio site); private site loads but the login server was never started (password not set), so it runs local-only on the phone. First real field session 2026-11-07 (weak foot session, dribbling added by hand): **voice stops when the PWA is backgrounded or the phone is locked** (iOS suspends it; fix = D32); Peter wants to build sessions from a categorised library (D30).
+
+**2026-11-08:** v3 direction agreed (section 1, D24–D33). `web-app` merged into `main`. Next: phase 1 (Peter sets up Supabase and Cloudflare; Claude builds the GitHub Actions pipeline), then phase 2.
 
 ## 9. What Peter should be able to explain (interview notes)
 
