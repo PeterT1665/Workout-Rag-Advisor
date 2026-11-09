@@ -18,6 +18,7 @@ import { Sidebar, type DeskTab } from './components/Sidebar'
 import { Dashboard } from './views/Dashboard'
 import { DESKTOP_QUERY, useMedia } from './lib/useMedia'
 import { allClips, openClips, subscribeClips } from './lib/clips'
+import { openPhotos } from './lib/photos'
 import { beep, playClip, realAudio, stopClip, unlockAudio } from './lib/audio'
 import { createPlayer, type Player } from './lib/player'
 import { nextQuote } from './lib/quotes'
@@ -53,7 +54,7 @@ export default function App() {
   const today = useMemo(() => planToday(sessions, games), [games])
   const [library, setLibrary] = useState(allSessions) // recommended + the user's own
 
-  useEffect(() => { void openClips() }, [])
+  useEffect(() => { void openClips(); void openPhotos() }, [])
   // another device changed something: re-read synced state
   const [, setSyncTick] = useState(0)
   useEffect(() => {

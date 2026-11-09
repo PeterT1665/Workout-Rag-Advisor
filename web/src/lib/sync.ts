@@ -3,6 +3,7 @@
 // Rules (newer wins, history merged) live in the database function put_state; see supabase/migrations.
 import { setSaveHook } from './storage'
 import { supabase } from './supabase'
+import { PHOTO_SLOTS, clearPhotos } from './photos'
 
 export const SYNC_KEYS = ['history', 'games', 'settings', 'quotes', 'mySessions', 'profile'] as const
 type Key = (typeof SYNC_KEYS)[number]
@@ -92,11 +93,12 @@ export function clearLocalData() {
 }
 
 // ---- auth (email + password; invite-only, so there is no sign-up form) ----
-export async function currentEmail(): Promise<string | null> {
+export async function currentUser(): Promise<{ id: string; email: string } | null> {
   try {
     const sb = await supabase()
     const { data } = await sb.auth.getSession()
-    return data.session?.user.email ?? null
+    const u = data.session?.user
+    return u ? { id: u.id, email: u.email ?? '' } : null
   } catch { return null }
 }
 
@@ -126,8 +128,23 @@ export async function setNewPassword(password: string): Promise<string | null> {
   } catch { return "Can't reach the server. Check your connection." }
 }
 
+// Privacy: removes the account, its synced data (database cascade) and its photos.
+export async function deleteAccount(): Promise<boolean> {
+  try {
+    const me = await currentUser()
+    if (!me) return false
+    const sb = await supabase()
+    await sb.storage.from('photos').remove(PHOTO_SLOTS.map((s) => `${me.id}/${s.id}.jpg`))
+    const { error } = await sb.rpc('delete_account')
+    if (error) return false
+    await signOut()
+    return true
+  } catch { return false }
+}
+
 export async function signOut() {
   enabled = false
   try { const sb = await supabase(); await sb.auth.signOut() } catch { /* ignore */ }
   clearLocalData()
+  await clearPhotos()
 }

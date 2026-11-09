@@ -89,7 +89,7 @@ export function Dashboard(p: {
           <LoadChart loads={weekLoads(loadHistory())} />
         </section>
         <section className="col-span-12">
-          <SectionHead title="Mindset" right={<button onClick={p.onAddClips} className="text-sm font-semibold text-muted hover:text-ink">Clips & quotes</button>} />
+          <SectionHead title="Mindset" right={<button onClick={p.onAddClips} className="text-sm font-semibold text-muted hover:text-ink">Photos & clips</button>} />
           <div className="grid grid-cols-3 gap-4">
             {quotes.map((q, i) => <MindsetCard key={q} fluid i={i} quote={q} hasClips={p.hasClips} onPlayClip={p.onPlayClip} onAddClips={p.onAddClips} />)}
           </div>

@@ -1,8 +1,13 @@
 import { beforeEach, describe, expect, test, vi } from 'vitest'
 
 // Fake Supabase: an in-memory user_state table and a put_state that follows the database rules (newer wins).
+let deleted = false
+const removed: string[][] = []
+const storage = { from: () => ({ remove: async (paths: string[]) => { removed.push(paths); return { error: null } } }) }
 const rows = new Map<string, { key: string; value: unknown; updated_at: number }>()
-const rpc = vi.fn(async (_fn: string, a: { p_key: string; p_value: unknown; p_updated_at: number }) => {
+const rpc = vi.fn(async (fn: string, a?: { p_key: string; p_value: unknown; p_updated_at: number }) => {
+  if (fn === 'delete_account') { deleted = true; return { data: null, error: null } }
+  if (!a) return { data: null, error: { message: 'bad call' } }
   const cur = rows.get(a.p_key)
   if (cur && cur.updated_at >= a.p_updated_at && a.p_key !== 'history') return { data: cur, error: null }
   const row = { key: a.p_key, value: a.p_value, updated_at: a.p_updated_at }
@@ -17,10 +22,10 @@ const auth = {
 vi.mock('./supabase', () => ({
   accountsEnabled: true,
   arrivedToSetPassword: false,
-  supabase: async () => ({ rpc, auth, from: () => ({ select: async () => ({ data: [...rows.values()], error: null }) }) }),
+  supabase: async () => ({ rpc, auth, storage, from: () => ({ select: async () => ({ data: [...rows.values()], error: null }) }) }),
 }))
 
-const { clearLocalData, pull, signIn, signOut } = await import('./sync')
+const { clearLocalData, deleteAccount, pull, signIn, signOut } = await import('./sync')
 const get = (k: string) => JSON.parse(localStorage.getItem(k) || 'null')
 const flush = () => new Promise((r) => setTimeout(r, 0))
 
@@ -84,5 +89,13 @@ describe('sync', () => {
     expect(await signIn('a@b.co', 'x')).toBe('throttled')
     auth.signInWithPassword.mockRejectedValueOnce(new Error('network'))
     expect(await signIn('a@b.co', 'x')).toBe('offline')
+  })
+  test('delete account: removes photos, deletes the user, clears this device', async () => {
+    auth.getSession.mockResolvedValueOnce({ data: { session: { user: { id: 'u1', email: 'a@b.co' } } } } as never)
+    localStorage.setItem('history', '[]')
+    expect(await deleteAccount()).toBe(true)
+    expect(removed.at(-1)).toContain('u1/hero.jpg')
+    expect(deleted).toBe(true)
+    expect(localStorage.getItem('history')).toBeNull()
   })
 })

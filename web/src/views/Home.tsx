@@ -239,7 +239,7 @@ export function Home(p: Props) {
       <SectionHead title="This week" right={`${games} game${games === 1 ? '' : 's'} week`} />
       <WeekStrip today={p.today} />
 
-      <SectionHead title="Mindset" right={<button onClick={p.onAddClips} className="text-sm font-semibold text-muted">Clips & quotes</button>} />
+      <SectionHead title="Mindset" right={<button onClick={p.onAddClips} className="text-sm font-semibold text-muted">Photos & clips</button>} />
       <div className="no-scrollbar -mx-4 flex snap-x scroll-px-4 gap-3 overflow-x-auto px-4">
         {quotes.map((q, i) => <MindsetCard key={q} i={i} quote={q} hasClips={p.hasClips} onPlayClip={p.onPlayClip} onAddClips={p.onAddClips} />)}
       </div>

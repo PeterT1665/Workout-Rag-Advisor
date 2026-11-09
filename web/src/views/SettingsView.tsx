@@ -1,7 +1,7 @@
 import { Button, Panel, Screen, Slider, Title, Toggle, TopBar } from '../components/ui'
 import { say } from '../lib/audio'
 import type { Settings } from '../lib/types'
-import { signOut, syncEnabled } from '../lib/sync'
+import { deleteAccount, signOut, syncEnabled } from '../lib/sync'
 import { DEMO, seedDemo, startOverDemo } from '../lib/demo'
 import { positionTag, useProfile } from '../lib/profile'
 import credits from '../data/credits.json'
@@ -37,7 +37,7 @@ export function SettingsView({ settings: s, clipCount, onChange, onMedia, onProf
         <Toggle id="se" label="SIUUU at the end" checked={s.siuuEnd} onChange={(v) => onChange({ siuuEnd: v })} />
         <Toggle id="cd" label="Motivational cards" checked={s.cards} onChange={(v) => onChange({ cards: v })} />
         <Slider id="cv" label="Clip volume" min={0.2} max={1} step={0.1} value={s.clipVolume} onChange={(v) => onChange({ clipVolume: v })} />
-        <Button variant="ghost" className="bg-surface-2" onClick={onMedia}>Clips & quotes ({clipCount} clips)</Button>
+        <Button variant="ghost" className="bg-surface-2" onClick={onMedia}>Photos, clips & quotes ({clipCount} clips)</Button>
       </Panel>
       {!syncEnabled() && (
           <Panel className="mt-8 flex items-center justify-between gap-4">
@@ -62,11 +62,29 @@ export function SettingsView({ settings: s, clipCount, onChange, onMedia, onProf
           )}
         </>
       )}
+      <Panel className="mt-8">
+        <h3 className="m-0 mb-2 font-display text-base uppercase">Privacy</h3>
+        <p className="m-0 text-sm text-muted">
+          {syncEnabled()
+            ? 'Your player, sessions, training log and photos are stored in your private account (Sydney, Australia). Only you can read them. Audio clips never leave this device.'
+            : 'Guest mode: everything stays in this browser. Nothing is sent anywhere.'}
+        </p>
+      </Panel>
       {syncEnabled() && (
-        <Panel className="mt-8 flex items-center justify-between gap-4">
+        <Panel className="mt-4 flex items-center justify-between gap-4">
           <p className="m-0 text-sm text-muted">Signed in. Synced with your other devices.</p>
           <Button variant="ghost" size="sm" className="bg-surface-2" onClick={async () => { await signOut(); location.reload() }}>Sign out</Button>
         </Panel>
+      )}
+      {syncEnabled() && (
+        <button className="mt-6 min-h-11 w-full text-sm font-semibold text-red-ink"
+          onClick={async () => {
+            if (!confirm('Delete your account? Your player, sessions, training log and photos are removed for good.')) return
+            if (await deleteAccount()) location.reload()
+            else alert("Couldn't delete the account. Check your connection and try again.")
+          }}>
+          Delete my account
+        </button>
       )}
     </Screen>
   )
