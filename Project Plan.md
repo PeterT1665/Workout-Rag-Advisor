@@ -247,7 +247,9 @@ Not tested on a real iPhone yet: speech/sound with screen on and off, wake lock 
 
 **2026-10-27 to 11-07:** demo live at sport-coach-demo.duckdns.org (on Peter's portfolio site); private site loads but the login server was never started (password not set), so it runs local-only on the phone. First real field session 2026-11-07 (weak foot session, dribbling added by hand): **voice stops when the PWA is backgrounded or the phone is locked** (iOS suspends it; fix = D32); Peter wants to build sessions from a categorised library (D30).
 
-**2026-11-08:** v3 direction agreed (section 1, D24–D33). `web-app` merged into `main`. Next: phase 1 (Peter sets up Supabase and Cloudflare; Claude builds the GitHub Actions pipeline), then phase 2.
+**2026-11-08:** v3 direction agreed (section 1, D24–D33). `web-app` merged into `main`. Phase 1 done: Supabase project (Sydney, email sign-in, public sign-up off, publishable key in git-ignored `web/.env.local`); Cloudflare Workers project `football-personal-coach` built from GitHub on every push to `main` (root `web`, `npm run build:demo`, config `web/wrangler.jsonc`), live at https://football-personal-coach.ducphu1665.workers.dev; GitHub Actions CI runs all tests on every push. Work happens on branch `v3`, merged into `main` only when CI is green.
+
+**2026-11-09 phase 3 (first part) shipped:** exercise library `web/src/data/library.json` (107 exercises: football by skill, gym incl. Olympic lifts, explosive, plyo & jumps, sprints, short-range lifts, single leg/arm, isometrics, core; mobility) + 9 recommended sessions (4 old ones reproduce exactly, 5 gym). Session builder on the phone: build from the library or Customise a copy of a recommended session; saved locally as `mySessions`. Gym exercises show reps. 46 web tests. Next: phase 2 (profile, onboarding, guest mode), then phase 4 accounts.
 
 ## 9. What Peter should be able to explain (interview notes)
 
