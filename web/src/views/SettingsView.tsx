@@ -1,7 +1,7 @@
 import { Button, Panel, Screen, Slider, Title, Toggle, TopBar } from '../components/ui'
 import { say } from '../lib/audio'
 import type { Settings } from '../lib/types'
-import { logout, syncEnabled } from '../lib/sync'
+import { signOut, syncEnabled } from '../lib/sync'
 import { DEMO, seedDemo, startOverDemo } from '../lib/demo'
 import { positionTag, useProfile } from '../lib/profile'
 import credits from '../data/credits.json'
@@ -39,15 +39,17 @@ export function SettingsView({ settings: s, clipCount, onChange, onMedia, onProf
         <Slider id="cv" label="Clip volume" min={0.2} max={1} step={0.1} value={s.clipVolume} onChange={(v) => onChange({ clipVolume: v })} />
         <Button variant="ghost" className="bg-surface-2" onClick={onMedia}>Clips & quotes ({clipCount} clips)</Button>
       </Panel>
-      {DEMO && (
-        <>
+      {!syncEnabled() && (
           <Panel className="mt-8 flex items-center justify-between gap-4">
-            <p className="m-0 text-sm text-muted">{me.sample ? 'Public demo with a sample player. Nothing here is a real training log.' : 'Public demo. Your player and log stay in this browser only.'}</p>
+            <p className="m-0 text-sm text-muted">{me.sample ? 'Sample player. Nothing here is a real training log.' : 'Guest mode. Your player and log stay in this browser only.'}</p>
             <div className="flex shrink-0 flex-col gap-2">
               {me.sample && <Button variant="ghost" size="sm" className="bg-surface-2" onClick={() => { seedDemo(new Date(), true); location.reload() }}>Reset sample</Button>}
               <Button variant="ghost" size="sm" className="bg-surface-2" onClick={() => { startOverDemo(); location.reload() }}>Start over</Button>
             </div>
           </Panel>
+      )}
+      {DEMO && (
+        <>
           {credits.length > 0 && (
             <>
               <h2 className="mt-8 mb-3 font-display text-lg uppercase">Photo credits</h2>
@@ -62,8 +64,8 @@ export function SettingsView({ settings: s, clipCount, onChange, onMedia, onProf
       )}
       {syncEnabled() && (
         <Panel className="mt-8 flex items-center justify-between gap-4">
-          <p className="m-0 text-sm text-muted">Synced with your other devices.</p>
-          <Button variant="ghost" size="sm" className="bg-surface-2" onClick={async () => { await logout(); location.reload() }}>Log out</Button>
+          <p className="m-0 text-sm text-muted">Signed in. Synced with your other devices.</p>
+          <Button variant="ghost" size="sm" className="bg-surface-2" onClick={async () => { await signOut(); location.reload() }}>Sign out</Button>
         </Panel>
       )}
     </Screen>

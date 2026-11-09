@@ -8,12 +8,13 @@ import { usePersonalImage } from '../lib/personal'
 // `welcome` adds the first screen with the sample-player shortcut (demo only).
 const STEPS = ['name', 'positions', 'foot', 'games', 'colour', 'idol'] as const
 
-export function Onboarding({ initial, initialGames = [], welcome = false, onDone, onSample, onCancel }: {
+export function Onboarding({ initial, initialGames = [], welcome = false, onDone, onSample, onSignIn, onCancel }: {
   initial?: Profile
   initialGames?: Game[]
   welcome?: boolean
   onDone: (p: Profile, games: Game[]) => void
   onSample?: () => void
+  onSignIn?: () => void
   onCancel?: () => void
 }) {
   const [p, setP] = useState<Profile>(initial ?? { name: '', number: 10, positions: [], foot: 'right', accent: 'red', idol: '' })
@@ -35,6 +36,7 @@ export function Onboarding({ initial, initialGames = [], welcome = false, onDone
         <Button block onClick={() => setStep(0)}>Make my player</Button>
         <Button block variant="ghost" className="mt-3" onClick={onSample}>Use a sample player</Button>
         <p className="mt-4 text-center text-xs text-muted">Everything stays in this browser. No account needed.</p>
+        {onSignIn && <button onClick={onSignIn} className="mt-2 min-h-11 text-center text-sm font-semibold">Have an invite? <span className="text-red-ink">Sign in</span></button>}
       </Screen>
     )
   }
