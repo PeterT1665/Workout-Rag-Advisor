@@ -1,11 +1,22 @@
 # Sport Personal Coach
 
-A personal football training app: a laptop planner and an iPhone session companion (PWA), with a RAG-based exercise advisor underneath.
+A training app for footballers who also train in the gym: plan the week around your games on the laptop, run sessions on your phone. Live demo: https://football-personal-coach.ducphu1665.workers.dev
 
-- `web/`: React + TypeScript + Tailwind PWA. Week planner built around game days, session player with a timer and random LEFT/RIGHT reaction cues, full-time check-in with session-RPE load. See `web/README.md`.
-- `weekplan.py`: the week-load rules (games decide football/gym/recovery sessions), mirrored in `web/src/lib/weekplan.ts`.
-- `ingest.py`, `query.py`, `planner.py`, `main.py`: the original RAG CLI (LlamaIndex + local embeddings) that generates gym plans.
-- Personal data (`data/goals.md` etc.) is kept local and not committed; see `data/examples/` for the format.
+**One app, two ways in.** *Try it* (guest mode) keeps everything in the browser, with your own player or a sample one. *Sign in* (invite-only) syncs your player, sessions, training log and photos between phone and laptop.
+
+- **Week planner** built around game days: football sessions flex with the number of games, 3-4 gym sessions get lighter in heavy weeks and never load the legs the day before a game, recovery follows games.
+- **Exercise library** (100+ football, gym and mobility exercises by category) and a phone-first **session builder**.
+- **Session player**: timer, spoken announcements, random LEFT/RIGHT reaction cues on 1v1 drills, full-time check-in with session-RPE load.
+- **Your player**: positions, stronger foot, team colour, role model and your own photos.
+
+| Part | Stack |
+|---|---|
+| `web/` | React 19, TypeScript, Vite, Tailwind v4, PWA; Vitest + Testing Library |
+| `supabase/migrations/` | Postgres with row-level security (each user reaches only their own rows and photo folder), merge-on-write sync |
+| Hosting | Cloudflare Workers static assets, built from GitHub; CI runs every test on every push |
+| `weekplan.py`, `ingest.py`, `query.py`, `planner.py` | The original Python week rules and RAG gym-plan CLI (LlamaIndex + local embeddings) |
+
+Branches: feature work → `staging` (test build) → `main` (production). Personal data is never committed; see `data/examples/` for the format of the local files.
 
 ---
 

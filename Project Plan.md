@@ -251,6 +251,17 @@ Not tested on a real iPhone yet: speech/sound with screen on and off, wake lock 
 
 **2026-11-09 phase 3 (first part) shipped:** exercise library `web/src/data/library.json` (107 exercises: football by skill, gym incl. Olympic lifts, explosive, plyo & jumps, sprints, short-range lifts, single leg/arm, isometrics, core; mobility) + 9 recommended sessions (4 old ones reproduce exactly, 5 gym). Session builder on the phone: build from the library or Customise a copy of a recommended session; saved locally as `mySessions`. Gym exercises show reps. 46 web tests. Next: phase 2 (profile, onboarding, guest mode), then phase 4 accounts.
 
+**2026-11-09 big batch (on `v3`, merged to `staging`):**
+- Picker: names only, + and − on every row, details in a bottom sheet.
+- Phase 2: player profile (name, number, positions incl. several, stronger foot, team colour from 9 contrast-checked presets, role model, gym sessions a week) replaces every hard-coded personal detail; demo welcome screen (make your player / sample player / sign in); Edit player in Settings.
+- Phase 4: Supabase accounts. `supabase/migrations/0001` (user_state + RLS + put_state/merge_history) and `0002` (private photos bucket, delete_account), both tested on local Postgres in Docker with a stand-in auth schema. Email + password sign-in, forgot/set password, sign out clears the device, delete my account, privacy note. Guest mode = browser only; a guest's own player uploads on first sign-in; sample data never does. Supabase JS is lazy-loaded.
+- Private photo uploads per image slot (device for guests, private Storage folder for accounts).
+- Phase 5: week planner v3 (gym count per player, light gym on heavy weeks and MD-1/MD+1/MD-2, recovery on game day when the week is full, doubled days only when needed); Week view gym stepper and Light tags.
+- Branching: `v3` (work) → `staging` (phone testing, Cloudflare branch build once enabled) → `main` (production).
+- Idea for phase 7 (Coach agent): OpenUI (thesysdev/openui, MIT) renders LLM output as real UI components, e.g. the coach answering with session cards.
+
+Open before production: Peter runs both migrations in the Supabase SQL editor, sets Auth URL configuration (site + redirect URLs), creates his own account; the old FastAPI backend and EC2/DuckDNS are retired after that.
+
 ## 9. What Peter should be able to explain (interview notes)
 
 - **RAG:** exercise/drill text → embeddings → vector search by meaning → retrieved items put in the prompt so the model is grounded in real data instead of guessing.
