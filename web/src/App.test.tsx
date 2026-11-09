@@ -1,4 +1,4 @@
-import { act, cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react'
+import { act, cleanup, fireEvent, render, screen, waitFor, within } from '@testing-library/react'
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest'
 import App from './App'
 
@@ -164,7 +164,14 @@ describe('app', () => {
     expect((screen.getByLabelText(/Session name/) as HTMLInputElement).value).toMatch(/\(mine\)/)
     click(/Add exercises/)
     fireEvent.click(screen.getByRole('button', { name: /^Dribbling$/ }))
-    click(/Add Cone weave dribble/)
+    click(/Add Toe taps/)
+    click(/Remove Toe taps/) // added by mistake: take it back
+    expect(screen.queryByRole('button', { name: /Remove Toe taps/ })).toBeNull()
+    click(/^Cone weave dribble$/) // tap the name: details sheet
+    const sheet = screen.getByRole('dialog', { name: /Cone weave dribble/ })
+    expect(sheet.textContent).toMatch(/Weave through/)
+    fireEvent.click(within(sheet).getByRole('button', { name: /Add Cone weave dribble/ }))
+    click(/Close details/)
     click(/^Done/)
     fireEvent.click(screen.getAllByRole('button', { name: /More Rounds/ })[0]) // first item: warm-up gets 2 rounds
     click(/^Save$/)

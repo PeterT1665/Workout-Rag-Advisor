@@ -3,7 +3,7 @@ import { Button, Pill, Screen, Title, TopBar } from '../components/ui'
 import { fmtReps, sessionMinutes } from '../lib/logic'
 import {
   CATEGORY_LABELS, EXERCISES, SPORTS, categories, exercise, inferType, isMine, newSessionId, toSession,
-  type Item, type MySession, type Sport, type Template,
+  type Exercise, type Item, type MySession, type Sport, type Template,
 } from '../lib/library'
 
 // Phone-first session builder: pick exercises from the library, tune rounds/time/rest, reorder, save.
@@ -33,7 +33,11 @@ export function Builder({ from, onSave, onCancel, onDelete }: {
     return next
   })
 
-  if (picking) return <Picker items={items} onAdd={(id) => setItems((xs) => insertBeforeCooldown(xs, { ex: id }))} onDone={() => setPicking(false)} />
+  if (picking) return (
+    <Picker items={items} onDone={() => setPicking(false)}
+      onAdd={(id) => setItems((xs) => insertBeforeCooldown(xs, { ex: id }))}
+      onRemove={(id) => setItems((xs) => { const at = xs.map((x) => x.ex).lastIndexOf(id); return at < 0 ? xs : xs.filter((_, j) => j !== at) })} />
+  )
 
   return (
     <Screen>
@@ -114,10 +118,11 @@ function Stepper({ label, value, text, step, onChange }: { label: string; value:
   )
 }
 
-function Picker({ items, onAdd, onDone }: { items: Item[]; onAdd: (id: string) => void; onDone: () => void }) {
+function Picker({ items, onAdd, onRemove, onDone }: { items: Item[]; onAdd: (id: string) => void; onRemove: (id: string) => void; onDone: () => void }) {
   const [sport, setSport] = useState<Sport>('football')
   const cats = categories(sport)
   const [cat, setCat] = useState<string>('all')
+  const [open, setOpen] = useState<Exercise | null>(null)
   const list = EXERCISES.filter((e) => e.sport === sport && (cat === 'all' || e.category === cat))
     .sort((a, b) => cats.indexOf(a.category) - cats.indexOf(b.category)) // 'All' reads in category order
   const count = (id: string) => items.filter((i) => i.ex === id).length
@@ -141,32 +146,61 @@ function Picker({ items, onAdd, onDone }: { items: Item[]; onAdd: (id: string) =
           </button>
         ))}
       </div>
-      <ul className="m-0 flex list-none flex-col gap-2 p-0">
+      <ul className="m-0 flex list-none flex-col gap-1.5 p-0">
         {list.map((e) => {
           const n = count(e.id)
           return (
-            <li key={e.id} className="flex items-start gap-3 rounded-[18px] bg-surface p-3">
-              <div className="min-w-0 flex-1">
-                <strong className="block font-semibold leading-tight">{e.name}</strong>
-                <span className="mt-0.5 block text-xs text-muted">
-                  {CATEGORY_LABELS[e.category]} · {e.rounds ?? 1} × {e.reps ? fmtReps(e.reps) : fmtSec(e.work)}
-                </span>
-                <p className="m-0 mt-1 line-clamp-2 text-sm text-muted">{e.how}</p>
-                {(e.cue || e.positions?.length) && (
-                  <div className="mt-2 flex flex-wrap gap-1">
-                    {e.cue && <Pill tone="red">Voice cues</Pill>}
-                    {e.positions?.map((p) => <Pill key={p}>{p}</Pill>)}
-                  </div>
-                )}
-              </div>
-              <button onClick={() => onAdd(e.id)} aria-label={`Add ${e.name}`}
-                className={`grid h-11 min-w-11 shrink-0 place-items-center rounded-full px-3 font-display text-sm transition-transform duration-150 ease-snap active:scale-90 ${n ? 'bg-red text-on-red' : 'bg-surface-2 text-ink'}`}>
-                {n ? `+${n}` : '+'}
-              </button>
+            <li key={e.id} className={`flex items-center gap-2 rounded-2xl py-1.5 pr-1.5 pl-4 ${n ? 'bg-surface-2' : 'bg-surface'}`}>
+              <button onClick={() => setOpen(e)} className="min-h-11 min-w-0 flex-1 truncate text-left font-semibold">{e.name}</button>
+              <AddRemove name={e.name} n={n} onAdd={() => onAdd(e.id)} onRemove={() => onRemove(e.id)} />
             </li>
           )
         })}
       </ul>
+      {open && <ExerciseSheet e={open} n={count(open.id)} onAdd={() => onAdd(open.id)} onRemove={() => onRemove(open.id)} onClose={() => setOpen(null)} />}
     </Screen>
+  )
+}
+
+function AddRemove({ name, n, onAdd, onRemove, big = false }: { name: string; n: number; onAdd: () => void; onRemove: () => void; big?: boolean }) {
+  const size = big ? 'h-12 w-12 text-xl' : 'h-10 w-10 text-lg'
+  return (
+    <div className="flex shrink-0 items-center gap-1">
+      {n > 0 && <>
+        <button aria-label={`Remove ${name}`} onClick={onRemove} className={`pop grid place-items-center rounded-full text-ink ${big ? 'bg-surface-2' : 'bg-surface'} transition-transform duration-150 ease-snap active:scale-90 ${size}`}>−</button>
+        <span className="w-6 text-center font-display text-sm tabular-nums" aria-label={`${n} added`}>{n}</span>
+      </>}
+      <button aria-label={`Add ${name}`} onClick={onAdd}
+        className={`grid place-items-center rounded-full transition-transform duration-150 ease-snap active:scale-90 ${n || big ? 'bg-red text-on-red' : 'bg-surface-2 text-ink'} ${size}`}>+</button>
+    </div>
+  )
+}
+
+// Small bottom sheet with the full details; add/remove without leaving the list.
+function ExerciseSheet({ e, n, onAdd, onRemove, onClose }: { e: Exercise; n: number; onAdd: () => void; onRemove: () => void; onClose: () => void }) {
+  return (
+    <div className="fixed inset-0 z-40 flex items-end justify-center" role="dialog" aria-modal="true" aria-label={e.name}
+      onKeyDown={(ev) => ev.key === 'Escape' && onClose()}>
+      <button aria-label="Close details" className="absolute inset-0 bg-black/55" onClick={onClose} />
+      <div className="rise relative w-full max-w-xl rounded-t-[28px] bg-surface px-5 pt-3 pb-[max(20px,env(safe-area-inset-bottom))]">
+        <div className="mx-auto mb-4 h-1.5 w-10 rounded-full bg-surface-2" aria-hidden="true" />
+        <h2 className="m-0 font-display text-xl uppercase leading-tight">{e.name}</h2>
+        <p className="mt-1 mb-3 font-display text-sm tabular-nums text-muted">
+          {CATEGORY_LABELS[e.category]} · {e.rounds ?? 1} × {e.reps ? fmtReps(e.reps) : fmtSec(e.work)}{e.rest ? ` · ${fmtSec(e.rest)} rest` : ''}
+        </p>
+        <p className="m-0">{e.how}</p>
+        {(e.cue || e.positions?.length || e.needs?.length) && (
+          <div className="mt-3 flex flex-wrap gap-1.5">
+            {e.cue && <Pill tone="red">Voice cues</Pill>}
+            {e.positions?.map((p) => <Pill key={p}>{p}</Pill>)}
+            {e.needs?.map((x) => <Pill key={x}>{x}</Pill>)}
+          </div>
+        )}
+        <div className="mt-5 flex items-center justify-between gap-3">
+          <Button variant="ghost" size="sm" className="bg-surface-2" onClick={onClose}>Close</Button>
+          <AddRemove big name={e.name} n={n} onAdd={onAdd} onRemove={onRemove} />
+        </div>
+      </div>
+    </div>
   )
 }
