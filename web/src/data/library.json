@@ -1,0 +1,1765 @@
+{
+ "_note": "Exercise library (D30). work = seconds per round (gym: estimated time per set); reps shown for gym. Templates are recommended sessions built from library ids; item fields override the exercise defaults.",
+ "exercises": [
+  {
+   "id": "jog-dynamic-leg-swings",
+   "name": "Jog + dynamic leg swings",
+   "sport": "football",
+   "category": "warmup",
+   "kind": "warmup",
+   "work": 180,
+   "how": "Easy jog, then leg swings front/side, walking lunges with a twist. Keep it relaxed."
+  },
+  {
+   "id": "hip-openers-glute-activation",
+   "name": "Hip openers + glute activation",
+   "sport": "football",
+   "category": "warmup",
+   "kind": "warmup",
+   "work": 150,
+   "how": "90/90 hip switches, glute bridges, lateral band-free side steps. Hip and knee insurance."
+  },
+  {
+   "id": "build-up-sprints-no-ball",
+   "name": "Build-up sprints (no ball)",
+   "sport": "football",
+   "category": "speed",
+   "kind": "warmup",
+   "work": 12,
+   "rest": 40,
+   "rounds": 3,
+   "how": "10-15 m at 70%, 80%, 90%. Stop if you feel sharp knee pain."
+  },
+  {
+   "id": "juggling",
+   "name": "Juggling",
+   "sport": "football",
+   "category": "ball-mastery",
+   "kind": "drill",
+   "work": 60,
+   "rest": 30,
+   "rounds": 3,
+   "how": "Round 1 right foot, round 2 left foot, round 3 both feet + thighs. Count your best streak.",
+   "needs": [
+    "ball"
+   ]
+  },
+  {
+   "id": "sprint-change-of-direction-no-ball",
+   "name": "Sprint + change of direction (no ball)",
+   "sport": "football",
+   "category": "speed",
+   "kind": "drill",
+   "work": 8,
+   "rest": 45,
+   "rounds": 6,
+   "how": "Sprint 10 m to a marker, plant hard, cut 45-90 degrees, accelerate 5 m. Alternate the cutting foot.",
+   "needs": [
+    "markers"
+   ]
+  },
+  {
+   "id": "tight-space-close-control",
+   "name": "Tight-space close control",
+   "sport": "football",
+   "category": "ball-mastery",
+   "kind": "drill",
+   "work": 60,
+   "rest": 30,
+   "rounds": 4,
+   "how": "Stay inside a 3x3 m square. Soles, inside/outside touches, quick turns. Head up.",
+   "needs": [
+    "ball",
+    "markers"
+   ]
+  },
+  {
+   "id": "dribble-change-direction",
+   "name": "Dribble + change direction",
+   "sport": "football",
+   "category": "ball-mastery",
+   "kind": "drill",
+   "work": 45,
+   "rest": 30,
+   "rounds": 6,
+   "how": "Drive the ball between markers: cut, drag-back, step-over. Explode out of every turn. Use your left foot on rounds 2 and 4.",
+   "needs": [
+    "ball",
+    "markers"
+   ]
+  },
+  {
+   "id": "freestyle-dribbling",
+   "name": "Freestyle dribbling",
+   "sport": "football",
+   "category": "ball-mastery",
+   "kind": "drill",
+   "work": 60,
+   "rest": 30,
+   "rounds": 5,
+   "how": "Free play with the ball: feints, rolls, step-overs, whatever you want to own. Try one new move each round.",
+   "needs": [
+    "ball"
+   ]
+  },
+  {
+   "id": "1v1-reaction-voice-cues",
+   "name": "1v1 reaction (voice cues)",
+   "sport": "football",
+   "category": "1v1",
+   "kind": "drill",
+   "work": 40,
+   "rest": 45,
+   "rounds": 8,
+   "cue": true,
+   "how": "Attack a marker as the defender. When you hear LEFT or RIGHT, the defender is committing that way: go the other way and accelerate past.",
+   "needs": [
+    "ball",
+    "markers"
+   ]
+  },
+  {
+   "id": "1v1-then-finish",
+   "name": "1v1 then finish",
+   "sport": "football",
+   "category": "1v1",
+   "kind": "drill",
+   "work": 40,
+   "rest": 40,
+   "rounds": 5,
+   "cue": true,
+   "how": "Same cue game, but finish with a shot after you beat the marker. Alternate feet.",
+   "needs": [
+    "ball",
+    "goal or target"
+   ]
+  },
+  {
+   "id": "cool-down-hips-quads-hamstrings-it-band",
+   "name": "Cool-down: hips, quads, hamstrings, IT band",
+   "sport": "football",
+   "category": "cooldown",
+   "kind": "cooldown",
+   "work": 300,
+   "how": "Hip flexor stretch, quad stretch, hamstring stretch, figure-4 glute stretch, 60 s each side. Breathe slowly."
+  },
+  {
+   "id": "wall-passes-ground-both-feet",
+   "name": "Wall passes: ground, both feet",
+   "sport": "football",
+   "category": "passing",
+   "kind": "drill",
+   "work": 60,
+   "rest": 30,
+   "rounds": 5,
+   "how": "2-3 m from the wall. Round 1 right, 2 left, 3 alternate, 4 one-touch alternate. Pass firm, control with the first touch.",
+   "needs": [
+    "ball",
+    "wall"
+   ]
+  },
+  {
+   "id": "wall-passes-in-the-air",
+   "name": "Wall passes: in the air",
+   "sport": "football",
+   "category": "first-touch",
+   "kind": "drill",
+   "work": 60,
+   "rest": 30,
+   "rounds": 5,
+   "how": "Throw or volley the ball at the wall and control the rebound out of the air: thigh, instep, chest. Left foot on rounds 2 and 4.",
+   "needs": [
+    "ball",
+    "wall"
+   ]
+  },
+  {
+   "id": "weak-foot-left-receive-and-pass",
+   "name": "Weak foot (left): receive and pass",
+   "sport": "football",
+   "category": "first-touch",
+   "kind": "drill",
+   "work": 60,
+   "rest": 30,
+   "rounds": 5,
+   "how": "Pass off the wall with your left only, receive with your left only. Slow and accurate beats fast and sloppy.",
+   "needs": [
+    "ball",
+    "wall"
+   ]
+  },
+  {
+   "id": "shooting-stationary",
+   "name": "Shooting: stationary",
+   "sport": "football",
+   "category": "finishing",
+   "kind": "drill",
+   "work": 45,
+   "rest": 30,
+   "rounds": 6,
+   "how": "Set the ball, strike low and across the keeper. Alternate right and left. Plant foot next to the ball, head over it.",
+   "needs": [
+    "ball",
+    "goal or target"
+   ]
+  },
+  {
+   "id": "shooting-on-the-move",
+   "name": "Shooting: on the move",
+   "sport": "football",
+   "category": "finishing",
+   "kind": "drill",
+   "work": 45,
+   "rest": 30,
+   "rounds": 6,
+   "how": "Dribble 5-8 m, take one touch to set, shoot. Left foot on rounds 2 and 4.",
+   "needs": [
+    "ball",
+    "goal or target"
+   ]
+  },
+  {
+   "id": "crossing-and-passing",
+   "name": "Crossing and passing",
+   "sport": "football",
+   "category": "passing",
+   "kind": "drill",
+   "work": 45,
+   "rest": 30,
+   "rounds": 4,
+   "how": "Run along the wing, cross or pass to a target. Alternate lofted and driven. Both feet.",
+   "needs": [
+    "ball",
+    "target"
+   ]
+  },
+  {
+   "id": "ground-passing-one-touch",
+   "name": "Ground passing: one touch",
+   "sport": "football",
+   "category": "passing",
+   "kind": "drill",
+   "work": 90,
+   "rest": 30,
+   "rounds": 5,
+   "how": "5-8 m apart, firm pass on the ground. Round 1 right foot, 2 left foot, 3 alternate, 4 move side to side.",
+   "needs": [
+    "ball",
+    "partner"
+   ]
+  },
+  {
+   "id": "ground-passing-two-touch",
+   "name": "Ground passing: two touch",
+   "sport": "football",
+   "category": "passing",
+   "kind": "drill",
+   "work": 90,
+   "rest": 30,
+   "rounds": 3,
+   "how": "First touch sets the ball to the side, second touch passes. Open up your body to the pass.",
+   "needs": [
+    "ball",
+    "partner"
+   ]
+  },
+  {
+   "id": "air-control-one-touch-back",
+   "name": "Air control: one touch back",
+   "sport": "football",
+   "category": "first-touch",
+   "kind": "drill",
+   "work": 60,
+   "rest": 30,
+   "rounds": 4,
+   "how": "Partner tosses or lofts the ball. Control or volley it straight back. Thigh, instep, chest. Alternate feet.",
+   "needs": [
+    "ball",
+    "partner"
+   ]
+  },
+  {
+   "id": "passing-while-moving",
+   "name": "Passing while moving",
+   "sport": "football",
+   "category": "passing",
+   "kind": "drill",
+   "work": 90,
+   "rest": 30,
+   "rounds": 4,
+   "how": "Pass and move along a line, one touch. Keep the pace up, call for the ball.",
+   "needs": [
+    "ball",
+    "partner"
+   ]
+  },
+  {
+   "id": "1v1-with-partner",
+   "name": "1v1 with partner",
+   "sport": "football",
+   "category": "1v1",
+   "kind": "drill",
+   "work": 30,
+   "rest": 60,
+   "rounds": 6,
+   "how": "Real defender. Attacker tries to beat him and finish or cross. Swap roles each round.",
+   "needs": [
+    "ball",
+    "partner",
+    "goal or target"
+   ]
+  },
+  {
+   "id": "cool-down",
+   "name": "Cool-down",
+   "sport": "football",
+   "category": "cooldown",
+   "kind": "cooldown",
+   "work": 240,
+   "how": "Hip flexor, quad, hamstring, glute stretch, 45 s each side."
+  },
+  {
+   "id": "foam-roll-quads-and-glutes",
+   "name": "Foam roll quads and glutes",
+   "sport": "mobility",
+   "category": "mobility",
+   "kind": "warmup",
+   "work": 240,
+   "how": "Slow passes, pause on tight spots for 20-30 s. Roll the outer thigh lightly, not hard on the IT band."
+  },
+  {
+   "id": "90-90-hip-switches",
+   "name": "90/90 hip switches",
+   "sport": "mobility",
+   "category": "mobility",
+   "kind": "drill",
+   "work": 45,
+   "rest": 15,
+   "rounds": 3,
+   "how": "Sit tall, rotate both knees side to side with control."
+  },
+  {
+   "id": "couch-stretch-hip-flexor-quad",
+   "name": "Couch stretch (hip flexor/quad)",
+   "sport": "mobility",
+   "category": "mobility",
+   "kind": "drill",
+   "work": 60,
+   "rest": 10,
+   "rounds": 2,
+   "how": "Rear knee on a mat, foot up on the wall or bench. Squeeze the glute. Each side."
+  },
+  {
+   "id": "hamstring-stretch",
+   "name": "Hamstring stretch",
+   "sport": "mobility",
+   "category": "mobility",
+   "kind": "drill",
+   "work": 60,
+   "rest": 10,
+   "rounds": 2,
+   "how": "Lying leg raise with a strap or towel. Each side."
+  },
+  {
+   "id": "glute-bridge",
+   "name": "Glute bridge",
+   "sport": "mobility",
+   "category": "mobility",
+   "kind": "drill",
+   "work": 40,
+   "rest": 20,
+   "rounds": 3,
+   "how": "Drive through the heels, pause 2 s at the top."
+  },
+  {
+   "id": "side-lying-leg-raise-clamshell",
+   "name": "Side-lying leg raise / clamshell",
+   "sport": "mobility",
+   "category": "mobility",
+   "kind": "drill",
+   "work": 40,
+   "rest": 20,
+   "rounds": 3,
+   "how": "Slow and controlled. Each side. Feel the outer hip, not the lower back."
+  },
+  {
+   "id": "figure-4-glute-stretch",
+   "name": "Figure-4 glute stretch",
+   "sport": "mobility",
+   "category": "mobility",
+   "kind": "cooldown",
+   "work": 60,
+   "rest": 10,
+   "rounds": 2,
+   "how": "Lying down, ankle over opposite knee. Each side."
+  },
+  {
+   "id": "toe-taps",
+   "name": "Toe taps",
+   "sport": "football",
+   "category": "ball-mastery",
+   "kind": "drill",
+   "work": 40,
+   "rest": 20,
+   "rounds": 3,
+   "how": "Tap the top of the ball with alternate soles, light and fast on the balls of your feet.",
+   "needs": [
+    "ball"
+   ]
+  },
+  {
+   "id": "sole-rolls",
+   "name": "Sole rolls, both feet",
+   "sport": "football",
+   "category": "ball-mastery",
+   "kind": "drill",
+   "work": 40,
+   "rest": 20,
+   "rounds": 3,
+   "how": "Roll the ball across your body with the sole, switch feet each time. Left foot leads on even rounds.",
+   "needs": [
+    "ball"
+   ]
+  },
+  {
+   "id": "inside-outside-touches",
+   "name": "Inside-outside touches",
+   "sport": "football",
+   "category": "ball-mastery",
+   "kind": "drill",
+   "work": 40,
+   "rest": 20,
+   "rounds": 4,
+   "how": "Inside then outside of the same foot, moving forward. Round 2 left foot only.",
+   "needs": [
+    "ball"
+   ],
+   "positions": [
+    "winger",
+    "midfielder"
+   ]
+  },
+  {
+   "id": "cone-weave",
+   "name": "Cone weave dribble",
+   "sport": "football",
+   "category": "ball-mastery",
+   "kind": "drill",
+   "work": 45,
+   "rest": 30,
+   "rounds": 5,
+   "how": "Weave through 5-6 markers a stride apart, every touch close. Back through with the left foot only.",
+   "needs": [
+    "ball",
+    "markers"
+   ],
+   "positions": [
+    "winger",
+    "striker"
+   ]
+  },
+  {
+   "id": "skill-moves",
+   "name": "Skill moves at speed",
+   "sport": "football",
+   "category": "ball-mastery",
+   "kind": "drill",
+   "work": 40,
+   "rest": 40,
+   "rounds": 6,
+   "how": "Drive at a marker, beat it with one move (step-over, scissors, drag-back, croqueta), accelerate 5 m. One move per round.",
+   "needs": [
+    "ball",
+    "markers"
+   ],
+   "positions": [
+    "winger",
+    "striker"
+   ]
+  },
+  {
+   "id": "half-turn-receive",
+   "name": "Receive on the half-turn",
+   "sport": "football",
+   "category": "first-touch",
+   "kind": "drill",
+   "work": 45,
+   "rest": 30,
+   "rounds": 5,
+   "how": "Play off a wall, open your body and take the first touch across you into space, then drive. Alternate sides.",
+   "needs": [
+    "ball",
+    "wall"
+   ],
+   "positions": [
+    "midfielder",
+    "winger",
+    "striker"
+   ]
+  },
+  {
+   "id": "scan-and-turn",
+   "name": "Scan, receive and turn",
+   "sport": "football",
+   "category": "first-touch",
+   "kind": "drill",
+   "work": 45,
+   "rest": 30,
+   "rounds": 4,
+   "how": "Before each pass comes back off the wall, check over both shoulders, then turn away from an imagined defender.",
+   "needs": [
+    "ball",
+    "wall"
+   ],
+   "positions": [
+    "midfielder",
+    "defender"
+   ]
+  },
+  {
+   "id": "self-toss-control",
+   "name": "Aerial control: self toss",
+   "sport": "football",
+   "category": "first-touch",
+   "kind": "drill",
+   "work": 45,
+   "rest": 20,
+   "rounds": 4,
+   "how": "Toss the ball high, kill it dead with foot, thigh or chest. Every third one with the left foot.",
+   "needs": [
+    "ball"
+   ]
+  },
+  {
+   "id": "long-passing",
+   "name": "Long passing to a target",
+   "sport": "football",
+   "category": "passing",
+   "kind": "drill",
+   "work": 60,
+   "rest": 30,
+   "rounds": 4,
+   "how": "Strike 25-35 m diagonals at a target. Plant foot beside the ball, lock the ankle. Half with your weak foot.",
+   "needs": [
+    "ball",
+    "target"
+   ],
+   "positions": [
+    "midfielder",
+    "defender"
+   ]
+  },
+  {
+   "id": "weak-foot-finishing",
+   "name": "Weak-foot finishing",
+   "sport": "football",
+   "category": "finishing",
+   "kind": "drill",
+   "work": 45,
+   "rest": 30,
+   "rounds": 5,
+   "how": "Shots with your weaker foot only: set it, then strike low across the goal. Accuracy before power.",
+   "needs": [
+    "ball",
+    "goal or target"
+   ],
+   "positions": [
+    "striker",
+    "winger"
+   ]
+  },
+  {
+   "id": "volleys-self-feed",
+   "name": "Volleys from a self feed",
+   "sport": "football",
+   "category": "finishing",
+   "kind": "drill",
+   "work": 40,
+   "rest": 30,
+   "rounds": 4,
+   "how": "Toss the ball up, let it drop, volley at the target. Keep your knee over the ball.",
+   "needs": [
+    "ball",
+    "goal or target"
+   ],
+   "positions": [
+    "striker"
+   ]
+  },
+  {
+   "id": "one-touch-finish",
+   "name": "Cut inside and finish",
+   "sport": "football",
+   "category": "finishing",
+   "kind": "drill",
+   "work": 40,
+   "rest": 40,
+   "rounds": 5,
+   "how": "From the wing, cut inside onto your stronger foot and finish far post. Alternate wings.",
+   "needs": [
+    "ball",
+    "markers",
+    "goal or target"
+   ],
+   "positions": [
+    "winger"
+   ]
+  },
+  {
+   "id": "jockey-footwork",
+   "name": "Defensive jockey footwork",
+   "sport": "football",
+   "category": "1v1",
+   "kind": "drill",
+   "work": 30,
+   "rest": 40,
+   "rounds": 6,
+   "cue": true,
+   "how": "Side-on stance, short quick steps, backpedal and shuffle between markers. On LEFT or RIGHT, turn and sprint 5 m that way.",
+   "needs": [
+    "markers"
+   ],
+   "positions": [
+    "defender"
+   ]
+  },
+  {
+   "id": "acceleration-starts",
+   "name": "Acceleration starts (5-10 m)",
+   "sport": "football",
+   "category": "speed",
+   "kind": "drill",
+   "work": 6,
+   "rest": 45,
+   "rounds": 6,
+   "how": "From a standing, side-on or backwards start, explode for 5-10 m. Full recovery, every rep at max speed."
+  },
+  {
+   "id": "lateral-shuffle-sprint",
+   "name": "Lateral shuffle + sprint",
+   "sport": "football",
+   "category": "speed",
+   "kind": "drill",
+   "work": 8,
+   "rest": 45,
+   "rounds": 6,
+   "how": "Shuffle 3 m left, 3 m right, then sprint 10 m forward. Stay low through the shuffle.",
+   "needs": [
+    "markers"
+   ],
+   "positions": [
+    "defender",
+    "winger"
+   ]
+  },
+  {
+   "id": "repeated-sprints",
+   "name": "Repeated sprints",
+   "sport": "football",
+   "category": "conditioning",
+   "kind": "drill",
+   "work": 6,
+   "rest": 24,
+   "rounds": 8,
+   "how": "30 m sprints with short rest: match-like repeat-sprint ability. Stop if your speed drops off a lot.",
+   "positions": [
+    "winger",
+    "striker"
+   ]
+  },
+  {
+   "id": "box-to-box",
+   "name": "Box-to-box runs",
+   "sport": "football",
+   "category": "conditioning",
+   "kind": "drill",
+   "work": 30,
+   "rest": 45,
+   "rounds": 6,
+   "how": "Run about 70 m at 80% pace, walk back. Builds the engine for 90 minutes.",
+   "positions": [
+    "midfielder"
+   ]
+  },
+  {
+   "id": "ball-intervals",
+   "name": "Ball-at-feet intervals",
+   "sport": "football",
+   "category": "conditioning",
+   "kind": "drill",
+   "work": 60,
+   "rest": 45,
+   "rounds": 5,
+   "how": "Dribble at a high tempo around a large square, keep the ball close the whole time.",
+   "needs": [
+    "ball"
+   ]
+  },
+  {
+   "id": "back-squat",
+   "name": "Back squat",
+   "sport": "gym",
+   "category": "lower-strength",
+   "kind": "drill",
+   "work": 40,
+   "rest": 150,
+   "rounds": 4,
+   "reps": "5",
+   "how": "Heavy but clean: 2 reps left in the tank. Drive up fast."
+  },
+  {
+   "id": "trap-bar-deadlift",
+   "name": "Trap bar deadlift",
+   "sport": "gym",
+   "category": "lower-strength",
+   "kind": "drill",
+   "work": 40,
+   "rest": 150,
+   "rounds": 4,
+   "reps": "5",
+   "how": "Push the floor away, stand up fast. Keep your back flat."
+  },
+  {
+   "id": "bulgarian-split-squat",
+   "name": "Bulgarian split squat",
+   "sport": "gym",
+   "category": "single-limb",
+   "kind": "drill",
+   "work": 60,
+   "rest": 90,
+   "rounds": 3,
+   "reps": "8 each leg",
+   "how": "Rear foot on a bench, front knee tracks over the toes. Hip and knee stability for cutting."
+  },
+  {
+   "id": "romanian-deadlift",
+   "name": "Romanian deadlift",
+   "sport": "gym",
+   "category": "lower-strength",
+   "kind": "drill",
+   "work": 40,
+   "rest": 120,
+   "rounds": 3,
+   "reps": "8",
+   "how": "Hinge back, soft knees, feel the hamstrings. Controlled down, strong up."
+  },
+  {
+   "id": "nordic-curl",
+   "name": "Nordic hamstring curl",
+   "sport": "gym",
+   "category": "lower-strength",
+   "kind": "drill",
+   "work": 30,
+   "rest": 90,
+   "rounds": 3,
+   "reps": "5",
+   "how": "Kneel with heels anchored, lower yourself as slowly as you can. Big hamstring-injury protector."
+  },
+  {
+   "id": "calf-raise",
+   "name": "Single-leg calf raise",
+   "sport": "gym",
+   "category": "single-limb",
+   "kind": "drill",
+   "work": 50,
+   "rest": 60,
+   "rounds": 3,
+   "reps": "12 each leg",
+   "how": "Full range, pause at the top. Ankles and Achilles for sprinting."
+  },
+  {
+   "id": "bench-press",
+   "name": "Bench press",
+   "sport": "gym",
+   "category": "upper-strength",
+   "kind": "drill",
+   "work": 40,
+   "rest": 120,
+   "rounds": 4,
+   "reps": "6",
+   "how": "Shoulder blades pinned, feet planted, bar to mid-chest."
+  },
+  {
+   "id": "pull-up",
+   "name": "Pull-ups",
+   "sport": "gym",
+   "category": "upper-strength",
+   "kind": "drill",
+   "work": 40,
+   "rest": 120,
+   "rounds": 3,
+   "reps": "6-8",
+   "how": "Full hang to chin over the bar. Add weight when 8 feels easy."
+  },
+  {
+   "id": "db-overhead-press",
+   "name": "Dumbbell overhead press",
+   "sport": "gym",
+   "category": "upper-strength",
+   "kind": "drill",
+   "work": 40,
+   "rest": 90,
+   "rounds": 3,
+   "reps": "8",
+   "how": "Ribs down, press straight up, no leaning back."
+  },
+  {
+   "id": "bent-over-row",
+   "name": "Bent-over row",
+   "sport": "gym",
+   "category": "upper-strength",
+   "kind": "drill",
+   "work": 40,
+   "rest": 90,
+   "rounds": 3,
+   "reps": "8",
+   "how": "Flat back, pull to the belly, squeeze the shoulder blades."
+  },
+  {
+   "id": "push-up",
+   "name": "Push-ups",
+   "sport": "gym",
+   "category": "upper-strength",
+   "kind": "drill",
+   "work": 35,
+   "rest": 60,
+   "rounds": 3,
+   "reps": "12-15",
+   "how": "Body in one straight line, chest to a fist from the floor."
+  },
+  {
+   "id": "box-jump",
+   "name": "Box jump",
+   "sport": "gym",
+   "category": "plyometrics",
+   "kind": "drill",
+   "work": 20,
+   "rest": 90,
+   "rounds": 4,
+   "reps": "3",
+   "how": "Jump up explosively, land soft and quiet, step down. Quality over height."
+  },
+  {
+   "id": "broad-jump",
+   "name": "Broad jump",
+   "sport": "gym",
+   "category": "plyometrics",
+   "kind": "drill",
+   "work": 20,
+   "rest": 90,
+   "rounds": 4,
+   "reps": "3",
+   "how": "Swing the arms, jump as far as you can, stick the landing."
+  },
+  {
+   "id": "single-leg-bounds",
+   "name": "Single-leg bounds",
+   "sport": "gym",
+   "category": "plyometrics",
+   "kind": "drill",
+   "work": 25,
+   "rest": 90,
+   "rounds": 3,
+   "reps": "5 each leg",
+   "how": "Bound forward on one leg, push hard off the ground. First-step power.",
+   "positions": [
+    "winger",
+    "striker"
+   ]
+  },
+  {
+   "id": "med-ball-throw",
+   "name": "Med ball rotational throw",
+   "sport": "gym",
+   "category": "explosive",
+   "kind": "drill",
+   "work": 30,
+   "rest": 60,
+   "rounds": 3,
+   "reps": "5 each side",
+   "how": "Side-on to a wall, rotate from the hips and throw hard. Shooting and turning power.",
+   "needs": [
+    "medicine ball"
+   ]
+  },
+  {
+   "id": "kettlebell-swing",
+   "name": "Kettlebell swing",
+   "sport": "gym",
+   "category": "explosive",
+   "kind": "drill",
+   "work": 30,
+   "rest": 60,
+   "rounds": 3,
+   "reps": "12",
+   "how": "Snap the hips, let the bell float to chest height. Hinge, not squat."
+  },
+  {
+   "id": "plank",
+   "name": "Plank",
+   "sport": "gym",
+   "category": "core",
+   "kind": "drill",
+   "work": 45,
+   "rest": 45,
+   "rounds": 3,
+   "reps": "45 s",
+   "how": "Elbows under shoulders, squeeze glutes, no sagging."
+  },
+  {
+   "id": "copenhagen-plank",
+   "name": "Copenhagen plank",
+   "sport": "gym",
+   "category": "core",
+   "kind": "drill",
+   "work": 45,
+   "rest": 45,
+   "rounds": 3,
+   "reps": "20 s each side",
+   "how": "Top leg on a bench, lift the hips. Groin-injury protector for footballers."
+  },
+  {
+   "id": "pallof-press",
+   "name": "Pallof press",
+   "sport": "gym",
+   "category": "core",
+   "kind": "drill",
+   "work": 40,
+   "rest": 45,
+   "rounds": 3,
+   "reps": "10 each side",
+   "how": "Cable or band at chest height, press out and resist the twist."
+  },
+  {
+   "id": "dead-bug",
+   "name": "Dead bug",
+   "sport": "gym",
+   "category": "core",
+   "kind": "drill",
+   "work": 40,
+   "rest": 45,
+   "rounds": 3,
+   "reps": "10 each side",
+   "how": "Lower back pressed into the floor, opposite arm and leg reach slowly."
+  },
+  {
+   "id": "bike-intervals",
+   "name": "Bike intervals",
+   "sport": "gym",
+   "category": "gym-conditioning",
+   "kind": "drill",
+   "work": 30,
+   "rest": 60,
+   "rounds": 6,
+   "reps": "30 s hard",
+   "how": "30 seconds all-out on the bike, easy spin in the rest."
+  },
+  {
+   "id": "sled-push",
+   "name": "Sled push",
+   "sport": "gym",
+   "category": "sprints",
+   "kind": "drill",
+   "work": 20,
+   "rest": 90,
+   "rounds": 5,
+   "reps": "20 m",
+   "how": "Low body angle, drive the knees. Acceleration strength."
+  },
+  {
+   "id": "gym-warmup",
+   "name": "Gym warm-up: bike + mobility",
+   "sport": "gym",
+   "category": "warmup",
+   "kind": "warmup",
+   "work": 300,
+   "how": "5 min easy bike or row, then leg swings, hip openers and a few bodyweight squats."
+  },
+  {
+   "id": "gym-cooldown",
+   "name": "Gym cool-down: stretch",
+   "sport": "gym",
+   "category": "cooldown",
+   "kind": "cooldown",
+   "work": 240,
+   "how": "Hip flexors, hamstrings, glutes, chest. Slow breathing."
+  },
+  {
+   "id": "power-clean",
+   "name": "Power clean",
+   "sport": "gym",
+   "category": "olympic",
+   "kind": "drill",
+   "work": 30,
+   "rest": 150,
+   "rounds": 5,
+   "reps": "3",
+   "how": "Bar from the floor, explode with the hips, catch high in a quarter squat. Speed, not grind."
+  },
+  {
+   "id": "hang-clean",
+   "name": "Hang clean",
+   "sport": "gym",
+   "category": "olympic",
+   "kind": "drill",
+   "work": 30,
+   "rest": 150,
+   "rounds": 4,
+   "reps": "3",
+   "how": "Start at mid-thigh, jump and shrug, fast elbows. Easier to learn than the full clean."
+  },
+  {
+   "id": "push-jerk",
+   "name": "Push jerk",
+   "sport": "gym",
+   "category": "olympic",
+   "kind": "drill",
+   "work": 30,
+   "rest": 150,
+   "rounds": 4,
+   "reps": "3",
+   "how": "Short dip, drive with the legs, punch the bar overhead and catch in a slight bend."
+  },
+  {
+   "id": "split-jerk",
+   "name": "Split jerk",
+   "sport": "gym",
+   "category": "olympic",
+   "kind": "drill",
+   "work": 30,
+   "rest": 150,
+   "rounds": 4,
+   "reps": "2",
+   "how": "Dip and drive, split the feet front and back to catch. Alternate the front foot each set."
+  },
+  {
+   "id": "hang-snatch",
+   "name": "Hang snatch",
+   "sport": "gym",
+   "category": "olympic",
+   "kind": "drill",
+   "work": 30,
+   "rest": 150,
+   "rounds": 5,
+   "reps": "2",
+   "how": "Wide grip from mid-thigh, extend fully, pull under and catch overhead. Light weight, perfect positions."
+  },
+  {
+   "id": "db-snatch",
+   "name": "Single-arm dumbbell snatch",
+   "sport": "gym",
+   "category": "olympic",
+   "kind": "drill",
+   "work": 30,
+   "rest": 90,
+   "rounds": 3,
+   "reps": "4 each arm",
+   "how": "One explosive pull from the floor to overhead. A simpler snatch for power."
+  },
+  {
+   "id": "jump-squat",
+   "name": "Jump squat",
+   "sport": "gym",
+   "category": "explosive",
+   "kind": "drill",
+   "work": 30,
+   "rest": 90,
+   "rounds": 4,
+   "reps": "5",
+   "how": "Light load or bodyweight, quarter dip and jump as high as you can. Land soft."
+  },
+  {
+   "id": "trap-bar-jump",
+   "name": "Trap bar jump",
+   "sport": "gym",
+   "category": "explosive",
+   "kind": "drill",
+   "work": 30,
+   "rest": 120,
+   "rounds": 4,
+   "reps": "4",
+   "how": "Light trap bar (20-30% of your deadlift), jump straight up, reset each rep."
+  },
+  {
+   "id": "speed-bench",
+   "name": "Speed bench press",
+   "sport": "gym",
+   "category": "explosive",
+   "kind": "drill",
+   "work": 30,
+   "rest": 90,
+   "rounds": 4,
+   "reps": "5",
+   "how": "About 50-60% load, lower under control, press as fast as possible."
+  },
+  {
+   "id": "landmine-push-press",
+   "name": "Landmine push press",
+   "sport": "gym",
+   "category": "explosive",
+   "kind": "drill",
+   "work": 30,
+   "rest": 90,
+   "rounds": 3,
+   "reps": "5 each arm",
+   "how": "Dip and drive the bar up from the shoulder in one explosive push.",
+   "needs": [
+    "landmine or barbell in a corner"
+   ]
+  },
+  {
+   "id": "med-ball-chest-pass",
+   "name": "Med ball chest pass",
+   "sport": "gym",
+   "category": "explosive",
+   "kind": "drill",
+   "work": 30,
+   "rest": 60,
+   "rounds": 3,
+   "reps": "6",
+   "how": "Throw hard into a wall from the chest, catch and go again. Upper-body speed.",
+   "needs": [
+    "medicine ball"
+   ]
+  },
+  {
+   "id": "med-ball-slam",
+   "name": "Med ball slam",
+   "sport": "gym",
+   "category": "explosive",
+   "kind": "drill",
+   "work": 30,
+   "rest": 60,
+   "rounds": 3,
+   "reps": "8",
+   "how": "Reach tall, slam the ball into the floor with everything.",
+   "needs": [
+    "medicine ball"
+   ]
+  },
+  {
+   "id": "depth-jump",
+   "name": "Depth jump",
+   "sport": "gym",
+   "category": "plyometrics",
+   "kind": "drill",
+   "work": 20,
+   "rest": 120,
+   "rounds": 4,
+   "reps": "4",
+   "how": "Step off a low box, touch the floor and jump straight up instantly. Short ground contact."
+  },
+  {
+   "id": "pogo-hops",
+   "name": "Pogo hops",
+   "sport": "gym",
+   "category": "plyometrics",
+   "kind": "drill",
+   "work": 20,
+   "rest": 60,
+   "rounds": 3,
+   "reps": "20",
+   "how": "Stiff ankles, bounce off the balls of the feet. Quick and springy."
+  },
+  {
+   "id": "hurdle-hops",
+   "name": "Hurdle hops",
+   "sport": "gym",
+   "category": "plyometrics",
+   "kind": "drill",
+   "work": 20,
+   "rest": 90,
+   "rounds": 4,
+   "reps": "5",
+   "how": "Hop over low hurdles in a row, minimal time on the ground.",
+   "needs": [
+    "mini hurdles or cones"
+   ]
+  },
+  {
+   "id": "lateral-bounds",
+   "name": "Lateral bounds (skaters)",
+   "sport": "gym",
+   "category": "plyometrics",
+   "kind": "drill",
+   "work": 30,
+   "rest": 60,
+   "rounds": 3,
+   "reps": "5 each side",
+   "how": "Bound sideways off one leg, stick the landing for a second. Cutting power.",
+   "positions": [
+    "winger",
+    "defender"
+   ]
+  },
+  {
+   "id": "countermovement-jump",
+   "name": "Countermovement jump",
+   "sport": "gym",
+   "category": "plyometrics",
+   "kind": "drill",
+   "work": 20,
+   "rest": 60,
+   "rounds": 3,
+   "reps": "5",
+   "how": "Quick dip, swing the arms, jump for max height. Test-day jump too."
+  },
+  {
+   "id": "plyo-push-up",
+   "name": "Plyometric push-up",
+   "sport": "gym",
+   "category": "plyometrics",
+   "kind": "drill",
+   "work": 20,
+   "rest": 90,
+   "rounds": 3,
+   "reps": "6",
+   "how": "Push the floor away hard enough that your hands leave the ground."
+  },
+  {
+   "id": "sprint-10-20",
+   "name": "Acceleration sprints 10-20 m",
+   "sport": "gym",
+   "category": "sprints",
+   "kind": "drill",
+   "work": 10,
+   "rest": 90,
+   "rounds": 6,
+   "reps": "10-20 m",
+   "how": "Full speed from a standing start on the track or turf. Full rest: quality over fatigue."
+  },
+  {
+   "id": "flying-sprint",
+   "name": "Flying 20 m sprints",
+   "sport": "gym",
+   "category": "sprints",
+   "kind": "drill",
+   "work": 15,
+   "rest": 120,
+   "rounds": 4,
+   "reps": "20 m",
+   "how": "Build up over 20 m, then hit top speed for 20 m."
+  },
+  {
+   "id": "resisted-sprint",
+   "name": "Resisted sprint (sled or band)",
+   "sport": "gym",
+   "category": "sprints",
+   "kind": "drill",
+   "work": 10,
+   "rest": 120,
+   "rounds": 5,
+   "reps": "15 m",
+   "how": "Light sled or band, drive the knees, lean forward. First-step power."
+  },
+  {
+   "id": "half-squat",
+   "name": "Half squat",
+   "sport": "gym",
+   "category": "lower-strength",
+   "kind": "drill",
+   "work": 30,
+   "rest": 150,
+   "rounds": 4,
+   "reps": "5",
+   "how": "Heavier than your full squat, down to thighs about 45 degrees. Strength in the range you sprint and jump."
+  },
+  {
+   "id": "quarter-squat",
+   "name": "Quarter squat",
+   "sport": "gym",
+   "category": "lower-strength",
+   "kind": "drill",
+   "work": 30,
+   "rest": 150,
+   "rounds": 3,
+   "reps": "5",
+   "how": "Heavy, short dip, drive up fast. Use safety bars."
+  },
+  {
+   "id": "front-squat",
+   "name": "Front squat",
+   "sport": "gym",
+   "category": "lower-strength",
+   "kind": "drill",
+   "work": 30,
+   "rest": 150,
+   "rounds": 4,
+   "reps": "5",
+   "how": "Elbows high, chest up, sit between the hips."
+  },
+  {
+   "id": "hip-thrust",
+   "name": "Barbell hip thrust",
+   "sport": "gym",
+   "category": "lower-strength",
+   "kind": "drill",
+   "work": 30,
+   "rest": 90,
+   "rounds": 3,
+   "reps": "8",
+   "how": "Shoulders on a bench, drive the hips up, squeeze the glutes at the top. Sprint power."
+  },
+  {
+   "id": "deadlift",
+   "name": "Conventional deadlift",
+   "sport": "gym",
+   "category": "lower-strength",
+   "kind": "drill",
+   "work": 30,
+   "rest": 180,
+   "rounds": 4,
+   "reps": "4",
+   "how": "Bar over mid-foot, flat back, push the floor away."
+  },
+  {
+   "id": "single-leg-rdl",
+   "name": "Single-leg Romanian deadlift",
+   "sport": "gym",
+   "category": "single-limb",
+   "kind": "drill",
+   "work": 50,
+   "rest": 60,
+   "rounds": 3,
+   "reps": "8 each leg",
+   "how": "Hinge on one leg, reach the other leg back, hips square. Balance and hamstrings."
+  },
+  {
+   "id": "step-up",
+   "name": "Step-up (knee drive)",
+   "sport": "gym",
+   "category": "single-limb",
+   "kind": "drill",
+   "work": 50,
+   "rest": 60,
+   "rounds": 3,
+   "reps": "6 each leg",
+   "how": "Box at knee height, drive up through the front leg, finish with a knee drive."
+  },
+  {
+   "id": "skater-squat",
+   "name": "Skater squat",
+   "sport": "gym",
+   "category": "single-limb",
+   "kind": "drill",
+   "work": 50,
+   "rest": 60,
+   "rounds": 3,
+   "reps": "6 each leg",
+   "how": "Single-leg squat, back knee touches a pad behind you. Control on the way down."
+  },
+  {
+   "id": "single-arm-db-press",
+   "name": "Single-arm dumbbell bench press",
+   "sport": "gym",
+   "category": "single-limb",
+   "kind": "drill",
+   "work": 50,
+   "rest": 60,
+   "rounds": 3,
+   "reps": "8 each arm",
+   "how": "One dumbbell, resist the twist through your trunk."
+  },
+  {
+   "id": "single-arm-row",
+   "name": "Single-arm dumbbell row",
+   "sport": "gym",
+   "category": "single-limb",
+   "kind": "drill",
+   "work": 50,
+   "rest": 60,
+   "rounds": 3,
+   "reps": "10 each arm",
+   "how": "Hand on a bench, pull to the hip, no twisting."
+  },
+  {
+   "id": "iso-split-squat",
+   "name": "Isometric split squat hold",
+   "sport": "gym",
+   "category": "isometrics",
+   "kind": "drill",
+   "work": 60,
+   "rest": 60,
+   "rounds": 3,
+   "reps": "30 s each leg",
+   "how": "Hold the bottom of a split squat, front thigh parallel. Knee and tendon strength."
+  },
+  {
+   "id": "wall-sit",
+   "name": "Wall sit",
+   "sport": "gym",
+   "category": "isometrics",
+   "kind": "drill",
+   "work": 45,
+   "rest": 60,
+   "rounds": 3,
+   "reps": "45 s",
+   "how": "Back flat on the wall, thighs parallel to the floor."
+  },
+  {
+   "id": "iso-mid-thigh-pull",
+   "name": "Isometric mid-thigh pull",
+   "sport": "gym",
+   "category": "isometrics",
+   "kind": "drill",
+   "work": 10,
+   "rest": 90,
+   "rounds": 5,
+   "reps": "5 s max pulls",
+   "how": "Bar fixed at mid-thigh (or pinned in a rack), pull as hard as you can for 5 seconds."
+  },
+  {
+   "id": "iso-hamstring-bridge",
+   "name": "Isometric long-lever bridge",
+   "sport": "gym",
+   "category": "isometrics",
+   "kind": "drill",
+   "work": 30,
+   "rest": 45,
+   "rounds": 3,
+   "reps": "30 s",
+   "how": "Heels on a bench, legs nearly straight, lift the hips and hold. Hamstring protection."
+  }
+ ],
+ "templates": [
+  {
+   "id": "fb-close-control-1v1",
+   "title": "Close control & 1v1",
+   "type": "football",
+   "summary": "Tight-space control, direction changes with the ball, 1v1 reactions with voice cues, finish.",
+   "needs": [
+    "ball",
+    "4-6 markers (bottles/shoes/bags)",
+    "open space or small field"
+   ],
+   "items": [
+    {
+     "ex": "jog-dynamic-leg-swings"
+    },
+    {
+     "ex": "hip-openers-glute-activation"
+    },
+    {
+     "ex": "build-up-sprints-no-ball"
+    },
+    {
+     "ex": "juggling"
+    },
+    {
+     "ex": "sprint-change-of-direction-no-ball"
+    },
+    {
+     "ex": "tight-space-close-control"
+    },
+    {
+     "ex": "dribble-change-direction"
+    },
+    {
+     "ex": "freestyle-dribbling"
+    },
+    {
+     "ex": "1v1-reaction-voice-cues"
+    },
+    {
+     "ex": "1v1-then-finish"
+    },
+    {
+     "ex": "cool-down-hips-quads-hamstrings-it-band"
+    }
+   ]
+  },
+  {
+   "id": "fb-wall-weakfoot-shooting",
+   "title": "Wall passing, weak foot & shooting",
+   "type": "football",
+   "summary": "First touch off the wall (ground and air), left-foot work, shooting still and moving, crossing.",
+   "needs": [
+    "ball",
+    "wall",
+    "goal or target"
+   ],
+   "items": [
+    {
+     "ex": "jog-dynamic-leg-swings",
+     "how": "Easy jog, leg swings, high knees, butt kicks, side shuffles."
+    },
+    {
+     "ex": "hip-openers-glute-activation",
+     "how": "90/90 hip switches, glute bridges, clamshells."
+    },
+    {
+     "ex": "sprint-change-of-direction-no-ball",
+     "how": "Sprint 10 m, plant, cut, accelerate 5 m. Alternate the cutting foot. Stop if you feel sharp knee pain."
+    },
+    {
+     "ex": "wall-passes-ground-both-feet"
+    },
+    {
+     "ex": "wall-passes-in-the-air"
+    },
+    {
+     "ex": "weak-foot-left-receive-and-pass"
+    },
+    {
+     "ex": "shooting-stationary"
+    },
+    {
+     "ex": "shooting-on-the-move"
+    },
+    {
+     "ex": "crossing-and-passing"
+    },
+    {
+     "ex": "cool-down-hips-quads-hamstrings-it-band",
+     "how": "Hip flexor, quad, hamstring, figure-4 glute stretch, 60 s each side."
+    }
+   ]
+  },
+  {
+   "id": "fb-partner-passing",
+   "title": "With a partner: one- and two-touch",
+   "type": "football",
+   "summary": "One- and two-touch passing on the ground and in the air, then 1v1s.",
+   "needs": [
+    "ball",
+    "one partner"
+   ],
+   "items": [
+    {
+     "ex": "jog-dynamic-leg-swings",
+     "how": "Easy jog together, leg swings, lunges with a twist."
+    },
+    {
+     "ex": "ground-passing-one-touch"
+    },
+    {
+     "ex": "ground-passing-two-touch"
+    },
+    {
+     "ex": "air-control-one-touch-back"
+    },
+    {
+     "ex": "passing-while-moving"
+    },
+    {
+     "ex": "1v1-with-partner"
+    },
+    {
+     "ex": "cool-down"
+    }
+   ]
+  },
+  {
+   "id": "recovery-hips",
+   "title": "Recovery: hips, quads, hamstrings",
+   "type": "recovery",
+   "summary": "No ball. Loosen the hips and strengthen around the IT band.",
+   "needs": [
+    "mat",
+    "foam roller (optional)"
+   ],
+   "items": [
+    {
+     "ex": "foam-roll-quads-and-glutes"
+    },
+    {
+     "ex": "90-90-hip-switches"
+    },
+    {
+     "ex": "couch-stretch-hip-flexor-quad"
+    },
+    {
+     "ex": "hamstring-stretch"
+    },
+    {
+     "ex": "glute-bridge"
+    },
+    {
+     "ex": "side-lying-leg-raise-clamshell"
+    },
+    {
+     "ex": "figure-4-glute-stretch"
+    }
+   ]
+  },
+  {
+   "id": "gym-lower-power",
+   "title": "Gym: lower body + power",
+   "type": "gym",
+   "summary": "Jumps first while fresh, then heavy legs and hamstring protection.",
+   "needs": [
+    "gym"
+   ],
+   "items": [
+    {
+     "ex": "gym-warmup"
+    },
+    {
+     "ex": "box-jump"
+    },
+    {
+     "ex": "single-leg-bounds"
+    },
+    {
+     "ex": "back-squat"
+    },
+    {
+     "ex": "romanian-deadlift"
+    },
+    {
+     "ex": "nordic-curl"
+    },
+    {
+     "ex": "copenhagen-plank"
+    },
+    {
+     "ex": "gym-cooldown"
+    }
+   ]
+  },
+  {
+   "id": "gym-upper-core",
+   "title": "Gym: upper body + core",
+   "type": "gym",
+   "summary": "Upper strength and a strong trunk for holding off defenders.",
+   "needs": [
+    "gym"
+   ],
+   "items": [
+    {
+     "ex": "gym-warmup"
+    },
+    {
+     "ex": "med-ball-throw"
+    },
+    {
+     "ex": "bench-press"
+    },
+    {
+     "ex": "pull-up"
+    },
+    {
+     "ex": "db-overhead-press"
+    },
+    {
+     "ex": "bent-over-row"
+    },
+    {
+     "ex": "pallof-press"
+    },
+    {
+     "ex": "dead-bug"
+    },
+    {
+     "ex": "gym-cooldown"
+    }
+   ]
+  },
+  {
+   "id": "gym-full-light",
+   "title": "Gym: full body (game week)",
+   "type": "gym",
+   "summary": "Lighter full-body session for weeks with games: fewer sets, nothing that leaves your legs heavy.",
+   "needs": [
+    "gym"
+   ],
+   "items": [
+    {
+     "ex": "gym-warmup"
+    },
+    {
+     "ex": "broad-jump",
+     "rounds": 2
+    },
+    {
+     "ex": "trap-bar-deadlift",
+     "rounds": 2
+    },
+    {
+     "ex": "push-up",
+     "rounds": 2
+    },
+    {
+     "ex": "pull-up",
+     "rounds": 2
+    },
+    {
+     "ex": "plank"
+    },
+    {
+     "ex": "gym-cooldown"
+    }
+   ]
+  },
+  {
+   "id": "gym-explosive",
+   "title": "Gym: explosive power",
+   "type": "gym",
+   "summary": "Olympic lift, jumps and sprints first while fresh, then a heavy short-range lift.",
+   "needs": [
+    "gym"
+   ],
+   "items": [
+    {
+     "ex": "gym-warmup"
+    },
+    {
+     "ex": "pogo-hops"
+    },
+    {
+     "ex": "hang-clean"
+    },
+    {
+     "ex": "depth-jump"
+    },
+    {
+     "ex": "sprint-10-20"
+    },
+    {
+     "ex": "half-squat"
+    },
+    {
+     "ex": "med-ball-chest-pass"
+    },
+    {
+     "ex": "gym-cooldown"
+    }
+   ]
+  },
+  {
+   "id": "gym-single-leg",
+   "title": "Gym: single leg + isometrics",
+   "type": "gym",
+   "summary": "Single-leg strength and tendon holds: balance, cutting and injury protection.",
+   "needs": [
+    "gym"
+   ],
+   "items": [
+    {
+     "ex": "gym-warmup"
+    },
+    {
+     "ex": "lateral-bounds"
+    },
+    {
+     "ex": "bulgarian-split-squat"
+    },
+    {
+     "ex": "single-leg-rdl"
+    },
+    {
+     "ex": "step-up"
+    },
+    {
+     "ex": "iso-split-squat"
+    },
+    {
+     "ex": "copenhagen-plank"
+    },
+    {
+     "ex": "gym-cooldown"
+    }
+   ]
+  }
+ ]
+}

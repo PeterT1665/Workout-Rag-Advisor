@@ -10,7 +10,7 @@ export function flattenSession(session: Session): Step[] {
     for (let r = 1; r <= rounds; r++) {
       steps.push({
         type: 'work', blockIdx: bi, name: b.name, kind: b.kind, round: r, rounds,
-        seconds: b.work, cue: !!b.cue, how: b.how || '', needs: b.needs || [],
+        seconds: b.work, cue: !!b.cue, how: b.how || '', needs: b.needs || [], reps: b.reps,
       })
       const isLast = bi === session.blocks.length - 1 && r === rounds
       if (b.rest && !isLast) {
@@ -99,3 +99,6 @@ export function fmtTime(sec: number) {
   sec = Math.max(0, Math.ceil(sec))
   return `${pad(Math.floor(sec / 60))}:${pad(sec % 60)}`
 }
+
+// "8" -> "8 reps"; descriptive values like "8 each leg" or "45 s" stay as written.
+export const fmtReps = (r: string) => (/^\d+(-\d+)?$/.test(r) ? `${r} reps` : r)

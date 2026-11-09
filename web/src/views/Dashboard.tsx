@@ -2,7 +2,7 @@ import { Panel, SectionHead } from '../components/ui'
 import { CardTile, DrillCard, Hero, KitCheck, MindsetCard } from './Home'
 import { DAYS } from '../lib/weekplan'
 import { sessionForSlot } from '../lib/today'
-import data from '../data/sessions.json'
+import { BUILTIN_SESSIONS } from '../lib/library'
 import { loadHistory, loadQuotes, weekLoads } from '../lib/storage'
 import { LoadChart } from '../components/LoadChart'
 import { DEMO } from '../lib/demo'
@@ -50,7 +50,7 @@ export function Dashboard(p: {
           <ol className="m-0 mt-4 flex list-none flex-col gap-1.5 p-0">
             {DAYS.map((name, day) => {
               const slot = p.today.plan.slots.find((x) => x.day === day && x.kind === 'game') ?? p.today.plan.slots.find((x) => x.day === day)
-              const sess = slot ? sessionForSlot(slot, p.today.plan, data.sessions as Session[]) : null
+              const sess = slot ? sessionForSlot(slot, p.today.plan, BUILTIN_SESSIONS) : null
               const label = !slot ? 'Rest' : slot.kind === 'game' ? 'Game' : sess ? sess.title : slot.kind === 'cheer' ? 'Cheer' : 'Gym'
               const isToday = day === p.today.day
               return (

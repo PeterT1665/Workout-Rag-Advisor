@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { Button, Panel, Screen, Tag, Title, TopBar } from '../components/ui'
-import { flattenSession, makeICS, sessionMinutes } from '../lib/logic'
+import { flattenSession, fmtReps, makeICS, sessionMinutes } from '../lib/logic'
+import { isMine } from '../lib/library'
 import type { Session } from '../lib/types'
 
 function downloadICS(s: Session, date: string, time: string) {
@@ -17,13 +18,17 @@ function downloadICS(s: Session, date: string, time: string) {
   a.remove()
 }
 
-export function Detail({ session: s, onBack, onStart, desktop = false }: { session: Session; onBack: () => void; onStart: () => void; desktop?: boolean }) {
+export function Detail({ session: s, onBack, onStart, onEdit, desktop = false }: { session: Session; onBack: () => void; onStart: () => void; onEdit?: () => void; desktop?: boolean }) {
   const hasCue = flattenSession(s).some((x) => x.cue)
   const [date, setDate] = useState(() => new Date(Date.now() + 864e5).toISOString().slice(0, 10))
   const [time, setTime] = useState('17:30')
   return (
     <Screen className="pb-0">
-      <TopBar left={<Button variant="ghost" size="sm" onClick={onBack}>Back</Button>} right={<Tag accent>{s.type}</Tag>} />
+      <TopBar left={<Button variant="ghost" size="sm" onClick={onBack}>Back</Button>} right={
+        <div className="flex items-center gap-2">
+          {onEdit && <Button variant="ghost" size="sm" onClick={onEdit}>{isMine(s.id) ? 'Edit' : 'Customise'}</Button>}
+          <Tag accent>{s.type}</Tag>
+        </div>} />
       <Title>{s.title}</Title>
       <p className="mt-4">{s.summary}</p>
       <p className="text-sm text-muted">About {sessionMinutes(s)} min of timed work. Allow extra time for setup and water.</p>
@@ -53,7 +58,7 @@ export function Detail({ session: s, onBack, onStart, desktop = false }: { sessi
               {items.map((b) => (
                 <li key={b.name} className="rounded-[18px] bg-surface p-4">
                   <strong className="block font-semibold">{b.name.replace(/\s*\([^)]*\)/g, '')}</strong>
-                  <span className="mt-1 block font-display text-xs tabular-nums text-muted">{b.rounds || 1} × {b.work}s{b.rest ? ` · ${b.rest}s rest` : ''}</span>
+                  <span className="mt-1 block font-display text-xs tabular-nums text-muted">{b.rounds || 1} × {b.reps ? fmtReps(b.reps) : `${b.work}s`}{b.rest ? ` · ${b.rest}s rest` : ''}</span>
                   {b.cue && <span className="mt-2 inline-block rounded-full bg-red px-2.5 py-0.5 font-display text-[11px] uppercase text-on-red">Voice cues</span>}
                   <p className="m-0 mt-2 text-sm text-muted">{b.how}</p>
                 </li>

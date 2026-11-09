@@ -156,6 +156,38 @@ describe('app', () => {
     expect(screen.getAllByRole('button', { name: /Kick off/ }).length).toBeGreaterThan(0)
   })
 
+  test('builder: customise a recommended session, add dribbling, save as my own', () => {
+    render(<App />)
+    click(/All sessions/)
+    click(/Wall passing, weak foot & shooting/)
+    click(/^Customise$/)
+    expect((screen.getByLabelText(/Session name/) as HTMLInputElement).value).toMatch(/\(mine\)/)
+    click(/Add exercises/)
+    fireEvent.click(screen.getByRole('button', { name: /^Dribbling$/ }))
+    click(/Add Cone weave dribble/)
+    click(/^Done/)
+    fireEvent.click(screen.getAllByRole('button', { name: /More Rounds/ })[0]) // first item: warm-up gets 2 rounds
+    click(/^Save$/)
+    // lands on the new session's detail, and the original is unchanged in the library
+    expect(screen.getByRole('heading', { name: /\(mine\)/ })).toBeTruthy()
+    expect(screen.getByText(/Cone weave dribble/)).toBeTruthy()
+    const mine = JSON.parse(localStorage.getItem('mySessions') || '[]')
+    expect(mine).toHaveLength(1)
+    expect(mine[0].items.at(-2)).toEqual({ ex: 'cone-weave' }) // added before the cool-down
+    expect(mine[0].items.at(-1).ex).toMatch(/cool-down/)
+    expect(mine[0].items[0].rounds).toBe(2)
+    click(/^Back$/)
+    expect(screen.getByRole('heading', { name: /^Sessions$/i })).toBeTruthy()
+    expect(screen.getAllByRole('button', { name: /Wall passing, weak foot & shooting/ })).toHaveLength(2)
+  })
+
+  test('gym sessions show reps', () => {
+    render(<App />)
+    click(/All sessions/)
+    click(/Gym: lower body \+ power/)
+    expect(screen.getByText(/4 × 5 reps · 150s rest/)).toBeTruthy()
+  })
+
   test('laptop: sidebar planner instead of the phone tab bar', () => {
     vi.stubGlobal('matchMedia', (q: string) => ({ matches: q.includes('min-width: 1024px'), addEventListener() {}, removeEventListener() {} }))
     render(<App />)
@@ -164,7 +196,7 @@ describe('app', () => {
     fireEvent.click(screen.getByRole('button', { name: /^Week$/ }))
     expect(screen.getByText(/Tap the days you play/)).toBeTruthy()
     fireEvent.click(screen.getByRole('button', { name: /^Sessions$/ }))
-    expect(screen.getByRole('heading', { name: /All sessions/i })).toBeTruthy()
+    expect(screen.getByRole('heading', { name: /^Sessions$/i })).toBeTruthy()
   })
 })
 

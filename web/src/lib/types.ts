@@ -7,6 +7,7 @@ export type Block = {
   cue?: boolean
   how?: string
   needs?: string[]
+  reps?: string // gym: reps per set; work is then an estimated set time
 }
 
 export type Session = {
@@ -28,6 +29,7 @@ export type Step = {
   seconds: number
   cue: boolean
   how: string
+  reps?: string
   needs: string[]
 }
 

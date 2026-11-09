@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useSyncExternalStore } from 'react'
 import { Button, QuoteCard, Screen } from '../components/ui'
-import { fmtTime } from '../lib/logic'
+import { fmtReps, fmtTime } from '../lib/logic'
 import { nextQuote } from '../lib/quotes'
 import { FullTime } from './FullTime'
 import { AnimateDigits } from '../components/AnimateDigits'
@@ -58,6 +58,7 @@ export function PlayerView({ session, player, settings, onExit }: { session: Ses
         {isRest ? 'Rest' : step.name}
         {!isRest && step.rounds > 1 && <span className="text-muted"> {step.round}/{step.rounds}</span>}
       </h1>
+      {!isRest && step.reps && <p className="m-0 mt-2 font-display text-lg uppercase text-[var(--red-ink)]">{fmtReps(step.reps)}</p>}
 
       <div className="relative mx-auto my-6 aspect-square w-[min(78vw,320px)]">
         <svg viewBox="0 0 220 220" className="h-full w-full -rotate-90">

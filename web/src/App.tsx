@@ -1,7 +1,8 @@
 import { useEffect, useMemo, useRef, useState, useSyncExternalStore } from 'react'
-import data from './data/sessions.json'
+import { allSessions, BUILTIN_SESSIONS, deleteMySession, saveMySession, templateFor, toSession, type MySession, type Template } from './lib/library'
 import { Home } from './views/Home'
 import { Library } from './views/Library'
+import { Builder } from './views/Builder'
 import { Detail } from './views/Detail'
 import { Preroll } from './views/Preroll'
 import { PlayerView } from './views/PlayerView'
@@ -23,16 +24,17 @@ import { loadGames, planToday, saveGames } from './lib/today'
 import type { Game } from './lib/weekplan'
 import type { Session, Settings } from './lib/types'
 
-const sessions = data.sessions as Session[]
+const sessions = BUILTIN_SESSIONS // the week planner picks from the recommended sessions
 
 // Full-screen views shown on top of the tabs.
 type Overlay =
   | { name: 'library' }
-  | { name: 'detail'; session: Session }
+  | { name: 'detail'; session: Session; fromLibrary?: boolean }
   | { name: 'preroll'; session: Session; quote: string | null; clipName: string | null }
   | { name: 'player'; session: Session; player: Player }
   | { name: 'settings' }
   | { name: 'media'; from: 'settings' | 'home' }
+  | { name: 'builder'; from: Template | null }
 
 export default function App() {
   const [tab, setTab] = useState<Tab>('home')
@@ -46,12 +48,13 @@ export default function App() {
   const clips = useSyncExternalStore(subscribeClips, allClips)
   const started = useRef(false)
   const today = useMemo(() => planToday(sessions, games), [games])
+  const [library, setLibrary] = useState(allSessions) // recommended + the user's own
 
   useEffect(() => { void openClips() }, [])
   // another device changed something: re-read synced state
   const [, setSyncTick] = useState(0)
   useEffect(() => {
-    const on = () => { setGames(loadGames()); setSettings(loadSettings()); setSyncTick((n) => n + 1) }
+    const on = () => { setGames(loadGames()); setSettings(loadSettings()); setLibrary(allSessions()); setSyncTick((n) => n + 1) }
     window.addEventListener('ta-sync', on)
     return () => window.removeEventListener('ta-sync', on)
   }, [])
@@ -94,6 +97,10 @@ export default function App() {
 
   const close = () => setOverlay(null)
   const open = (session: Session) => setOverlay({ name: 'detail', session })
+  const openFromLibrary = (session: Session) => setOverlay({ name: 'detail', session, fromLibrary: true })
+  const build = (from: Template | null) => setOverlay({ name: 'builder', from })
+  const saveBuilt = (s: MySession) => { saveMySession(s); setLibrary(allSessions()); setOverlay({ name: 'detail', session: toSession(s), fromLibrary: true }) }
+  const deleteBuilt = (id: string) => { deleteMySession(id); setLibrary(allSessions()); setOverlay({ name: 'library' }) }
 
   if (desktop) {
     // full-screen moments stay full screen
@@ -114,7 +121,7 @@ export default function App() {
                     onAddClips={() => setOverlay({ name: 'media', from: 'home' })} />
                 )}
                 {deskTab === 'week' && <WeekView wide today={today} games={games} sessions={sessions} onGames={updateGames} onOpen={open} />}
-                {deskTab === 'sessions' && <Library wide sessions={sessions} onOpen={open} onBack={() => goTab('home')} />}
+                {deskTab === 'sessions' && <Library wide sessions={library} onOpen={open} onNew={() => build(null)} onBack={() => goTab('home')} />}
                 {deskTab === 'player' && <PlayerTab wide />}
                 {deskTab === 'coach' && <CoachView wide />}
               </div>}
@@ -132,9 +139,13 @@ export default function App() {
   function renderOverlay(overlay: Overlay) {
     switch (overlay.name) {
       case 'library':
-        return <Library sessions={sessions} onOpen={open} onBack={close} />
+        return <Library sessions={library} onOpen={openFromLibrary} onNew={() => build(null)} onBack={close} />
       case 'detail':
-        return <Detail session={overlay.session} desktop={desktop} onBack={close} onStart={() => onStart(overlay.session)} />
+        return <Detail session={overlay.session} desktop={desktop} onBack={() => (overlay.fromLibrary && !desktop ? setOverlay({ name: 'library' }) : close())} onStart={() => onStart(overlay.session)}
+          onEdit={() => { const t = templateFor(overlay.session.id); if (t) build(t) }} />
+      case 'builder':
+        return <Builder from={overlay.from} onSave={saveBuilt} onDelete={deleteBuilt}
+          onCancel={() => setOverlay(overlay.from ? { name: 'detail', session: toSession(overlay.from), fromLibrary: true } : { name: 'library' })} />
       case 'preroll':
         return <Preroll session={overlay.session} quote={overlay.quote} clipName={overlay.clipName} onGo={() => beginSession(overlay.session)} />
       case 'player':

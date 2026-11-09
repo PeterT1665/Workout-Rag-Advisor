@@ -1,8 +1,7 @@
 // Public demo mode (build flag VITE_DEMO=1): no login, no sync, sample data, only licensed photos.
 // The private build never seeds anything. Dates are relative to "today" so the demo always looks current.
 import { DEFAULT_SETTINGS, save, type HistoryEntry } from './storage'
-import data from '../data/sessions.json'
-import type { Session } from './types'
+import { BUILTIN_SESSIONS as sessions } from './library'
 
 export const DEMO = import.meta.env.VITE_DEMO === '1'
 export const IMAGE_DIR = DEMO ? 'demo-img' : 'personal'
@@ -16,7 +15,6 @@ export const DEMO_QUOTES = [
   'Rest is part of the plan, not a break from it.',
 ]
 
-const sessions = data.sessions as Session[]
 const title = (id: string) => sessions.find((s) => s.id === id)?.title ?? id
 const ymd = (d: Date) => d.toLocaleDateString('en-CA')
 

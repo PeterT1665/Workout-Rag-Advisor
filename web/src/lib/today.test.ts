@@ -1,10 +1,9 @@
 import { describe, expect, test } from 'vitest'
-import data from '../data/sessions.json'
+import { BUILTIN_SESSIONS as sessions } from './library'
 import { planToday } from './today'
 import { kitFor } from './kit'
 import type { Session } from './types'
 
-const sessions = data.sessions as Session[]
 // 2026-10-26 is a Monday
 const monday = new Date(2026, 9, 26, 9)
 const wednesday = new Date(2026, 9, 28, 9)
