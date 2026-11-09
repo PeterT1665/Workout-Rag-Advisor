@@ -13,6 +13,7 @@ export type Profile = {
   foot: Foot
   accent: Accent
   idol: string // role model's name, shown on quotes; empty = no attribution
+  gym?: number // gym sessions a week (default 3)
   sample?: boolean // the demo's sample player: history is reseeded daily
 }
 

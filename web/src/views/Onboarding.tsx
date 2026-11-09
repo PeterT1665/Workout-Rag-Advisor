@@ -104,6 +104,15 @@ export function Onboarding({ initial, initialGames = [], welcome = false, onDone
               })}
             </div>
             <p className="mt-3 text-sm text-muted">{games.length ? `${games.length} game${games.length > 1 ? 's' : ''} a week` : 'No games: more training sessions instead.'}</p>
+            <h2 className="mt-8 mb-3 font-display text-lg uppercase">Gym sessions a week</h2>
+            <div className="grid grid-cols-6 gap-1.5">
+              {[0, 1, 2, 3, 4, 5].map((n) => (
+                <Choice key={n} on={(p.gym ?? 3) === n} label={`${n} gym sessions`} onClick={() => set({ gym: n })}>
+                  <span className="font-display text-lg">{n}</span>
+                </Choice>
+              ))}
+            </div>
+            <p className="mt-3 text-sm text-muted">Heavy game weeks keep these but make them lighter.</p>
           </Step>
         )}
         {id === 'colour' && (

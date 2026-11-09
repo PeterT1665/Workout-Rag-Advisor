@@ -4,7 +4,7 @@ import { Home } from './views/Home'
 import { Library } from './views/Library'
 import { Builder } from './views/Builder'
 import { Onboarding } from './views/Onboarding'
-import { getProfile, reloadProfile, setProfile } from './lib/profile'
+import { getProfile, reloadProfile, setProfile, useProfile } from './lib/profile'
 import { Detail } from './views/Detail'
 import { Preroll } from './views/Preroll'
 import { PlayerView } from './views/PlayerView'
@@ -51,7 +51,8 @@ export default function App() {
   settingsRef.current = settings
   const clips = useSyncExternalStore(subscribeClips, allClips)
   const started = useRef(false)
-  const today = useMemo(() => planToday(sessions, games), [games])
+  const gymPerWeek = useProfile().gym
+  const today = useMemo(() => planToday(sessions, games, new Date(), gymPerWeek), [games, gymPerWeek])
   const [library, setLibrary] = useState(allSessions) // recommended + the user's own
 
   useEffect(() => { void openClips(); void openPhotos() }, [])
