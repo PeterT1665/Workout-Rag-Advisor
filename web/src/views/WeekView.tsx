@@ -1,5 +1,6 @@
 import { Panel, Pill, SectionHead, Title } from '../components/ui'
-import { DAYS, DAY_SHORT, type Game } from '../lib/weekplan'
+import { DAYS, DAY_SHORT, DEFAULT_GYM, type Game } from '../lib/weekplan'
+import { setProfile, useProfile } from '../lib/profile'
 import { sessionForSlot, type Today } from '../lib/today'
 import type { Session } from '../lib/types'
 
@@ -8,6 +9,9 @@ const NEXT: Record<string, Game['kind'] | null> = { none: 'casual', casual: 'com
 export function WeekView({ today, games, sessions, onGames, onOpen, wide = false }: {
   today: Today; games: Game[]; sessions: Session[]; onGames: (g: Game[]) => void; onOpen: (s: Session) => void; wide?: boolean
 }) {
+  const me = useProfile()
+  const gym = me.gym ?? DEFAULT_GYM
+  const setGym = (n: number) => setProfile({ ...me, gym: Math.max(0, Math.min(5, n)) })
   const kindOn = (day: number) => games.find((g) => g.day === day)?.kind ?? 'none'
   const cycle = (day: number) => {
     const next = NEXT[kindOn(day)]
@@ -33,6 +37,15 @@ export function WeekView({ today, games, sessions, onGames, onOpen, wide = false
         })}
       </div>
 
+      <div className="mt-4 flex items-center justify-between rounded-[16px] bg-surface px-4 py-2">
+        <span className="font-semibold">Gym sessions a week</span>
+        <span className="flex items-center gap-1">
+          <button aria-label="Fewer gym sessions" onClick={() => setGym(gym - 1)} disabled={gym <= 0} className="h-10 w-10 rounded-full bg-surface-2 text-lg disabled:opacity-30">−</button>
+          <span className="w-8 text-center font-display text-lg tabular-nums" aria-live="polite">{gym}</span>
+          <button aria-label="More gym sessions" onClick={() => setGym(gym + 1)} disabled={gym >= 5} className="h-10 w-10 rounded-full bg-surface-2 text-lg disabled:opacity-30">+</button>
+        </span>
+      </div>
+
       <Panel className="mt-4">
         {today.plan.reasons.map((r, i) => <p key={i} className={`m-0 ${i ? 'mt-2 text-sm text-muted' : ''}`}>{r}</p>)}
       </Panel>
@@ -51,7 +64,10 @@ export function WeekView({ today, games, sessions, onGames, onOpen, wide = false
                 {slots.map((s, i) => {
                   const session = sessionForSlot(s, today.plan, sessions)
                   return session
-                    ? <button key={i} onClick={() => onOpen(session)} className="text-left font-semibold underline decoration-red decoration-2 underline-offset-4">{session.title}</button>
+                    ? <span key={i} className="flex items-center gap-2">
+                        <button onClick={() => onOpen(session)} className="text-left font-semibold underline decoration-red decoration-2 underline-offset-4">{session.title}</button>
+                        {s.light && <span title={s.note}><Pill>Light</Pill></span>}
+                      </span>
                     : <Pill key={i} tone={s.kind === 'game' ? 'red' : 'muted'}>{s.kind === 'game' ? `${s.note} game` : s.kind}</Pill>
                 })}
               </span>

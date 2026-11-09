@@ -132,6 +132,15 @@ describe('app', () => {
     expect(saved.map((g: { day: number }) => g.day)).toEqual([0, 2])
   })
 
+  test('week: the gym stepper changes how many gym sessions are planned', () => {
+    render(<App />)
+    fireEvent.click(screen.getByRole('button', { name: /^Week$/ }))
+    expect(screen.getByText(/3 gym/)).toBeTruthy()
+    click(/More gym sessions/)
+    expect(screen.getByText(/4 gym/)).toBeTruthy()
+    expect(getProfile().gym).toBe(4)
+  })
+
   test('player: the cue fills the screen', () => {
     render(<App />)
     click(/All sessions/)
