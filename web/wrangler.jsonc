@@ -2,6 +2,8 @@
 {
   "name": "football-personal-coach",
   "compatibility_date": "2026-10-01",
+  // Worker Previews (non-production branches, e.g. staging): settings come from the top level
+  "previews": {},
   "assets": {
     "directory": "./dist-demo",
     "not_found_handling": "single-page-application"
