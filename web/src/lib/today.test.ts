@@ -1,6 +1,6 @@
 import { describe, expect, test } from 'vitest'
 import { BUILTIN_SESSIONS as sessions } from './library'
-import { planToday } from './today'
+import { planToday, sessionForSlot } from './today'
 import { kitFor } from './kit'
 import type { Session } from './types'
 
@@ -33,5 +33,10 @@ describe('today', () => {
     const ids = (s: Session) => kitFor(s).map((k) => k.id)
     expect(ids(sessions.find((s) => s.id === 'fb-close-control-1v1')!)).toEqual(['boots', 'ball', 'discs', 'water'])
     expect(ids(sessions.find((s) => s.type === 'recovery')!)).toContain('mat')
+  })
+  test('gym days get a recommended gym session', () => {
+    const t = planToday(sessions, [{ day: 2, kind: 'competitive' }], monday)
+    const gym = t.plan.slots.find((s) => s.kind === 'gym')!
+    expect(sessionForSlot(gym, t.plan, sessions)?.type).toBe('gym')
   })
 })

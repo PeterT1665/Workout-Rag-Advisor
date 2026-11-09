@@ -1,11 +1,12 @@
 import { Panel, Pill, SectionHead, Title } from '../components/ui'
 import { usePersonalImage } from '../lib/personal'
+import { positionTag, useProfile } from '../lib/profile'
 import { loadHistory, weekLoads } from '../lib/storage'
 import { LoadChart } from '../components/LoadChart'
 
 const STATS: [string, string, number][] = [
   ['PAC', 'Pace: 20 m sprint', 82], ['DRI', 'Dribbling: cone weave', 78], ['SHO', 'Shooting: on target /10', 71],
-  ['PAS', 'Passing: wall passes /30s', 69], ['WF', 'Weak foot: left on target /10', 58], ['PHY', 'Physical: end-of-game tiredness', 70],
+  ['PAS', 'Passing: wall passes /30s', 69], ['WF', 'Weak foot: on target /10', 58], ['PHY', 'Physical: end-of-game tiredness', 70],
 ]
 
 const fmtDate = (iso: string) => {
@@ -15,6 +16,7 @@ const fmtDate = (iso: string) => {
 
 export function PlayerTab({ wide = false }: { wide?: boolean }) {
   const bg = usePersonalImage('card.jpg')
+  const me = useProfile()
   const history = loadHistory().slice().reverse()
   return (
     <main className={wide ? 'px-10 pt-10 pb-12' : 'mx-auto max-w-xl px-4 pt-[max(20px,env(safe-area-inset-top))] pb-32'}>
@@ -26,7 +28,7 @@ export function PlayerTab({ wide = false }: { wide?: boolean }) {
         <div className="relative">
           <div className="flex items-end gap-4">
             <span className="font-display text-7xl leading-[.8]">74</span>
-            <div><Pill tone="red">LW · ST · CM</Pill><div className="mt-2 font-display text-2xl uppercase">Peter</div></div>
+            <div><Pill tone="red">{positionTag(me)}</Pill><div className="mt-2 font-display text-2xl uppercase">{me.name} <span className="text-muted">#{me.number}</span></div></div>
           </div>
           <div className="mt-5 grid grid-cols-2 gap-x-6 gap-y-3">
             {STATS.map(([k, label, v]) => (

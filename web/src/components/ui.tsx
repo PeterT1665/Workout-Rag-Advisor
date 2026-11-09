@@ -1,5 +1,5 @@
 import type { ButtonHTMLAttributes, ReactNode } from 'react'
-import { QUOTE_BY } from '../lib/demo'
+import { useProfile } from '../lib/profile'
 
 type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
   variant?: 'primary' | 'ghost' | 'glass'
@@ -57,10 +57,11 @@ export function SectionHead({ title, right }: { title: string; right?: ReactNode
 }
 
 export function QuoteCard({ text }: { text: string }) {
+  const by = useProfile().idol
   return (
     <figure className="m-0">
       <blockquote className="m-0 font-display text-xl leading-tight normal-case">“{text}”</blockquote>
-      {QUOTE_BY && <figcaption className="mt-2 text-sm text-muted">{QUOTE_BY}</figcaption>}
+      {by && <figcaption className="mt-2 text-sm text-muted">{by}</figcaption>}
     </figure>
   )
 }

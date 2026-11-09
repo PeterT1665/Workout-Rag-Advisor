@@ -21,9 +21,10 @@ const soloFootball = (all: Session[]) => all.filter((s) => s.type === 'football'
 
 export function sessionForSlot(slot: Slot, plan: WeekPlan, all: Session[]): Session | null {
   if (slot.kind === 'recovery') return all.find((s) => s.type === 'recovery') ?? null
-  if (slot.kind === 'football') {
-    const pool = soloFootball(all)
-    const nth = plan.slots.filter((s) => s.kind === 'football' && s.day < slot.day).length
+  if (slot.kind === 'football' || slot.kind === 'gym') {
+    // rotate through the pool so the week's sessions differ
+    const pool = slot.kind === 'football' ? soloFootball(all) : all.filter((s) => s.type === 'gym')
+    const nth = plan.slots.filter((s) => s.kind === slot.kind && s.day < slot.day).length
     return pool[nth % pool.length] ?? null
   }
   return null
@@ -31,7 +32,7 @@ export function sessionForSlot(slot: Slot, plan: WeekPlan, all: Session[]): Sess
 
 export function planToday(all: Session[], games: Game[], now = new Date()): Today {
   const day = todayIndex(now)
-  const plan = buildWeek(games)
+  const plan = buildWeek(games, false) // cheer dropped (D24)
   const slots = plan.slots.filter((s) => s.day === day)
   const slot = slots.find((s) => s.kind !== 'game') ?? slots[0] ?? null
   const todays = slot ? sessionForSlot(slot, plan, all) : null

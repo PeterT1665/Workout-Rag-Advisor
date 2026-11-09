@@ -1,6 +1,7 @@
 import { act, cleanup, fireEvent, render, screen, waitFor, within } from '@testing-library/react'
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest'
 import App from './App'
+import { getProfile, reloadProfile, setProfile } from './lib/profile'
 
 const spoken: string[] = []
 const played: string[] = []
@@ -10,6 +11,7 @@ beforeEach(() => {
   spoken.length = 0
   played.length = 0
   localStorage.clear()
+  reloadProfile()
   vi.stubGlobal('speechSynthesis', { speak: (u: { text: string }) => spoken.push(u.text), cancel() {}, resume() {} })
   vi.stubGlobal('SpeechSynthesisUtterance', function (this: { text: string }, t: string) { this.text = t })
   vi.stubGlobal('confirm', () => true)
@@ -195,10 +197,33 @@ describe('app', () => {
     expect(screen.getByText(/4 × 5 reps · 150s rest/)).toBeTruthy()
   })
 
+  test('settings: edit player changes name, positions and team colour', () => {
+    render(<App />)
+    fireEvent.click(screen.getAllByRole('button', { name: /settings/i })[0])
+    click(/Edit player/)
+    fireEvent.change(screen.getByLabelText('Name'), { target: { value: 'Jordan' } })
+    click(/^Next$/)
+    click(/Defender/)
+    click(/^Next$/)
+    click(/^left$/i)
+    click(/^Next$/)
+    click(/^Saturday$/)
+    click(/^Next$/)
+    click(/^Blue$/)
+    expect(document.documentElement.dataset.accent).toBe('blue')
+    click(/^Next$/)
+    click(/^Done$/)
+    expect(getProfile()).toMatchObject({ name: 'Jordan', positions: ['winger', 'defender'], foot: 'left', accent: 'blue' })
+    expect(JSON.parse(localStorage.getItem('games') || '[]').map((g: { day: number }) => g.day)).toContain(5)
+    expect(screen.getByText(/Jordan/)).toBeTruthy()
+  })
+
   test('laptop: sidebar planner instead of the phone tab bar', () => {
     vi.stubGlobal('matchMedia', (q: string) => ({ matches: q.includes('min-width: 1024px'), addEventListener() {}, removeEventListener() {} }))
+    setProfile({ name: 'Peter', number: 7, positions: ['winger', 'striker'], foot: 'right', accent: 'red', idol: 'Cristiano Ronaldo' })
     render(<App />)
     expect(screen.getByText(/Good (morning|afternoon|evening), Peter/)).toBeTruthy()
+    expect(screen.getByText('W · ST · Peter')).toBeTruthy() // player card tile
     expect(screen.queryByRole('button', { name: /Kick off today's session/ })).toBeNull() // no phone tab bar
     fireEvent.click(screen.getByRole('button', { name: /^Week$/ }))
     expect(screen.getByText(/Tap the days you play/)).toBeTruthy()

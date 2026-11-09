@@ -2,15 +2,24 @@ import { Button, Panel, Screen, Slider, Title, Toggle, TopBar } from '../compone
 import { say } from '../lib/audio'
 import type { Settings } from '../lib/types'
 import { logout, syncEnabled } from '../lib/sync'
-import { DEMO, seedDemo } from '../lib/demo'
+import { DEMO, seedDemo, startOverDemo } from '../lib/demo'
+import { positionTag, useProfile } from '../lib/profile'
 import credits from '../data/credits.json'
 
-export function SettingsView({ settings: s, clipCount, onChange, onMedia, onDone }: {
-  settings: Settings; clipCount: number; onChange: (p: Partial<Settings>) => void; onMedia: () => void; onDone: () => void
+export function SettingsView({ settings: s, clipCount, onChange, onMedia, onProfile, onDone }: {
+  settings: Settings; clipCount: number; onChange: (p: Partial<Settings>) => void; onMedia: () => void; onProfile: () => void; onDone: () => void
 }) {
+  const me = useProfile()
   return (
     <Screen>
       <TopBar left={<Title>Settings</Title>} right={<Button variant="ghost" size="sm" onClick={onDone}>Done</Button>} />
+      <Panel className="mb-6 flex items-center justify-between gap-4">
+        <div className="min-w-0">
+          <div className="truncate font-display text-lg uppercase">{me.name} <span className="text-muted">#{me.number}</span></div>
+          <div className="text-sm text-muted">{positionTag(me)} · {me.foot} foot{me.idol ? ` · ${me.idol}` : ''}</div>
+        </div>
+        <Button variant="ghost" size="sm" className="shrink-0 bg-surface-2" onClick={onProfile}>Edit player</Button>
+      </Panel>
       <Panel className="flex flex-col gap-4">
         <Toggle id="voice" label="Spoken announcements and cues" checked={s.voice} onChange={(v) => onChange({ voice: v })} />
         <Slider id="vol" label="Voice volume" min={0.2} max={1} step={0.1} value={s.volume} onChange={(v) => onChange({ volume: v })} />
@@ -33,8 +42,11 @@ export function SettingsView({ settings: s, clipCount, onChange, onMedia, onDone
       {DEMO && (
         <>
           <Panel className="mt-8 flex items-center justify-between gap-4">
-            <p className="m-0 text-sm text-muted">This is a public demo with sample data. Nothing here is a real training log.</p>
-            <Button variant="ghost" size="sm" className="bg-surface-2" onClick={() => { seedDemo(new Date(), true); location.reload() }}>Reset demo</Button>
+            <p className="m-0 text-sm text-muted">{me.sample ? 'Public demo with a sample player. Nothing here is a real training log.' : 'Public demo. Your player and log stay in this browser only.'}</p>
+            <div className="flex shrink-0 flex-col gap-2">
+              {me.sample && <Button variant="ghost" size="sm" className="bg-surface-2" onClick={() => { seedDemo(new Date(), true); location.reload() }}>Reset sample</Button>}
+              <Button variant="ghost" size="sm" className="bg-surface-2" onClick={() => { startOverDemo(); location.reload() }}>Start over</Button>
+            </div>
           </Panel>
           {credits.length > 0 && (
             <>

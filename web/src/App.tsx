@@ -3,6 +3,8 @@ import { allSessions, BUILTIN_SESSIONS, deleteMySession, saveMySession, template
 import { Home } from './views/Home'
 import { Library } from './views/Library'
 import { Builder } from './views/Builder'
+import { Onboarding } from './views/Onboarding'
+import { getProfile, reloadProfile, setProfile } from './lib/profile'
 import { Detail } from './views/Detail'
 import { Preroll } from './views/Preroll'
 import { PlayerView } from './views/PlayerView'
@@ -35,6 +37,7 @@ type Overlay =
   | { name: 'settings' }
   | { name: 'media'; from: 'settings' | 'home' }
   | { name: 'builder'; from: Template | null }
+  | { name: 'profile' }
 
 export default function App() {
   const [tab, setTab] = useState<Tab>('home')
@@ -54,7 +57,7 @@ export default function App() {
   // another device changed something: re-read synced state
   const [, setSyncTick] = useState(0)
   useEffect(() => {
-    const on = () => { setGames(loadGames()); setSettings(loadSettings()); setLibrary(allSessions()); setSyncTick((n) => n + 1) }
+    const on = () => { setGames(loadGames()); setSettings(loadSettings()); setLibrary(allSessions()); reloadProfile(); setSyncTick((n) => n + 1) }
     window.addEventListener('ta-sync', on)
     return () => window.removeEventListener('ta-sync', on)
   }, [])
@@ -151,7 +154,10 @@ export default function App() {
       case 'player':
         return <PlayerView key={overlay.player.getState().startedAt} session={overlay.session} player={overlay.player} settings={settings} onExit={close} />
       case 'settings':
-        return <SettingsView settings={settings} clipCount={clips.length} onChange={updateSettings} onMedia={() => setOverlay({ name: 'media', from: 'settings' })} onDone={close} />
+        return <SettingsView settings={settings} clipCount={clips.length} onChange={updateSettings} onMedia={() => setOverlay({ name: 'media', from: 'settings' })} onProfile={() => setOverlay({ name: 'profile' })} onDone={close} />
+      case 'profile':
+        return <Onboarding initial={getProfile()} initialGames={games} onCancel={() => setOverlay({ name: 'settings' })}
+          onDone={(p, g) => { setProfile({ ...p, sample: getProfile().sample }); updateGames(g); setOverlay({ name: 'settings' }) }} />
       case 'media':
         return <MediaView settings={settings} onDone={() => (overlay.from === 'settings' ? setOverlay({ name: 'settings' }) : close())} />
     }

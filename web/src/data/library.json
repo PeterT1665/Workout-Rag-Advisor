@@ -39,7 +39,7 @@
    "work": 60,
    "rest": 30,
    "rounds": 3,
-   "how": "Round 1 right foot, round 2 left foot, round 3 both feet + thighs. Count your best streak.",
+   "how": "Round 1 stronger foot, round 2 weaker foot, round 3 both feet + thighs. Count your best streak.",
    "needs": [
     "ball"
    ]
@@ -82,7 +82,7 @@
    "work": 45,
    "rest": 30,
    "rounds": 6,
-   "how": "Drive the ball between markers: cut, drag-back, step-over. Explode out of every turn. Use your left foot on rounds 2 and 4.",
+   "how": "Drive the ball between markers: cut, drag-back, step-over. Explode out of every turn. Use your weaker foot on rounds 2 and 4.",
    "needs": [
     "ball",
     "markers"
@@ -167,7 +167,7 @@
    "work": 60,
    "rest": 30,
    "rounds": 5,
-   "how": "Throw or volley the ball at the wall and control the rebound out of the air: thigh, instep, chest. Left foot on rounds 2 and 4.",
+   "how": "Throw or volley the ball at the wall and control the rebound out of the air: thigh, instep, chest. Weaker foot on rounds 2 and 4.",
    "needs": [
     "ball",
     "wall"
@@ -175,14 +175,14 @@
   },
   {
    "id": "weak-foot-left-receive-and-pass",
-   "name": "Weak foot (left): receive and pass",
+   "name": "Weak foot: receive and pass",
    "sport": "football",
    "category": "first-touch",
    "kind": "drill",
    "work": 60,
    "rest": 30,
    "rounds": 5,
-   "how": "Pass off the wall with your left only, receive with your left only. Slow and accurate beats fast and sloppy.",
+   "how": "Pass off the wall with your weaker foot only, receive with it only. Slow and accurate beats fast and sloppy.",
    "needs": [
     "ball",
     "wall"
@@ -212,7 +212,7 @@
    "work": 45,
    "rest": 30,
    "rounds": 6,
-   "how": "Dribble 5-8 m, take one touch to set, shoot. Left foot on rounds 2 and 4.",
+   "how": "Dribble 5-8 m, take one touch to set, shoot. Weaker foot on rounds 2 and 4.",
    "needs": [
     "ball",
     "goal or target"
@@ -242,7 +242,7 @@
    "work": 90,
    "rest": 30,
    "rounds": 5,
-   "how": "5-8 m apart, firm pass on the ground. Round 1 right foot, 2 left foot, 3 alternate, 4 move side to side.",
+   "how": "5-8 m apart, firm pass on the ground. Round 1 stronger foot, 2 weaker foot, 3 alternate, 4 move side to side.",
    "needs": [
     "ball",
     "partner"
@@ -416,7 +416,7 @@
    "work": 40,
    "rest": 20,
    "rounds": 3,
-   "how": "Roll the ball across your body with the sole, switch feet each time. Left foot leads on even rounds.",
+   "how": "Roll the ball across your body with the sole, switch feet each time. Weaker foot leads on even rounds.",
    "needs": [
     "ball"
    ]
@@ -430,7 +430,7 @@
    "work": 40,
    "rest": 20,
    "rounds": 4,
-   "how": "Inside then outside of the same foot, moving forward. Round 2 left foot only.",
+   "how": "Inside then outside of the same foot, moving forward. Round 2 weaker foot only.",
    "needs": [
     "ball"
    ],
@@ -448,7 +448,7 @@
    "work": 45,
    "rest": 30,
    "rounds": 5,
-   "how": "Weave through 5-6 markers a stride apart, every touch close. Back through with the left foot only.",
+   "how": "Weave through 5-6 markers a stride apart, every touch close. Back through with the weaker foot only.",
    "needs": [
     "ball",
     "markers"
@@ -525,7 +525,7 @@
    "work": 45,
    "rest": 20,
    "rounds": 4,
-   "how": "Toss the ball high, kill it dead with foot, thigh or chest. Every third one with the left foot.",
+   "how": "Toss the ball high, kill it dead with foot, thigh or chest. Every third one with the weaker foot.",
    "needs": [
     "ball"
    ]

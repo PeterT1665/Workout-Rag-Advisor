@@ -1,12 +1,11 @@
 // Public demo mode (build flag VITE_DEMO=1): no login, no sync, sample data, only licensed photos.
 // The private build never seeds anything. Dates are relative to "today" so the demo always looks current.
 import { DEFAULT_SETTINGS, save, type HistoryEntry } from './storage'
+import type { Game } from './weekplan'
 import { BUILTIN_SESSIONS as sessions } from './library'
 
 export const DEMO = import.meta.env.VITE_DEMO === '1'
 export const IMAGE_DIR = DEMO ? 'demo-img' : 'personal'
-// Quotes in the private build are attributed to the role model; the public demo uses neutral lines with no attribution.
-export const QUOTE_BY = DEMO ? '' : 'Cristiano Ronaldo'
 
 export const DEMO_QUOTES = [
   'Show up. Do the reps. Repeat.',
@@ -54,4 +53,19 @@ export function seedDemo(now = new Date(), force = false) {
   save('settings', { ...DEFAULT_SETTINGS })
   save(`kit:${today}`, ['water', 'ball'])
   try { localStorage.setItem('demo:seedDay', today) } catch { /* ignore */ }
+}
+
+// Demo visitor made their own player: start from an empty log with their game days (no daily reseeding).
+export function startOwnDemo(games: Game[]) {
+  save('history', [])
+  save('games', games)
+  save('quotes', DEMO_QUOTES)
+  save('settings', { ...DEFAULT_SETTINGS })
+  try { localStorage.removeItem('demo:seedDay') } catch { /* ignore */ }
+}
+// Back to the welcome screen: forget the player and their demo data (built sessions stay).
+export function startOverDemo() {
+  for (const k of ['profile', 'history', 'games', 'quotes', 'demo:seedDay']) {
+    try { localStorage.removeItem(k) } catch { /* ignore */ }
+  }
 }

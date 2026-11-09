@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { usePersonalImage } from '../lib/personal'
 import type { Session } from '../lib/types'
-import { QUOTE_BY } from '../lib/demo'
+import { useProfile } from '../lib/profile'
 
 // Kick-off moment: a short "KICK OFF" intro (rare event, so it gets the delight budget),
 // then the mindset card and clip. Always dark and cinematic, whatever the system theme.
@@ -13,6 +13,7 @@ export function Preroll({ session, quote, clipName, onGo }: { session: Session; 
   const bg = usePersonalImage('preroll.jpg')
   const [phase, setPhase] = useState<'intro' | 'leaving' | 'card'>('intro')
   const nothingToShow = !quote && !clipName
+  const by = useProfile().idol
 
   useEffect(() => {
     const total = reducedMotion() ? 400 : INTRO_MS
@@ -43,7 +44,7 @@ export function Preroll({ session, quote, clipName, onGo }: { session: Session; 
           {quote && (
             <figure style={{ '--i': 2 } as React.CSSProperties} className="m-0 rounded-[24px] bg-white/10 p-5 backdrop-blur-md">
               <blockquote className="m-0 font-display text-lg leading-snug normal-case">“{quote}”</blockquote>
-              {QUOTE_BY && <figcaption className="mt-2 text-sm text-white/60">{QUOTE_BY}</figcaption>}
+              {by && <figcaption className="mt-2 text-sm text-white/60">{by}</figcaption>}
             </figure>
           )}
           {clipName && <p style={{ '--i': 3 } as React.CSSProperties} className="m-0 text-sm text-white/70">▶ Playing: {clipName}</p>}

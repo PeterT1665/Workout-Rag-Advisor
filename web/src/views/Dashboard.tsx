@@ -6,6 +6,7 @@ import { BUILTIN_SESSIONS } from '../lib/library'
 import { loadHistory, loadQuotes, weekLoads } from '../lib/storage'
 import { LoadChart } from '../components/LoadChart'
 import { DEMO } from '../lib/demo'
+import { useProfile } from '../lib/profile'
 import type { Today } from '../lib/today'
 import type { Session } from '../lib/types'
 
@@ -26,14 +27,15 @@ export function Dashboard(p: {
   const drills = s.blocks.filter((b) => b.kind === 'drill').slice(0, 3)
   const quotes = loadQuotes().slice(0, 3)
   const hour = new Date().getHours()
+  const { name, sample } = useProfile()
   const greet = hour < 12 ? 'Good morning' : hour < 18 ? 'Good afternoon' : 'Good evening'
   return (
     <main className="px-10 pt-9 pb-12">
       <header className="mb-6 flex items-end justify-between">
         <div>
           <p className="m-0 text-muted">{new Date().toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long' })}</p>
-          <h1 className="m-0 mt-1 font-display text-4xl uppercase">{greet}, Peter</h1>
-          {DEMO && <p className="m-0 mt-2 inline-block rounded-full bg-surface-2 px-3 py-1 text-sm">Public demo · sample data, not real training history</p>}
+          <h1 className="m-0 mt-1 font-display text-4xl uppercase">{greet}, {name}</h1>
+          {DEMO && <p className="m-0 mt-2 inline-block rounded-full bg-surface-2 px-3 py-1 text-sm">{sample ? 'Public demo · sample player, not real training history' : 'Public demo · saved in this browser only'}</p>}
         </div>
       </header>
 

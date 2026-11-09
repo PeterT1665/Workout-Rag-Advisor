@@ -2,7 +2,8 @@ import { useState } from 'react'
 import { Button, Pill, SectionHead } from '../components/ui'
 import { BallIcon, GearIcon, KitGlyph } from '../components/icons'
 import { usePersonalImage } from '../lib/personal'
-import { DEMO, QUOTE_BY } from '../lib/demo'
+import { DEMO } from '../lib/demo'
+import { positionTag, useProfile } from '../lib/profile'
 import { kitFor, loadPacked, togglePacked, type KitItem } from '../lib/kit'
 import { sessionMinutes } from '../lib/logic'
 import { loadQuotes } from '../lib/storage'
@@ -34,9 +35,11 @@ export function Hero({ today, onKickOff, onOpen, onSettings, desktop = false }: 
   const status = !today.scheduled && today.slot
     ? today.slot.kind === 'game' ? 'Game day. Keep the legs fresh, warm up properly.'
       : today.slot.kind === 'cheer' ? 'Cheer practice this morning.'
-        : today.slot.kind === 'gym' ? 'Gym day. Gym sessions arrive with the planner.' : null
+        : null
     : !today.scheduled ? 'Rest day. Train only if the legs feel good.' : null
   const date = new Date().toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short' })
+  const me = useProfile()
+  const sample = DEMO && me.sample
 
   return (
     <section className={desktop
@@ -51,7 +54,7 @@ export function Hero({ today, onKickOff, onOpen, onSettings, desktop = false }: 
       {!desktop && <div className="absolute inset-x-4 top-[max(16px,env(safe-area-inset-top))] flex items-center justify-between">
         <span className="font-display text-sm uppercase leading-[1.05] text-white [text-shadow:0_1px_8px_rgba(0,0,0,.6)]">Sport Personal<br />Coach</span>
         <span className="flex items-center gap-2">
-          <Pill tone="glass">{DEMO ? 'Sample data' : date}</Pill>
+          <Pill tone="glass">{sample ? 'Sample data' : date}</Pill>
           <button onClick={onSettings} aria-label="Settings" className="grid h-10 w-10 place-items-center rounded-full bg-white/15 text-white backdrop-blur-md active:scale-95">
             <GearIcon />
           </button>
@@ -59,7 +62,7 @@ export function Hero({ today, onKickOff, onOpen, onSettings, desktop = false }: 
       </div>}
       <div className={desktop ? 'absolute bottom-8 left-8 max-w-[64%] rise' : 'absolute inset-x-4 bottom-5 rise'}>
         <div className="flex flex-wrap gap-2">
-          {desktop && <Pill tone="glass">{DEMO ? 'Sample data' : date}</Pill>}
+          {desktop && <Pill tone="glass">{sample ? 'Sample data' : date}</Pill>}
           {today.md && <Pill tone="red">{today.md}</Pill>}
           <Pill tone="glass">{when}{today.scheduled && today.slot ? ` · ${SLOT_LABEL[today.slot.kind]}` : ''}</Pill>
         </div>
@@ -166,6 +169,7 @@ export function WeekStrip({ today }: { today: Today }) {
 
 // ---------- mindset ----------
 export function MindsetCard({ i, quote, hasClips, onPlayClip, onAddClips, fluid = false }: { i: number; quote: string; hasClips: boolean; onPlayClip: () => void; onAddClips: () => void; fluid?: boolean }) {
+  const by = useProfile().idol
   const photo = usePersonalImage(`mindset-${(i % 2) + 1}.jpg`)
   return (
     <div className={`${fluid ? 'w-full' : 'w-[300px] shrink-0 snap-start'} overflow-hidden rounded-[20px] bg-surface`}>
@@ -180,7 +184,7 @@ export function MindsetCard({ i, quote, hasClips, onPlayClip, onAddClips, fluid 
       </div>
       <div className="p-3.5">
         <p className="m-0 font-display text-sm normal-case leading-snug">“{quote}”</p>
-        {QUOTE_BY && <p className="m-0 mt-1 text-[13px] text-muted">{QUOTE_BY}</p>}
+        {by && <p className="m-0 mt-1 text-[13px] text-muted">{by}</p>}
       </div>
     </div>
   )
@@ -189,6 +193,7 @@ export function MindsetCard({ i, quote, hasClips, onPlayClip, onAddClips, fluid 
 // ---------- player card tile ----------
 export function CardTile({ onPlayer }: { onPlayer: () => void }) {
   const bg = usePersonalImage('card.jpg')
+  const me = useProfile()
   const stats: [string, number][] = [['PAC', 82], ['DRI', 78], ['SHO', 71], ['WF', 58]]
   return (
     <button onClick={onPlayer} className="relative block h-[200px] w-full overflow-hidden rounded-[20px] bg-surface text-left active:scale-[0.99]">
@@ -196,13 +201,13 @@ export function CardTile({ onPlayer }: { onPlayer: () => void }) {
         ? <img src={bg} alt="" className="absolute inset-0 h-full w-full object-cover object-[50%_30%]" />
         : <>
             <div className="absolute inset-0 bg-[linear-gradient(135deg,#3a0a12_0%,#14090b_55%,#0b0d0c_100%)]" />
-            <span aria-hidden="true" className="absolute -right-2 -bottom-8 select-none font-display text-[220px] leading-none text-transparent [-webkit-text-stroke:2px_rgba(255,255,255,.14)]">7</span>
+            <span aria-hidden="true" className="absolute -right-2 -bottom-8 select-none font-display text-[220px] leading-none text-transparent [-webkit-text-stroke:2px_rgba(255,255,255,.14)]">{me.number}</span>
           </>}
       <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(10,12,11,.55)_0%,rgba(10,12,11,.3)_50%,rgba(10,12,11,0)_100%)]" />
       <div className="absolute inset-y-4 left-4 flex flex-col justify-between">
         <div>
           <div className="font-display text-[54px] leading-[.85] text-white">74</div>
-          <Pill tone="red" className="mt-2">LW · Peter</Pill>
+          <Pill tone="red" className="mt-2">{positionTag(me)} · {me.name}</Pill>
         </div>
         <div className="flex gap-3.5 font-display text-xs text-white">
           {stats.map(([k, v]) => <span key={k}>{k} <b className="text-red-ink">{v}</b></span>)}
