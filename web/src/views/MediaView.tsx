@@ -65,7 +65,7 @@ export function MediaView({ settings, onDone }: { settings: Settings; onDone: ()
   return (
     <Screen>
       <TopBar left={<Title>Make it yours</Title>} right={<Button variant="ghost" size="sm" onClick={() => { stopClip(); onDone() }}>Done</Button>} />
-      <p className="mt-0 mb-6 text-muted">Your colours, your photos, your role model. Changes show up straight away.</p>
+      <div className="mb-4" />
 
       <Section title="Team colour">
         <div className="grid grid-cols-9 gap-1.5">
@@ -77,11 +77,11 @@ export function MediaView({ settings, onDone }: { settings: Settings; onDone: ()
         </div>
       </Section>
 
-      <Section title="Photos" hint={`Your photos replace the app's. ${syncEnabled() ? 'Saved privately to your account.' : 'Saved in this browser only.'} For the player card, a cut-out works best: in iPhone Photos, long-press the person, then Share.`}>
+      <Section title="Photos" hint={syncEnabled() ? 'Private to your account.' : 'Saved in this browser.'}>
         <PhotoSlots />
       </Section>
 
-      <Section title="Role model & quotes" hint="Their name signs your motivation quotes, shown before sessions and during rests.">
+      <Section title="Role model & quotes" hint="Shown before sessions and in rests.">
         <label htmlFor="idol" className="text-sm text-muted">Role model</label>
         <input id="idol" value={me.idol} placeholder="Your favourite player" onChange={(e) => setProfile({ ...me, idol: e.target.value.slice(0, 40) })} className={field} />
         <label htmlFor="quotes" className="mt-4 block text-sm text-muted">Quotes, one per line</label>
@@ -92,7 +92,7 @@ export function MediaView({ settings, onDone }: { settings: Settings; onDone: ()
         </div>
       </Section>
 
-      <Section title="Audio clips" hint="Commentary or interviews play before sessions and in rests; a SIUUU-style clip plays at the end. Clips stay on this phone only and are never uploaded.">
+      <Section title="Audio clips" hint="Play before sessions and at the end. Stay on this phone.">
         <div className="flex gap-2">
           <select id="kind" aria-label="Clip type" value={kind} onChange={(e) => setKind(e.target.value as ClipKind)} className="min-h-11 flex-1 rounded-full bg-surface-2 px-4 text-ink">
             <option value="mindset">Mindset clip</option>

@@ -4,7 +4,7 @@ import { sendPasswordReset, setNewPassword, signIn, type SignInResult } from '..
 
 const MESSAGES: Record<Exclude<SignInResult, 'ok'>, string> = {
   wrong: 'Email or password is wrong. Try again.',
-  throttled: 'Too many tries. Wait a few minutes, then try again.',
+  throttled: 'Too many tries. Wait a few minutes.',
   offline: "Can't reach the server. Check your connection.",
 }
 
@@ -41,7 +41,7 @@ export function Login({ onDone, onBack }: { onDone: () => void; onBack?: () => v
           {mode === 'signin' ? <>Sign <span className="text-red-ink">in</span></> : <>Reset <span className="text-red-ink">password</span></>}
         </h1>
         {mode === 'sent'
-          ? <p className="mt-6 text-muted">If {email.trim()} has an account, a reset link is on its way. Open it on this device.</p>
+          ? <p className="mt-6 text-muted">Check your email for a reset link.</p>
           : <>
               <label htmlFor="email" className="mt-8 block text-sm text-muted">Email</label>
               <input id="email" type="email" autoComplete="email" inputMode="email" required value={email} onChange={(e) => setEmail(e.target.value)} className={field} />

@@ -29,7 +29,7 @@ export function TestDay({ onDone }: { onDone: () => void }) {
       <Screen className="flex flex-col">
         <div className="mb-4 flex justify-between"><Button variant="ghost" size="sm" onClick={onDone}>Close</Button></div>
         <h1 className="m-0 font-display text-[clamp(2.2rem,10vw,3rem)] uppercase leading-[.9]">Rating<br /><span className="text-red-ink">session</span></h1>
-        <p className="mt-4 text-muted">Six quick tests, about 30 minutes with rests. Each one sets a stat on your player card. Skip any you can't do today.</p>
+        <p className="mt-4 text-muted">Six tests, about 30 minutes. Each sets a card stat.</p>
         <ul className="m-0 mt-4 flex list-none flex-col gap-2 p-0">
           {TESTS.map((t) => (
             <li key={t.stat} className="flex items-center gap-3 rounded-2xl bg-surface px-4 py-3">
@@ -37,7 +37,7 @@ export function TestDay({ onDone }: { onDone: () => void }) {
             </li>
           ))}
         </ul>
-        <p className="mt-4 text-sm text-muted">You'll need: a ball, 6 markers (bottles or shoes work), a wall or goal, and something to measure 20 m. Warm up first.</p>
+        <p className="mt-4 text-sm text-muted">Bring a ball, 6 markers and a wall. Warm up first.</p>
         <Button block className="mt-auto" onClick={() => { unlockAudio(); setI(0) }}>Start</Button>
       </Screen>
     )
@@ -53,7 +53,7 @@ export function TestDay({ onDone }: { onDone: () => void }) {
         <h1 className="m-0 mt-2 font-display text-4xl uppercase leading-none">{tier ? `${tier} card` : 'Almost there'}</h1>
         <div className="pop mt-6 w-full max-w-[280px]"><PlayerCard p={saved} stats={stats} photo={photo} /></div>
         <p className="mt-6 max-w-[34ch] text-muted">
-          {stats ? 'Do it again in 6-8 weeks to see what moved. Your card keeps the best picture of where you are.' : 'Do at least 3 tests to get rated. Skipped tests can be done another day.'}
+          {stats ? 'Redo it every 6-8 weeks.' : 'Do at least 3 tests to get rated.'}
         </p>
         <Button block className="mt-auto" onClick={onDone}>Done</Button>
       </Screen>

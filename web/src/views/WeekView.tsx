@@ -23,7 +23,7 @@ export function WeekView({ today, games, sessions, onGames, onOpen, wide = false
       <Title>This week</Title>
       <div className={wide ? 'mt-2 grid grid-cols-[minmax(0,1fr)_minmax(0,1.2fr)] gap-10' : ''}>
       <div>
-      <p className="mt-2 text-muted">Tap the days you play. The week rebuilds around your games.</p>
+      <p className="mt-2 text-muted">Tap the days you play.</p>
       <div className="mt-4 grid grid-cols-7 gap-1.5">
         {DAY_SHORT.map((d, day) => {
           const k = kindOn(day)

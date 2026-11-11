@@ -66,7 +66,7 @@ export function FullTime({ session, st, onExit }: { session: Session; st: Player
         {!saved ? (
           <section className="mt-8 flex flex-1 flex-col">
             <h2 className="m-0 font-display text-xl uppercase">20-second check-in</h2>
-            <p className="m-0 mt-1 text-sm text-white/60">Tap, don't type. It shapes next week's plan.</p>
+            <p className="m-0 mt-1 text-sm text-white/60">Tap, don't type.</p>
 
             <h3 className="m-0 mt-6 mb-2 font-semibold">How hard was it?{rpe ? <span className="ml-2 font-normal text-white/60">{EFFORT_WORDS[rpe]}</span> : null}</h3>
             <div className="grid grid-cols-5 gap-2">

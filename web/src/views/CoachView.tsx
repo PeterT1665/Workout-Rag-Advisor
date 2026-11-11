@@ -13,8 +13,7 @@ export function CoachView({ wide = false }: { wide?: boolean }) {
     <main className={wide ? 'max-w-3xl px-10 pt-10 pb-12' : 'mx-auto max-w-xl px-4 pt-[max(20px,var(--sat))] pb-32'}>
       <Title>Coach</Title>
       <p className="m-0 mt-3 max-w-[60ch] text-muted">
-        Coming soon: an AI coach that knows your week, your games and your check-ins. Ask it to plan around a busy week,
-        explain a drill, or adjust tomorrow when your legs are heavy.
+        Coming soon: an AI coach that knows your week.
       </p>
 
       <section className="mt-8 rounded-[24px] bg-surface p-5">

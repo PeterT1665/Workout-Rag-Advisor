@@ -48,7 +48,7 @@ export function Onboarding({ initial, initialGames = [], welcome = false, onDone
           <div style={{ '--i': 3 } as React.CSSProperties}>
             <Button block onClick={() => setStep(0)}>Make my player</Button>
             <Button block variant="ghost" className="mt-3" onClick={onSample}>Try a sample player</Button>
-            <p className="m-0 mt-4 text-center text-xs text-muted">Takes 30 seconds. Stays in this browser, no account needed.</p>
+            <p className="m-0 mt-4 text-center text-xs text-muted">30 seconds. No account needed.</p>
             {onSignIn && <button onClick={onSignIn} className="mt-1 min-h-11 w-full text-center text-sm font-semibold">Have an invite? <span className="text-red-ink">Sign in</span></button>}
           </div>
         </div>
@@ -111,7 +111,7 @@ export function Onboarding({ initial, initialGames = [], welcome = false, onDone
           </Step>
         )}
         {id === 'week' && (
-          <Step title="Your week" hint="Tap the days you usually play. The plan works around them.">
+          <Step title="Your week" hint="Tap the days you play.">
             <div className="grid grid-cols-7 gap-1.5">
               {DAYS.map((d, day) => {
                 const on = games.some((g) => g.day === day)
@@ -149,7 +149,7 @@ export function Onboarding({ initial, initialGames = [], welcome = false, onDone
             <label htmlFor="ob-idol" className="mt-6 block text-sm text-muted">Role model (optional)</label>
             <input id="ob-idol" value={p.idol} onChange={(e) => set({ idol: e.target.value.slice(0, 40) })} placeholder="Your favourite player"
               className="mt-1 block min-h-14 w-full rounded-2xl bg-surface px-4 text-lg text-ink placeholder:text-muted" />
-            <p className="m-0 mt-2 text-sm text-muted">Their name goes on your motivation quotes. Add their photos later in Settings.</p>
+            <p className="m-0 mt-2 text-sm text-muted">Signs your motivation quotes.</p>
           </Step>
         )}
       </div>

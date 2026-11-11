@@ -38,7 +38,7 @@ export function Library({ sessions, onOpen, onNew, onBack, wide = false }: {
       <SectionHead title="My sessions" right={mine.length ? `${mine.length}` : undefined} />
       {mine.length
         ? <ul className={grid}>{mine.map(card)}</ul>
-        : <p className="m-0 text-sm text-muted">Nothing yet. Build one from the exercise library, or open a recommended session and tap Customise.</p>}
+        : <p className="m-0 text-sm text-muted">Nothing yet. Build one, or Customise a recommended session.</p>}
 
       <SectionHead title="Recommended" />
       <ul className={grid}>{recommended.map(card)}</ul>

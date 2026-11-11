@@ -36,10 +36,10 @@ export function Hero({ today, onKickOff, onOpen, onSettings, onCustomise, deskto
   const drills = s.blocks.filter((b) => b.kind === 'drill').length
   const when = today.scheduled ? 'Today' : today.nextDay !== null ? `Next · ${DAYS[today.nextDay].slice(0, 3)}` : 'Anytime'
   const status = !today.scheduled && today.slot
-    ? today.slot.kind === 'game' ? 'Game day. Keep the legs fresh, warm up properly.'
+    ? today.slot.kind === 'game' ? 'Game day. Keep the legs fresh.'
       : today.slot.kind === 'cheer' ? 'Cheer practice this morning.'
         : null
-    : !today.scheduled ? 'Rest day. Train only if the legs feel good.' : null
+    : !today.scheduled ? 'Rest day.' : null
   const date = new Date().toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short' })
   const me = useProfile()
   const sample = DEMO && me.sample
@@ -205,7 +205,7 @@ export function CardTile({ onPlayer }: { onPlayer: () => void }) {
       <div className="w-[118px] shrink-0"><PlayerCard p={me} stats={cardStatsFor(me)} photo={photo} /></div>
       <div className="min-w-0">
         <div className="font-display text-lg uppercase leading-tight">{me.name}</div>
-        <p className="m-0 mt-1 text-sm text-muted">{me.sample ? 'Example ratings for the sample player.' : me.ratings ? `Rated on ${me.ratings.date}.` : 'Unrated: do a rating session to set your stats.'}</p>
+        <p className="m-0 mt-1 text-sm text-muted">{me.sample ? 'Example ratings.' : me.ratings ? `Rated ${me.ratings.date}` : 'Not rated yet.'}</p>
         <span className="mt-3 inline-block font-display text-xs uppercase text-red-ink">Open player →</span>
       </div>
     </button>
@@ -241,9 +241,9 @@ function HowItWorks({ onWeek }: { onWeek?: () => void }) {
   if (seen) return null
   const close = () => { save('intro:seen', true); setSeen(true) }
   const steps: [string, string][] = [
-    ['Set your week', 'Tap your game days. Football, gym and recovery fall into place.'],
-    ['Kick off', 'The ball button starts today\'s session. Volume up: drills are called out loud.'],
-    ['20-second check-in', 'After the session, tap how hard it was. Your load builds the plan.'],
+    ['Set your week', 'Tap your game days.'],
+    ['Kick off', 'Volume up: drills are called out loud.'],
+    ['Check in', 'Tap how hard it was.'],
   ]
   return (
     <section aria-label="How it works" className="rise mt-6 rounded-[22px] bg-surface p-4">

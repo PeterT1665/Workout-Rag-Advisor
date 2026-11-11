@@ -42,7 +42,7 @@ export function SettingsView({ settings: s, clipCount, onChange, onMedia, onProf
       </Panel>
       {!syncEnabled() && (
           <Panel className="mt-8 flex items-center justify-between gap-4">
-            <p className="m-0 text-sm text-muted">{me.sample ? 'Sample player. Nothing here is a real training log.' : 'Guest mode. Your player and log stay in this browser only.'}</p>
+            <p className="m-0 text-sm text-muted">{me.sample ? 'Sample player: not a real log.' : 'Guest mode: saved in this browser.'}</p>
             <div className="flex shrink-0 flex-col gap-2">
               {me.sample && <Button variant="ghost" size="sm" className="bg-surface-2" onClick={() => { seedDemo(new Date(), true); location.reload() }}>Reset sample</Button>}
               <Button variant="ghost" size="sm" className="bg-surface-2" onClick={() => { startOverDemo(); location.reload() }}>Start over</Button>
@@ -67,22 +67,22 @@ export function SettingsView({ settings: s, clipCount, onChange, onMedia, onProf
         <h3 className="m-0 mb-2 font-display text-base uppercase">Privacy</h3>
         <p className="m-0 text-sm text-muted">
           {syncEnabled()
-            ? 'Your player, sessions, training log and photos are stored in your private account (Sydney, Australia). Only you can read them. Audio clips never leave this device.'
-            : 'Guest mode: everything stays in this browser. Nothing is sent anywhere.'}
+            ? 'Your data is private to your account. Clips stay on this phone.'
+            : 'Everything stays in this browser.'}
         </p>
       </Panel>
       {syncEnabled() && (
         <Panel className="mt-4 flex items-center justify-between gap-4">
-          <p className="m-0 text-sm text-muted">Signed in. Synced with your other devices.</p>
+          <p className="m-0 text-sm text-muted">Signed in and synced.</p>
           <Button variant="ghost" size="sm" className="bg-surface-2" onClick={async () => { await signOut(); location.reload() }}>Sign out</Button>
         </Panel>
       )}
       {syncEnabled() && (
         <button className="mt-6 min-h-11 w-full text-sm font-semibold text-red-ink"
           onClick={async () => {
-            if (!confirm('Delete your account? Your player, sessions, training log and photos are removed for good.')) return
+            if (!confirm('Delete your account and all its data for good?')) return
             if (await deleteAccount()) location.reload()
-            else alert("Couldn't delete the account. Check your connection and try again.")
+            else alert("Couldn't delete it. Check your connection.")
           }}>
           Delete my account
         </button>

@@ -35,7 +35,7 @@ export function Dashboard(p: {
         <div>
           <p className="m-0 text-muted">{new Date().toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long' })}</p>
           <h1 className="m-0 mt-1 font-display text-4xl uppercase">{greet}, {name}</h1>
-          {DEMO && <p className="m-0 mt-2 inline-block rounded-full bg-surface-2 px-3 py-1 text-sm">{sample ? 'Public demo · sample player, not real training history' : 'Public demo · saved in this browser only'}</p>}
+          {DEMO && <p className="m-0 mt-2 inline-block rounded-full bg-surface-2 px-3 py-1 text-sm">{sample ? 'Sample player' : 'Guest mode'}</p>}
         </div>
       </header>
 

@@ -32,9 +32,9 @@ export function Detail({ session: s, onBack, onStart, onEdit, desktop = false }:
         </div>} />
       <Title>{s.title}</Title>
       <p className="mt-4">{s.summary}</p>
-      <p className="text-sm text-muted">About {sessionMinutes(s)} min of timed work. Allow extra time for setup and water.</p>
+      <p className="text-sm text-muted">About {sessionMinutes(s)} min.</p>
       <div className="flex flex-wrap gap-2">{s.needs.map((n) => <Tag key={n}>{n}</Tag>)}</div>
-      {hasCue && <p className="text-sm">Includes random LEFT/RIGHT voice cues on the 1v1 drills. Phone volume up.</p>}
+      {hasCue && <p className="text-sm">LEFT/RIGHT voice cues: volume up.</p>}
       <KitCheck session={s} />
 
       {/* Match timeline: blocks sized by time, voice-cue drills striped */}

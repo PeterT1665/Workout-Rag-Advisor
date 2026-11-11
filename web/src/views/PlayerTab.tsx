@@ -6,11 +6,6 @@ import { useProfile } from '../lib/profile'
 import { loadHistory, weekLoads } from '../lib/storage'
 import { LoadChart } from '../components/LoadChart'
 
-const STATS: [string, string][] = [
-  ['PAC', '20 m sprint'], ['SHO', 'shots on target /10'], ['PAS', 'wall passes in 30 s'],
-  ['DRI', 'cone weave time'], ['DEF', '1v1 jockey drill'], ['PHY', 'end-of-game tiredness'],
-]
-
 const fmtDate = (iso: string) => {
   const [y, m, d] = iso.split('-').map(Number)
   return new Date(y, m - 1, d).toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short' })
@@ -30,12 +25,9 @@ export function PlayerTab({ wide = false, onTestDay }: { wide?: boolean; onTestD
         <PlayerCard p={me} stats={stats} photo={bg} />
       </div>
       <p className="mt-4 text-center text-sm text-muted">
-        {me.sample ? 'Example ratings for the sample player.' : me.ratings ? `Rated on ${me.ratings.date}. Redo it every 6-8 weeks to see what moved.` : 'Unrated. A rating session (six quick tests) sets your stats.'}
+        {me.sample ? 'Example ratings.' : me.ratings ? `Rated ${me.ratings.date}` : 'Not rated yet.'}
       </p>
       {onTestDay && <Button block className="mt-4" onClick={onTestDay}>{me.ratings ? 'New rating session' : 'Start rating session'}</Button>}
-      <ul className="m-0 mt-3 grid list-none grid-cols-2 gap-x-6 gap-y-1.5 p-0 text-sm">
-        {STATS.map(([k, label]) => <li key={k}><span className="font-display text-muted">{k}</span> <span className="text-muted">{label}</span></li>)}
-      </ul>
 
       </div>
       <div>
@@ -43,7 +35,7 @@ export function PlayerTab({ wide = false, onTestDay }: { wide?: boolean; onTestD
       <LoadChart loads={weekLoads(loadHistory())} />
       <SectionHead title="Sessions" right={`${history.length} done`} />
       {history.length === 0
-        ? <Panel><p className="m-0 text-muted">No sessions yet. Kick off your first one.</p></Panel>
+        ? <Panel><p className="m-0 text-muted">No sessions yet.</p></Panel>
         : <ul className="m-0 flex list-none flex-col gap-2 p-0">
             {history.slice(0, 20).map((h, i) => (
               <li key={i} className="flex items-center justify-between gap-3 rounded-[16px] bg-surface px-4 py-3">
