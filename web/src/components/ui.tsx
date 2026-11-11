@@ -25,7 +25,7 @@ export function Button({ variant = 'primary', size = 'md', block, className = ''
 
 export function Screen({ children, className = '' }: { children: ReactNode; className?: string }) {
   return (
-    <main className={`mx-auto min-h-dvh max-w-xl px-4 pt-[max(16px,env(safe-area-inset-top))] pb-[max(24px,env(safe-area-inset-bottom))] ${className}`}>
+    <main className={`mx-auto min-h-dvh max-w-xl px-4 pt-[max(16px,var(--sat))] pb-[max(24px,env(safe-area-inset-bottom))] ${className}`}>
       {children}
     </main>
   )

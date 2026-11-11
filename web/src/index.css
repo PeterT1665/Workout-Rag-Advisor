@@ -11,6 +11,7 @@
   --red-ink: #ff2d46;  /* red text on the dark background: 5.35:1 */
   --red-press: #c0142c;
   --on-red: #ffffff;
+  --sat: env(safe-area-inset-top); /* top safe area; see lib/safeArea.ts for the iOS 26.1 fallback */
   --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
   --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
   color-scheme: dark;

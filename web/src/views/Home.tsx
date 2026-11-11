@@ -44,14 +44,14 @@ export function Hero({ today, onKickOff, onOpen, onSettings, desktop = false }: 
   return (
     <section className={desktop
       ? 'relative h-full min-h-[460px] overflow-hidden rounded-[28px] bg-[#0b0d0c]'
-      : 'relative -mx-4 -mt-[max(16px,env(safe-area-inset-top))] h-[640px] overflow-hidden rounded-b-[28px] bg-[#0b0d0c]'}>
+      : 'relative -mx-4 -mt-[max(16px,var(--sat))] h-[640px] overflow-hidden rounded-b-[28px] bg-[#0b0d0c]'}>
       {hero
         ? <img src={hero} alt="" className={`absolute inset-0 h-full w-full object-cover ${desktop ? 'object-[50%_30%]' : 'object-[50%_22%]'}`} />
         : <PitchBackdrop />}
       <div className={desktop
         ? 'absolute inset-0 bg-[linear-gradient(90deg,rgba(10,12,11,.95)_0%,rgba(10,12,11,.7)_38%,rgba(10,12,11,0)_70%)]'
         : 'absolute inset-0 bg-[linear-gradient(to_bottom,rgba(10,12,11,.6)_0%,rgba(10,12,11,0)_22%,rgba(10,12,11,0)_55%,rgba(10,12,11,.96)_86%)]'} />
-      {!desktop && <div className="absolute inset-x-4 top-[max(16px,env(safe-area-inset-top))] flex items-center justify-between">
+      {!desktop && <div className="absolute inset-x-4 top-[max(16px,var(--sat))] flex items-center justify-between">
         <span className="font-display text-sm uppercase leading-[1.05] text-white [text-shadow:0_1px_8px_rgba(0,0,0,.6)]">Sport Personal<br />Coach</span>
         <span className="flex items-center gap-2">
           <Pill tone="glass">{sample ? 'Sample data' : date}</Pill>

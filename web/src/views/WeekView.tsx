@@ -19,7 +19,7 @@ export function WeekView({ today, games, sessions, onGames, onOpen, wide = false
     onGames(next ? [...rest, { day, kind: next }].sort((a, b) => a.day - b.day) : rest)
   }
   return (
-    <main className={wide ? 'px-10 pt-10 pb-12' : 'mx-auto max-w-xl px-4 pt-[max(20px,env(safe-area-inset-top))] pb-32'}>
+    <main className={wide ? 'px-10 pt-10 pb-12' : 'mx-auto max-w-xl px-4 pt-[max(20px,var(--sat))] pb-32'}>
       <Title>This week</Title>
       <div className={wide ? 'mt-2 grid grid-cols-[minmax(0,1fr)_minmax(0,1.2fr)] gap-10' : ''}>
       <div>

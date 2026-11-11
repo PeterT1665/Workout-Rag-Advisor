@@ -10,7 +10,7 @@ const ASKS = [
 // Placeholder until the agent backend exists. Shows what it will do; nothing pretends to work.
 export function CoachView({ wide = false }: { wide?: boolean }) {
   return (
-    <main className={wide ? 'max-w-3xl px-10 pt-10 pb-12' : 'mx-auto max-w-xl px-4 pt-[max(20px,env(safe-area-inset-top))] pb-32'}>
+    <main className={wide ? 'max-w-3xl px-10 pt-10 pb-12' : 'mx-auto max-w-xl px-4 pt-[max(20px,var(--sat))] pb-32'}>
       <Title>Coach</Title>
       <p className="m-0 mt-3 max-w-[60ch] text-muted">
         Your training agent. Talk through your week, games and how your body feels. It researches drills for your positions,

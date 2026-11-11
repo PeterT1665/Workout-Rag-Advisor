@@ -5,6 +5,9 @@ import '@fontsource/barlow/600.css'
 import '@fontsource-variable/archivo/wdth.css'
 import './index.css'
 import Root from './Root'
+import { fixTopSafeArea } from './lib/safeArea'
+
+fixTopSafeArea()
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>

@@ -101,7 +101,7 @@ export function PlayerView({ session, player, settings, onExit }: { session: Ses
 
       {/* Full-screen cue: readable from a few metres away, phone on the ground */}
       <div aria-hidden={!st.cue} data-testid="cue"
-        className={`fixed inset-0 z-50 flex flex-col bg-red px-4 pt-[max(20px,env(safe-area-inset-top))] pb-[max(24px,env(safe-area-inset-bottom))] text-white transition-opacity duration-100 ${st.cue ? 'opacity-100' : 'pointer-events-none opacity-0'}`}>
+        className={`fixed inset-0 z-50 flex flex-col bg-red px-4 pt-[max(20px,var(--sat))] pb-[max(24px,env(safe-area-inset-bottom))] text-white transition-opacity duration-100 ${st.cue ? 'opacity-100' : 'pointer-events-none opacity-0'}`}>
         <div className="flex justify-between font-display text-sm uppercase tracking-wider">
           <span>{step.name.replace(/\s*\([^)]*\)/g, '')} · {step.round}/{step.rounds}</span>
           <span className="tabular-nums">{fmtTime(st.remainingMs / 1000)}</span>

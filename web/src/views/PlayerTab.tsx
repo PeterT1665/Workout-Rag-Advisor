@@ -19,7 +19,7 @@ export function PlayerTab({ wide = false }: { wide?: boolean }) {
   const me = useProfile()
   const history = loadHistory().slice().reverse()
   return (
-    <main className={wide ? 'px-10 pt-10 pb-12' : 'mx-auto max-w-xl px-4 pt-[max(20px,env(safe-area-inset-top))] pb-32'}>
+    <main className={wide ? 'px-10 pt-10 pb-12' : 'mx-auto max-w-xl px-4 pt-[max(20px,var(--sat))] pb-32'}>
       <Title>Player</Title>
       <div className={wide ? 'grid grid-cols-[minmax(0,1.1fr)_minmax(0,1fr)] items-start gap-10' : ''}>
       <div>
