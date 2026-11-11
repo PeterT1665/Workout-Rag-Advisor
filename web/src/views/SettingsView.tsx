@@ -2,6 +2,7 @@ import { Button, Panel, Screen, Slider, Title, Toggle, TopBar } from '../compone
 import { say } from '../lib/audio'
 import type { Settings } from '../lib/types'
 import { deleteAccount, signOut, syncEnabled } from '../lib/sync'
+import { safeAreaInfo } from '../lib/safeArea'
 import { DEMO, seedDemo, startOverDemo } from '../lib/demo'
 import { positionTag, useProfile } from '../lib/profile'
 import credits from '../data/credits.json'
@@ -86,6 +87,10 @@ export function SettingsView({ settings: s, clipCount, onChange, onMedia, onProf
           Delete my account
         </button>
       )}
+      {/* tiny diagnostic: lets a screenshot show how the phone reports its screen edges */}
+      <p className="mt-8 text-center text-[11px] text-muted/60">
+        {safeAreaInfo ? `display ${safeAreaInfo.standalone ? 'app' : safeAreaInfo.fullScreen ? 'full screen' : 'browser'} · top ${Math.round(safeAreaInfo.reported)}px${safeAreaInfo.applied !== null ? ` → ${safeAreaInfo.applied}px` : ''}` : ''}
+      </p>
     </Screen>
   )
 }
