@@ -52,7 +52,7 @@ export function Hero({ today, onKickOff, onOpen, onSettings, desktop = false }: 
         ? 'absolute inset-0 bg-[linear-gradient(90deg,rgba(10,12,11,.95)_0%,rgba(10,12,11,.7)_38%,rgba(10,12,11,0)_70%)]'
         : 'absolute inset-0 bg-[linear-gradient(to_bottom,rgba(10,12,11,.6)_0%,rgba(10,12,11,0)_22%,rgba(10,12,11,0)_55%,rgba(10,12,11,.96)_86%)]'} />
       {!desktop && <div className="absolute inset-x-4 top-[max(16px,var(--sat))] flex items-center justify-between">
-        <span className="font-display text-sm uppercase leading-[1.05] text-white [text-shadow:0_1px_8px_rgba(0,0,0,.6)]">Sport Personal<br />Coach</span>
+        <span className="font-display text-sm uppercase leading-[1.05] text-white [text-shadow:0_1px_8px_rgba(0,0,0,.6)]">Football Personal<br />Coach</span>
         <span className="flex items-center gap-2">
           <Pill tone="glass">{sample ? 'Sample data' : date}</Pill>
           <button onClick={onSettings} aria-label="Settings" className="grid h-10 w-10 place-items-center rounded-full bg-white/15 text-white backdrop-blur-md active:scale-95">

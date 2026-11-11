@@ -30,7 +30,7 @@ export function Onboarding({ initial, initialGames = [], welcome = false, onDone
           <img src={hero} alt="" className="drift fixed inset-0 -z-10 h-full w-full object-cover object-[50%_25%]" />
           <div className="fixed inset-0 -z-10 bg-[linear-gradient(to_bottom,rgba(11,11,12,.2)_0%,rgba(11,11,12,.35)_40%,var(--bg)_72%)]" />
         </>}
-        <p className="m-0 font-display text-sm uppercase text-red-ink">Sport Coach</p>
+        <p className="m-0 font-display text-sm uppercase text-red-ink">Football Coach</p>
         <h1 className="m-0 mt-2 font-display text-[clamp(2.4rem,11vw,3.6rem)] uppercase leading-[.9]">Train like<br />a pro.</h1>
         <p className="mt-4 mb-8 text-muted">Football sessions with a voice-cue timer, a week plan built around your games, and gym work for power. Try it with your own player, or look around with a sample one.</p>
         <Button block onClick={() => setStep(0)}>Make my player</Button>

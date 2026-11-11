@@ -1,4 +1,4 @@
-# Deploying Sport Personal Coach (EC2 + Caddy + DuckDNS)
+# Deploying Football Personal Coach (EC2 + Caddy + DuckDNS)
 
 One small server runs everything: Caddy (HTTPS, serves the app, guards private photos) and the FastAPI backend (login + sync, SQLite).
 

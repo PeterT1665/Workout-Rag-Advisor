@@ -9,15 +9,15 @@ const demo = process.env.VITE_DEMO === '1'
 export default defineConfig({
   plugins: [
     // the public demo gets its own browser-tab title
-    { name: 'demo-title', transformIndexHtml: (html: string) => (demo ? html.replace('<title>Sport Personal Coach</title>', '<title>Sport Personal Coach (demo)</title>') : html) },
+    { name: 'demo-title', transformIndexHtml: (html: string) => (demo ? html.replace('<title>Football Personal Coach</title>', '<title>Football Personal Coach (demo)</title>') : html) },
     react(),
     tailwindcss(),
     VitePWA({
       registerType: 'autoUpdate',
       includeAssets: ['icon-180.png', 'icon-192.png'],
       manifest: {
-        name: demo ? 'Sport Personal Coach (demo)' : 'Sport Personal Coach',
-        short_name: demo ? 'Coach demo' : 'Sport Coach',
+        name: demo ? 'Football Personal Coach (demo)' : 'Football Personal Coach',
+        short_name: demo ? 'Football Coach' : 'Football Coach',
         start_url: '/',
         display: 'standalone',
         orientation: 'portrait',

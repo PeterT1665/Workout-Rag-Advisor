@@ -1,4 +1,4 @@
-# Sport Personal Coach
+# Football Personal Coach
 
 A training app for footballers who also train in the gym: plan the week around your games on the laptop, run sessions on your phone. Live demo: https://football-personal-coach.ducphu1665.workers.dev
 

@@ -1,4 +1,4 @@
-# Sport Personal Coach — Project Plan (v2)
+# Football Personal Coach — Project Plan (v2)
 
 _Last updated: 2026-11-08 (v3 direction). v2 started 2026-10-16; the original CLI-only plan is in git history._
 

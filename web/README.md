@@ -1,4 +1,4 @@
-# Sport Personal Coach: web app (React PWA)
+# Football Personal Coach: web app (React PWA)
 
 Vite + React + TypeScript + Tailwind v4, installable on iPhone as a PWA.
 
