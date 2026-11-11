@@ -29,7 +29,7 @@ export default defineConfig({
         ],
       },
       // never cache the API or private photos in the offline cache
-      workbox: { globPatterns: ['**/*.{js,css,html,svg,png,woff2}'], globIgnores: ['personal/**'], navigateFallbackDenylist: [/^\/api\//, /^\/personal\//] },
+      workbox: { globPatterns: ['**/*.{js,css,html,svg,png,jpg,woff2}'], globIgnores: ['personal/**'], navigateFallbackDenylist: [/^\/api\//, /^\/personal\//] },
     }),
   ],
   server: { host: '0.0.0.0', proxy: { '/api': 'http://localhost:8788' } },
