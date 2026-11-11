@@ -34,7 +34,7 @@ export function PlayerCard({ p, stats, photo, className = '' }: { p: Profile; st
           {/* photo, or a big outlined number when there is none */}
           <div className="absolute top-[9%] right-[4%] h-[44%] w-[60%]">
             {photo
-              ? <img src={photo} alt="" className="h-full w-full object-cover object-top [mask-image:linear-gradient(to_bottom,#000_70%,transparent)]" />
+              ? <img src={photo} alt="" data-fade className="h-full w-full object-cover object-top [mask-image:linear-gradient(to_bottom,#000_70%,transparent)]" />
               : <span className="absolute right-0 bottom-0 font-display text-[44cqw] leading-[.8] text-transparent" style={{ WebkitTextStroke: `0.5cqw ${f.line.replace(/[\d.]+\)$/, '.45)')}` }}>{p.number || ''}</span>}
           </div>
 

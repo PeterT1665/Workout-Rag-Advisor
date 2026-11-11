@@ -24,7 +24,7 @@ export function Preroll({ session, quote, clipName, onGo }: { session: Session; 
 
   return (
     <div className="fixed inset-0 overflow-hidden bg-[#0a0c0b] text-white">
-      {bg && <img src={bg} alt="" className="drift absolute inset-0 h-full w-full object-cover opacity-60" />}
+      {bg && <img src={bg} alt="" data-fade className="drift absolute inset-0 h-full w-full object-cover opacity-60" />}
       <div className="absolute inset-0 bg-[linear-gradient(to_bottom,rgba(10,12,11,.35)_0%,rgba(10,12,11,.2)_35%,rgba(10,12,11,.95)_80%)]" />
 
       {phase !== 'card' && (

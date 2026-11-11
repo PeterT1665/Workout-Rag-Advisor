@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState, useSyncExternalStore } from 'react'
+import { useEffect, useLayoutEffect, useMemo, useRef, useState, useSyncExternalStore } from 'react'
 import { allSessions, BUILTIN_SESSIONS, deleteMySession, saveMySession, templateFor, toSession, type MySession, type Template } from './lib/library'
 import { Home } from './views/Home'
 import { Library } from './views/Library'
@@ -66,7 +66,8 @@ export default function App() {
     window.addEventListener('ta-sync', on)
     return () => window.removeEventListener('ta-sync', on)
   }, [])
-  useEffect(() => { window.scrollTo(0, 0) }, [tab, deskTab, overlay?.name])
+  // reset scroll before the new screen paints, so there is no visible jump
+  useLayoutEffect(() => { window.scrollTo(0, 0) }, [tab, deskTab, overlay?.name])
   // an app update may reload the page: hold it while a session, rating test or edit is open
   useEffect(() => { setBusy(['preroll', 'player', 'testday', 'builder', 'profile', 'media'].includes(overlay?.name ?? '')) }, [overlay?.name])
 
@@ -123,7 +124,7 @@ export default function App() {
         <div className="min-w-0 flex-1">
           {overlay
             ? <div key={overlay.name} className="screen-in py-6">{renderOverlay(overlay)}</div>
-            : <div key={deskTab} className="screen-in">
+            : <div key={deskTab} className="tab-in">
                 {deskTab === 'home' && (
                   <Dashboard today={today} hasClips={hasMindset} onKickOff={onStart} onOpen={open}
                     onSettings={() => setOverlay({ name: 'settings' })} onWeek={() => goTab('week')} onSessions={() => goTab('sessions')}
@@ -175,7 +176,7 @@ export default function App() {
   return (
     <>
       {/* min-h-lvh: a page shorter than the screen lets iOS home-screen apps lift the fixed tab bar */}
-      <div key={tab} className="screen-in min-h-lvh">
+      <div key={tab} className="tab-in min-h-lvh">
       {tab === 'home' && (
         <Home
           today={today}

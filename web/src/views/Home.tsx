@@ -31,8 +31,12 @@ const SLOT_LABEL: Record<SlotKind, string> = { game: 'Game day', football: 'Foot
 const dateKey = () => new Date().toISOString().slice(0, 10)
 
 // ---------- hero ----------
+// The hero's text slides in once per app open, not every time Home is shown again.
+let heroIntroDone = false
+
 export function Hero({ today, onKickOff, onOpen, onSettings, onCustomise, desktop = false }: Pick<Props, 'today' | 'onKickOff' | 'onOpen' | 'onSettings'> & { onCustomise?: () => void; desktop?: boolean }) {
   const hero = usePersonalImage('hero.jpg')
+  const [entrance] = useState(() => { const first = !heroIntroDone; heroIntroDone = true; return first })
   const s = today.session
   const drills = s.blocks.filter((b) => b.kind === 'drill').length
   const when = today.scheduled ? 'Today' : today.nextDay !== null ? `Next · ${DAYS[today.nextDay].slice(0, 3)}` : 'Anytime'
@@ -50,7 +54,7 @@ export function Hero({ today, onKickOff, onOpen, onSettings, onCustomise, deskto
       ? 'relative h-full min-h-[460px] overflow-hidden rounded-[28px] bg-[#0b0d0c]'
       : 'relative -mx-4 h-[640px] overflow-hidden rounded-b-[28px] bg-[#0b0d0c]'}>
       {hero
-        ? <img src={hero} alt="" className={`absolute inset-0 h-full w-full object-cover ${desktop ? 'object-[50%_30%]' : 'object-[50%_22%]'}`} />
+        ? <img src={hero} alt="" data-fade className={`absolute inset-0 h-full w-full object-cover ${desktop ? 'object-[50%_30%]' : 'object-[50%_22%]'}`} />
         : <PitchBackdrop />}
       <div className={desktop
         ? 'absolute inset-0 bg-[linear-gradient(90deg,rgba(10,12,11,.95)_0%,rgba(10,12,11,.7)_38%,rgba(10,12,11,0)_70%)]'
@@ -67,7 +71,7 @@ export function Hero({ today, onKickOff, onOpen, onSettings, onCustomise, deskto
           </button>
         </span>
       </div>}
-      <div className={desktop ? 'absolute bottom-8 left-8 max-w-[64%] rise' : 'absolute inset-x-4 bottom-5 rise'}>
+      <div className={`${desktop ? 'absolute bottom-8 left-8 max-w-[64%]' : 'absolute inset-x-4 bottom-5'} ${entrance ? 'rise' : ''}`}>
         <div className="flex flex-wrap gap-2">
           {desktop && <Pill tone="glass">{sample ? 'Sample data' : date}</Pill>}
           {today.md && <Pill tone="red">{today.md}</Pill>}
@@ -136,7 +140,7 @@ export function DrillCard({ name, meta, cue, category, onOpen, fluid = false }: 
   const label = category ? CATEGORY_LABELS[category] ?? category : null
   return (
     <button onClick={onOpen} className={`${fluid ? 'w-full' : 'w-[200px] shrink-0 snap-start'} relative block aspect-[3/4] overflow-hidden rounded-[22px] bg-surface text-left transition-transform duration-150 ease-snap active:scale-[0.98]`}>
-      <img src={drillPhoto(category)} alt="" loading="lazy" className="absolute inset-0 h-full w-full object-cover" />
+      <img src={drillPhoto(category)} alt="" data-fade loading="lazy" className="absolute inset-0 h-full w-full object-cover" />
       <div className="absolute inset-0 bg-[linear-gradient(to_bottom,rgba(0,0,0,.35)_0%,rgba(0,0,0,0)_30%,rgba(0,0,0,.15)_50%,rgba(0,0,0,.9)_100%)]" />
       <div className="absolute top-2.5 left-2.5 flex flex-wrap gap-1.5">
         {label && <Pill tone="glass">{label}</Pill>}
@@ -182,7 +186,7 @@ export function MindsetCard({ i, quote, hasClips, onPlayClip, onAddClips, fluid 
   return (
     <div className={`${fluid ? 'w-full' : 'w-[300px] shrink-0 snap-start'} overflow-hidden rounded-[20px] bg-surface`}>
       <div className="relative h-[150px] bg-[linear-gradient(160deg,#3a0a12,#0b0d0c)]">
-        {photo && <img src={photo} alt="" className="h-full w-full object-cover object-[50%_30%]" />}
+        {photo && <img src={photo} alt="" data-fade className="h-full w-full object-cover object-[50%_30%]" />}
         {i === 0 && (hasClips || !DEMO) && (
           <button onClick={hasClips ? onPlayClip : onAddClips}
             className="absolute top-2.5 left-2.5 rounded-full bg-red px-3 py-1 font-display text-[11px] uppercase tracking-wider text-white active:scale-95">

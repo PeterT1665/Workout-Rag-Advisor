@@ -111,6 +111,12 @@ h1, h2, h3 { text-wrap: balance; }
 /* fill-mode backwards: once finished, no transform is left behind (a lingering transform
    would turn this wrapper into the containing block for fixed overlays and collapse them) */
 .screen-in { animation: screen-in 240ms var(--ease-out) backwards; }
+/* Tab switches: native tab bars swap instantly; a short fade is enough (no slide, no movement) */
+.tab-in { animation: fade-in 140ms ease-out backwards; }
+/* Photos fade in when they finish loading instead of popping (see lib/fadeImages.ts) */
+img[data-fade]:not(.is-loaded) { opacity: 0; }
+img[data-fade].is-loaded { animation: fade-in 320ms ease-out backwards; }
+img[data-fade].drift.is-loaded { animation: fade-in 320ms ease-out backwards, drift 12s linear both; }
 /* Staggered entrance, 50ms apart (skill: 30-80ms) */
 .stagger > * { animation: rise 280ms var(--ease-out) backwards; animation-delay: calc(var(--i, 0) * 50ms); }
 /* Same, delays by position (for lists of sections) */

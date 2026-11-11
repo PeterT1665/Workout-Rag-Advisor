@@ -27,7 +27,7 @@ export function Onboarding({ initial, initialGames = [], welcome = false, onDone
     return (
       <Screen className="relative flex flex-col justify-end pb-8">
         {hero && <>
-          <img src={hero} alt="" className="drift fixed inset-0 z-0 h-full w-full object-cover object-[50%_25%]" />
+          <img src={hero} alt="" data-fade className="drift fixed inset-0 z-0 h-full w-full object-cover object-[50%_25%]" />
           <div className="fixed inset-0 z-0 bg-[linear-gradient(to_bottom,rgba(11,11,12,.1)_0%,rgba(11,11,12,.55)_30%,rgba(11,11,12,.85)_42%,var(--bg)_60%)]" />
         </>}
         <div className="stagger relative z-10">

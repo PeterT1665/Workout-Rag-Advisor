@@ -21,7 +21,7 @@ function PhotoTile({ id, label, hint }: { id: Slot; label: string; hint: string 
     <div className="relative overflow-hidden rounded-2xl bg-surface-2">
       <label className="block cursor-pointer">
         <div className="relative aspect-[4/3] w-full">
-          {shown ? <img src={shown} alt="" className={`h-full w-full object-cover ${own ? '' : 'opacity-60'}`} /> : <div className="grid h-full place-items-center text-3xl text-muted" aria-hidden="true">+</div>}
+          {shown ? <img src={shown} alt="" data-fade className={`h-full w-full object-cover ${own ? '' : 'opacity-60'}`} /> : <div className="grid h-full place-items-center text-3xl text-muted" aria-hidden="true">+</div>}
           {!own && shown && <span className="absolute bottom-2 left-2 rounded-full bg-black/60 px-2 py-0.5 text-[11px] text-white">Default · tap to change</span>}
         </div>
         <div className="px-3 py-2">

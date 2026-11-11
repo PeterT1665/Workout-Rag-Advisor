@@ -7,9 +7,11 @@ import './index.css'
 import Root from './Root'
 import { fixTopSafeArea } from './lib/safeArea'
 import { startUpdates } from './lib/updates'
+import { fadeImagesIn } from './lib/fadeImages'
 
 fixTopSafeArea()
 startUpdates()
+fadeImagesIn()
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
