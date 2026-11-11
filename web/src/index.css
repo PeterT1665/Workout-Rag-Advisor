@@ -11,7 +11,7 @@
   --red-ink: #ff2d46;  /* red text on the dark background: 5.35:1 */
   --red-press: #c0142c;
   --on-red: #ffffff;
-  --sat: env(safe-area-inset-top); /* top safe area; see lib/safeArea.ts for the iOS 26.1 fallback */
+  --sat: env(safe-area-inset-top); /* top safe area; phones get a minimum below */
   --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
   --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
   color-scheme: dark;
@@ -56,6 +56,12 @@
 :root[data-theme="light"][data-accent="teal"] { --red: #0b7470; --red-ink: #0b7470; --red-press: #09625f; --on-red: #ffffff; }
 :root[data-theme="light"][data-accent="pink"] { --red: #b8156a; --red-ink: #b8156a; --red-press: #9c115a; --on-red: #ffffff; }
 :root[data-theme="light"][data-accent="sky"] { --red: #0b6ea8; --red-ink: #0b6ea8; --red-press: #095d8e; --on-red: #ffffff; }
+
+/* Phones: always keep headers below the status bar / Dynamic Island (up to ~59pt), even when iOS 26.1
+   reports a 0 inset for home-screen apps. Photos still run full-screen behind. */
+@media (max-width: 1023px) and (pointer: coarse) {
+  :root { --sat: max(env(safe-area-inset-top), 58px); }
+}
 
 @theme {
   --color-bg: var(--bg);

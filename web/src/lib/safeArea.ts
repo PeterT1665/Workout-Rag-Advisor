@@ -24,7 +24,7 @@ export function fixTopSafeArea() {
     let applied: number | null = null
     if (ios && fullScreen) {
       // phones with a notch or Dynamic Island are at least 812pt tall; older ones have a 20pt status bar
-      const statusBar = Math.max(screen.height, screen.width) >= 812 ? 54 : 20
+      const statusBar = Math.max(screen.height, screen.width) >= 812 ? 58 : 20
       applied = Math.max(reported, statusBar)
       document.documentElement.style.setProperty('--sat', `${applied}px`)
     }
