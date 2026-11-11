@@ -213,15 +213,13 @@ describe('app', () => {
     fireEvent.change(screen.getByLabelText('Name'), { target: { value: 'Jordan' } })
     click(/^Next$/)
     click(/Defender/)
-    click(/^Next$/)
     click(/^left$/i)
     click(/^Next$/)
     click(/^Saturday$/)
     click(/^Next$/)
     click(/^Blue$/)
     expect(document.documentElement.dataset.accent).toBe('blue')
-    click(/^Next$/)
-    click(/^Done$/)
+    click(/^Done/)
     expect(getProfile()).toMatchObject({ name: 'Jordan', positions: ['winger', 'defender'], foot: 'left', accent: 'blue' })
     expect(JSON.parse(localStorage.getItem('games') || '[]').map((g: { day: number }) => g.day)).toContain(5)
     expect(screen.getByText(/Jordan/)).toBeTruthy()
@@ -237,6 +235,16 @@ describe('app', () => {
     expect(screen.getByLabelText('Replace Home hero photo')).toBeTruthy()
     fireEvent.click(removeBtn)
     await waitFor(() => expect(screen.getByLabelText('Add Home hero photo')).toBeTruthy())
+  })
+
+  test('home: the how-it-works card shows once, Set my week opens the week', () => {
+    const { unmount } = render(<App />)
+    expect(screen.getByRole('region', { name: 'How it works' })).toBeTruthy()
+    click(/Set my week/)
+    expect(screen.getByText(/Tap the days you play/)).toBeTruthy()
+    unmount()
+    render(<App />)
+    expect(screen.queryByRole('region', { name: 'How it works' })).toBeNull()
   })
 
   test('laptop: sidebar planner instead of the phone tab bar', () => {

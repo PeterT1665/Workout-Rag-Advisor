@@ -8,7 +8,7 @@ const click = (name: RegExp) => fireEvent.click(screen.getByRole('button', { nam
 test('welcome: sample player shortcut', () => {
   const onSample = vi.fn()
   render(<Onboarding welcome onSample={onSample} onDone={vi.fn()} />)
-  click(/Use a sample player/)
+  click(/sample player/)
   expect(onSample).toHaveBeenCalled()
 })
 
@@ -24,12 +24,10 @@ test('make my player: name and a position are required, several positions allowe
   click(/Striker/)
   click(/Midfielder/)
   click(/^Next$/) // foot: default right
-  click(/^Next$/)
   click(/^Wednesday$/)
   click(/^Sunday$/)
-  click(/^Next$/) // colour: default red
-  click(/^Next$/) // idol: optional
-  click(/^Done$/)
+  click(/^Next$/) // colour red and role model optional
+  click(/^Done/)
   expect(onDone).toHaveBeenCalledWith(
     expect.objectContaining({ name: 'Alex', number: 9, positions: ['striker', 'midfielder'], foot: 'right', accent: 'red', idol: '', sample: false }),
     [{ day: 2, kind: 'competitive' }, { day: 6, kind: 'competitive' }],

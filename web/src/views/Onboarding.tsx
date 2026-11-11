@@ -1,12 +1,12 @@
 import { useState, type ReactNode } from 'react'
 import { Button, Screen } from '../components/ui'
-import { ACCENTS, POSITIONS, applyAccent, type Foot, type Profile } from '../lib/profile'
+import { ACCENTS, POSITIONS, applyAccent, positionTag, type Foot, type Profile } from '../lib/profile'
 import { DAYS, type Game } from '../lib/weekplan'
 import { usePersonalImage } from '../lib/personal'
 
-// Make your player: a few one-tap steps. Used by demo visitors ("Try it") and by new accounts.
-// `welcome` adds the first screen with the sample-player shortcut (demo only).
-const STEPS = ['name', 'positions', 'foot', 'games', 'colour', 'idol'] as const
+// Make your player: four quick screens with a live player card on top. Used by guests ("Try it"),
+// by new accounts, and by Edit player. `welcome` adds the first screen with the sample-player shortcut.
+const STEPS = ['player', 'play', 'week', 'style'] as const
 
 export function Onboarding({ initial, initialGames = [], welcome = false, onDone, onSample, onSignIn, onCancel }: {
   initial?: Profile
@@ -17,7 +17,7 @@ export function Onboarding({ initial, initialGames = [], welcome = false, onDone
   onSignIn?: () => void
   onCancel?: () => void
 }) {
-  const [p, setP] = useState<Profile>(initial ?? { name: '', number: 10, positions: [], foot: 'right', accent: 'red', idol: '' })
+  const [p, setP] = useState<Profile>(initial ?? { name: '', number: 10, positions: [], foot: 'right', accent: 'red', idol: '', gym: 3 })
   const [games, setGames] = useState<Game[]>(initialGames)
   const [step, setStep] = useState<number>(welcome ? -1 : 0)
   const set = (patch: Partial<Profile>) => setP((x) => ({ ...x, ...patch }))
@@ -25,73 +25,93 @@ export function Onboarding({ initial, initialGames = [], welcome = false, onDone
 
   if (step === -1) {
     return (
-      <Screen className="relative flex flex-col justify-end pb-10">
+      <Screen className="relative flex flex-col justify-end pb-8">
         {hero && <>
-          <img src={hero} alt="" className="drift fixed inset-0 -z-10 h-full w-full object-cover object-[50%_25%]" />
-          <div className="fixed inset-0 -z-10 bg-[linear-gradient(to_bottom,rgba(11,11,12,.2)_0%,rgba(11,11,12,.35)_40%,var(--bg)_72%)]" />
+          <img src={hero} alt="" className="drift fixed inset-0 z-0 h-full w-full object-cover object-[50%_25%]" />
+          <div className="fixed inset-0 z-0 bg-[linear-gradient(to_bottom,rgba(11,11,12,.1)_0%,rgba(11,11,12,.55)_30%,rgba(11,11,12,.85)_42%,var(--bg)_60%)]" />
         </>}
-        <p className="m-0 font-display text-sm uppercase text-red-ink">Football Coach</p>
-        <h1 className="m-0 mt-2 font-display text-[clamp(2.4rem,11vw,3.6rem)] uppercase leading-[.9]">Train like<br />a pro.</h1>
-        <p className="mt-4 mb-8 text-muted">Football sessions with a voice-cue timer, a week plan built around your games, and gym work for power. Try it with your own player, or look around with a sample one.</p>
-        <Button block onClick={() => setStep(0)}>Make my player</Button>
-        <Button block variant="ghost" className="mt-3" onClick={onSample}>Use a sample player</Button>
-        <p className="mt-4 text-center text-xs text-muted">Everything stays in this browser. No account needed.</p>
-        {onSignIn && <button onClick={onSignIn} className="mt-2 min-h-11 text-center text-sm font-semibold">Have an invite? <span className="text-red-ink">Sign in</span></button>}
+        <div className="stagger relative z-10">
+          <p style={{ '--i': 0 } as React.CSSProperties} className="m-0 font-display text-sm uppercase text-red-ink">Football Personal Coach</p>
+          <h1 style={{ '--i': 1 } as React.CSSProperties} className="m-0 mt-2 font-display text-[clamp(2.6rem,12vw,3.8rem)] uppercase leading-[.88]">Train like<br />a pro.</h1>
+          <ul style={{ '--i': 2 } as React.CSSProperties} className="m-0 mt-6 mb-8 flex list-none flex-col gap-3 p-0">
+            {[
+              ['🗓', 'A week planned around your games'],
+              ['🔊', 'Drills coached out loud, LEFT / RIGHT cues'],
+              ['🏋️', 'Gym sessions for speed and power'],
+            ].map(([icon, text]) => (
+              <li key={text} className="flex items-center gap-3">
+                <span aria-hidden="true" className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-white/10 text-lg backdrop-blur-md">{icon}</span>
+                <span className="font-semibold">{text}</span>
+              </li>
+            ))}
+          </ul>
+          <div style={{ '--i': 3 } as React.CSSProperties}>
+            <Button block onClick={() => setStep(0)}>Make my player</Button>
+            <Button block variant="ghost" className="mt-3" onClick={onSample}>Try a sample player</Button>
+            <p className="m-0 mt-4 text-center text-xs text-muted">Takes 30 seconds. Stays in this browser, no account needed.</p>
+            {onSignIn && <button onClick={onSignIn} className="mt-1 min-h-11 w-full text-center text-sm font-semibold">Have an invite? <span className="text-red-ink">Sign in</span></button>}
+          </div>
+        </div>
       </Screen>
     )
   }
 
   const id = STEPS[step]
-  const valid = id === 'name' ? p.name.trim().length > 0 : id === 'positions' ? p.positions.length > 0 : true
+  const valid = id === 'player' ? p.name.trim().length > 0 : id === 'play' ? p.positions.length > 0 : true
   const next = () => (step === STEPS.length - 1 ? onDone({ ...p, name: p.name.trim(), sample: false }, games) : setStep(step + 1))
   const back = () => (step === 0 ? (welcome ? setStep(-1) : onCancel?.()) : setStep(step - 1))
 
   return (
     <Screen className="flex flex-col">
-      <div className="mb-6 flex items-center gap-3">
+      <div className="mb-5 flex items-center gap-3">
         {(step > 0 || welcome || onCancel) && <Button variant="ghost" size="sm" onClick={back}>Back</Button>}
         <div className="flex flex-1 gap-1" aria-label={`Step ${step + 1} of ${STEPS.length}`}>
-          {STEPS.map((_, i) => <div key={i} className={`h-1.5 flex-1 rounded-full ${i <= step ? 'bg-red' : 'bg-surface-2'}`} />)}
+          {STEPS.map((_, i) => <div key={i} className={`h-1.5 flex-1 rounded-full transition-colors duration-300 ${i <= step ? 'bg-red' : 'bg-surface-2'}`} />)}
         </div>
       </div>
 
-      <div key={id} className="rise flex-1">
-        {id === 'name' && (
-          <Step title="Your player" hint="Name and shirt number for your player card.">
-            <label htmlFor="ob-name" className="text-sm text-muted">Name</label>
-            <input id="ob-name" value={p.name} onChange={(e) => set({ name: e.target.value.slice(0, 20) })} autoComplete="given-name"
-              className="mt-1 mb-4 block min-h-14 w-full rounded-2xl bg-surface px-4 font-display text-xl uppercase text-ink" />
-            <label htmlFor="ob-number" className="text-sm text-muted">Number</label>
-            <input id="ob-number" inputMode="numeric" value={p.number || ''} onChange={(e) => set({ number: Math.min(99, Number(e.target.value.replace(/\D/g, '')) || 0) })}
-              className="mt-1 block min-h-14 w-28 rounded-2xl bg-surface px-4 text-center font-display text-2xl text-ink" />
+      <CardPreview p={p} />
+
+      <div key={id} className="rise mt-6 flex-1">
+        {id === 'player' && (
+          <Step title="Your player">
+            <div className="flex gap-3">
+              <div className="min-w-0 flex-1">
+                <label htmlFor="ob-name" className="text-sm text-muted">Name</label>
+                <input id="ob-name" value={p.name} onChange={(e) => set({ name: e.target.value.slice(0, 20) })} autoComplete="given-name" autoFocus
+                  className="mt-1 block min-h-14 w-full rounded-2xl bg-surface px-4 font-display text-xl uppercase text-ink" />
+              </div>
+              <div className="w-24">
+                <label htmlFor="ob-number" className="text-sm text-muted">Number</label>
+                <input id="ob-number" inputMode="numeric" value={p.number || ''} onChange={(e) => set({ number: Math.min(99, Number(e.target.value.replace(/\D/g, '')) || 0) })}
+                  className="mt-1 block min-h-14 w-full rounded-2xl bg-surface px-4 text-center font-display text-2xl text-ink" />
+              </div>
+            </div>
           </Step>
         )}
-        {id === 'positions' && (
-          <Step title="Where you play" hint="Pick every position you play. Sessions are recommended for them.">
-            <div className="grid grid-cols-2 gap-3">
+        {id === 'play' && (
+          <Step title="How you play" hint="Pick every position you play.">
+            <div className="grid grid-cols-2 gap-2.5">
               {POSITIONS.map((x) => {
                 const on = p.positions.includes(x.id)
                 return (
                   <Choice key={x.id} on={on} onClick={() => set({ positions: on ? p.positions.filter((y) => y !== x.id) : [...p.positions, x.id] })}>
-                    <span className="block font-display text-2xl">{x.short}</span>
+                    <span className="block font-display text-xl">{x.short}</span>
                     <span className="text-sm">{x.label}</span>
                   </Choice>
                 )
               })}
             </div>
-          </Step>
-        )}
-        {id === 'foot' && (
-          <Step title="Stronger foot" hint="Drills that say “weaker foot” mean the other one.">
-            <div className="grid grid-cols-3 gap-3">
+            <h2 className="mt-6 mb-2.5 font-display text-base uppercase">Stronger foot</h2>
+            <div className="grid grid-cols-3 gap-2.5">
               {(['left', 'right', 'both'] as Foot[]).map((f) => (
-                <Choice key={f} on={p.foot === f} onClick={() => set({ foot: f })}><span className="font-display text-lg uppercase">{f}</span></Choice>
+                <Choice key={f} on={p.foot === f} onClick={() => set({ foot: f })}><span className="font-display text-base uppercase">{f}</span></Choice>
               ))}
             </div>
           </Step>
         )}
-        {id === 'games' && (
-          <Step title="Game days" hint="Tap the days you usually play. The week plan works around them. You can change this any week.">
+        {id === 'week' && (
+          <Step title="Your week" hint="Tap the days you usually play. The plan works around them.">
             <div className="grid grid-cols-7 gap-1.5">
               {DAYS.map((d, day) => {
                 const on = games.some((g) => g.day === day)
@@ -103,8 +123,7 @@ export function Onboarding({ initial, initialGames = [], welcome = false, onDone
                 )
               })}
             </div>
-            <p className="mt-3 text-sm text-muted">{games.length ? `${games.length} game${games.length > 1 ? 's' : ''} a week` : 'No games: more training sessions instead.'}</p>
-            <h2 className="mt-8 mb-3 font-display text-lg uppercase">Gym sessions a week</h2>
+            <h2 className="mt-6 mb-2.5 font-display text-base uppercase">Gym sessions a week</h2>
             <div className="grid grid-cols-6 gap-1.5">
               {[0, 1, 2, 3, 4, 5].map((n) => (
                 <Choice key={n} on={(p.gym ?? 3) === n} label={`${n} gym sessions`} onClick={() => set({ gym: n })}>
@@ -112,42 +131,56 @@ export function Onboarding({ initial, initialGames = [], welcome = false, onDone
                 </Choice>
               ))}
             </div>
-            <p className="mt-3 text-sm text-muted">Heavy game weeks keep these but make them lighter.</p>
+            <p className="m-0 mt-3 text-sm text-muted">{games.length ? `${games.length} game${games.length > 1 ? 's' : ''} a week.` : 'No games yet: more training instead.'} Heavy weeks keep the gym but make it lighter.</p>
           </Step>
         )}
-        {id === 'colour' && (
-          <Step title="Team colour" hint="Buttons, highlights and your player card.">
-            <div className="grid grid-cols-3 gap-3">
+        {id === 'style' && (
+          <Step title="Your colours">
+            <div className="grid grid-cols-9 gap-1.5">
               {ACCENTS.map((a) => (
                 <button key={a.id} aria-pressed={p.accent === a.id} aria-label={a.label}
                   onClick={() => { set({ accent: a.id }); applyAccent(a.id) }}
-                  className={`grid aspect-square place-items-center rounded-3xl transition-transform duration-150 ease-snap active:scale-95 ${p.accent === a.id ? 'ring-4 ring-ink ring-offset-4 ring-offset-bg' : ''}`}
+                  className={`aspect-square rounded-full transition-transform duration-150 ease-snap active:scale-90 ${p.accent === a.id ? 'scale-110 ring-2 ring-ink ring-offset-2 ring-offset-bg' : ''}`}
                   style={{ background: a.hex }}>
                   <span className="sr-only">{a.label}</span>
                 </button>
               ))}
             </div>
-          </Step>
-        )}
-        {id === 'idol' && (
-          <Step title="Your role model" hint="Optional. Their name goes on your motivation quotes. Photos and clips can be added later in Settings.">
-            <label htmlFor="ob-idol" className="text-sm text-muted">Name</label>
-            <input id="ob-idol" value={p.idol} onChange={(e) => set({ idol: e.target.value.slice(0, 40) })} placeholder="e.g. your favourite player"
+            <label htmlFor="ob-idol" className="mt-6 block text-sm text-muted">Role model (optional)</label>
+            <input id="ob-idol" value={p.idol} onChange={(e) => set({ idol: e.target.value.slice(0, 40) })} placeholder="Your favourite player"
               className="mt-1 block min-h-14 w-full rounded-2xl bg-surface px-4 text-lg text-ink placeholder:text-muted" />
+            <p className="m-0 mt-2 text-sm text-muted">Their name goes on your motivation quotes. Add their photos later in Settings.</p>
           </Step>
         )}
       </div>
 
-      <Button block className="mt-8" disabled={!valid} onClick={next}>{step === STEPS.length - 1 ? 'Done' : 'Next'}</Button>
+      <Button block className="mt-6" disabled={!valid} onClick={next}>{step === STEPS.length - 1 ? "Done · let's train" : 'Next'}</Button>
     </Screen>
   )
 }
 
-function Step({ title, hint, children }: { title: string; hint: string; children: ReactNode }) {
+// The player card, updating live as the steps are filled in.
+function CardPreview({ p }: { p: Profile }) {
+  const tag = positionTag(p)
+  return (
+    <div aria-hidden="true" className="relative h-28 overflow-hidden rounded-[22px] bg-[linear-gradient(120deg,color-mix(in_srgb,var(--red)_55%,#000)_0%,#111113_70%)] transition-[background] duration-300">
+      <span className="absolute -top-3 right-3 select-none font-display text-[120px] leading-none text-transparent [-webkit-text-stroke:2px_rgba(255,255,255,.22)]">{p.number || ''}</span>
+      <div className="absolute inset-y-0 left-4 flex flex-col justify-center">
+        <span className="font-display text-2xl uppercase leading-none text-white">{p.name.trim() || 'Your name'}</span>
+        <span className="mt-2 flex flex-wrap gap-1.5">
+          {tag && <span className="rounded-full bg-white/15 px-2.5 py-0.5 font-display text-[11px] uppercase text-white">{tag}</span>}
+          <span className="rounded-full bg-white/15 px-2.5 py-0.5 font-display text-[11px] uppercase text-white">{p.foot === 'both' ? 'Both feet' : `${p.foot} foot`}</span>
+        </span>
+      </div>
+    </div>
+  )
+}
+
+function Step({ title, hint, children }: { title: string; hint?: string; children: ReactNode }) {
   return (
     <section>
       <h1 className="m-0 font-display text-3xl uppercase leading-none">{title}</h1>
-      <p className="mt-3 mb-6 text-muted">{hint}</p>
+      {hint ? <p className="mt-2 mb-5 text-muted">{hint}</p> : <div className="mb-5" />}
       {children}
     </section>
   )
@@ -156,7 +189,7 @@ function Step({ title, hint, children }: { title: string; hint: string; children
 function Choice({ on, onClick, children, label }: { on: boolean; onClick: () => void; children: ReactNode; label?: string }) {
   return (
     <button aria-pressed={on} aria-label={label} onClick={onClick}
-      className={`min-h-16 rounded-3xl p-3 text-center transition-[transform,background-color] duration-150 ease-snap active:scale-95 ${on ? 'bg-red text-on-red' : 'bg-surface text-ink'}`}>
+      className={`min-h-14 rounded-3xl p-3 text-center transition-[transform,background-color] duration-150 ease-snap active:scale-95 ${on ? 'bg-red text-on-red' : 'bg-surface text-ink'}`}>
       {children}
     </button>
   )

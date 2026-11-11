@@ -179,6 +179,7 @@ export default function App() {
           onPlayClip={() => { unlockAudio(); playClip(settingsRef.current, 'mindset') }}
           onAddClips={() => setOverlay({ name: 'media', from: 'home' })}
           onPlayer={() => setTab('player')}
+          onWeek={() => setTab('week')}
         />
       )}
       {tab === 'week' && <WeekView today={today} games={games} sessions={sessions} onGames={updateGames} onOpen={open} />}

@@ -5,7 +5,8 @@ import { usePersonalImage } from '../lib/personal'
 import { DEMO } from '../lib/demo'
 import { positionTag, useProfile } from '../lib/profile'
 import { kitFor, loadPacked, togglePacked, type KitItem } from '../lib/kit'
-import { sessionMinutes } from '../lib/logic'
+import { fmtReps, sessionMinutes } from '../lib/logic'
+import { load, save } from '../lib/storage'
 import { loadQuotes } from '../lib/storage'
 import { DAYS, DAY_SHORT, type SlotKind } from '../lib/weekplan'
 import type { Today } from '../lib/today'
@@ -21,6 +22,7 @@ type Props = {
   onPlayClip: () => void
   onAddClips: () => void
   onPlayer: () => void
+  onWeek?: () => void
 }
 
 const SLOT_LABEL: Record<SlotKind, string> = { game: 'Game day', football: 'Football', gym: 'Gym', recovery: 'Recovery', cheer: 'Cheer' }
@@ -223,16 +225,18 @@ export function Home(p: Props) {
   const drills = s.blocks.filter((b) => b.kind === 'drill')
   const quotes = loadQuotes().slice(0, 3)
   const games = p.today.plan.slots.filter((x) => x.kind === 'game').length
+  const me = useProfile()
   return (
     <main className="mx-auto max-w-xl px-4 pb-32">
       <Hero today={p.today} onKickOff={p.onKickOff} onOpen={p.onOpen} onSettings={p.onSettings} />
+      <HowItWorks onWeek={p.onWeek} />
       <KitCheck session={s} />
 
       <SectionHead title="Today's drills" right={<button onClick={p.onAllSessions} className="text-sm font-semibold text-muted">All sessions</button>} />
       <div className="no-scrollbar -mx-4 flex snap-x scroll-px-4 gap-3 overflow-x-auto px-4">
         {drills.slice(0, 5).map((b, i) => (
           <DrillCard key={b.name} i={i} name={b.name.replace(/\s*\([^)]*\)/g, '')} cue={!!b.cue}
-            meta={`${b.rounds || 1} × ${b.work}s${b.rest ? ` · rest ${b.rest}s` : ''}`} football={s.type === 'football'} onOpen={() => p.onOpen(s)} />
+            meta={`${b.rounds || 1} × ${b.reps ? fmtReps(b.reps) : `${b.work}s`}${b.rest ? ` · rest ${b.rest}s` : ''}`} football={s.type === 'football'} onOpen={() => p.onOpen(s)} />
         ))}
       </div>
 
@@ -244,8 +248,37 @@ export function Home(p: Props) {
         {quotes.map((q, i) => <MindsetCard key={q} i={i} quote={q} hasClips={p.hasClips} onPlayClip={p.onPlayClip} onAddClips={p.onAddClips} />)}
       </div>
 
-      <SectionHead title="Your number 7" right="Player card" />
+      <SectionHead title={`Your number ${me.number}`} right="Player card" />
       <CardTile onPlayer={p.onPlayer} />
     </main>
+  )
+}
+
+// First visit only: three steps that explain the app, then it gets out of the way.
+function HowItWorks({ onWeek }: { onWeek?: () => void }) {
+  const [seen, setSeen] = useState(() => load<boolean>('intro:seen', false))
+  if (seen) return null
+  const close = () => { save('intro:seen', true); setSeen(true) }
+  const steps: [string, string][] = [
+    ['Set your week', 'Tap your game days. Football, gym and recovery fall into place.'],
+    ['Kick off', 'The ball button starts today\'s session. Volume up: drills are called out loud.'],
+    ['20-second check-in', 'After the session, tap how hard it was. Your load builds the plan.'],
+  ]
+  return (
+    <section aria-label="How it works" className="rise mt-6 rounded-[22px] bg-surface p-4">
+      <div className="flex items-baseline justify-between">
+        <h2 className="m-0 font-display text-base uppercase">How it works</h2>
+        <button onClick={close} className="min-h-10 px-1 text-sm font-semibold text-muted">Got it</button>
+      </div>
+      <ol className="m-0 mt-2 flex list-none flex-col gap-3 p-0">
+        {steps.map(([title, text], i) => (
+          <li key={title} className="flex gap-3">
+            <span className="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-red font-display text-sm text-on-red">{i + 1}</span>
+            <span><strong className="block">{title}</strong><span className="text-sm text-muted">{text}</span></span>
+          </li>
+        ))}
+      </ol>
+      {onWeek && <button onClick={() => { close(); onWeek() }} className="mt-4 min-h-12 w-full rounded-full bg-surface-2 font-display text-sm uppercase">Set my week</button>}
+    </section>
   )
 }
