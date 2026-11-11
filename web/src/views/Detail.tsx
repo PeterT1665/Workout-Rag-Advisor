@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { Button, Panel, Screen, Tag, Title, TopBar } from '../components/ui'
 import { flattenSession, fmtReps, makeICS, sessionMinutes } from '../lib/logic'
 import { isMine } from '../lib/library'
+import { KitCheck } from './Home'
 import type { Session } from '../lib/types'
 
 function downloadICS(s: Session, date: string, time: string) {
@@ -34,6 +35,7 @@ export function Detail({ session: s, onBack, onStart, onEdit, desktop = false }:
       <p className="text-sm text-muted">About {sessionMinutes(s)} min of timed work. Allow extra time for setup and water.</p>
       <div className="flex flex-wrap gap-2">{s.needs.map((n) => <Tag key={n}>{n}</Tag>)}</div>
       {hasCue && <p className="text-sm">Includes random LEFT/RIGHT voice cues on the 1v1 drills. Phone volume up.</p>}
+      <KitCheck session={s} />
 
       {/* Match timeline: blocks sized by time, voice-cue drills striped */}
       <div className="mt-6 flex h-3 gap-[3px]" aria-hidden="true">

@@ -38,7 +38,7 @@ export function SettingsView({ settings: s, clipCount, onChange, onMedia, onProf
         <Toggle id="se" label="SIUUU at the end" checked={s.siuuEnd} onChange={(v) => onChange({ siuuEnd: v })} />
         <Toggle id="cd" label="Motivational cards" checked={s.cards} onChange={(v) => onChange({ cards: v })} />
         <Slider id="cv" label="Clip volume" min={0.2} max={1} step={0.1} value={s.clipVolume} onChange={(v) => onChange({ clipVolume: v })} />
-        <Button variant="ghost" className="bg-surface-2" onClick={onMedia}>Photos, clips & quotes ({clipCount} clips)</Button>
+        <Button variant="ghost" className="bg-surface-2" onClick={onMedia}>Make it yours: photos, colour, clips ({clipCount})</Button>
       </Panel>
       {!syncEnabled() && (
           <Panel className="mt-8 flex items-center justify-between gap-4">

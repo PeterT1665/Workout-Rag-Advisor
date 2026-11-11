@@ -87,15 +87,15 @@ describe('app', () => {
   test('clips: upload, mindset clip before the session, SIUUU at the end', async () => {
     render(<App />)
     click(/^Settings$/)
-    click(/Photos, clips & quotes \(/)
-    fireEvent.change(screen.getByLabelText(/Type/), { target: { value: 'mindset' } })
+    click(/Make it yours: photos, colour, clips \(/)
+    fireEvent.change(screen.getByLabelText(/Clip type/), { target: { value: 'mindset' } })
     fireEvent.change(screen.getByLabelText(/Audio files/), { target: { files: [new File(['x'], 'cr7-interview.mp3')] } })
     await waitFor(() => expect(screen.getByText('cr7-interview')).toBeTruthy())
-    fireEvent.change(screen.getByLabelText(/Type/), { target: { value: 'siuu' } })
+    fireEvent.change(screen.getByLabelText(/Clip type/), { target: { value: 'siuu' } })
     fireEvent.change(screen.getByLabelText(/Audio files/), { target: { files: [new File(['x'], 'siuu.m4a')] } })
     await waitFor(() => expect(screen.getByText('siuu')).toBeTruthy())
     click(/^Done$/)
-    expect(screen.getByRole('button', { name: /Photos, clips & quotes \(2 clips\)/ })).toBeTruthy()
+    expect(screen.getByRole('button', { name: /Make it yours: photos, colour, clips \(2\)/ })).toBeTruthy()
     click(/^Done$/)
 
     click(/All sessions/)
@@ -113,8 +113,10 @@ describe('app', () => {
     expect(spoken).not.toContain('Session complete. Nice work.')
   })
 
-  test('home: kit check toggles and remembers packed items', () => {
+  test('session details: kit check toggles and remembers packed items', () => {
     render(<App />)
+    click(/All sessions/)
+    click(/Recovery: hips/)
     const boots = screen.getByRole('button', { name: /Water/ })
     expect(boots.getAttribute('aria-pressed')).toBe('false')
     fireEvent.click(boots)
@@ -160,8 +162,12 @@ describe('app', () => {
 
   test('clips opened from home: Done goes back home, not to settings', () => {
     render(<App />)
-    click(/^Photos & clips$/)
-    expect(screen.getByRole('heading', { name: /^Media$/i })).toBeTruthy()
+    click(/^Make it yours$/)
+    expect(screen.getByRole('heading', { name: /^Make it yours$/i })).toBeTruthy()
+    click(/^Green$/)
+    expect(document.documentElement.dataset.accent).toBe('green')
+    fireEvent.change(screen.getByLabelText('Role model'), { target: { value: 'Kaka' } })
+    expect(getProfile().idol).toBe('Kaka')
     click(/^Done$/)
     expect(screen.queryByRole('heading', { name: /^Settings$/i })).toBeNull()
     expect(screen.getAllByRole('button', { name: /Kick off/ }).length).toBeGreaterThan(0)
@@ -228,7 +234,7 @@ describe('app', () => {
   test('photos: upload your own role model photo, it replaces the app photo, remove it again', async () => {
     render(<App />)
     click(/^Settings$/)
-    click(/Photos, clips & quotes \(/)
+    click(/Make it yours: photos, colour, clips \(/)
     const input = screen.getByLabelText('Add Home hero photo')
     fireEvent.change(input, { target: { files: [new File(['x'], 'idol.jpg', { type: 'image/jpeg' })] } })
     const removeBtn = await screen.findByRole('button', { name: 'Remove Home hero photo' })

@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Button, Pill, SectionHead } from '../components/ui'
-import { BallIcon, GearIcon, KitGlyph } from '../components/icons'
+import { BallIcon, BrushIcon, GearIcon, KitGlyph } from '../components/icons'
 import { usePersonalImage } from '../lib/personal'
 import { DEMO } from '../lib/demo'
 import { useProfile } from '../lib/profile'
@@ -9,7 +9,6 @@ import { fmtReps, sessionMinutes } from '../lib/logic'
 import { PlayerCard } from '../components/PlayerCard'
 import { cardStatsFor } from '../lib/cardStats'
 import { load, save } from '../lib/storage'
-import { loadQuotes } from '../lib/storage'
 import { DAYS, DAY_SHORT, type SlotKind } from '../lib/weekplan'
 import type { Today } from '../lib/today'
 import type { Session } from '../lib/types'
@@ -31,7 +30,7 @@ const SLOT_LABEL: Record<SlotKind, string> = { game: 'Game day', football: 'Foot
 const dateKey = () => new Date().toISOString().slice(0, 10)
 
 // ---------- hero ----------
-export function Hero({ today, onKickOff, onOpen, onSettings, desktop = false }: Pick<Props, 'today' | 'onKickOff' | 'onOpen' | 'onSettings'> & { desktop?: boolean }) {
+export function Hero({ today, onKickOff, onOpen, onSettings, onCustomise, desktop = false }: Pick<Props, 'today' | 'onKickOff' | 'onOpen' | 'onSettings'> & { onCustomise?: () => void; desktop?: boolean }) {
   const hero = usePersonalImage('hero.jpg')
   const s = today.session
   const drills = s.blocks.filter((b) => b.kind === 'drill').length
@@ -59,6 +58,9 @@ export function Hero({ today, onKickOff, onOpen, onSettings, desktop = false }: 
         <span className="font-display text-sm uppercase leading-[1.05] text-white [text-shadow:0_1px_8px_rgba(0,0,0,.6)]">Football Personal<br />Coach</span>
         <span className="flex items-center gap-2">
           <Pill tone="glass">{sample ? 'Sample data' : date}</Pill>
+          {onCustomise && <button onClick={onCustomise} aria-label="Make it yours" className="grid h-10 w-10 place-items-center rounded-full bg-white/15 text-white backdrop-blur-md active:scale-95">
+            <BrushIcon />
+          </button>}
           <button onClick={onSettings} aria-label="Settings" className="grid h-10 w-10 place-items-center rounded-full bg-white/15 text-white backdrop-blur-md active:scale-95">
             <GearIcon />
           </button>
@@ -213,14 +215,11 @@ export function CardTile({ onPlayer }: { onPlayer: () => void }) {
 export function Home(p: Props) {
   const s = p.today.session
   const drills = s.blocks.filter((b) => b.kind === 'drill')
-  const quotes = loadQuotes().slice(0, 3)
   const games = p.today.plan.slots.filter((x) => x.kind === 'game').length
-  const me = useProfile()
   return (
     <main className="mx-auto max-w-xl px-4 pb-32">
-      <Hero today={p.today} onKickOff={p.onKickOff} onOpen={p.onOpen} onSettings={p.onSettings} />
+      <Hero today={p.today} onKickOff={p.onKickOff} onOpen={p.onOpen} onSettings={p.onSettings} onCustomise={p.onAddClips} />
       <HowItWorks onWeek={p.onWeek} />
-      <KitCheck session={s} />
 
       <SectionHead title="Today's drills" right={<button onClick={p.onAllSessions} className="text-sm font-semibold text-muted">All sessions</button>} />
       <div className="no-scrollbar -mx-4 flex snap-x scroll-px-4 gap-3 overflow-x-auto px-4">
@@ -232,14 +231,6 @@ export function Home(p: Props) {
 
       <SectionHead title="This week" right={`${games} game${games === 1 ? '' : 's'} week`} />
       <WeekStrip today={p.today} />
-
-      <SectionHead title="Mindset" right={<button onClick={p.onAddClips} className="text-sm font-semibold text-muted">Photos & clips</button>} />
-      <div className="no-scrollbar -mx-4 flex snap-x scroll-px-4 gap-3 overflow-x-auto px-4">
-        {quotes.map((q, i) => <MindsetCard key={q} i={i} quote={q} hasClips={p.hasClips} onPlayClip={p.onPlayClip} onAddClips={p.onAddClips} />)}
-      </div>
-
-      <SectionHead title={`Your number ${me.number}`} right="Player card" />
-      <CardTile onPlayer={p.onPlayer} />
     </main>
   )
 }

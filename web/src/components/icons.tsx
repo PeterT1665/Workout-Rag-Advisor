@@ -36,3 +36,11 @@ export function GearIcon() {
     </svg>
   )
 }
+export function BrushIcon() {
+  return (
+    <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <path d="M14.5 4.5l5 5L10 19l-5-5z" />
+      <path d="M5 14c-1.5 0-2.5 1.2-2.5 2.6 0 1.6-.8 2.4-1.5 2.9 2.5.6 6 .3 7-2.5" />
+    </svg>
+  )
+}
