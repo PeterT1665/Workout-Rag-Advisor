@@ -21,36 +21,47 @@ export function PhoneFrame() {
   const src = `/?${params.toString()}${location.hash}`
   const qr = useMemo(() => qrPath(location.origin), [])
 
+  const phone = (
+    <div style={{ width: (W + BEZEL * 2) * scale, height: (H + BEZEL * 2) * scale }} className="shrink-0">
+      <div style={{ width: W + BEZEL * 2, height: H + BEZEL * 2, transform: `scale(${scale})`, transformOrigin: 'top left', padding: BEZEL }}
+        className="rounded-[60px] bg-[#1c1c1f] shadow-[0_30px_80px_-20px_rgba(0,0,0,.8),inset_0_0_0_2px_rgba(255,255,255,.06)]">
+        <iframe src={src} title="Football Personal Coach" width={W} height={H} className="block rounded-[48px] border-0 bg-bg" allow="autoplay; screen-wake-lock" />
+      </div>
+    </div>
+  )
+
   return (
     <main className="grid min-h-dvh place-items-center bg-bg px-10 py-6">
-      <div className="flex items-center gap-20">
-        <section className="max-w-[420px]">
+      <div className="grid grid-cols-[minmax(0,340px)_auto_minmax(0,300px)] items-center gap-16">
+        <section>
           <p className="m-0 font-display text-sm uppercase text-red-ink">Football Personal Coach</p>
-          <h1 className="m-0 mt-3 font-display text-6xl uppercase leading-[.88]">Train like<br />a pro.</h1>
+          <h1 className="m-0 mt-3 font-display text-5xl uppercase leading-[.88]">Train like<br />a pro.</h1>
           <ul className="m-0 mt-8 flex list-none flex-col gap-3 p-0 text-lg">
             <li>🗓 A week planned around your games</li>
-            <li>🔊 Drills coached out loud, LEFT / RIGHT cues</li>
-            <li>🏋️ Gym sessions for speed and power</li>
+            <li>🔊 Drills coached out loud</li>
+            <li>🏋️ Gym for speed and power</li>
           </ul>
-          <div className="mt-10 flex items-center gap-5 rounded-[24px] bg-surface p-4">
-            <div className="w-28 shrink-0 rounded-2xl bg-white p-2">
-              <svg viewBox={`-1 -1 ${qr.n + 2} ${qr.n + 2}`} className="block w-full" role="img" aria-label="QR code to open the app on your phone">
-                <path d={qr.d} fill="#0b0b0c" shapeRendering="crispEdges" />
-              </svg>
-            </div>
-            <div>
-              <p className="m-0 font-display text-base uppercase">Get it on your phone</p>
-              <p className="m-0 mt-1 text-sm text-muted">Scan with your camera, then Add to Home Screen. Try it right here first.</p>
-            </div>
-          </div>
+          <p className="m-0 mt-8 text-sm text-muted">Try it right here: the phone is the real app.</p>
         </section>
 
-        <div style={{ width: (W + BEZEL * 2) * scale, height: (H + BEZEL * 2) * scale }} className="shrink-0">
-          <div style={{ width: W + BEZEL * 2, height: H + BEZEL * 2, transform: `scale(${scale})`, transformOrigin: 'top left', padding: BEZEL }}
-            className="rounded-[60px] bg-[#1c1c1f] shadow-[0_30px_80px_-20px_rgba(0,0,0,.8),inset_0_0_0_2px_rgba(255,255,255,.06)]">
-            <iframe src={src} title="Football Personal Coach" width={W} height={H} className="block rounded-[48px] border-0 bg-bg" allow="autoplay; screen-wake-lock" />
+        {phone}
+
+        <section className="flex flex-col items-center text-center">
+          <div className="w-48 rounded-[24px] bg-white p-3">
+            <svg viewBox={`-1 -1 ${qr.n + 2} ${qr.n + 2}`} className="block w-full" role="img" aria-label="QR code to open the app on your phone">
+              <path d={qr.d} fill="#0b0b0c" shapeRendering="crispEdges" />
+            </svg>
           </div>
-        </div>
+          <p className="m-0 mt-4 font-display text-base uppercase">Get it on your phone</p>
+          <p className="m-0 mt-1 text-sm text-muted">Scan with your camera, then Add to Home Screen.</p>
+          <div className="mt-8 flex w-full flex-col gap-2.5">
+            {['App Store', 'Google Play'].map((store) => (
+              <div key={store} aria-disabled="true" className="flex min-h-12 items-center justify-between rounded-full border border-white/15 px-5 text-sm text-muted">
+                <span className="font-semibold text-ink">{store}</span><span>Coming soon</span>
+              </div>
+            ))}
+          </div>
+        </section>
       </div>
     </main>
   )
