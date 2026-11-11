@@ -289,15 +289,17 @@ describe('app', () => {
     expect(screen.getByRole('heading', { name: /With a partner/i })).toBeTruthy()
   })
 
-  test('iPhone Safari: Add to Home Screen guide until installed; Later hides it', () => {
-    const ua = vi.spyOn(navigator, 'userAgent', 'get').mockReturnValue('Mozilla/5.0 (iPhone; CPU iPhone OS 18_0 like Mac OS X)')
+  test('website on iPhone: Install button opens the Add to Home Screen steps; hidden on desktop browsers', async () => {
     const { unmount } = render(<App />)
-    expect(screen.getByRole('region', { name: 'Add to Home Screen' })).toBeTruthy()
-    click(/^Later$/)
-    expect(screen.queryByRole('region', { name: 'Add to Home Screen' })).toBeNull()
+    expect(screen.queryByRole('button', { name: 'Install the app' })).toBeNull() // not a phone
     unmount()
+    const ua = vi.spyOn(navigator, 'userAgent', 'get').mockReturnValue('Mozilla/5.0 (iPhone; CPU iPhone OS 18_0 like Mac OS X)')
     render(<App />)
-    expect(screen.queryByRole('region', { name: 'Add to Home Screen' })).toBeNull() // snoozed
+    click(/Install the app/)
+    const sheet = await screen.findByRole('dialog', { name: 'Install the app' })
+    expect(sheet.textContent).toMatch(/Add to Home Screen/)
+    fireEvent.click(within(sheet).getByRole('button', { name: 'Got it' }))
+    expect(screen.queryByRole('dialog', { name: 'Install the app' })).toBeNull()
     ua.mockRestore()
   })
 

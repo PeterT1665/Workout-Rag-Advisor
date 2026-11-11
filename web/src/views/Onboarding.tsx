@@ -3,6 +3,7 @@ import { Button, Screen } from '../components/ui'
 import { ACCENTS, POSITIONS, applyAccent, positionTag, type Foot, type Profile } from '../lib/profile'
 import { DAYS, type Game } from '../lib/weekplan'
 import { usePersonalImage } from '../lib/personal'
+import { InstallButton } from '../components/InstallButton'
 
 // Make your player: four quick screens with a live player card on top. Used by guests ("Try it"),
 // by new accounts, and by Edit player. `welcome` adds the first screen with the sample-player shortcut.
@@ -31,6 +32,7 @@ export function Onboarding({ initial, initialGames = [], welcome = false, onDone
           <img src={hero} alt="" data-fade className="drift fixed inset-0 z-0 h-full w-full object-cover object-[50%_25%]" />
           <div className="fixed inset-0 z-0 bg-[linear-gradient(to_bottom,rgba(11,11,12,.1)_0%,rgba(11,11,12,.55)_30%,rgba(11,11,12,.85)_42%,var(--bg)_60%)]" />
         </>}
+        <InstallButton className="absolute top-[max(16px,var(--sat))] right-4 z-20" />
         <div className="stagger relative z-10">
           <p style={{ '--i': 0 } as React.CSSProperties} className="m-0 font-display text-sm uppercase text-red-ink">Football Personal Coach</p>
           <h1 style={{ '--i': 1 } as React.CSSProperties} className="m-0 mt-2 font-display text-[clamp(2.6rem,12vw,3.8rem)] uppercase leading-[.88]">Train like<br />a pro.</h1>

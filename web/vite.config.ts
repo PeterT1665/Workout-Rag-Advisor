@@ -4,20 +4,16 @@ import tailwindcss from '@tailwindcss/vite'
 import { VitePWA } from 'vite-plugin-pwa'
 import { defineConfig } from 'vite'
 
-const demo = process.env.VITE_DEMO === '1'
-
 export default defineConfig({
   plugins: [
-    // the public demo gets its own browser-tab title
-    { name: 'demo-title', transformIndexHtml: (html: string) => (demo ? html.replace('<title>Football Personal Coach</title>', '<title>Football Personal Coach (demo)</title>') : html) },
     react(),
     tailwindcss(),
     VitePWA({
-      registerType: 'prompt', // applied by src/lib/updates.ts, never mid-session
+      registerType: 'prompt', // no automatic page reload; see src/lib/updates.ts
       includeAssets: ['icon-180.png', 'icon-192.png'],
       manifest: {
-        name: demo ? 'Football Personal Coach (demo)' : 'Football Personal Coach',
-        short_name: demo ? 'Football Coach' : 'Football Coach',
+        name: 'Football Personal Coach',
+        short_name: 'Football Coach',
         start_url: '/',
         display: 'standalone',
         orientation: 'portrait',
@@ -29,7 +25,8 @@ export default defineConfig({
         ],
       },
       // never cache the API or private photos in the offline cache
-      workbox: { globPatterns: ['**/*.{js,css,html,svg,png,jpg,woff2}'], globIgnores: ['personal/**'], navigateFallbackDenylist: [/^\/api\//, /^\/personal\//] },
+      // skipWaiting + clientsClaim: a new version takes over at once, so a reload always shows it
+      workbox: { skipWaiting: true, clientsClaim: true, cleanupOutdatedCaches: true, globPatterns: ['**/*.{js,css,html,svg,png,jpg,woff2}'], globIgnores: ['personal/**'], navigateFallbackDenylist: [/^\/api\//, /^\/personal\//] },
     }),
   ],
   server: { host: '0.0.0.0', proxy: { '/api': 'http://localhost:8788' } },

@@ -1,31 +1,37 @@
-// App updates for the installed PWA. iOS keeps home-screen apps paused, so we check for a new version whenever
-// the app comes back to the foreground (and hourly). The update is applied the next time the app goes to the
-// background, never while a session, rating test or edit is open. No more delete-and-re-add to update.
+// App updates. A new version installs and takes over in the background straight away (skipWaiting +
+// clientsClaim in vite.config), so any reload or fresh open shows the latest version, in a Safari tab or the
+// installed app. The page already on screen keeps running; iOS keeps home-screen apps alive for days, so once a
+// newer version has taken over we reload the next time the app goes to the background, never mid-session.
 import { registerSW } from 'virtual:pwa-register'
 
-let pending = false
+let updated = false
 let busy = false
-let apply: ((reload?: boolean) => Promise<void>) | null = null
 
-// Reload only while the app is out of sight (switched away / screen off), so nobody sees it happen.
-function maybeApply() {
-  if (pending && !busy && apply && document.visibilityState === 'hidden') void apply(true)
+function maybeReload() {
+  if (updated && !busy && document.visibilityState === 'hidden') location.reload()
 }
 
 export function setBusy(b: boolean) {
   busy = b
-  maybeApply()
 }
 
 export function startUpdates() {
   if (import.meta.env.MODE === 'test' || !('serviceWorker' in navigator)) return
-  apply = registerSW({
+  const hadController = !!navigator.serviceWorker.controller
+  // first install takes control without anything changing for the user; later ones mean a new version
+  const openedAt = Date.now()
+  navigator.serviceWorker.addEventListener('controllerchange', () => {
+    if (!hadController) return
+    updated = true
+    // just opened and a newer version took over: switch to it now, before anyone starts using the screen
+    if (Date.now() - openedAt < 6000 && !busy) location.reload()
+  })
+  registerSW({
     immediate: true,
-    onNeedRefresh() { pending = true; maybeApply() },
     onRegisteredSW(_url, reg) {
       if (!reg) return
       const check = () => { void reg.update().catch(() => {}) }
-      document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') check(); else maybeApply() })
+      document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') check(); else maybeReload() })
       setInterval(check, 60 * 60 * 1000)
     },
   })
