@@ -1,12 +1,13 @@
-import { Panel, Pill, SectionHead, Title } from '../components/ui'
+import { Panel, SectionHead, Title } from '../components/ui'
+import { PlayerCard, SAMPLE_STATS } from '../components/PlayerCard'
 import { usePersonalImage } from '../lib/personal'
-import { positionTag, useProfile } from '../lib/profile'
+import { useProfile } from '../lib/profile'
 import { loadHistory, weekLoads } from '../lib/storage'
 import { LoadChart } from '../components/LoadChart'
 
-const STATS: [string, string, number][] = [
-  ['PAC', 'Pace: 20 m sprint', 82], ['DRI', 'Dribbling: cone weave', 78], ['SHO', 'Shooting: on target /10', 71],
-  ['PAS', 'Passing: wall passes /30s', 69], ['WF', 'Weak foot: on target /10', 58], ['PHY', 'Physical: end-of-game tiredness', 70],
+const STATS: [string, string][] = [
+  ['PAC', '20 m sprint'], ['SHO', 'shots on target /10'], ['PAS', 'wall passes in 30 s'],
+  ['DRI', 'cone weave time'], ['DEF', '1v1 jockey drill'], ['PHY', 'end-of-game tiredness'],
 ]
 
 const fmtDate = (iso: string) => {
@@ -24,25 +25,13 @@ export function PlayerTab({ wide = false }: { wide?: boolean }) {
       <Title>Player</Title>
       <div className={wide ? 'grid grid-cols-[minmax(0,1.1fr)_minmax(0,1fr)] items-start gap-10' : ''}>
       <div>
-      <div className="relative mt-4 overflow-hidden rounded-[24px] bg-surface p-5">
-        {bg && <img src={bg} alt="" className="absolute inset-0 h-full w-full object-cover opacity-30" />}
-        <div className="relative">
-          <div className="flex items-end gap-4">
-            <span className="font-display text-7xl leading-[.8]">{rated ? 74 : <span className="text-muted">--</span>}</span>
-            <div><Pill tone="red">{positionTag(me)}</Pill><div className="mt-2 font-display text-2xl uppercase">{me.name} <span className="text-muted">#{me.number}</span></div></div>
-          </div>
-          <div className="mt-5 grid grid-cols-2 gap-x-6 gap-y-3">
-            {STATS.map(([k, label, v]) => (
-              <div key={k}>
-                <div className="flex justify-between font-display text-sm"><span className="text-muted">{k}</span><span>{rated ? v : '--'}</span></div>
-                <div className="mt-1 h-1.5 overflow-hidden rounded-full bg-surface-2">{rated && <div className="h-full rounded-full bg-red" style={{ width: `${v}%` }} />}</div>
-                <div className="mt-1 text-xs text-muted">{label}</div>
-              </div>
-            ))}
-          </div>
-        </div>
+      <div className="mx-auto mt-4 w-full max-w-[300px]">
+        <PlayerCard p={me} stats={rated ? SAMPLE_STATS : null} photo={bg} />
       </div>
-      <p className="mt-3 text-sm text-muted">{rated ? 'Example ratings for the sample player.' : 'Unrated for now.'} Ratings come from a test day (20 m sprint, cone weave, shots on target), not daily logging. Test days arrive in a later update.</p>
+      <p className="mt-4 text-center text-sm text-muted">{rated ? 'Example ratings for the sample player.' : 'Unrated for now.'} Ratings will come from a test day, not daily logging.</p>
+      <ul className="m-0 mt-3 grid list-none grid-cols-2 gap-x-6 gap-y-1.5 p-0 text-sm">
+        {STATS.map(([k, label]) => <li key={k}><span className="font-display text-muted">{k}</span> <span className="text-muted">{label}</span></li>)}
+      </ul>
 
       </div>
       <div>

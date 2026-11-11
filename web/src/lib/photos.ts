@@ -62,7 +62,8 @@ async function putLocal(p: Photo) {
   if (db) await req('readwrite', (s) => s.put(p)); else mem.set(p.slot, p)
 }
 
-// Big phone photos are scaled down (max 1600 px, JPEG) before storing: fast to load, small to sync.
+// Big phone photos are scaled down (max 1600 px) before storing: fast to load, small to sync.
+// PNG/WebP stay PNG so cut-out photos (subject without background) keep their transparency.
 async function shrink(file: Blob): Promise<Blob> {
   try {
     const img = await createImageBitmap(file)
@@ -70,7 +71,8 @@ async function shrink(file: Blob): Promise<Blob> {
     const canvas = document.createElement('canvas')
     canvas.width = Math.round(img.width * scale); canvas.height = Math.round(img.height * scale)
     canvas.getContext('2d')!.drawImage(img, 0, 0, canvas.width, canvas.height)
-    return await new Promise<Blob>((res) => canvas.toBlob((b) => res(b ?? file), 'image/jpeg', 0.85))
+    const keepAlpha = file.type === 'image/png' || file.type === 'image/webp'
+    return await new Promise<Blob>((res) => canvas.toBlob((b) => res(b ?? file), keepAlpha ? 'image/png' : 'image/jpeg', 0.85))
   } catch { return file } // no canvas (tests, very old browsers): keep the original
 }
 
@@ -81,7 +83,7 @@ export async function setPhoto(slot: Slot, file: Blob) {
   if (accountId) {
     try {
       const sb = await supabase()
-      await sb.storage.from(BUCKET).upload(`${accountId}/${slot}.jpg`, blob, { upsert: true, contentType: 'image/jpeg' })
+      await sb.storage.from(BUCKET).upload(`${accountId}/${slot}.jpg`, blob, { upsert: true, contentType: blob.type || 'image/jpeg' })
     } catch { /* offline: the next sign-in pull re-uploads */ }
   }
 }
@@ -111,7 +113,7 @@ export async function syncPhotos(userId: string) {
         const { data: blob } = await sb.storage.from(BUCKET).download(`${userId}/${id}.jpg`)
         if (blob) await putLocal({ slot: id, blob, updated: r })
       } else if (l && r === undefined) {
-        await sb.storage.from(BUCKET).upload(`${userId}/${id}.jpg`, l.blob, { upsert: true, contentType: 'image/jpeg' })
+        await sb.storage.from(BUCKET).upload(`${userId}/${id}.jpg`, l.blob, { upsert: true, contentType: l.blob.type || 'image/jpeg' })
       }
     }
     await refresh()

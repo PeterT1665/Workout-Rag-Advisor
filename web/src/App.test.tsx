@@ -252,7 +252,7 @@ describe('app', () => {
     setProfile({ name: 'Peter', number: 7, positions: ['winger', 'striker'], foot: 'right', accent: 'red', idol: 'Cristiano Ronaldo' })
     render(<App />)
     expect(screen.getByText(/Good (morning|afternoon|evening), Peter/)).toBeTruthy()
-    expect(screen.getByText('W · ST · Peter')).toBeTruthy() // player card tile
+    expect(screen.getByRole('img', { name: 'Peter card, unrated' })).toBeTruthy() // player card tile
     expect(screen.queryByRole('button', { name: /Kick off today's session/ })).toBeNull() // no phone tab bar
     fireEvent.click(screen.getByRole('button', { name: /^Week$/ }))
     expect(screen.getByText(/Tap the days you play/)).toBeTruthy()

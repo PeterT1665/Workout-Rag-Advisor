@@ -65,7 +65,7 @@ export function MediaView({ settings, onDone }: { settings: Settings; onDone: ()
       <TopBar left={<Title>Media</Title>} right={<Button variant="ghost" size="sm" onClick={() => { stopClip(); onDone() }}>Done</Button>} />
       <Panel className="mb-6 flex flex-col gap-3">
         <h3 className="m-0 font-display text-xl font-bold uppercase">Photos</h3>
-        <p className="m-0 text-sm text-muted">Your role model, your team, your gear: your photos replace the app's. {syncEnabled() ? 'Saved privately to your account: only you can see them.' : 'Saved in this browser only.'} Use photos you're allowed to use, and keep them to yourself.</p>
+        <p className="m-0 text-sm text-muted">Your role model, your team, your gear: your photos replace the app's. {syncEnabled() ? 'Saved privately to your account: only you can see them.' : 'Saved in this browser only.'} Use photos you're allowed to use, and keep them to yourself. For the player card, a cut-out PNG (subject without background) looks best: in iPhone Photos, long-press the person, then Share.</p>
         <PhotoSlots />
       </Panel>
       <p className="text-sm text-muted">Clips are stored only on this phone and never uploaded. Keep them private: don't publish them.</p>

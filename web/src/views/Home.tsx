@@ -3,9 +3,10 @@ import { Button, Pill, SectionHead } from '../components/ui'
 import { BallIcon, GearIcon, KitGlyph } from '../components/icons'
 import { usePersonalImage } from '../lib/personal'
 import { DEMO } from '../lib/demo'
-import { positionTag, useProfile } from '../lib/profile'
+import { useProfile } from '../lib/profile'
 import { kitFor, loadPacked, togglePacked, type KitItem } from '../lib/kit'
 import { fmtReps, sessionMinutes } from '../lib/logic'
+import { PlayerCard, SAMPLE_STATS } from '../components/PlayerCard'
 import { load, save } from '../lib/storage'
 import { loadQuotes } from '../lib/storage'
 import { DAYS, DAY_SHORT, type SlotKind } from '../lib/weekplan'
@@ -194,28 +195,16 @@ export function MindsetCard({ i, quote, hasClips, onPlayClip, onAddClips, fluid 
 
 // ---------- player card tile ----------
 export function CardTile({ onPlayer }: { onPlayer: () => void }) {
-  const bg = usePersonalImage('card.jpg')
+  const photo = usePersonalImage('card.jpg')
   const me = useProfile()
-  const stats: [string, number][] = [['PAC', 82], ['DRI', 78], ['SHO', 71], ['WF', 58]]
   return (
-    <button onClick={onPlayer} className="relative block h-[200px] w-full overflow-hidden rounded-[20px] bg-surface text-left active:scale-[0.99]">
-      {bg
-        ? <img src={bg} alt="" className="absolute inset-0 h-full w-full object-cover object-[50%_30%]" />
-        : <>
-            <div className="absolute inset-0 bg-[linear-gradient(135deg,#3a0a12_0%,#14090b_55%,#0b0d0c_100%)]" />
-            <span aria-hidden="true" className="absolute -right-2 -bottom-8 select-none font-display text-[220px] leading-none text-transparent [-webkit-text-stroke:2px_rgba(255,255,255,.14)]">{me.number}</span>
-          </>}
-      <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(10,12,11,.55)_0%,rgba(10,12,11,.3)_50%,rgba(10,12,11,0)_100%)]" />
-      <div className="absolute inset-y-4 left-4 flex flex-col justify-between">
-        <div>
-          <div className="font-display text-[54px] leading-[.85] text-white">{me.sample ? 74 : '--'}</div>
-          <Pill tone="red" className="mt-2">{positionTag(me)} · {me.name}</Pill>
-        </div>
-        <div className="flex gap-3.5 font-display text-xs text-white">
-          {stats.map(([k, v]) => <span key={k}>{k} <b className="text-red-ink">{me.sample ? v : '--'}</b></span>)}
-        </div>
+    <button onClick={onPlayer} className="flex w-full items-center gap-5 rounded-[20px] bg-surface p-4 text-left transition-transform duration-150 ease-snap active:scale-[0.99]">
+      <div className="w-[118px] shrink-0"><PlayerCard p={me} stats={me.sample ? SAMPLE_STATS : null} photo={photo} /></div>
+      <div className="min-w-0">
+        <div className="font-display text-lg uppercase leading-tight">{me.name}</div>
+        <p className="m-0 mt-1 text-sm text-muted">{me.sample ? 'Example ratings for the sample player.' : 'Unrated until your first test day. Add a photo in Settings to put yourself on the card.'}</p>
+        <span className="mt-3 inline-block font-display text-xs uppercase text-red-ink">Open player →</span>
       </div>
-      <span className="absolute top-4 right-4 rounded-full bg-black/50 px-2.5 py-1 text-[11px] text-white/80">{me.sample ? 'Example ratings' : 'Unrated until test day'}</span>
     </button>
   )
 }
