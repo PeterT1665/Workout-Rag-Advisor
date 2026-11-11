@@ -6,8 +6,10 @@ import '@fontsource-variable/archivo/wdth.css'
 import './index.css'
 import Root from './Root'
 import { fixTopSafeArea } from './lib/safeArea'
+import { startUpdates } from './lib/updates'
 
 fixTopSafeArea()
+startUpdates()
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>

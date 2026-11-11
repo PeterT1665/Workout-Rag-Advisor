@@ -20,6 +20,7 @@ import { Dashboard } from './views/Dashboard'
 import { DESKTOP_QUERY, useMedia } from './lib/useMedia'
 import { allClips, openClips, subscribeClips } from './lib/clips'
 import { openPhotos } from './lib/photos'
+import { setBusy } from './lib/updates'
 import { beep, playClip, realAudio, stopClip, unlockAudio } from './lib/audio'
 import { createPlayer, type Player } from './lib/player'
 import { nextQuote } from './lib/quotes'
@@ -66,6 +67,8 @@ export default function App() {
     return () => window.removeEventListener('ta-sync', on)
   }, [])
   useEffect(() => { window.scrollTo(0, 0) }, [tab, deskTab, overlay?.name])
+  // an app update may reload the page: hold it while a session, rating test or edit is open
+  useEffect(() => { setBusy(['preroll', 'player', 'testday', 'builder', 'profile', 'media'].includes(overlay?.name ?? '')) }, [overlay?.name])
 
   const updateSettings = (p: Partial<Settings>) => {
     const next = { ...settingsRef.current, ...p }

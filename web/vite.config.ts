@@ -13,7 +13,7 @@ export default defineConfig({
     react(),
     tailwindcss(),
     VitePWA({
-      registerType: 'autoUpdate',
+      registerType: 'prompt', // applied by src/lib/updates.ts, never mid-session
       includeAssets: ['icon-180.png', 'icon-192.png'],
       manifest: {
         name: demo ? 'Football Personal Coach (demo)' : 'Football Personal Coach',
