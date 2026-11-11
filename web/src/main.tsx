@@ -5,6 +5,7 @@ import '@fontsource/barlow/600.css'
 import '@fontsource-variable/archivo/wdth.css'
 import './index.css'
 import Root from './Root'
+import { PhoneFrame, showPhoneFrame } from './views/PhoneFrame'
 import { fixTopSafeArea } from './lib/safeArea'
 import { startUpdates } from './lib/updates'
 import { fadeImagesIn } from './lib/fadeImages'
@@ -15,6 +16,6 @@ fadeImagesIn()
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <Root />
+    {showPhoneFrame() ? <PhoneFrame /> : <Root />}
   </StrictMode>,
 )

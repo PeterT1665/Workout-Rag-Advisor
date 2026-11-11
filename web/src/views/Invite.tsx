@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react'
-import qrcode from 'qrcode-generator'
+import { qrPath } from '../lib/qr'
 import { Button, Screen, Title, TopBar } from '../components/ui'
 import { useProfile } from '../lib/profile'
 
@@ -10,15 +10,7 @@ export function Invite({ onDone, partner = false }: { onDone: () => void; partne
   const me = useProfile()
   const link = inviteLink()
   const [copied, setCopied] = useState(false)
-  const qr = useMemo(() => {
-    const q = qrcode(0, 'M')
-    q.addData(link)
-    q.make()
-    const n = q.getModuleCount()
-    let d = ''
-    for (let r = 0; r < n; r++) for (let c = 0; c < n; c++) if (q.isDark(r, c)) d += `M${c} ${r}h1v1h-1z`
-    return { n, d }
-  }, [link])
+  const qr = useMemo(() => qrPath(link), [link])
 
   const share = async () => {
     const text = partner ? `Train with me on Football Personal Coach` : `Try Football Personal Coach`

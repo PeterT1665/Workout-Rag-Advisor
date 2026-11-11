@@ -1,7 +1,8 @@
 import { act, cleanup, fireEvent, render, screen, waitFor, within } from '@testing-library/react'
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest'
 import App from './App'
-import { getProfile, reloadProfile, setProfile } from './lib/profile'
+import { PhoneFrame, showPhoneFrame } from './views/PhoneFrame'
+import { getProfile, reloadProfile } from './lib/profile'
 
 const spoken: string[] = []
 const played: string[] = []
@@ -303,17 +304,12 @@ describe('app', () => {
     ua.mockRestore()
   })
 
-  test('laptop: sidebar planner instead of the phone tab bar', () => {
+  test('laptop: the website shows the phone app in a frame with a QR code', () => {
     vi.stubGlobal('matchMedia', (q: string) => ({ matches: q.includes('min-width: 1024px'), addEventListener() {}, removeEventListener() {} }))
-    setProfile({ name: 'Peter', number: 7, positions: ['winger', 'striker'], foot: 'right', accent: 'red', idol: 'Cristiano Ronaldo' })
-    render(<App />)
-    expect(screen.getByText(/Good (morning|afternoon|evening), Peter/)).toBeTruthy()
-    expect(screen.getByRole('img', { name: 'Peter card, unrated' })).toBeTruthy() // player card tile
-    expect(screen.queryByRole('button', { name: /Kick off today's session/ })).toBeNull() // no phone tab bar
-    fireEvent.click(screen.getByRole('button', { name: /^Week$/ }))
-    expect(screen.getByText(/Tap the days you play/)).toBeTruthy()
-    fireEvent.click(screen.getByRole('button', { name: /^Sessions$/ }))
-    expect(screen.getByRole('heading', { name: /^Sessions$/i })).toBeTruthy()
+    expect(showPhoneFrame()).toBe(true)
+    render(<PhoneFrame />)
+    expect(screen.getByTitle('Football Personal Coach').getAttribute('src')).toMatch(/[?&]app=1/)
+    expect(screen.getByRole('img', { name: /open the app on your phone/ })).toBeTruthy()
   })
 })
 

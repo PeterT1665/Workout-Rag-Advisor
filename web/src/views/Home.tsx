@@ -9,8 +9,6 @@ import { fmtReps, sessionMinutes } from '../lib/logic'
 import { InstallButton } from '../components/InstallButton'
 import { canInstall } from '../lib/install'
 import { CATEGORY_LABELS, drillPhoto } from '../lib/library'
-import { PlayerCard } from '../components/PlayerCard'
-import { cardStatsFor } from '../lib/cardStats'
 import { load, save } from '../lib/storage'
 import { DAYS, DAY_SHORT, type SlotKind } from '../lib/weekplan'
 import type { Today } from '../lib/today'
@@ -181,44 +179,7 @@ export function WeekStrip({ today }: { today: Today }) {
   )
 }
 
-// ---------- mindset ----------
-export function MindsetCard({ i, quote, hasClips, onPlayClip, onAddClips, fluid = false }: { i: number; quote: string; hasClips: boolean; onPlayClip: () => void; onAddClips: () => void; fluid?: boolean }) {
-  const by = useProfile().idol
-  const photo = usePersonalImage(`mindset-${(i % 2) + 1}.jpg`)
-  return (
-    <div className={`${fluid ? 'w-full' : 'w-[300px] shrink-0 snap-start'} overflow-hidden rounded-[20px] bg-surface`}>
-      <div className="relative h-[150px] bg-[linear-gradient(160deg,#3a0a12,#0b0d0c)]">
-        {photo && <img src={photo} alt="" data-fade className="h-full w-full object-cover object-[50%_30%]" />}
-        {i === 0 && (hasClips || !DEMO) && (
-          <button onClick={hasClips ? onPlayClip : onAddClips}
-            className="absolute top-2.5 left-2.5 rounded-full bg-red px-3 py-1 font-display text-[11px] uppercase tracking-wider text-white active:scale-95">
-            {hasClips ? '▶ Clip' : '+ Add clips'}
-          </button>
-        )}
-      </div>
-      <div className="p-3.5">
-        <p className="m-0 font-display text-sm normal-case leading-snug">“{quote}”</p>
-        {by && <p className="m-0 mt-1 text-[13px] text-muted">{by}</p>}
-      </div>
-    </div>
-  )
-}
 
-// ---------- player card tile ----------
-export function CardTile({ onPlayer }: { onPlayer: () => void }) {
-  const photo = usePersonalImage('card.jpg')
-  const me = useProfile()
-  return (
-    <button onClick={onPlayer} className="flex w-full items-center gap-5 rounded-[20px] bg-surface p-4 text-left transition-transform duration-150 ease-snap active:scale-[0.99]">
-      <div className="w-[118px] shrink-0"><PlayerCard p={me} stats={cardStatsFor(me)} photo={photo} /></div>
-      <div className="min-w-0">
-        <div className="font-display text-lg uppercase leading-tight">{me.name}</div>
-        <p className="m-0 mt-1 text-sm text-muted">{me.sample ? 'Example ratings.' : me.ratings ? `Rated ${me.ratings.date}` : 'Not rated yet.'}</p>
-        <span className="mt-3 inline-block font-display text-xs uppercase text-red-ink">Open player →</span>
-      </div>
-    </button>
-  )
-}
 
 export function Home(p: Props) {
   const s = p.today.session

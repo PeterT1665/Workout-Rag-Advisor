@@ -16,9 +16,6 @@ import { TestDay } from './views/TestDay'
 import { Invite } from './views/Invite'
 import { CoachView } from './views/CoachView'
 import { TabBar, type Tab } from './components/TabBar'
-import { Sidebar, type DeskTab } from './components/Sidebar'
-import { Dashboard } from './views/Dashboard'
-import { DESKTOP_QUERY, useMedia } from './lib/useMedia'
 import { allClips, openClips, subscribeClips } from './lib/clips'
 import { openPhotos } from './lib/photos'
 import { setBusy } from './lib/updates'
@@ -47,8 +44,6 @@ type Overlay =
 
 export default function App() {
   const [tab, setTab] = useState<Tab>('home')
-  const [deskTab, setDeskTab] = useState<DeskTab>('home')
-  const desktop = useMedia(DESKTOP_QUERY)
   const [overlay, setOverlay] = useState<Overlay | null>(null)
   const [settings, setSettings] = useState<Settings>(loadSettings)
   const [games, setGames] = useState<Game[]>(loadGames)
@@ -69,7 +64,7 @@ export default function App() {
     return () => window.removeEventListener('ta-sync', on)
   }, [])
   // reset scroll before the new screen paints, so there is no visible jump
-  useLayoutEffect(() => { window.scrollTo(0, 0) }, [tab, deskTab, overlay?.name])
+  useLayoutEffect(() => { window.scrollTo(0, 0) }, [tab, overlay?.name])
   // an app update may reload the page: hold it while a session, rating test or edit is open
   useEffect(() => { setBusy(['preroll', 'player', 'testday', 'builder', 'profile', 'media'].includes(overlay?.name ?? '')) }, [overlay?.name])
 
@@ -115,34 +110,6 @@ export default function App() {
   const saveBuilt = (s: MySession) => { saveMySession(s); setLibrary(allSessions()); setOverlay({ name: 'detail', session: toSession(s), fromLibrary: true }) }
   const deleteBuilt = (id: string) => { deleteMySession(id); setLibrary(allSessions()); setOverlay({ name: 'library' }) }
 
-  if (desktop) {
-    // full-screen moments stay full screen
-    if (overlay && (overlay.name === 'preroll' || overlay.name === 'player')) return renderOverlay(overlay)
-    const goTab = (t: DeskTab) => { setOverlay(null); setDeskTab(t) }
-    const hasMindset = clips.some((c) => c.kind === 'mindset')
-    return (
-      <div className="flex min-h-dvh">
-        <Sidebar tab={overlay ? null : deskTab} onTab={goTab} onSettings={() => setOverlay({ name: 'settings' })} onKickOff={() => onStart(today.session)} />
-        <div className="min-w-0 flex-1">
-          {overlay
-            ? <div key={overlay.name} className="screen-in py-6">{renderOverlay(overlay)}</div>
-            : <div key={deskTab} className="tab-in">
-                {deskTab === 'home' && (
-                  <Dashboard today={today} hasClips={hasMindset} onKickOff={onStart} onOpen={open}
-                    onSettings={() => setOverlay({ name: 'settings' })} onWeek={() => goTab('week')} onSessions={() => goTab('sessions')}
-                    onPlayer={() => goTab('player')} onPlayClip={() => { unlockAudio(); playClip(settingsRef.current, 'mindset') }}
-                    onAddClips={() => setOverlay({ name: 'media', from: 'home' })} />
-                )}
-                {deskTab === 'week' && <WeekView wide today={today} games={games} sessions={sessions} onGames={updateGames} onOpen={open} />}
-                {deskTab === 'sessions' && <Library wide sessions={library} onOpen={open} onNew={() => build(null)} onBack={() => goTab('home')} />}
-                {deskTab === 'player' && <PlayerTab wide onTestDay={() => setOverlay({ name: 'testday' })} />}
-                {deskTab === 'coach' && <CoachView wide />}
-              </div>}
-        </div>
-      </div>
-    )
-  }
-
   if (overlay) {
     // full-screen moments (kick-off, player) bring their own entrance
     if (overlay.name === 'preroll' || overlay.name === 'player') return renderOverlay(overlay)
@@ -154,7 +121,7 @@ export default function App() {
       case 'library':
         return <Library sessions={library} onOpen={openFromLibrary} onNew={() => build(null)} onBack={close} />
       case 'detail':
-        return <Detail session={overlay.session} desktop={desktop} onBack={() => (overlay.fromLibrary && !desktop ? setOverlay({ name: 'library' }) : close())} onStart={() => onStart(overlay.session)}
+        return <Detail session={overlay.session} onBack={() => (overlay.fromLibrary ? setOverlay({ name: 'library' }) : close())} onStart={() => onStart(overlay.session)}
           onEdit={() => { const t = templateFor(overlay.session.id); if (t) build(t) }}
           onInvite={() => setOverlay({ name: 'invite', partner: true, back: overlay })} />
       case 'builder':
