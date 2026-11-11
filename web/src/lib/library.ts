@@ -68,7 +68,7 @@ export const isMine = (id: string) => id.startsWith('my-')
 // Drill-card photo per category group (licensed Unsplash photos in public/drill-img, credited in Settings).
 const PHOTO_GROUP: Record<string, string> = {
   'ball-mastery': 'dribble', 'first-touch': 'dribble', '1v1': 'dribble', passing: 'pass', finishing: 'shoot',
-  speed: 'speed', sprints: 'speed', plyometrics: 'speed', warmup: 'run', conditioning: 'run', 'gym-conditioning': 'run',
+  speed: 'speed', sprints: 'speed', plyometrics: 'speed', warmup: 'warmup', conditioning: 'run', 'gym-conditioning': 'run',
   'lower-strength': 'gym', 'upper-strength': 'gym', olympic: 'gym', explosive: 'gym', 'single-limb': 'gym', isometrics: 'gym', core: 'gym',
   mobility: 'stretch', cooldown: 'stretch',
 }
