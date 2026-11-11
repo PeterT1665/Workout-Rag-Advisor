@@ -3,7 +3,7 @@ import { say } from '../lib/audio'
 import type { Settings } from '../lib/types'
 import { deleteAccount, signOut, syncEnabled } from '../lib/sync'
 import { safeAreaInfo } from '../lib/safeArea'
-import { DEMO, seedDemo, startOverDemo } from '../lib/demo'
+import { seedDemo, startOverDemo } from '../lib/demo'
 import { positionTag, useProfile } from '../lib/profile'
 import credits from '../data/credits.json'
 
@@ -49,7 +49,8 @@ export function SettingsView({ settings: s, clipCount, onChange, onMedia, onProf
             </div>
           </Panel>
       )}
-      {DEMO && (
+      {/* drill-card photos ship in every build, so credits always show */}
+      {(
         <>
           {credits.length > 0 && (
             <>

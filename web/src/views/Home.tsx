@@ -6,6 +6,7 @@ import { DEMO } from '../lib/demo'
 import { useProfile } from '../lib/profile'
 import { kitFor, loadPacked, togglePacked, type KitItem } from '../lib/kit'
 import { fmtReps, sessionMinutes } from '../lib/logic'
+import { CATEGORY_LABELS, drillPhoto } from '../lib/library'
 import { PlayerCard } from '../components/PlayerCard'
 import { cardStatsFor } from '../lib/cardStats'
 import { load, save } from '../lib/storage'
@@ -131,18 +132,19 @@ export function KitCheck({ session }: { session: Session }) {
 }
 
 // ---------- today's drills ----------
-export function DrillCard({ i, name, meta, cue, onOpen, fluid = false, football = true }: { i: number; name: string; meta: string; cue: boolean; onOpen: () => void; fluid?: boolean; football?: boolean }) {
-  const found = usePersonalImage(`drill-${(i % 3) + 1}.jpg`)
-  const photo = football ? found : null // pitch photos only on football drills, not on stretching
+export function DrillCard({ name, meta, cue, category, onOpen, fluid = false }: { i?: number; name: string; meta: string; cue: boolean; category?: string; onOpen: () => void; fluid?: boolean; football?: boolean }) {
+  const label = category ? CATEGORY_LABELS[category] ?? category : null
   return (
-    <button onClick={onOpen} className={`${fluid ? 'w-full' : 'w-[250px] shrink-0 snap-start'} overflow-hidden rounded-[20px] bg-surface text-left transition-transform duration-150 ease-snap active:scale-[0.98]`}>
-      <div className={`relative bg-[linear-gradient(160deg,#1f5533,#0f1d14)] ${photo ? 'h-[150px]' : 'h-[84px]'}`}>
-        {photo && <img src={photo} alt="" className="h-full w-full object-cover" />}
-        {cue && <Pill tone="red" className="absolute top-2.5 left-2.5">Voice cues</Pill>}
+    <button onClick={onOpen} className={`${fluid ? 'w-full' : 'w-[200px] shrink-0 snap-start'} relative block aspect-[3/4] overflow-hidden rounded-[22px] bg-surface text-left transition-transform duration-150 ease-snap active:scale-[0.98]`}>
+      <img src={drillPhoto(category)} alt="" loading="lazy" className="absolute inset-0 h-full w-full object-cover" />
+      <div className="absolute inset-0 bg-[linear-gradient(to_bottom,rgba(0,0,0,.35)_0%,rgba(0,0,0,0)_30%,rgba(0,0,0,.15)_50%,rgba(0,0,0,.9)_100%)]" />
+      <div className="absolute top-2.5 left-2.5 flex flex-wrap gap-1.5">
+        {label && <Pill tone="glass">{label}</Pill>}
+        {cue && <Pill tone="red">Voice cues</Pill>}
       </div>
-      <div className="p-3.5">
-        <h3 className="m-0 mb-1 font-display text-sm uppercase">{name}</h3>
-        <p className="m-0 text-sm text-muted">{meta}</p>
+      <div className="absolute inset-x-3.5 bottom-3.5 text-white">
+        <h3 className="m-0 mb-1 font-display text-sm uppercase leading-tight">{name}</h3>
+        <p className="m-0 text-sm text-white/75">{meta}</p>
       </div>
     </button>
   )
@@ -224,7 +226,7 @@ export function Home(p: Props) {
       <SectionHead title="Today's drills" right={<button onClick={p.onAllSessions} className="text-sm font-semibold text-muted">All sessions</button>} />
       <div className="no-scrollbar -mx-4 flex snap-x scroll-px-4 gap-3 overflow-x-auto px-4">
         {drills.slice(0, 5).map((b, i) => (
-          <DrillCard key={b.name} i={i} name={b.name.replace(/\s*\([^)]*\)/g, '')} cue={!!b.cue}
+          <DrillCard key={b.name} i={i} category={b.category} name={b.name.replace(/\s*\([^)]*\)/g, '')} cue={!!b.cue}
             meta={`${b.rounds || 1} × ${b.reps ? fmtReps(b.reps) : `${b.work}s`}${b.rest ? ` · rest ${b.rest}s` : ''}`} football={s.type === 'football'} onOpen={() => p.onOpen(s)} />
         ))}
       </div>

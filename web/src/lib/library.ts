@@ -41,7 +41,7 @@ export function toSession(t: Template): Session {
   for (const it of t.items) {
     const e = byId.get(it.ex)
     if (!e) continue // exercise removed from the library: skip rather than break the session
-    const { id: _id, sport: _s, category: _c, positions: _p, ...block } = e
+    const { id: _id, sport: _s, positions: _p, ...block } = e
     const { ex: _ex, ...overrides } = it
     blocks.push({ ...block, ...stripUndefined(overrides) })
   }
@@ -64,6 +64,15 @@ export function saveMySession(s: MySession) {
 export const deleteMySession = (id: string) => save('mySessions', loadMySessions().filter((x) => x.id !== id))
 
 export const isMine = (id: string) => id.startsWith('my-')
+
+// Drill-card photo per category group (licensed Unsplash photos in public/drill-img, credited in Settings).
+const PHOTO_GROUP: Record<string, string> = {
+  'ball-mastery': 'dribble', 'first-touch': 'dribble', '1v1': 'dribble', passing: 'pass', finishing: 'shoot',
+  speed: 'speed', sprints: 'speed', plyometrics: 'speed', warmup: 'run', conditioning: 'run', 'gym-conditioning': 'run',
+  'lower-strength': 'gym', 'upper-strength': 'gym', olympic: 'gym', explosive: 'gym', 'single-limb': 'gym', isometrics: 'gym', core: 'gym',
+  mobility: 'stretch', cooldown: 'stretch',
+}
+export const drillPhoto = (category?: string) => `${import.meta.env.BASE_URL}drill-img/${PHOTO_GROUP[category ?? ''] ?? 'run'}.jpg`
 export const newSessionId = () => `my-${Date.now().toString(36)}`
 export const templateFor = (id: string): Template | undefined => TEMPLATES.find((t) => t.id === id) ?? loadMySessions().find((t) => t.id === id)
 

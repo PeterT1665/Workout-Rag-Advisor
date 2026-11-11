@@ -73,7 +73,7 @@ export function Dashboard(p: {
           <SectionHead title="Today's drills" right={<button onClick={p.onSessions} className="text-sm font-semibold text-muted hover:text-ink">All sessions</button>} />
           <div className="grid grid-cols-3 gap-4">
             {drills.map((b, i) => (
-              <DrillCard key={b.name} fluid i={i} name={b.name.replace(/\s*\([^)]*\)/g, '')} cue={!!b.cue}
+              <DrillCard key={b.name} fluid i={i} category={b.category} name={b.name.replace(/\s*\([^)]*\)/g, '')} cue={!!b.cue}
                 meta={`${b.rounds || 1} × ${b.work}s${b.rest ? ` · rest ${b.rest}s` : ''}`} football={s.type === 'football'} onOpen={() => p.onOpen(s)} />
             ))}
           </div>

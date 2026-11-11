@@ -8,6 +8,7 @@ export type Block = {
   how?: string
   needs?: string[]
   reps?: string // gym: reps per set; work is then an estimated set time
+  category?: string // library category, picks the drill-card photo
 }
 
 export type Session = {
