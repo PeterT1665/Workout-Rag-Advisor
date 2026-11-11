@@ -7,8 +7,8 @@ import { seedDemo, startOverDemo } from '../lib/demo'
 import { positionTag, useProfile } from '../lib/profile'
 import credits from '../data/credits.json'
 
-export function SettingsView({ settings: s, clipCount, onChange, onMedia, onProfile, onDone }: {
-  settings: Settings; clipCount: number; onChange: (p: Partial<Settings>) => void; onMedia: () => void; onProfile: () => void; onDone: () => void
+export function SettingsView({ settings: s, clipCount, onChange, onMedia, onProfile, onInvite, onDone }: {
+  settings: Settings; clipCount: number; onChange: (p: Partial<Settings>) => void; onMedia: () => void; onProfile: () => void; onInvite: () => void; onDone: () => void
 }) {
   const me = useProfile()
   return (
@@ -21,6 +21,7 @@ export function SettingsView({ settings: s, clipCount, onChange, onMedia, onProf
         </div>
         <Button variant="ghost" size="sm" className="shrink-0 bg-surface-2" onClick={onProfile}>Edit player</Button>
       </Panel>
+      <Button block className="mb-6" onClick={onInvite}>Invite a friend</Button>
       <Panel className="flex flex-col gap-4">
         <Toggle id="voice" label="Spoken announcements and cues" checked={s.voice} onChange={(v) => onChange({ voice: v })} />
         <Slider id="vol" label="Voice volume" min={0.2} max={1} step={0.1} value={s.volume} onChange={(v) => onChange({ volume: v })} />

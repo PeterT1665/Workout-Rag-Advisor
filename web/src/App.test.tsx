@@ -273,6 +273,34 @@ describe('app', () => {
     expect(screen.getByText(/New rating session/)).toBeTruthy()
   })
 
+  test('invite: QR from Settings, and Train together on partner sessions', () => {
+    render(<App />)
+    click(/^Settings$/)
+    click(/^Invite a friend$/)
+    expect(screen.getByRole('img', { name: /QR code for .*invite=1/ })).toBeTruthy()
+    click(/^Done$/)
+    expect(screen.getByRole('heading', { name: /^Settings$/i })).toBeTruthy()
+    click(/^Done$/)
+    click(/All sessions/)
+    click(/With a partner/)
+    click(/Train together/)
+    expect(screen.getByRole('heading', { name: /Train together/i })).toBeTruthy()
+    click(/^Done$/)
+    expect(screen.getByRole('heading', { name: /With a partner/i })).toBeTruthy()
+  })
+
+  test('iPhone Safari: Add to Home Screen guide until installed; Later hides it', () => {
+    const ua = vi.spyOn(navigator, 'userAgent', 'get').mockReturnValue('Mozilla/5.0 (iPhone; CPU iPhone OS 18_0 like Mac OS X)')
+    const { unmount } = render(<App />)
+    expect(screen.getByRole('region', { name: 'Add to Home Screen' })).toBeTruthy()
+    click(/^Later$/)
+    expect(screen.queryByRole('region', { name: 'Add to Home Screen' })).toBeNull()
+    unmount()
+    render(<App />)
+    expect(screen.queryByRole('region', { name: 'Add to Home Screen' })).toBeNull() // snoozed
+    ua.mockRestore()
+  })
+
   test('laptop: sidebar planner instead of the phone tab bar', () => {
     vi.stubGlobal('matchMedia', (q: string) => ({ matches: q.includes('min-width: 1024px'), addEventListener() {}, removeEventListener() {} }))
     setProfile({ name: 'Peter', number: 7, positions: ['winger', 'striker'], foot: 'right', accent: 'red', idol: 'Cristiano Ronaldo' })

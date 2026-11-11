@@ -112,6 +112,26 @@ export async function signIn(email: string, password: string): Promise<SignInRes
   } catch { return 'offline' }
 }
 
+export type SignUpResult = 'signed-in' | 'confirm-email' | 'exists' | 'closed' | 'weak' | 'throttled' | 'offline'
+// Email + password sign-up. With "Confirm email" on in Supabase, the user confirms by email first.
+export async function signUp(email: string, password: string): Promise<SignUpResult> {
+  try {
+    const sb = await supabase()
+    const { data, error } = await sb.auth.signUp({ email: email.trim(), password, options: { emailRedirectTo: location.origin } })
+    if (error) {
+      const m = error.message.toLowerCase()
+      if (error.status === 429) return 'throttled'
+      if (m.includes('signups not allowed') || m.includes('signup is disabled')) return 'closed'
+      if (m.includes('already registered') || m.includes('already exists')) return 'exists'
+      if (m.includes('password')) return 'weak'
+      return error.status && error.status < 500 ? 'weak' : 'offline'
+    }
+    // Supabase hides "email taken" (no error, no identities) to avoid leaking who has an account
+    if (data.user && data.user.identities?.length === 0) return 'exists'
+    return data.session ? 'signed-in' : 'confirm-email'
+  } catch { return 'offline' }
+}
+
 export async function sendPasswordReset(email: string): Promise<boolean> {
   try {
     const sb = await supabase()

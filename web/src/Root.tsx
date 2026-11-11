@@ -17,6 +17,7 @@ type Mode = 'checking' | 'guest' | 'signin' | 'setpw' | 'account'
 export default function Root() {
   const [mode, setMode] = useState<Mode>(accountsEnabled ? 'checking' : 'guest')
   const [profiled, setProfiled] = useState(hasProfile)
+  const [authStart, setAuthStart] = useState<'signin' | 'signup'>('signin')
 
   async function enterAccount(next: Mode = 'account') {
     // A guest's sample player or leftovers must not end up in the account. A guest's own player is kept and uploaded.
@@ -40,19 +41,20 @@ export default function Root() {
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   if (mode === 'checking') return <div className="fixed inset-0 bg-bg" aria-busy="true" />
-  if (mode === 'signin') return <Login onDone={() => void enterAccount()} onBack={() => setMode('guest')} />
+  if (mode === 'signin') return <Login start={authStart} onDone={() => void enterAccount()} onBack={() => setMode('guest')} />
   if (mode === 'setpw') return <SetPassword onDone={() => setMode('account')} />
-  if (mode === 'guest') return <Guest onSignIn={accountsEnabled ? () => setMode('signin') : undefined} />
+  const auth = (start: 'signin' | 'signup') => () => { setAuthStart(start); setMode('signin') }
+  if (mode === 'guest') return <Guest onSignIn={accountsEnabled ? auth('signin') : undefined} onSignUp={accountsEnabled ? auth('signup') : undefined} />
   if (!profiled) return <Onboarding onDone={(p, games) => { saveGames(games); setProfile(p); setProfiled(true) }} />
   return <App />
 }
 
 // No account: visitors make their own player or use the sample one (daily-refreshed sample log).
-function Guest({ onSignIn }: { onSignIn?: () => void }) {
+function Guest({ onSignIn, onSignUp }: { onSignIn?: () => void; onSignUp?: () => void }) {
   const [ready, setReady] = useState(hasProfile)
   if (!ready) {
     return (
-      <Onboarding welcome onSignIn={onSignIn}
+      <Onboarding welcome onSignIn={onSignIn} onSignUp={onSignUp}
         onSample={() => { setProfile(SAMPLE_PROFILE); seedDemo(new Date(), true); setReady(true) }}
         onDone={(p, games) => { startOwnDemo(games); setProfile(p); setReady(true) }} />
     )

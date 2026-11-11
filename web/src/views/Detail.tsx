@@ -19,7 +19,8 @@ function downloadICS(s: Session, date: string, time: string) {
   a.remove()
 }
 
-export function Detail({ session: s, onBack, onStart, onEdit, desktop = false }: { session: Session; onBack: () => void; onStart: () => void; onEdit?: () => void; desktop?: boolean }) {
+export function Detail({ session: s, onBack, onStart, onEdit, onInvite, desktop = false }: { session: Session; onBack: () => void; onStart: () => void; onEdit?: () => void; onInvite?: () => void; desktop?: boolean }) {
+  const withPartner = s.blocks.some((b) => b.needs?.includes('partner'))
   const hasCue = flattenSession(s).some((x) => x.cue)
   const [date, setDate] = useState(() => new Date(Date.now() + 864e5).toISOString().slice(0, 10))
   const [time, setTime] = useState('17:30')
@@ -35,6 +36,7 @@ export function Detail({ session: s, onBack, onStart, onEdit, desktop = false }:
       <p className="text-sm text-muted">About {sessionMinutes(s)} min.</p>
       <div className="flex flex-wrap gap-2">{s.needs.map((n) => <Tag key={n}>{n}</Tag>)}</div>
       {hasCue && <p className="text-sm">LEFT/RIGHT voice cues: volume up.</p>}
+      {withPartner && onInvite && <Button block variant="ghost" className="mt-4 bg-surface-2" onClick={onInvite}>Train together: invite your partner</Button>}
       <KitCheck session={s} />
 
       {/* Match timeline: blocks sized by time, voice-cue drills striped */}

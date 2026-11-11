@@ -16,6 +16,7 @@ const rpc = vi.fn(async (fn: string, a?: { p_key: string; p_value: unknown; p_up
 })
 const auth = {
   signInWithPassword: vi.fn(),
+  signUp: vi.fn(),
   signOut: vi.fn(async () => ({ error: null })),
   getSession: vi.fn(async () => ({ data: { session: null } })),
 }
@@ -25,7 +26,7 @@ vi.mock('./supabase', () => ({
   supabase: async () => ({ rpc, auth, storage, from: () => ({ select: async () => ({ data: [...rows.values()], error: null }) }) }),
 }))
 
-const { clearLocalData, deleteAccount, pull, signIn, signOut } = await import('./sync')
+const { clearLocalData, deleteAccount, pull, signIn, signOut, signUp } = await import('./sync')
 const get = (k: string) => JSON.parse(localStorage.getItem(k) || 'null')
 const flush = () => new Promise((r) => setTimeout(r, 0))
 
@@ -97,5 +98,18 @@ describe('sync', () => {
     expect(removed.at(-1)).toContain('u1/hero.jpg')
     expect(deleted).toBe(true)
     expect(localStorage.getItem('history')).toBeNull()
+  })
+  test('sign-up results', async () => {
+    vi.stubGlobal('location', { origin: 'https://app.test' })
+    auth.signUp.mockResolvedValueOnce({ data: { user: { identities: [{}] }, session: null }, error: null })
+    expect(await signUp(' a@b.co ', 'longpassword')).toBe('confirm-email')
+    expect(auth.signUp).toHaveBeenLastCalledWith({ email: 'a@b.co', password: 'longpassword', options: { emailRedirectTo: 'https://app.test' } })
+    auth.signUp.mockResolvedValueOnce({ data: { user: { identities: [{}] }, session: {} }, error: null })
+    expect(await signUp('a@b.co', 'longpassword')).toBe('signed-in')
+    auth.signUp.mockResolvedValueOnce({ data: { user: { identities: [] }, session: null }, error: null })
+    expect(await signUp('a@b.co', 'longpassword')).toBe('exists')
+    auth.signUp.mockResolvedValueOnce({ data: {}, error: { status: 422, message: 'Signups not allowed for this instance' } })
+    expect(await signUp('a@b.co', 'longpassword')).toBe('closed')
+    vi.unstubAllGlobals()
   })
 })

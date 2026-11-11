@@ -13,6 +13,7 @@ import { MediaView } from './views/MediaView'
 import { WeekView } from './views/WeekView'
 import { PlayerTab } from './views/PlayerTab'
 import { TestDay } from './views/TestDay'
+import { Invite } from './views/Invite'
 import { CoachView } from './views/CoachView'
 import { TabBar, type Tab } from './components/TabBar'
 import { Sidebar, type DeskTab } from './components/Sidebar'
@@ -42,6 +43,7 @@ type Overlay =
   | { name: 'builder'; from: Template | null }
   | { name: 'profile' }
   | { name: 'testday' }
+  | { name: 'invite'; partner?: boolean; back?: Overlay }
 
 export default function App() {
   const [tab, setTab] = useState<Tab>('home')
@@ -153,7 +155,8 @@ export default function App() {
         return <Library sessions={library} onOpen={openFromLibrary} onNew={() => build(null)} onBack={close} />
       case 'detail':
         return <Detail session={overlay.session} desktop={desktop} onBack={() => (overlay.fromLibrary && !desktop ? setOverlay({ name: 'library' }) : close())} onStart={() => onStart(overlay.session)}
-          onEdit={() => { const t = templateFor(overlay.session.id); if (t) build(t) }} />
+          onEdit={() => { const t = templateFor(overlay.session.id); if (t) build(t) }}
+          onInvite={() => setOverlay({ name: 'invite', partner: true, back: overlay })} />
       case 'builder':
         return <Builder from={overlay.from} onSave={saveBuilt} onDelete={deleteBuilt}
           onCancel={() => setOverlay(overlay.from ? { name: 'detail', session: toSession(overlay.from), fromLibrary: true } : { name: 'library' })} />
@@ -162,7 +165,9 @@ export default function App() {
       case 'player':
         return <PlayerView key={overlay.player.getState().startedAt} session={overlay.session} player={overlay.player} settings={settings} onExit={close} />
       case 'settings':
-        return <SettingsView settings={settings} clipCount={clips.length} onChange={updateSettings} onMedia={() => setOverlay({ name: 'media', from: 'settings' })} onProfile={() => setOverlay({ name: 'profile' })} onDone={close} />
+        return <SettingsView settings={settings} clipCount={clips.length} onChange={updateSettings} onMedia={() => setOverlay({ name: 'media', from: 'settings' })} onProfile={() => setOverlay({ name: 'profile' })} onInvite={() => setOverlay({ name: 'invite', back: { name: 'settings' } })} onDone={close} />
+      case 'invite':
+        return <Invite partner={overlay.partner} onDone={() => (overlay.back ? setOverlay(overlay.back) : close())} />
       case 'testday':
         return <TestDay onDone={close} />
       case 'profile':

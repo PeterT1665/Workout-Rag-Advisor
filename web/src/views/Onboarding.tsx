@@ -8,13 +8,14 @@ import { usePersonalImage } from '../lib/personal'
 // by new accounts, and by Edit player. `welcome` adds the first screen with the sample-player shortcut.
 const STEPS = ['player', 'play', 'week', 'style'] as const
 
-export function Onboarding({ initial, initialGames = [], welcome = false, onDone, onSample, onSignIn, onCancel }: {
+export function Onboarding({ initial, initialGames = [], welcome = false, onDone, onSample, onSignIn, onSignUp, onCancel }: {
   initial?: Profile
   initialGames?: Game[]
   welcome?: boolean
   onDone: (p: Profile, games: Game[]) => void
   onSample?: () => void
   onSignIn?: () => void
+  onSignUp?: () => void
   onCancel?: () => void
 }) {
   const [p, setP] = useState<Profile>(initial ?? { name: '', number: 10, positions: [], foot: 'right', accent: 'red', idol: '', gym: 3 })
@@ -49,7 +50,12 @@ export function Onboarding({ initial, initialGames = [], welcome = false, onDone
             <Button block onClick={() => setStep(0)}>Make my player</Button>
             <Button block variant="ghost" className="mt-3" onClick={onSample}>Try a sample player</Button>
             <p className="m-0 mt-4 text-center text-xs text-muted">30 seconds. No account needed.</p>
-            {onSignIn && <button onClick={onSignIn} className="mt-1 min-h-11 w-full text-center text-sm font-semibold">Have an invite? <span className="text-red-ink">Sign in</span></button>}
+            {onSignIn && (
+              <div className="mt-1 flex justify-center gap-5 text-sm font-semibold">
+                {onSignUp && <button onClick={onSignUp} className="min-h-11 text-red-ink">Create account</button>}
+                <button onClick={onSignIn} className="min-h-11">Sign in</button>
+              </div>
+            )}
           </div>
         </div>
       </Screen>

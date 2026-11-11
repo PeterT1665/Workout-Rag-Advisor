@@ -225,6 +225,7 @@ export function Home(p: Props) {
   return (
     <main className="mx-auto max-w-xl px-4 pb-32">
       <Hero today={p.today} onKickOff={p.onKickOff} onOpen={p.onOpen} onSettings={p.onSettings} onCustomise={p.onAddClips} />
+      <InstallGuide />
       <HowItWorks onWeek={p.onWeek} />
 
       <SectionHead title="Today's drills" right={<button onClick={p.onAllSessions} className="text-sm font-semibold text-muted">All sessions</button>} />
@@ -266,6 +267,36 @@ function HowItWorks({ onWeek }: { onWeek?: () => void }) {
         ))}
       </ol>
       {onWeek && <button onClick={() => { close(); onWeek() }} className="mt-4 min-h-12 w-full rounded-full bg-surface-2 font-display text-sm uppercase">Set my week</button>}
+    </section>
+  )
+}
+
+// iPhone Safari only: until the app is on the Home Screen, show how to add it (works offline, full screen, voice cues).
+function InstallGuide() {
+  const [hidden, setHidden] = useState(() => {
+    if (typeof navigator === 'undefined') return true
+    const ios = /iP(hone|od|ad)/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1)
+    if (!ios) return true
+    const installed = (navigator as Navigator & { standalone?: boolean }).standalone === true || (typeof matchMedia === 'function' && matchMedia('(display-mode: standalone)').matches)
+    return installed || load<number>('install:snooze', 0) > Date.now()
+  })
+  if (hidden) return null
+  const steps: [string, string][] = [['1', 'Tap Share (the square with an arrow).'], ['2', 'Tap Add to Home Screen. If it is missing, tap More.'], ['3', 'Tap Add, then open it from your Home Screen.']]
+  return (
+    <section aria-label="Add to Home Screen" className="rise mt-6 rounded-[22px] border border-red/40 bg-surface p-4">
+      <div className="flex items-baseline justify-between">
+        <h2 className="m-0 font-display text-base uppercase">Add to Home Screen</h2>
+        <button onClick={() => { save('install:snooze', Date.now() + 3 * 864e5); setHidden(true) }} className="min-h-10 px-1 text-sm font-semibold text-muted">Later</button>
+      </div>
+      <p className="m-0 mt-1 mb-3 text-sm text-muted">Full screen, works offline at the field.</p>
+      <ol className="m-0 flex list-none flex-col gap-2.5 p-0">
+        {steps.map(([n, t]) => (
+          <li key={n} className="flex items-center gap-3">
+            <span className="grid h-7 w-7 shrink-0 place-items-center rounded-full border border-white/20 font-display text-xs">{n}</span>
+            <span className="text-sm">{t}</span>
+          </li>
+        ))}
+      </ol>
     </section>
   )
 }
