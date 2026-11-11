@@ -13,8 +13,12 @@ applyAccent(getProfile().accent)
 
 type Mode = 'checking' | 'guest' | 'signin' | 'setpw' | 'account'
 
+// Laptop preview frames (see views/PhoneFrame): ?preview=welcome shows the welcome screen, ?preview=home the app.
+const preview = typeof location !== 'undefined' ? new URLSearchParams(location.search).get('preview') : null
+
 // One app, two ways in: guests ("Try it") keep everything in this browser; invited users sign in and sync.
 export default function Root() {
+  if (preview === 'welcome') return <WelcomePreview />
   const [mode, setMode] = useState<Mode>(accountsEnabled ? 'checking' : 'guest')
   const [profiled, setProfiled] = useState(hasProfile)
   const [authStart, setAuthStart] = useState<'signin' | 'signup'>('signin')
@@ -51,7 +55,11 @@ export default function Root() {
 
 // No account: visitors make their own player or use the sample one (daily-refreshed sample log).
 function Guest({ onSignIn, onSignUp }: { onSignIn?: () => void; onSignUp?: () => void }) {
-  const [ready, setReady] = useState(hasProfile)
+  const [ready, setReady] = useState(() => {
+    // the laptop's home-screen preview opens straight on the sample player
+    if (preview === 'home' && !hasProfile()) { setProfile(SAMPLE_PROFILE); seedDemo(new Date(), true) }
+    return hasProfile()
+  })
   if (!ready) {
     return (
       <Onboarding welcome onSignIn={onSignIn} onSignUp={onSignUp}
@@ -61,4 +69,14 @@ function Guest({ onSignIn, onSignUp }: { onSignIn?: () => void; onSignUp?: () =>
   }
   if (getProfile().sample) seedDemo()
   return <App />
+}
+
+// Laptop preview of the welcome screen, whatever is saved. Choosing a player turns this phone into the real app.
+function WelcomePreview() {
+  const enter = () => { location.href = '/?app=1' }
+  return (
+    <Onboarding welcome onSignIn={accountsEnabled ? enter : undefined} onSignUp={accountsEnabled ? enter : undefined}
+      onSample={() => { setProfile(SAMPLE_PROFILE); seedDemo(new Date(), true); enter() }}
+      onDone={(p, games) => { startOwnDemo(games); setProfile(p); enter() }} />
+  )
 }
