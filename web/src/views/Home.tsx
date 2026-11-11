@@ -208,14 +208,14 @@ export function CardTile({ onPlayer }: { onPlayer: () => void }) {
       <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(10,12,11,.55)_0%,rgba(10,12,11,.3)_50%,rgba(10,12,11,0)_100%)]" />
       <div className="absolute inset-y-4 left-4 flex flex-col justify-between">
         <div>
-          <div className="font-display text-[54px] leading-[.85] text-white">74</div>
+          <div className="font-display text-[54px] leading-[.85] text-white">{me.sample ? 74 : '--'}</div>
           <Pill tone="red" className="mt-2">{positionTag(me)} · {me.name}</Pill>
         </div>
         <div className="flex gap-3.5 font-display text-xs text-white">
-          {stats.map(([k, v]) => <span key={k}>{k} <b className="text-red-ink">{v}</b></span>)}
+          {stats.map(([k, v]) => <span key={k}>{k} <b className="text-red-ink">{me.sample ? v : '--'}</b></span>)}
         </div>
       </div>
-      <span className="absolute top-4 right-4 rounded-full bg-black/50 px-2.5 py-1 text-[11px] text-white/80">Example until test day</span>
+      <span className="absolute top-4 right-4 rounded-full bg-black/50 px-2.5 py-1 text-[11px] text-white/80">{me.sample ? 'Example ratings' : 'Unrated until test day'}</span>
     </button>
   )
 }

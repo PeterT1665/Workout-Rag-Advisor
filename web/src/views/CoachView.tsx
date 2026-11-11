@@ -13,8 +13,8 @@ export function CoachView({ wide = false }: { wide?: boolean }) {
     <main className={wide ? 'max-w-3xl px-10 pt-10 pb-12' : 'mx-auto max-w-xl px-4 pt-[max(20px,var(--sat))] pb-32'}>
       <Title>Coach</Title>
       <p className="m-0 mt-3 max-w-[60ch] text-muted">
-        Your training agent. Talk through your week, games and how your body feels. It researches drills for your positions,
-        reads your check-ins and reshapes the plan.
+        Coming soon: an AI coach that knows your week, your games and your check-ins. Ask it to plan around a busy week,
+        explain a drill, or adjust tomorrow when your legs are heavy.
       </p>
 
       <section className="mt-8 rounded-[24px] bg-surface p-5">
@@ -26,11 +26,10 @@ export function CoachView({ wide = false }: { wide?: boolean }) {
         </ul>
         <div className="mt-5 flex items-center gap-3 rounded-full bg-bg px-5 py-3 text-muted" aria-disabled="true">
           <span className="flex-1">Message your coach…</span>
-          <span className="rounded-full bg-surface-2 px-3 py-1 font-display text-[11px] uppercase">Next build</span>
+          <span className="rounded-full bg-surface-2 px-3 py-1 font-display text-[11px] uppercase">Soon</span>
         </div>
       </section>
 
-      <p className="m-0 mt-4 text-sm text-muted">Coming with the backend: Gemini with Groq as fallback, your data kept on your own server.</p>
     </main>
   )
 }

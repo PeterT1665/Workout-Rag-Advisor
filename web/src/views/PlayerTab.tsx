@@ -17,6 +17,7 @@ const fmtDate = (iso: string) => {
 export function PlayerTab({ wide = false }: { wide?: boolean }) {
   const bg = usePersonalImage('card.jpg')
   const me = useProfile()
+  const rated = !!me.sample // only the sample player shows example ratings until test days exist
   const history = loadHistory().slice().reverse()
   return (
     <main className={wide ? 'px-10 pt-10 pb-12' : 'mx-auto max-w-xl px-4 pt-[max(20px,var(--sat))] pb-32'}>
@@ -27,21 +28,21 @@ export function PlayerTab({ wide = false }: { wide?: boolean }) {
         {bg && <img src={bg} alt="" className="absolute inset-0 h-full w-full object-cover opacity-30" />}
         <div className="relative">
           <div className="flex items-end gap-4">
-            <span className="font-display text-7xl leading-[.8]">74</span>
+            <span className="font-display text-7xl leading-[.8]">{rated ? 74 : <span className="text-muted">--</span>}</span>
             <div><Pill tone="red">{positionTag(me)}</Pill><div className="mt-2 font-display text-2xl uppercase">{me.name} <span className="text-muted">#{me.number}</span></div></div>
           </div>
           <div className="mt-5 grid grid-cols-2 gap-x-6 gap-y-3">
             {STATS.map(([k, label, v]) => (
               <div key={k}>
-                <div className="flex justify-between font-display text-sm"><span className="text-muted">{k}</span><span>{v}</span></div>
-                <div className="mt-1 h-1.5 overflow-hidden rounded-full bg-surface-2"><div className="h-full rounded-full bg-red" style={{ width: `${v}%` }} /></div>
+                <div className="flex justify-between font-display text-sm"><span className="text-muted">{k}</span><span>{rated ? v : '--'}</span></div>
+                <div className="mt-1 h-1.5 overflow-hidden rounded-full bg-surface-2">{rated && <div className="h-full rounded-full bg-red" style={{ width: `${v}%` }} />}</div>
                 <div className="mt-1 text-xs text-muted">{label}</div>
               </div>
             ))}
           </div>
         </div>
       </div>
-      <p className="mt-3 text-sm text-muted">Example ratings. Your real ones come from a test day (sprint, juggles, weak-foot shots), not daily logging.</p>
+      <p className="mt-3 text-sm text-muted">{rated ? 'Example ratings for the sample player.' : 'Unrated for now.'} Ratings come from a test day (20 m sprint, cone weave, shots on target), not daily logging. Test days arrive in a later update.</p>
 
       </div>
       <div>

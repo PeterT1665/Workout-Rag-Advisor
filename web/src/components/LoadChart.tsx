@@ -14,6 +14,7 @@ export function LoadChart({ loads }: { loads: number[] }) {
         <span className="font-semibold">Training load this week</span>
         <span className="font-display text-xl">{total}</span>
       </figcaption>
+      {total === 0 && <p className="m-0 mt-2 text-sm text-muted">Finish a session and do the 20-second check-in: each day's load shows up here.</p>}
       <div className="relative mt-8 grid h-36 grid-cols-7 items-end gap-2" role="img"
         aria-label={`Load by day: ${loads.map((l, i) => `${DAY_SHORT[i]} ${l}`).join(', ')}`}>
         {/* recessive baseline */}
