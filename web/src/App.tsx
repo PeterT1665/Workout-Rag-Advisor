@@ -174,7 +174,8 @@ export default function App() {
 
   return (
     <>
-      <div key={tab} className="screen-in">
+      {/* min-h-lvh: a page shorter than the screen lets iOS home-screen apps lift the fixed tab bar */}
+      <div key={tab} className="screen-in min-h-lvh">
       {tab === 'home' && (
         <Home
           today={today}
