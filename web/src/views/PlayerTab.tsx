@@ -1,5 +1,6 @@
-import { Panel, SectionHead, Title } from '../components/ui'
-import { PlayerCard, SAMPLE_STATS } from '../components/PlayerCard'
+import { Button, Panel, SectionHead, Title } from '../components/ui'
+import { PlayerCard } from '../components/PlayerCard'
+import { cardStatsFor } from '../lib/cardStats'
 import { usePersonalImage } from '../lib/personal'
 import { useProfile } from '../lib/profile'
 import { loadHistory, weekLoads } from '../lib/storage'
@@ -15,10 +16,10 @@ const fmtDate = (iso: string) => {
   return new Date(y, m - 1, d).toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short' })
 }
 
-export function PlayerTab({ wide = false }: { wide?: boolean }) {
+export function PlayerTab({ wide = false, onTestDay }: { wide?: boolean; onTestDay?: () => void }) {
   const bg = usePersonalImage('card.jpg')
   const me = useProfile()
-  const rated = !!me.sample // only the sample player shows example ratings until test days exist
+  const stats = cardStatsFor(me)
   const history = loadHistory().slice().reverse()
   return (
     <main className={wide ? 'px-10 pt-10 pb-12' : 'mx-auto max-w-xl px-4 pt-[max(20px,var(--sat))] pb-32'}>
@@ -26,9 +27,12 @@ export function PlayerTab({ wide = false }: { wide?: boolean }) {
       <div className={wide ? 'grid grid-cols-[minmax(0,1.1fr)_minmax(0,1fr)] items-start gap-10' : ''}>
       <div>
       <div className="mx-auto mt-4 w-full max-w-[300px]">
-        <PlayerCard p={me} stats={rated ? SAMPLE_STATS : null} photo={bg} />
+        <PlayerCard p={me} stats={stats} photo={bg} />
       </div>
-      <p className="mt-4 text-center text-sm text-muted">{rated ? 'Example ratings for the sample player.' : 'Unrated for now.'} Ratings will come from a test day, not daily logging.</p>
+      <p className="mt-4 text-center text-sm text-muted">
+        {me.sample ? 'Example ratings for the sample player.' : me.ratings ? `Rated on ${me.ratings.date}. Redo it every 6-8 weeks to see what moved.` : 'Unrated. A rating session (six quick tests) sets your stats.'}
+      </p>
+      {onTestDay && <Button block className="mt-4" onClick={onTestDay}>{me.ratings ? 'New rating session' : 'Start rating session'}</Button>}
       <ul className="m-0 mt-3 grid list-none grid-cols-2 gap-x-6 gap-y-1.5 p-0 text-sm">
         {STATS.map(([k, label]) => <li key={k}><span className="font-display text-muted">{k}</span> <span className="text-muted">{label}</span></li>)}
       </ul>

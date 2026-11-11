@@ -1,6 +1,7 @@
 // The player profile: everything that used to be hard-coded for Peter. Saved locally (synced once accounts exist).
 import { useSyncExternalStore } from 'react'
 import { load, save } from './storage'
+import type { Ratings } from './testday'
 
 export type Position = 'winger' | 'striker' | 'midfielder' | 'defender'
 export type Foot = 'right' | 'left' | 'both'
@@ -15,6 +16,8 @@ export type Profile = {
   idol: string // role model's name, shown on quotes; empty = no attribution
   gym?: number // gym sessions a week (default 3)
   sample?: boolean // the demo's sample player: history is reseeded daily
+  ratings?: Ratings // latest rating session (test day)
+  prevRatings?: Ratings // the one before, for progress arrows
 }
 
 export const POSITIONS: { id: Position; label: string; short: string }[] = [

@@ -6,7 +6,8 @@ import { DEMO } from '../lib/demo'
 import { useProfile } from '../lib/profile'
 import { kitFor, loadPacked, togglePacked, type KitItem } from '../lib/kit'
 import { fmtReps, sessionMinutes } from '../lib/logic'
-import { PlayerCard, SAMPLE_STATS } from '../components/PlayerCard'
+import { PlayerCard } from '../components/PlayerCard'
+import { cardStatsFor } from '../lib/cardStats'
 import { load, save } from '../lib/storage'
 import { loadQuotes } from '../lib/storage'
 import { DAYS, DAY_SHORT, type SlotKind } from '../lib/weekplan'
@@ -47,7 +48,7 @@ export function Hero({ today, onKickOff, onOpen, onSettings, desktop = false }: 
   return (
     <section className={desktop
       ? 'relative h-full min-h-[460px] overflow-hidden rounded-[28px] bg-[#0b0d0c]'
-      : 'relative -mx-4 -mt-[max(16px,var(--sat))] h-[640px] overflow-hidden rounded-b-[28px] bg-[#0b0d0c]'}>
+      : 'relative -mx-4 h-[640px] overflow-hidden rounded-b-[28px] bg-[#0b0d0c]'}>
       {hero
         ? <img src={hero} alt="" className={`absolute inset-0 h-full w-full object-cover ${desktop ? 'object-[50%_30%]' : 'object-[50%_22%]'}`} />
         : <PitchBackdrop />}
@@ -199,10 +200,10 @@ export function CardTile({ onPlayer }: { onPlayer: () => void }) {
   const me = useProfile()
   return (
     <button onClick={onPlayer} className="flex w-full items-center gap-5 rounded-[20px] bg-surface p-4 text-left transition-transform duration-150 ease-snap active:scale-[0.99]">
-      <div className="w-[118px] shrink-0"><PlayerCard p={me} stats={me.sample ? SAMPLE_STATS : null} photo={photo} /></div>
+      <div className="w-[118px] shrink-0"><PlayerCard p={me} stats={cardStatsFor(me)} photo={photo} /></div>
       <div className="min-w-0">
         <div className="font-display text-lg uppercase leading-tight">{me.name}</div>
-        <p className="m-0 mt-1 text-sm text-muted">{me.sample ? 'Example ratings for the sample player.' : 'Unrated until your first test day. Add a photo in Settings to put yourself on the card.'}</p>
+        <p className="m-0 mt-1 text-sm text-muted">{me.sample ? 'Example ratings for the sample player.' : me.ratings ? `Rated on ${me.ratings.date}.` : 'Unrated: do a rating session to set your stats.'}</p>
         <span className="mt-3 inline-block font-display text-xs uppercase text-red-ink">Open player →</span>
       </div>
     </button>

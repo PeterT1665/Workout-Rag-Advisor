@@ -12,6 +12,7 @@ import { SettingsView } from './views/SettingsView'
 import { MediaView } from './views/MediaView'
 import { WeekView } from './views/WeekView'
 import { PlayerTab } from './views/PlayerTab'
+import { TestDay } from './views/TestDay'
 import { CoachView } from './views/CoachView'
 import { TabBar, type Tab } from './components/TabBar'
 import { Sidebar, type DeskTab } from './components/Sidebar'
@@ -39,6 +40,7 @@ type Overlay =
   | { name: 'media'; from: 'settings' | 'home' }
   | { name: 'builder'; from: Template | null }
   | { name: 'profile' }
+  | { name: 'testday' }
 
 export default function App() {
   const [tab, setTab] = useState<Tab>('home')
@@ -127,7 +129,7 @@ export default function App() {
                 )}
                 {deskTab === 'week' && <WeekView wide today={today} games={games} sessions={sessions} onGames={updateGames} onOpen={open} />}
                 {deskTab === 'sessions' && <Library wide sessions={library} onOpen={open} onNew={() => build(null)} onBack={() => goTab('home')} />}
-                {deskTab === 'player' && <PlayerTab wide />}
+                {deskTab === 'player' && <PlayerTab wide onTestDay={() => setOverlay({ name: 'testday' })} />}
                 {deskTab === 'coach' && <CoachView wide />}
               </div>}
         </div>
@@ -157,6 +159,8 @@ export default function App() {
         return <PlayerView key={overlay.player.getState().startedAt} session={overlay.session} player={overlay.player} settings={settings} onExit={close} />
       case 'settings':
         return <SettingsView settings={settings} clipCount={clips.length} onChange={updateSettings} onMedia={() => setOverlay({ name: 'media', from: 'settings' })} onProfile={() => setOverlay({ name: 'profile' })} onDone={close} />
+      case 'testday':
+        return <TestDay onDone={close} />
       case 'profile':
         return <Onboarding initial={getProfile()} initialGames={games} onCancel={() => setOverlay({ name: 'settings' })}
           onDone={(p, g) => { setProfile({ ...p, sample: getProfile().sample }); updateGames(g); setOverlay({ name: 'settings' }) }} />
@@ -183,7 +187,7 @@ export default function App() {
         />
       )}
       {tab === 'week' && <WeekView today={today} games={games} sessions={sessions} onGames={updateGames} onOpen={open} />}
-      {tab === 'player' && <PlayerTab />}
+      {tab === 'player' && <PlayerTab onTestDay={() => setOverlay({ name: 'testday' })} />}
       {tab === 'coach' && <CoachView />}
       </div>
       <TabBar tab={tab} onTab={setTab} onKickOff={() => onStart(today.session)} />

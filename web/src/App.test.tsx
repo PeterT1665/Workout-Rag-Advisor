@@ -247,6 +247,26 @@ describe('app', () => {
     expect(screen.queryByRole('region', { name: 'How it works' })).toBeNull()
   })
 
+  test('rating session: three tests rate the player, the card is revealed and kept', () => {
+    render(<App />)
+    fireEvent.click(screen.getByRole('button', { name: /^Player$/ }))
+    click(/Start rating session/)
+    click(/^Start$/)
+    fireEvent.change(screen.getByLabelText('Your result'), { target: { value: '3.3' } }) // PAC
+    click(/Next test/)
+    click(/^Skip$/) // DRI
+    fireEvent.change(screen.getByLabelText('Your result'), { target: { value: '8' } }) // SHO
+    click(/Next test/)
+    fireEvent.change(screen.getByLabelText('Your result'), { target: { value: '24' } }) // PAS
+    click(/Next test/)
+    click(/^Skip$/) // DEF
+    click(/^Skip$/) // PHY: last one finishes
+    expect(screen.getByRole('heading', { name: /Gold card/ })).toBeTruthy()
+    expect(getProfile().ratings?.stats).toEqual({ PAC: 82, SHO: 83, PAS: 85 })
+    click(/^Done$/)
+    expect(screen.getByText(/New rating session/)).toBeTruthy()
+  })
+
   test('laptop: sidebar planner instead of the phone tab bar', () => {
     vi.stubGlobal('matchMedia', (q: string) => ({ matches: q.includes('min-width: 1024px'), addEventListener() {}, removeEventListener() {} }))
     setProfile({ name: 'Peter', number: 7, positions: ['winger', 'striker'], foot: 'right', accent: 'red', idol: 'Cristiano Ronaldo' })
