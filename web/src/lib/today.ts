@@ -2,6 +2,7 @@
 import { DEFAULT_GYM, buildWeek, matchdayLabel, todayIndex, type Game, type Slot, type WeekPlan } from './weekplan'
 import { load, save } from './storage'
 import type { Session } from './types'
+import { changedSession, type DayChange } from './weekChanges'
 
 export const DEFAULT_GAMES: Game[] = [{ day: 2, kind: 'competitive' }] // futsal, Wednesday night
 export const loadGames = () => load<Game[]>('games', DEFAULT_GAMES)
@@ -15,6 +16,7 @@ export type Today = {
   session: Session // what Kick off starts
   scheduled: boolean // true if the session is today's planned one
   nextDay: number | null
+  changed?: 'session' | 'rest' // the player changed today by hand (Week screen or a session's Do it today)
 }
 
 const soloFootball = (all: Session[]) => all.filter((s) => s.type === 'football' && !s.id.includes('partner'))
@@ -51,4 +53,14 @@ export function planToday(all: Session[], games: Game[], now = new Date(), gym =
     day, plan, slot, md: matchdayLabel(day, games),
     session: todays ?? fallback, scheduled: !!todays, nextDay: next?.day ?? null,
   }
+}
+
+// Apply a manual change for today on top of the planner's choice.
+export function withChange(t: Today, change: DayChange | null, library: Session[]): Today {
+  if (!change) return t
+  if ('rest' in change) return { ...t, slot: t.slot?.kind === 'game' ? t.slot : null, scheduled: false, changed: 'rest' }
+  const s = changedSession(change, library)
+  if (!s) return t
+  const kind = s.type === 'gym' ? 'gym' : s.type === 'recovery' ? 'recovery' : 'football'
+  return { ...t, session: s, scheduled: true, changed: 'session', slot: t.slot?.kind === 'game' ? t.slot : { day: t.day, kind } }
 }

@@ -315,6 +315,22 @@ describe('app', () => {
     expect(screen.getAllByRole('button', { name: /Start session|Kick off/i }).length).toBeGreaterThan(0)
   })
 
+  test('week: Do it today makes a session today\'s; Change can set rest and go back to the plan', () => {
+    render(<App />)
+    click(/All sessions/)
+    click(/Gym: explosive power/)
+    click(/^Do it today$/)
+    expect(screen.getByRole('heading', { name: /Gym: explosive power/i })).toBeTruthy() // home hero
+    fireEvent.click(screen.getByRole('button', { name: /^Week$/ }))
+    expect(screen.getAllByText('Changed').length).toBe(1)
+    const today = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'][(new Date().getDay() + 6) % 7]
+    click(new RegExp(`^Change ${today}$`))
+    const sheet = screen.getByRole('dialog', { name: `Change ${today}` })
+    fireEvent.click(within(sheet).getByRole('button', { name: 'Back to plan' }))
+    expect(screen.queryByText('Changed')).toBeNull()
+    expect(JSON.parse(localStorage.getItem('weekPlan') || '{}')).toEqual({})
+  })
+
   test('laptop: the website shows the phone app in a frame with a QR code', () => {
     vi.stubGlobal('matchMedia', (q: string) => ({ matches: q.includes('min-width: 1024px'), addEventListener() {}, removeEventListener() {} }))
     expect(showPhoneFrame()).toBe(true)

@@ -26,6 +26,7 @@ type Props = {
   onAddClips: () => void
   onPlayer: () => void
   onWeek?: () => void
+  dayKind?: (day: number) => string | null | undefined // hand-changed day: session type, null = rest, undefined = unchanged
 }
 
 const SLOT_LABEL: Record<SlotKind, string> = { game: 'Game day', football: 'Football', gym: 'Gym', recovery: 'Recovery', cheer: 'Cheer' }
@@ -156,12 +157,15 @@ export function DrillCard({ name, meta, cue, category, onOpen, fluid = false }: 
 }
 
 // ---------- week strip ----------
-export function WeekStrip({ today }: { today: Today }) {
+export function WeekStrip({ today, kindFor }: { today: Today; kindFor?: (day: number) => string | null | undefined }) {
   return (
     <div className="grid grid-cols-7 gap-1.5">
       {DAY_SHORT.map((d, day) => {
         const slots = today.plan.slots.filter((s) => s.day === day)
-        const main = slots.find((s) => s.kind === 'game') ?? slots[0]
+        const planned = slots.find((s) => s.kind === 'game') ?? slots[0]
+        // a day changed by hand shows what it holds now (a game stays a game)
+        const override = planned?.kind === 'game' || !kindFor ? undefined : kindFor(day)
+        const main = override === undefined ? planned : override === null ? undefined : { ...planned, day, kind: override as typeof planned.kind }
         const isToday = day === today.day
         const base = 'mt-1.5 grid h-12 place-items-center rounded-[14px] font-display text-[11px] uppercase'
         let cell
@@ -201,7 +205,7 @@ export function Home(p: Props) {
       </div>
 
       <SectionHead title="This week" right={`${games} game${games === 1 ? '' : 's'} week`} />
-      <WeekStrip today={p.today} />
+      <WeekStrip today={p.today} kindFor={p.dayKind} />
       {drill && <DrillSheet block={drill} onClose={() => setDrill(null)} onSession={() => { setDrill(null); p.onOpen(s) }} />}
     </main>
   )

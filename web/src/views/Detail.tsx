@@ -3,6 +3,7 @@ import { Button, Panel, Screen, Tag, Title, TopBar } from '../components/ui'
 import { flattenSession, fmtReps, makeICS, sessionMinutes } from '../lib/logic'
 import { isMine } from '../lib/library'
 import { KitCheck } from './Home'
+import { DAYS, todayIndex } from '../lib/weekplan'
 import type { Session } from '../lib/types'
 
 function downloadICS(s: Session, date: string, time: string) {
@@ -19,7 +20,8 @@ function downloadICS(s: Session, date: string, time: string) {
   a.remove()
 }
 
-export function Detail({ session: s, onBack, onStart, onEdit, onInvite, desktop = false }: { session: Session; onBack: () => void; onStart: () => void; onEdit?: () => void; onInvite?: () => void; desktop?: boolean }) {
+export function Detail({ session: s, onBack, onStart, onEdit, onInvite, onSchedule, desktop = false }: { session: Session; onBack: () => void; onStart: () => void; onEdit?: () => void; onInvite?: () => void; onSchedule?: (day: number) => void; desktop?: boolean }) {
+  const [pickDay, setPickDay] = useState(false)
   const withPartner = s.blocks.some((b) => b.needs?.includes('partner'))
   const hasCue = flattenSession(s).some((x) => x.cue)
   const [date, setDate] = useState(() => new Date(Date.now() + 864e5).toISOString().slice(0, 10))
@@ -37,6 +39,22 @@ export function Detail({ session: s, onBack, onStart, onEdit, onInvite, desktop 
       <div className="flex flex-wrap gap-2">{s.needs.map((n) => <Tag key={n}>{n}</Tag>)}</div>
       {hasCue && <p className="text-sm">LEFT/RIGHT voice cues: volume up.</p>}
       {withPartner && onInvite && <Button block variant="ghost" className="mt-4 bg-surface-2" onClick={onInvite}>Train together: invite your partner</Button>}
+      {onSchedule && (
+        <div className="mt-4">
+          <div className="flex gap-2">
+            <Button className="flex-1" size="sm" onClick={() => onSchedule(todayIndex())}>Do it today</Button>
+            <Button variant="ghost" size="sm" className="flex-1 bg-surface-2" aria-expanded={pickDay} onClick={() => setPickDay(!pickDay)}>Pick a day</Button>
+          </div>
+          {pickDay && (
+            <div className="rise mt-2 grid grid-cols-7 gap-1.5">
+              {DAYS.map((d, i) => (
+                <button key={d} onClick={() => onSchedule(i)} aria-label={`Do it on ${d}`}
+                  className={`min-h-11 rounded-2xl font-display text-xs uppercase ${i === todayIndex() ? 'bg-surface-2 text-ink ring-1 ring-red' : 'bg-surface-2 text-muted'}`}>{d.slice(0, 2)}</button>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
       <KitCheck session={s} />
 
       {/* Match timeline: blocks sized by time, voice-cue drills striped */}

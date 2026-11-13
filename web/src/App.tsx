@@ -23,7 +23,8 @@ import { beep, playClip, realAudio, stopClip, unlockAudio } from './lib/audio'
 import { createPlayer, type Player } from './lib/player'
 import { nextQuote } from './lib/quotes'
 import { addHistory, loadSettings, save } from './lib/storage'
-import { loadGames, planToday, saveGames } from './lib/today'
+import { loadGames, planToday, saveGames, withChange } from './lib/today'
+import { changeFor, changedSession, loadWeekChanges, saveWeekChange, type DayChange } from './lib/weekChanges'
 import type { Game } from './lib/weekplan'
 import type { Session, Settings } from './lib/types'
 
@@ -52,14 +53,17 @@ export default function App() {
   const clips = useSyncExternalStore(subscribeClips, allClips)
   const started = useRef(false)
   const gymPerWeek = useProfile().gym
-  const today = useMemo(() => planToday(sessions, games, new Date(), gymPerWeek), [games, gymPerWeek])
+  const [changes, setChanges] = useState(loadWeekChanges)
+  const planned = useMemo(() => planToday(sessions, games, new Date(), gymPerWeek), [games, gymPerWeek])
   const [library, setLibrary] = useState(allSessions) // recommended + the user's own
+  const today = useMemo(() => withChange(planned, changeFor(planned.day, changes), library), [planned, changes, library])
+  const changeDay = (day: number, change: DayChange | null) => setChanges(saveWeekChange(day, change))
 
   useEffect(() => { void openClips(); void openPhotos() }, [])
   // another device changed something: re-read synced state
   const [, setSyncTick] = useState(0)
   useEffect(() => {
-    const on = () => { setGames(loadGames()); setSettings(loadSettings()); setLibrary(allSessions()); reloadProfile(); setSyncTick((n) => n + 1) }
+    const on = () => { setGames(loadGames()); setSettings(loadSettings()); setLibrary(allSessions()); setChanges(loadWeekChanges()); reloadProfile(); setSyncTick((n) => n + 1) }
     window.addEventListener('ta-sync', on)
     return () => window.removeEventListener('ta-sync', on)
   }, [])
@@ -121,7 +125,7 @@ export default function App() {
       case 'library':
         return <Library sessions={library} onOpen={openFromLibrary} onNew={() => build(null)} onBack={close} />
       case 'detail':
-        return <Detail session={overlay.session} onBack={() => (overlay.fromLibrary ? setOverlay({ name: 'library' }) : close())} onStart={() => onStart(overlay.session)}
+        return <Detail session={overlay.session} onSchedule={(day: number) => { changeDay(day, { sessionId: overlay.session.id }); setTab(day === today.day ? 'home' : 'week'); close() }} onBack={() => (overlay.fromLibrary ? setOverlay({ name: 'library' }) : close())} onStart={() => onStart(overlay.session)}
           onEdit={() => { const t = templateFor(overlay.session.id); if (t) build(t) }}
           onInvite={() => setOverlay({ name: 'invite', partner: true, back: overlay })} />
       case 'builder':
@@ -161,9 +165,15 @@ export default function App() {
           onAddClips={() => setOverlay({ name: 'media', from: 'home' })}
           onPlayer={() => setTab('player')}
           onWeek={() => setTab('week')}
+          dayKind={(day) => {
+            const c = changeFor(day, changes)
+            if (!c) return undefined
+            const s = changedSession(c, library)
+            return s ? (s.type === 'gym' ? 'gym' : s.type === 'recovery' ? 'recovery' : 'football') : null
+          }}
         />
       )}
-      {tab === 'week' && <WeekView today={today} games={games} sessions={sessions} onGames={updateGames} onOpen={open} />}
+      {tab === 'week' && <WeekView today={today} games={games} sessions={sessions} library={library} changes={changes} onChange={changeDay} onGames={updateGames} onOpen={open} />}
       {tab === 'player' && <PlayerTab onTestDay={() => setOverlay({ name: 'testday' })} />}
       {tab === 'coach' && <CoachView />}
       </div>

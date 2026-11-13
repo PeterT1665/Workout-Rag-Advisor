@@ -1,14 +1,19 @@
 import { Panel, Pill, SectionHead, Title } from '../components/ui'
-import { DAYS, DAY_SHORT, DEFAULT_GYM, type Game } from '../lib/weekplan'
+import { DAYS, DAY_SHORT, DEFAULT_GYM, matchdayLabel, type Game } from '../lib/weekplan'
+import { changeFor, changedSession, type DayChange, type WeekChanges } from '../lib/weekChanges'
+import { DayPicker } from '../components/DayPicker'
+import { useState } from 'react'
 import { setProfile, useProfile } from '../lib/profile'
 import { sessionForSlot, type Today } from '../lib/today'
 import type { Session } from '../lib/types'
 
 const NEXT: Record<string, Game['kind'] | null> = { none: 'casual', casual: 'competitive', competitive: null }
 
-export function WeekView({ today, games, sessions, onGames, onOpen, wide = false }: {
-  today: Today; games: Game[]; sessions: Session[]; onGames: (g: Game[]) => void; onOpen: (s: Session) => void; wide?: boolean
+export function WeekView({ today, games, sessions, library, changes, onChange, onGames, onOpen, wide = false }: {
+  today: Today; games: Game[]; sessions: Session[]; library: Session[]; changes: WeekChanges
+  onChange: (day: number, change: DayChange | null) => void; onGames: (g: Game[]) => void; onOpen: (s: Session) => void; wide?: boolean
 }) {
+  const [picking, setPicking] = useState<number | null>(null)
   const me = useProfile()
   const gym = me.gym ?? DEFAULT_GYM
   const setGym = (n: number) => setProfile({ ...me, gym: Math.max(0, Math.min(5, n)) })
@@ -56,21 +61,40 @@ export function WeekView({ today, games, sessions, onGames, onOpen, wide = false
       <ol className="m-0 flex list-none flex-col gap-2 p-0">
         {DAYS.map((name, day) => {
           const slots = today.plan.slots.filter((s) => s.day === day)
+          const change = changeFor(day, changes)
+          const changed = changedSession(change, library)
+          const gameSlots = slots.filter((s) => s.kind === 'game')
+          const planned = slots.map((s) => (s.kind === 'game' ? `${s.note} game` : sessionForSlot(s, today.plan, sessions)?.title ?? s.kind)).join(' + ') || 'Rest'
           return (
-            <li key={day} className={`flex items-center gap-3 rounded-[16px] px-4 py-3 ${day === today.day ? 'bg-surface-2' : 'bg-surface'}`}>
+            <li key={day} className={`flex items-center gap-3 rounded-[16px] py-2 pr-2 pl-4 ${day === today.day ? 'bg-surface-2' : 'bg-surface'}`}>
               <span className="w-10 font-display text-xs uppercase text-muted">{name.slice(0, 3)}</span>
-              <span className="flex flex-1 flex-wrap gap-2">
-                {slots.length === 0 && <span className="text-muted">Rest</span>}
-                {slots.map((s, i) => {
-                  const session = sessionForSlot(s, today.plan, sessions)
-                  return session
-                    ? <span key={i} className="flex items-center gap-2">
-                        <button onClick={() => onOpen(session)} className="text-left font-semibold underline decoration-red decoration-2 underline-offset-4">{session.title}</button>
-                        {s.light && <span title={s.note}><Pill>Light</Pill></span>}
-                      </span>
-                    : <Pill key={i} tone={s.kind === 'game' ? 'red' : 'muted'}>{s.kind === 'game' ? `${s.note} game` : s.kind}</Pill>
-                })}
+              <span className="flex flex-1 flex-wrap items-center gap-2">
+                {change
+                  ? <>
+                      {gameSlots.map((g, i) => <Pill key={i} tone="red">{`${g.note} game`}</Pill>)}
+                      {changed
+                        ? <button onClick={() => onOpen(changed)} className="text-left font-semibold underline decoration-red decoration-2 underline-offset-4">{changed.title}</button>
+                        : <span className="text-muted">Rest</span>}
+                      <Pill>Changed</Pill>
+                    </>
+                  : <>
+                      {slots.length === 0 && <span className="text-muted">Rest</span>}
+                      {slots.map((s, i) => {
+                        const session = sessionForSlot(s, today.plan, sessions)
+                        return session
+                          ? <span key={i} className="flex items-center gap-2">
+                              <button onClick={() => onOpen(session)} className="text-left font-semibold underline decoration-red decoration-2 underline-offset-4">{session.title}</button>
+                              {s.light && <span title={s.note}><Pill>Light</Pill></span>}
+                            </span>
+                          : <Pill key={i} tone={s.kind === 'game' ? 'red' : 'muted'}>{s.kind === 'game' ? `${s.note} game` : s.kind}</Pill>
+                      })}
+                    </>}
               </span>
+              <button onClick={() => setPicking(day)} aria-label={`Change ${name}`} className="min-h-10 shrink-0 rounded-full bg-surface-2 px-3 text-xs font-semibold text-muted">Change</button>
+              {picking === day && (
+                <DayPicker day={day} planned={planned} current={change} library={library} md={matchdayLabel(day, games)}
+                  onPick={(c) => { onChange(day, c); setPicking(null) }} onClose={() => setPicking(null)} />
+              )}
             </li>
           )
         })}

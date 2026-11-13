@@ -5,7 +5,7 @@ import { setSaveHook } from './storage'
 import { supabase } from './supabase'
 import { PHOTO_SLOTS, clearPhotos } from './photos'
 
-export const SYNC_KEYS = ['history', 'games', 'settings', 'quotes', 'mySessions', 'profile'] as const
+export const SYNC_KEYS = ['history', 'games', 'settings', 'quotes', 'mySessions', 'profile', 'weekPlan'] as const
 type Key = (typeof SYNC_KEYS)[number]
 type Row = { key: string; value: unknown; updated_at: number }
 

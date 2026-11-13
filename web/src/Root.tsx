@@ -18,7 +18,10 @@ const preview = typeof location !== 'undefined' ? new URLSearchParams(location.s
 
 // One app, two ways in: guests ("Try it") keep everything in this browser; invited users sign in and sync.
 export default function Root() {
-  if (preview === 'welcome') return <WelcomePreview />
+  return preview === 'welcome' ? <WelcomePreview /> : <Main />
+}
+
+function Main() {
   const [mode, setMode] = useState<Mode>(accountsEnabled ? 'checking' : 'guest')
   const [profiled, setProfiled] = useState(hasProfile)
   const [authStart, setAuthStart] = useState<'signin' | 'signup'>('signin')
