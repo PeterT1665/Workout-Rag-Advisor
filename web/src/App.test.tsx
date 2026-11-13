@@ -331,6 +331,21 @@ describe('app', () => {
     expect(JSON.parse(localStorage.getItem('weekPlan') || '{}')).toEqual({})
   })
 
+  test('builder: an exercise can be moved up with the grip (keyboard), and the order is saved', () => {
+    render(<App />)
+    click(/All sessions/)
+    click(/Build a session/)
+    click(/Add Juggling/)
+    click(/Add Toe taps/)
+    click(/^Done/)
+    const grip = screen.getByRole('button', { name: /Reorder Toe taps/ })
+    fireEvent.keyDown(grip, { key: 'ArrowUp' })
+    fireEvent.change(screen.getByLabelText(/Session name/), { target: { value: 'Ball work' } })
+    click(/^Save$/)
+    const mine = JSON.parse(localStorage.getItem('mySessions') || '[]')
+    expect(mine[0].items.map((x: { ex: string }) => x.ex)).toEqual(['toe-taps', 'juggling'])
+  })
+
   test('laptop: the website shows the phone app in a frame with a QR code', () => {
     vi.stubGlobal('matchMedia', (q: string) => ({ matches: q.includes('min-width: 1024px'), addEventListener() {}, removeEventListener() {} }))
     expect(showPhoneFrame()).toBe(true)

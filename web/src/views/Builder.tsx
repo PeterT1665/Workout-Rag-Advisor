@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { Reorder, useDragControls } from 'motion/react'
 import { Button, Pill, Screen, Title, TopBar } from '../components/ui'
 import { fmtReps, sessionMinutes } from '../lib/logic'
 import {
@@ -25,7 +26,8 @@ export function Builder({ from, onSave, onCancel, onDelete }: {
   }
   const minutes = items.length ? sessionMinutes(toSession(draft)) : 0
 
-  const update = (i: number, p: Partial<Item>) => setItems((xs) => xs.map((x, j) => (j === i ? { ...x, ...p } : x)))
+  // edits keep the row's key, so the row isn't remounted
+  const update = (i: number, p: Partial<Item>) => setItems((xs) => xs.map((x, j) => (j === i ? withKeyOf(x, { ...x, ...p }) : x)))
   const move = (i: number, d: -1 | 1) => setItems((xs) => {
     const j = i + d
     if (j < 0 || j >= xs.length) return xs
@@ -50,33 +52,12 @@ export function Builder({ from, onSave, onCancel, onDelete }: {
         className="mt-1 mb-2 block min-h-12 w-full rounded-2xl bg-surface px-4 font-display text-lg uppercase text-ink placeholder:text-muted placeholder:normal-case" />
       <p className="mb-5 font-display text-sm tabular-nums text-muted">{items.length} exercises · about {minutes} min</p>
 
-      <ol className="m-0 flex list-none flex-col gap-2 p-0">
-        {items.map((it, i) => {
-          const e = exercise(it.ex)
-          if (!e) return null
-          const rounds = it.rounds ?? e.rounds ?? 1
-          const work = it.work ?? e.work
-          const rest = it.rest ?? e.rest ?? 0
-          return (
-            <li key={`${it.ex}-${i}`} className="rounded-[18px] bg-surface p-3">
-              <div className="flex items-start gap-2">
-                <div className="min-w-0 flex-1">
-                  <strong className="block font-semibold leading-tight">{e.name}</strong>
-                  <span className="text-xs text-muted">{CATEGORY_LABELS[e.category] ?? e.category}{e.reps ? ` · ${fmtReps(e.reps)}` : ''}</span>
-                </div>
-                <IconBtn label={`Move ${e.name} up`} onClick={() => move(i, -1)} disabled={i === 0}>↑</IconBtn>
-                <IconBtn label={`Move ${e.name} down`} onClick={() => move(i, 1)} disabled={i === items.length - 1}>↓</IconBtn>
-                <IconBtn label={`Remove ${e.name}`} onClick={() => setItems((xs) => xs.filter((_, j) => j !== i))}>✕</IconBtn>
-              </div>
-              <div className="mt-3 grid grid-cols-3 gap-2">
-                <Stepper label={e.reps ? 'Sets' : 'Rounds'} value={rounds} text={`${rounds}`} onChange={(v) => update(i, { rounds: Math.max(1, Math.min(20, v)) })} step={1} />
-                <Stepper label={e.reps ? 'Set time' : 'Work'} value={work} text={fmtSec(work)} onChange={(v) => update(i, { work: Math.max(5, Math.min(1200, v)) })} step={work >= 120 ? 30 : 5} />
-                <Stepper label="Rest" value={rest} text={fmtSec(rest)} onChange={(v) => update(i, { rest: Math.max(0, Math.min(600, v)) })} step={rest >= 120 ? 30 : 15} />
-              </div>
-            </li>
-          )
-        })}
-      </ol>
+      <Reorder.Group as="ol" axis="y" values={items} onReorder={setItems} className="m-0 flex list-none flex-col gap-2 p-0">
+        {items.map((it, i) => (
+          <BuilderRow key={keyOf(it)} item={it} index={i} last={i === items.length - 1}
+            onMove={(d) => move(i, d)} onUpdate={(p) => update(i, p)} onRemove={() => setItems((xs) => xs.filter((_, j) => j !== i))} />
+        ))}
+      </Reorder.Group>
 
       <Button variant="ghost" block className="mt-4" onClick={() => setPicking(true)}>+ Add exercises</Button>
       {editing && onDelete && (
@@ -92,6 +73,49 @@ function insertBeforeCooldown(xs: Item[], it: Item) {
   let at = xs.length
   while (at > 0 && exercise(xs[at - 1].ex)?.kind === 'cooldown') at--
   return [...xs.slice(0, at), it, ...xs.slice(at)]
+}
+
+// Stable keys for list items (the same exercise can be added twice), so drag-to-reorder keeps each row's state.
+const keys = new WeakMap<Item, string>()
+let nextKey = 0
+const keyOf = (it: Item) => { let k = keys.get(it); if (!k) { k = `row-${nextKey++}`; keys.set(it, k) } return k }
+const withKeyOf = (from: Item, to: Item) => { keys.set(to, keyOf(from)); return to }
+
+// One exercise in the session. Hold the grip to drag it up or down; with a keyboard, focus the grip and use the arrows.
+function BuilderRow({ item: it, index: i, last, onMove, onUpdate, onRemove }: {
+  item: Item; index: number; last: boolean; onMove: (d: -1 | 1) => void; onUpdate: (p: Partial<Item>) => void; onRemove: () => void
+}) {
+  const drag = useDragControls()
+  const e = exercise(it.ex)
+  if (!e) return null
+  const rounds = it.rounds ?? e.rounds ?? 1
+  const work = it.work ?? e.work
+  const rest = it.rest ?? e.rest ?? 0
+  return (
+    <Reorder.Item value={it} dragListener={false} dragControls={drag} as="li"
+      whileDrag={{ scale: 1.02, boxShadow: '0 16px 40px rgba(0,0,0,.5)', zIndex: 10 }}
+      className="relative rounded-[18px] bg-surface p-3">
+      <div className="flex items-start gap-2">
+        <button aria-label={`Reorder ${e.name}: drag, or use the arrow keys`} onPointerDown={(ev) => drag.start(ev)}
+          onKeyDown={(ev) => { if (ev.key === 'ArrowUp' && i > 0) { ev.preventDefault(); onMove(-1) } if (ev.key === 'ArrowDown' && !last) { ev.preventDefault(); onMove(1) } }}
+          className="-my-1 -ml-1 grid h-11 w-9 shrink-0 cursor-grab touch-none place-items-center rounded-xl text-muted active:cursor-grabbing active:bg-surface-2">
+          <svg viewBox="0 0 12 20" className="h-5 w-3" fill="currentColor" aria-hidden="true">
+            {[3, 10, 17].map((y) => <g key={y}><circle cx="3" cy={y} r="1.6" /><circle cx="9" cy={y} r="1.6" /></g>)}
+          </svg>
+        </button>
+        <div className="min-w-0 flex-1 pt-0.5">
+          <strong className="block font-semibold leading-tight">{e.name}</strong>
+          <span className="text-xs text-muted">{CATEGORY_LABELS[e.category] ?? e.category}{e.reps ? ` · ${fmtReps(e.reps)}` : ''}</span>
+        </div>
+        <IconBtn label={`Remove ${e.name}`} onClick={onRemove}>✕</IconBtn>
+      </div>
+      <div className="mt-3 grid grid-cols-3 gap-2">
+        <Stepper label={e.reps ? 'Sets' : 'Rounds'} value={rounds} text={`${rounds}`} onChange={(v) => onUpdate({ rounds: Math.max(1, Math.min(20, v)) })} step={1} />
+        <Stepper label={e.reps ? 'Set time' : 'Work'} value={work} text={fmtSec(work)} onChange={(v) => onUpdate({ work: Math.max(5, Math.min(1200, v)) })} step={work >= 120 ? 30 : 5} />
+        <Stepper label="Rest" value={rest} text={fmtSec(rest)} onChange={(v) => onUpdate({ rest: Math.max(0, Math.min(600, v)) })} step={rest >= 120 ? 30 : 15} />
+      </div>
+    </Reorder.Item>
+  )
 }
 
 const fmtSec = (s: number) => (s >= 60 ? `${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}` : `${s}s`)
