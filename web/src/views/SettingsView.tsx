@@ -24,6 +24,7 @@ export function SettingsView({ settings: s, clipCount, onChange, onMedia, onProf
       <Button block className="mb-6" onClick={onInvite}>Invite a friend</Button>
       <Panel className="flex flex-col gap-4">
         <Toggle id="voice" label="Spoken announcements and cues" checked={s.voice} onChange={(v) => onChange({ voice: v })} />
+        <Toggle id="earbuds" label="AirPods: press to pause, double-press to skip" checked={s.earbuds} onChange={(v) => onChange({ earbuds: v })} />
         <Slider id="vol" label="Voice volume" min={0.2} max={1} step={0.1} value={s.volume} onChange={(v) => onChange({ volume: v })} />
         <Slider id="cmin" label="Shortest gap between cues (s)" min={2} max={10} step={1} value={s.cueMin} onChange={(v) => onChange({ cueMin: v })} />
         <Slider id="cmax" label="Longest gap between cues (s)" min={3} max={15} step={1} value={s.cueMax} onChange={(v) => onChange({ cueMax: v })} />

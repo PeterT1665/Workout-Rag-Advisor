@@ -49,4 +49,5 @@ export type Settings = {
   cards: boolean
   clipVolume: number
   restClipChance: number
+  earbuds: boolean // AirPods/lock-screen controls during a session (lib/remote.ts)
 }

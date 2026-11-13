@@ -24,7 +24,7 @@ export function save(key: string, value: unknown) {
 
 export const DEFAULT_SETTINGS: Settings = {
   voice: true, volume: 1, cueMin: 3, cueMax: 7,
-  clipStart: true, clipRest: true, siuuEnd: true, cards: true, clipVolume: 1, restClipChance: 0.5,
+  clipStart: true, clipRest: true, siuuEnd: true, cards: true, clipVolume: 1, restClipChance: 0.5, earbuds: true,
 }
 
 export const loadSettings = (): Settings => ({ ...DEFAULT_SETTINGS, ...load<Partial<Settings>>('settings', {}) })

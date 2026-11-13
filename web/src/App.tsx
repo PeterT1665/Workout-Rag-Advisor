@@ -19,6 +19,7 @@ import { TabBar, type Tab } from './components/TabBar'
 import { allClips, openClips, subscribeClips } from './lib/clips'
 import { openPhotos } from './lib/photos'
 import { setBusy } from './lib/updates'
+import { attachRemote, beginRemote, endRemote, syncRemote } from './lib/remote'
 import { beep, playClip, realAudio, stopClip, unlockAudio } from './lib/audio'
 import { createPlayer, type Player } from './lib/player'
 import { nextQuote } from './lib/quotes'
@@ -92,6 +93,10 @@ export default function App() {
         drills: st.drillsDone, cues: st.cuesCalled,
       }),
     })
+    // earbud presses (started in the Kick off tap) now drive this player
+    attachRemote({ toggle: player.togglePause, next: player.skip, prev: player.back, running: () => player.getState().running })
+    let wasRunning = true
+    player.subscribe(() => { const r = player.getState().running; if (r !== wasRunning) { wasRunning = r; syncRemote(r) } })
     setOverlay({ name: 'player', session, player })
   }
 
@@ -100,6 +105,7 @@ export default function App() {
     unlockAudio()
     started.current = false
     const s = settingsRef.current
+    if (s.earbuds) beginRemote(session.title)
     // referee whistle: two short blasts
     beep(s, 2900, 90); setTimeout(() => beep(s, 2900, 260), 160)
     const wantClip = s.clipStart && clips.some((c) => c.kind === 'mindset')
@@ -134,7 +140,7 @@ export default function App() {
       case 'preroll':
         return <Preroll session={overlay.session} quote={overlay.quote} clipName={overlay.clipName} onGo={() => beginSession(overlay.session)} />
       case 'player':
-        return <PlayerView key={overlay.player.getState().startedAt} session={overlay.session} player={overlay.player} settings={settings} onExit={close} />
+        return <PlayerView key={overlay.player.getState().startedAt} session={overlay.session} player={overlay.player} settings={settings} onExit={() => { endRemote(); close() }} />
       case 'settings':
         return <SettingsView settings={settings} clipCount={clips.length} onChange={updateSettings} onMedia={() => setOverlay({ name: 'media', from: 'settings' })} onProfile={() => setOverlay({ name: 'profile' })} onInvite={() => setOverlay({ name: 'invite', back: { name: 'settings' } })} onDone={close} />
       case 'invite':
