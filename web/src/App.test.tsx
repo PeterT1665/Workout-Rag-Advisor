@@ -304,6 +304,17 @@ describe('app', () => {
     ua.mockRestore()
   })
 
+  test('home: tapping a drill card shows that drill, Full session opens the session', () => {
+    render(<App />)
+    const card = screen.getAllByRole('button').find((b) => /× .*rest/.test(b.textContent ?? '') && b.closest('main'))!
+    fireEvent.click(card)
+    const sheet = screen.getByRole('dialog')
+    expect(within(sheet).getByText('Rest')).toBeTruthy()
+    fireEvent.click(within(sheet).getByRole('button', { name: 'Full session' }))
+    expect(screen.queryByRole('dialog')).toBeNull()
+    expect(screen.getAllByRole('button', { name: /Start session|Kick off/i }).length).toBeGreaterThan(0)
+  })
+
   test('laptop: the website shows the phone app in a frame with a QR code', () => {
     vi.stubGlobal('matchMedia', (q: string) => ({ matches: q.includes('min-width: 1024px'), addEventListener() {}, removeEventListener() {} }))
     expect(showPhoneFrame()).toBe(true)

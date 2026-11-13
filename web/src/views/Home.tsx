@@ -7,12 +7,13 @@ import { useProfile } from '../lib/profile'
 import { kitFor, loadPacked, togglePacked, type KitItem } from '../lib/kit'
 import { fmtReps, sessionMinutes } from '../lib/logic'
 import { InstallButton } from '../components/InstallButton'
+import { DrillSheet } from '../components/DrillSheet'
 import { canInstall } from '../lib/install'
 import { CATEGORY_LABELS, drillPhoto } from '../lib/library'
 import { load, save } from '../lib/storage'
 import { DAYS, DAY_SHORT, type SlotKind } from '../lib/weekplan'
 import type { Today } from '../lib/today'
-import type { Session } from '../lib/types'
+import type { Block, Session } from '../lib/types'
 
 type Props = {
   today: Today
@@ -185,6 +186,7 @@ export function Home(p: Props) {
   const s = p.today.session
   const drills = s.blocks.filter((b) => b.kind === 'drill')
   const games = p.today.plan.slots.filter((x) => x.kind === 'game').length
+  const [drill, setDrill] = useState<Block | null>(null)
   return (
     <main className="mx-auto max-w-xl px-4 pb-32">
       <Hero today={p.today} onKickOff={p.onKickOff} onOpen={p.onOpen} onSettings={p.onSettings} onCustomise={p.onAddClips} />
@@ -194,12 +196,13 @@ export function Home(p: Props) {
       <div className="no-scrollbar -mx-4 flex snap-x scroll-px-4 gap-3 overflow-x-auto px-4">
         {drills.slice(0, 5).map((b, i) => (
           <DrillCard key={b.name} i={i} category={b.category} name={b.name.replace(/\s*\([^)]*\)/g, '')} cue={!!b.cue}
-            meta={`${b.rounds || 1} × ${b.reps ? fmtReps(b.reps) : `${b.work}s`}${b.rest ? ` · rest ${b.rest}s` : ''}`} football={s.type === 'football'} onOpen={() => p.onOpen(s)} />
+            meta={`${b.rounds || 1} × ${b.reps ? fmtReps(b.reps) : `${b.work}s`}${b.rest ? ` · rest ${b.rest}s` : ''}`} football={s.type === 'football'} onOpen={() => setDrill(b)} />
         ))}
       </div>
 
       <SectionHead title="This week" right={`${games} game${games === 1 ? '' : 's'} week`} />
       <WeekStrip today={p.today} />
+      {drill && <DrillSheet block={drill} onClose={() => setDrill(null)} onSession={() => { setDrill(null); p.onOpen(s) }} />}
     </main>
   )
 }
