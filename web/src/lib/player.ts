@@ -25,7 +25,11 @@ export type PlayerOptions = {
   now?: () => number
   rng?: Rng
   onFinish?: (s: PlayerState) => void
+  resume?: Snapshot // continue a session saved before the app was closed or reloaded
 }
+
+// Enough to pick a session up again after a reload (see lib/activeSession.ts).
+export type Snapshot = { i: number; remainingMs: number; startedAt: number; cuesCalled: number; drills: number[] }
 
 export type Player = ReturnType<typeof createPlayer>
 
@@ -40,14 +44,14 @@ export function createPlayer(session: Session, opts: PlayerOptions) {
 
   let state: PlayerState = {
     steps, i: -1, running: false, remainingMs: 0, elapsed: 0, total: totalSeconds(steps),
-    cue: null, cueKey: 0, finished: false, siuu: false, startedAt: now(), cuesCalled: 0, drillsDone: 0,
+    cue: null, cueKey: 0, finished: false, siuu: false, startedAt: opts.resume?.startedAt ?? now(), cuesCalled: opts.resume?.cuesCalled ?? 0, drillsDone: 0,
   }
   let endAt = 0
   let lastBeepSec: number | null = null
   let tick: ReturnType<typeof setInterval> | null = null
   let timers: ReturnType<typeof setTimeout>[] = []
   const cueHistory: Direction[] = []
-  const drillsSeen = new Set<number>()
+  const drillsSeen = new Set<number>(opts.resume?.drills ?? [])
   const listeners = new Set<() => void>()
 
   const set = (patch: Partial<PlayerState>) => {
@@ -146,7 +150,8 @@ export function createPlayer(session: Session, opts: PlayerOptions) {
     }
   }
 
-  function finish() {
+  // early: ended by the player before the last drill; the time actually done counts
+  function finish(early = false) {
     if (tick) clearInterval(tick)
     clearTimers()
     audio.stopClip()
@@ -154,7 +159,7 @@ export function createPlayer(session: Session, opts: PlayerOptions) {
     const siuu = st.siuuEnd && audio.hasClips('siuu')
     if (siuu) audio.playClip('siuu')
     else audio.say('Session complete. Nice work.')
-    set({ finished: true, running: false, siuu, cue: null, elapsed: state.total, remainingMs: 0, drillsDone: drillsSeen.size })
+    set({ finished: true, running: false, siuu, cue: null, elapsed: early ? state.elapsed : state.total, remainingMs: 0, drillsDone: drillsSeen.size })
     onFinish?.(state)
   }
 
@@ -165,9 +170,18 @@ export function createPlayer(session: Session, opts: PlayerOptions) {
       return () => { listeners.delete(fn) }
     },
     start() {
-      goto(0)
+      const r = opts.resume
+      if (r && r.i >= 0 && r.i < steps.length) {
+        // back where it was, paused: the player taps Resume when ready
+        set({ i: r.i, running: false, remainingMs: r.remainingMs, elapsed: elapsedAt(r.i, r.remainingMs) })
+      } else goto(0)
       tick = setInterval(update, TICK_MS)
     },
+    snapshot: (): Snapshot => ({
+      i: state.i, remainingMs: state.running ? Math.max(0, endAt - now()) : state.remainingMs,
+      startedAt: state.startedAt, cuesCalled: state.cuesCalled, drills: [...drillsSeen],
+    }),
+    endEarly: () => finish(true),
     togglePause,
     skip: () => goto(state.i + 1),
     back: () => goto(state.i - 1),

@@ -26,6 +26,7 @@ type Props = {
   onAddClips: () => void
   onPlayer: () => void
   onWeek?: () => void
+  active?: { title: string; onResume: () => void; onDiscard: () => void } | null // unfinished session
   dayKind?: (day: number) => string | null | undefined // hand-changed day: session type, null = rest, undefined = unchanged
 }
 
@@ -194,6 +195,16 @@ export function Home(p: Props) {
   return (
     <main className="mx-auto max-w-xl px-4 pb-32">
       <Hero today={p.today} onKickOff={p.onKickOff} onOpen={p.onOpen} onSettings={p.onSettings} onCustomise={p.onAddClips} />
+      {p.active && (
+        <section aria-label="Unfinished session" className="rise mt-6 flex items-center gap-3 rounded-[22px] border border-red/50 bg-surface p-4">
+          <div className="min-w-0 flex-1">
+            <p className="m-0 font-display text-xs uppercase text-red-ink">Unfinished session</p>
+            <p className="m-0 mt-1 truncate font-semibold">{p.active.title}</p>
+          </div>
+          <button onClick={p.active.onDiscard} className="min-h-11 shrink-0 px-2 text-sm font-semibold text-muted">Discard</button>
+          <Button size="sm" onClick={p.active.onResume}>Resume</Button>
+        </section>
+      )}
       <HowItWorks onWeek={p.onWeek} />
 
       <SectionHead title="Today's drills" right={<button onClick={p.onAllSessions} className="text-sm font-semibold text-muted">All sessions</button>} />

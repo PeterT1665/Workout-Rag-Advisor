@@ -346,6 +346,31 @@ describe('app', () => {
     expect(mine[0].items.map((x: { ex: string }) => x.ex)).toEqual(['toe-taps', 'juggling'])
   })
 
+  test('a session survives a reload: Resume continues from the same drill; ending early still saves it', () => {
+    vi.useFakeTimers({ toFake: ['setTimeout', 'setInterval', 'clearTimeout', 'clearInterval', 'Date'] })
+    const first = render(<App />)
+    click(/All sessions/)
+    click(/Close control & 1v1/)
+    click(/Start session/)
+    act(() => { vi.advanceTimersByTime(1200) })
+    click(/let's go/i)
+    click(/^Skip$/)
+    click(/^Skip$/)
+    act(() => { vi.advanceTimersByTime(70_000) }) // train a bit
+    const where = stepName()
+    first.unmount() // iOS closes the app
+    render(<App />)
+    expect(screen.getByRole('region', { name: 'Unfinished session' })).toBeTruthy()
+    click(/^Resume$/)
+    expect(stepName()).toBe(where)
+    vi.spyOn(window, 'confirm').mockReturnValue(true)
+    click(/End session/)
+    const history = JSON.parse(localStorage.getItem('history') || '[]')
+    expect(history.at(-1).title).toBe('Close control & 1v1')
+    expect(history.at(-1).minutes).toBeGreaterThanOrEqual(1)
+    expect(localStorage.getItem('activeSession')).toBeNull()
+  })
+
   test('laptop: the website shows the phone app in a frame with a QR code', () => {
     vi.stubGlobal('matchMedia', (q: string) => ({ matches: q.includes('min-width: 1024px'), addEventListener() {}, removeEventListener() {} }))
     expect(showPhoneFrame()).toBe(true)

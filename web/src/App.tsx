@@ -20,8 +20,9 @@ import { allClips, openClips, subscribeClips } from './lib/clips'
 import { openPhotos } from './lib/photos'
 import { setBusy } from './lib/updates'
 import { attachRemote, beginRemote, endRemote, syncRemote } from './lib/remote'
+import { clearActive, loadActive, saveActive } from './lib/activeSession'
 import { beep, playClip, realAudio, stopClip, unlockAudio } from './lib/audio'
-import { createPlayer, type Player } from './lib/player'
+import { createPlayer, type Player, type Snapshot } from './lib/player'
 import { nextQuote } from './lib/quotes'
 import { addHistory, loadSettings, save } from './lib/storage'
 import { loadGames, planToday, saveGames, withChange } from './lib/today'
@@ -53,6 +54,8 @@ export default function App() {
   settingsRef.current = settings
   const clips = useSyncExternalStore(subscribeClips, allClips)
   const started = useRef(false)
+  const stopPersist = useRef<() => void>(() => {})
+  const [active, setActive] = useState(loadActive) // a session left unfinished (app closed or reloaded)
   const gymPerWeek = useProfile().gym
   const [changes, setChanges] = useState(loadWeekChanges)
   const planned = useMemo(() => planToday(sessions, games, new Date(), gymPerWeek), [games, gymPerWeek])
@@ -80,19 +83,32 @@ export default function App() {
   }
   const updateGames = (g: Game[]) => { setGames(g); saveGames(g) }
 
-  function beginSession(session: Session) {
+  function beginSession(session: Session, resume?: Snapshot) {
     if (started.current) return
     started.current = true
     stopClip()
     const player = createPlayer(session, {
       audio: realAudio(() => settingsRef.current),
       getSettings: () => settingsRef.current,
-      onFinish: (st) => addHistory({
-        id: session.id, title: session.title, date: new Date().toLocaleDateString('en-CA'),
-        minutes: Math.max(1, Math.round((Date.now() - st.startedAt) / 60000)),
-        drills: st.drillsDone, cues: st.cuesCalled,
-      }),
+      resume,
+      onFinish: (st) => {
+        clearActive()
+        setActive(null)
+        // training time actually covered (pauses and breaks don't count)
+        addHistory({
+          id: session.id, title: session.title, date: new Date().toLocaleDateString('en-CA'),
+          minutes: Math.max(1, Math.round(st.elapsed / 60)),
+          drills: st.drillsDone, cues: st.cuesCalled,
+        })
+      },
     })
+    // keep the session safe if the app is closed or reloaded mid-way
+    let lastSave = 0
+    const persist = () => { if (!player.getState().finished) saveActive(session, player.snapshot()) }
+    player.subscribe(() => { if (Date.now() - lastSave > 1500) { lastSave = Date.now(); persist() } })
+    const onHide = () => { if (document.visibilityState === 'hidden') persist() }
+    document.addEventListener('visibilitychange', onHide)
+    stopPersist.current = () => document.removeEventListener('visibilitychange', onHide)
     // earbud presses (started in the Kick off tap) now drive this player
     attachRemote({ toggle: player.togglePause, next: player.skip, prev: player.back, running: () => player.getState().running })
     let wasRunning = true
@@ -140,7 +156,7 @@ export default function App() {
       case 'preroll':
         return <Preroll session={overlay.session} quote={overlay.quote} clipName={overlay.clipName} onGo={() => beginSession(overlay.session)} />
       case 'player':
-        return <PlayerView key={overlay.player.getState().startedAt} session={overlay.session} player={overlay.player} settings={settings} onExit={() => { endRemote(); close() }} />
+        return <PlayerView key={overlay.player.getState().startedAt} session={overlay.session} player={overlay.player} settings={settings} onExit={() => { endRemote(); stopPersist.current(); clearActive(); setActive(null); close() }} />
       case 'settings':
         return <SettingsView settings={settings} clipCount={clips.length} onChange={updateSettings} onMedia={() => setOverlay({ name: 'media', from: 'settings' })} onProfile={() => setOverlay({ name: 'profile' })} onInvite={() => setOverlay({ name: 'invite', back: { name: 'settings' } })} onDone={close} />
       case 'invite':
@@ -171,6 +187,7 @@ export default function App() {
           onAddClips={() => setOverlay({ name: 'media', from: 'home' })}
           onPlayer={() => setTab('player')}
           onWeek={() => setTab('week')}
+          active={active ? { title: active.session.title, onResume: () => { unlockAudio(); if (settingsRef.current.earbuds) beginRemote(active.session.title); started.current = false; beginSession(active.session, active.snap) }, onDiscard: () => { clearActive(); setActive(null) } } : null}
           dayKind={(day) => {
             const c = changeFor(day, changes)
             if (!c) return undefined

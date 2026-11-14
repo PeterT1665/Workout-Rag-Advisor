@@ -97,7 +97,7 @@ export function PlayerView({ session, player, settings, onExit }: { session: Ses
         <Button onClick={player.togglePause}>{st.running ? 'Pause' : 'Resume'}</Button>
         <Button variant="ghost" onClick={player.skip}>Skip</Button>
       </div>
-      <Button variant="ghost" size="sm" className="mt-3 self-center" onClick={() => { if (confirm('End the session?')) onExit() }}>End session</Button>
+      <Button variant="ghost" size="sm" className="mt-3 self-center" onClick={() => { if (!confirm('End the session now?')) return; if (player.getState().elapsed >= 60) player.endEarly(); else onExit() }}>End session</Button>
 
       {/* Full-screen cue: readable from a few metres away, phone on the ground */}
       <div aria-hidden={!st.cue} data-testid="cue"
