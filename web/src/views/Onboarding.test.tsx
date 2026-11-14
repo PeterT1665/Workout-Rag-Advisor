@@ -15,7 +15,7 @@ test('welcome: sample player shortcut', () => {
 test('make my player: name and a position are required, several positions allowed', () => {
   const onDone = vi.fn()
   render(<Onboarding welcome onDone={onDone} />)
-  click(/Make my player/)
+  click(/Get started/)
   expect((screen.getByRole('button', { name: /^Next$/ }) as HTMLButtonElement).disabled).toBe(true)
   fireEvent.change(screen.getByLabelText('Name'), { target: { value: '  Alex ' } })
   fireEvent.change(screen.getByLabelText('Number'), { target: { value: '9' } })

@@ -9,14 +9,13 @@ import { InstallButton } from '../components/InstallButton'
 // by new accounts, and by Edit player. `welcome` adds the first screen with the sample-player shortcut.
 const STEPS = ['player', 'play', 'week', 'style'] as const
 
-export function Onboarding({ initial, initialGames = [], welcome = false, onDone, onSample, onSignIn, onSignUp, onCancel }: {
+export function Onboarding({ initial, initialGames = [], welcome = false, onDone, onSample, onSignIn, onCancel }: {
   initial?: Profile
   initialGames?: Game[]
   welcome?: boolean
   onDone: (p: Profile, games: Game[]) => void
   onSample?: () => void
   onSignIn?: () => void
-  onSignUp?: () => void
   onCancel?: () => void
 }) {
   const [p, setP] = useState<Profile>(initial ?? { name: '', number: 10, positions: [], foot: 'right', accent: 'red', idol: '', gym: 3 })
@@ -49,15 +48,10 @@ export function Onboarding({ initial, initialGames = [], welcome = false, onDone
             ))}
           </ul>
           <div style={{ '--i': 3 } as React.CSSProperties}>
-            <Button block onClick={() => setStep(0)}>Make my player</Button>
+            <Button block onClick={() => setStep(0)}>Get started</Button>
             <Button block variant="ghost" className="mt-3" onClick={onSample}>Try a sample player</Button>
             <p className="m-0 mt-4 text-center text-xs text-muted">30 seconds. No account needed.</p>
-            {onSignIn && (
-              <div className="mt-1 flex justify-center gap-5 text-sm font-semibold">
-                {onSignUp && <button onClick={onSignUp} className="min-h-11 text-red-ink">Create account</button>}
-                <button onClick={onSignIn} className="min-h-11">Sign in</button>
-              </div>
-            )}
+            {onSignIn && <button onClick={onSignIn} className="mt-1 min-h-11 w-full text-center text-sm">Already have an account? <span className="font-semibold text-red-ink">Sign in</span></button>}
           </div>
         </div>
       </Screen>
@@ -119,27 +113,36 @@ export function Onboarding({ initial, initialGames = [], welcome = false, onDone
           </Step>
         )}
         {id === 'week' && (
-          <Step title="Your week" hint="Tap the days you play.">
-            <div className="grid grid-cols-7 gap-1.5">
-              {DAYS.map((d, day) => {
-                const on = games.some((g) => g.day === day)
-                return (
-                  <Choice key={d} on={on} label={`${d}${on ? ', game' : ''}`}
-                    onClick={() => setGames(on ? games.filter((g) => g.day !== day) : [...games, { day, kind: 'competitive' as const }].sort((a, b) => a.day - b.day))}>
-                    <span className="font-display text-sm">{d.slice(0, 2)}</span>
+          <Step title="Your week">
+            <section className="rounded-[22px] bg-surface p-4">
+              <h2 className="m-0 font-display text-lg uppercase">Match days</h2>
+              <p className="m-0 mt-1 mb-3 text-sm text-muted">Tap the days you play games.</p>
+              <div className="grid grid-cols-7 gap-1.5">
+                {DAYS.map((d, day) => {
+                  const on = games.some((g) => g.day === day)
+                  return (
+                    <button key={d} aria-pressed={on} aria-label={`${d}${on ? ', match' : ''}`}
+                      onClick={() => setGames(on ? games.filter((g) => g.day !== day) : [...games, { day, kind: 'competitive' as const }].sort((a, b) => a.day - b.day))}
+                      className={`flex min-h-16 flex-col items-center justify-center rounded-2xl transition-[transform,background-color] duration-150 ease-snap active:scale-95 ${on ? 'bg-red text-on-red' : 'bg-surface-2 text-ink'}`}>
+                      <span className="font-display text-sm">{d.slice(0, 2)}</span>
+                      <span className={`text-[10px] font-semibold uppercase ${on ? '' : 'text-muted'}`}>{on ? 'Match' : '·'}</span>
+                    </button>
+                  )
+                })}
+              </div>
+              <p className="m-0 mt-3 text-sm font-semibold">{games.length ? `${games.length} match${games.length > 1 ? 'es' : ''} a week` : 'No matches: more training instead'}</p>
+            </section>
+            <section className="mt-4 rounded-[22px] bg-surface p-4">
+              <h2 className="m-0 font-display text-lg uppercase">Gym sessions a week</h2>
+              <p className="m-0 mt-1 mb-3 text-sm text-muted">Planned on days without a match.</p>
+              <div className="grid grid-cols-6 gap-1.5">
+                {[0, 1, 2, 3, 4, 5].map((n) => (
+                  <Choice key={n} on={(p.gym ?? 3) === n} label={`${n} gym sessions`} onClick={() => set({ gym: n })}>
+                    <span className="font-display text-lg">{n}</span>
                   </Choice>
-                )
-              })}
-            </div>
-            <h2 className="mt-6 mb-2.5 font-display text-base uppercase">Gym sessions a week</h2>
-            <div className="grid grid-cols-6 gap-1.5">
-              {[0, 1, 2, 3, 4, 5].map((n) => (
-                <Choice key={n} on={(p.gym ?? 3) === n} label={`${n} gym sessions`} onClick={() => set({ gym: n })}>
-                  <span className="font-display text-lg">{n}</span>
-                </Choice>
-              ))}
-            </div>
-            <p className="m-0 mt-3 text-sm text-muted">{games.length ? `${games.length} game${games.length > 1 ? 's' : ''} a week.` : 'No games yet: more training instead.'} Heavy weeks keep the gym but make it lighter.</p>
+                ))}
+              </div>
+            </section>
           </Step>
         )}
         {id === 'style' && (

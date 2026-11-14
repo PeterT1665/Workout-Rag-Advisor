@@ -2,6 +2,8 @@ import { useEffect, useState } from 'react'
 import App from './App'
 import { Login, SetPassword } from './views/Login'
 import { Onboarding } from './views/Onboarding'
+import { NextSteps } from './views/NextSteps'
+import { canInstall } from './lib/install'
 import { clearLocalData, currentUser, pull, startSync } from './lib/sync'
 import { clearPhotos, syncPhotos } from './lib/photos'
 import { accountsEnabled, arrivedToSetPassword } from './lib/supabase'
@@ -63,13 +65,15 @@ function Guest({ onSignIn, onSignUp }: { onSignIn?: () => void; onSignUp?: () =>
     if (preview === 'home' && !hasProfile()) { setProfile(SAMPLE_PROFILE); seedDemo(new Date(), true) }
     return hasProfile()
   })
+  const [next, setNext] = useState(false) // the "You're in" screen after making a player
   if (!ready) {
     return (
-      <Onboarding welcome onSignIn={onSignIn} onSignUp={onSignUp}
+      <Onboarding welcome onSignIn={onSignIn}
         onSample={() => { setProfile(SAMPLE_PROFILE); seedDemo(new Date(), true); setReady(true) }}
-        onDone={(p, games) => { startOwnDemo(games); setProfile(p); setReady(true) }} />
+        onDone={(p, games) => { startOwnDemo(games); setProfile(p); setNext(!!onSignUp || canInstall()); setReady(true) }} />
     )
   }
+  if (next) return <NextSteps name={getProfile().name} onSignUp={onSignUp} onDone={() => setNext(false)} />
   if (getProfile().sample) seedDemo()
   return <App />
 }
@@ -78,7 +82,7 @@ function Guest({ onSignIn, onSignUp }: { onSignIn?: () => void; onSignUp?: () =>
 function WelcomePreview() {
   const enter = () => { location.href = '/?app=1' }
   return (
-    <Onboarding welcome onSignIn={accountsEnabled ? enter : undefined} onSignUp={accountsEnabled ? enter : undefined}
+    <Onboarding welcome onSignIn={accountsEnabled ? enter : undefined}
       onSample={() => { setProfile(SAMPLE_PROFILE); seedDemo(new Date(), true); enter() }}
       onDone={(p, games) => { startOwnDemo(games); setProfile(p); enter() }} />
   )

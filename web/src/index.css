@@ -180,3 +180,15 @@ p, li, dd, dt { font-variant-numeric: normal; }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { transition-duration: 0ms !important; }
 }
+
+/* Every button answers a press (and a hover with a mouse), including text and icon buttons that have no
+   styling of their own. Tailwind v4 moves with the separate translate/scale properties, so this transform
+   doesn't fight them. */
+button { transition: transform 120ms var(--ease-out), filter 120ms ease-out, opacity 120ms ease-out; }
+button:not(:disabled):active { transform: scale(0.97); filter: brightness(0.82); }
+@media (hover: hover) and (pointer: fine) {
+  button:not(:disabled):hover { filter: brightness(1.12); }
+}
+@media (prefers-reduced-motion: reduce) {
+  button:not(:disabled):active { transform: none; }
+}
