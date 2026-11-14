@@ -1,7 +1,8 @@
 // Session player engine: timing, cues and clips, no React. Views subscribe to its state.
 import { flattenSession, pickCue, planCues, restClipWindow, selfPaced, totalSeconds, type Rng } from './logic'
 import type { AudioDeps } from './audio'
-import type { Direction, Session, Settings, Step } from './types'
+import { editableFrom } from './logic'
+import type { Block, Direction, Session, Settings, Step } from './types'
 
 export type PlayerState = {
   steps: Step[]
@@ -41,7 +42,7 @@ export function createPlayer(session: Session, opts: PlayerOptions) {
   const { audio, getSettings, onFinish } = opts
   const now = opts.now ?? (() => Date.now())
   const rng = opts.rng ?? Math.random
-  const steps = flattenSession(session)
+  let steps = flattenSession(session)
 
   let state: PlayerState = {
     steps, i: -1, running: false, remainingMs: 0, elapsed: 0, total: totalSeconds(steps),
@@ -190,6 +191,17 @@ export function createPlayer(session: Session, opts: PlayerOptions) {
       startedAt: state.startedAt, cuesCalled: state.cuesCalled, drills: [...drillsSeen],
     }),
     endEarly: () => finish(true),
+    getSession: () => session,
+    // the exercises not started yet, as they stand now (reorder, swap or remove them mid-session)
+    upcoming: () => session.blocks.slice(editableFrom(steps, state.i)),
+    editUpcoming(blocks: Block[]) {
+      if (state.finished) return
+      const from = editableFrom(steps, state.i)
+      session = { ...session, blocks: [...session.blocks.slice(0, from), ...blocks] }
+      steps = flattenSession(session)
+      if (state.i >= steps.length) { set({ steps }); return finish() }
+      set({ steps, total: totalSeconds(steps), elapsed: elapsedAt(state.i, state.remainingMs) })
+    },
     // self-paced set finished: on to the rest
     setDone: () => { if (selfPaced(steps[state.i])) { audio.beep(1320, 200); goto(state.i + 1) } },
     // one button / earbud press: ends a self-paced set, otherwise pause or resume

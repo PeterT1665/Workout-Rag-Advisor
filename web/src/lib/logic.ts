@@ -39,6 +39,22 @@ export function flattenSession(session: Session): Step[] {
   return steps
 }
 
+// First block that can still be changed mid-session: everything done or under way (the whole current superset) is locked.
+export function editableFrom(steps: Step[], i: number): number {
+  if (i < 0) return 0
+  let last = -1
+  const letter = steps[i]?.pair?.[0]
+  for (let k = 0; k <= i && k < steps.length; k++) last = Math.max(last, steps[k].blockIdx)
+  if (letter) for (const s of steps) if (s.pair?.[0] === letter) last = Math.max(last, s.blockIdx)
+  // a superset's rest belongs to the pair: rounds still to come keep it locked
+  const cur = steps[i]
+  if (cur?.type === 'rest') {
+    const prevPair = steps[i - 1]?.pair?.[0]
+    if (prevPair) for (const s of steps) if (s.pair?.[0] === prevPair) last = Math.max(last, s.blockIdx)
+  }
+  return last + 1
+}
+
 export const totalSeconds = (steps: Step[]) => steps.reduce((a, s) => a + s.seconds, 0)
 export const sessionMinutes = (s: Session) => Math.round(totalSeconds(flattenSession(s)) / 60)
 

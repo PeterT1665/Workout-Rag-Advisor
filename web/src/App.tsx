@@ -104,7 +104,7 @@ export default function App() {
     })
     // keep the session safe if the app is closed or reloaded mid-way
     let lastSave = 0
-    const persist = () => { if (!player.getState().finished) saveActive(session, player.snapshot()) }
+    const persist = () => { if (!player.getState().finished) saveActive(player.getSession(), player.snapshot()) } // keeps mid-session edits
     player.subscribe(() => { if (Date.now() - lastSave > 1500) { lastSave = Date.now(); persist() } })
     const onHide = () => { if (document.visibilityState === 'hidden') persist() }
     document.addEventListener('visibilitychange', onHide)

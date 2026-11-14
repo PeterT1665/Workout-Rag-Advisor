@@ -132,4 +132,35 @@ describe('player engine', () => {
     p.press()
     expect(p.getState().finished).toBe(true)
   })
+
+  test('mid-session edits change only what is still to come', () => {
+    const { deps, log } = fakeAudio()
+    const gym: Session = { ...session, blocks: [
+      { name: 'Warm', kind: 'warmup', work: 3 },
+      { name: 'Squat', kind: 'drill', work: 5, rest: 4, rounds: 2 },
+      { name: 'Jump', kind: 'drill', work: 5, rest: 4, rounds: 1, superset: true },
+      { name: 'Row', kind: 'drill', work: 5, rest: 4 },
+      { name: 'Plank', kind: 'drill', work: 5 },
+    ] }
+    const p = createPlayer(gym, { audio: deps, getSettings: settings() })
+    p.start()
+    vi.advanceTimersByTime(3200) // into the superset: Squat and Jump are locked together
+    expect(p.upcoming().map((b) => b.name)).toEqual(['Row', 'Plank'])
+    p.editUpcoming([{ name: 'Plank', kind: 'drill', work: 5 }, { name: 'Press', kind: 'drill', work: 5, rest: 4 }])
+    expect(p.getSession().blocks.map((b) => b.name)).toEqual(['Warm', 'Squat', 'Jump', 'Plank', 'Press'])
+    expect(p.getState().steps[p.getState().i].name).toBe('Squat') // the current step is untouched
+    vi.advanceTimersByTime(60000)
+    const order = said(log).map((t) => t.split('.')[0]).filter((t) => t && t !== 'Rest')
+    expect(order.slice(-3)).toEqual(['Plank', 'Press', 'Session complete'])
+  })
+
+  test('dropping everything after the last step ends the session', () => {
+    const { deps } = fakeAudio()
+    const p = createPlayer(session, { audio: deps, getSettings: settings() })
+    p.start()
+    p.editUpcoming([])
+    expect(p.getState().finished).toBe(false) // still doing the warm-up
+    vi.advanceTimersByTime(3200)
+    expect(p.getState().finished).toBe(true)
+  })
 })

@@ -1,4 +1,5 @@
-import { useEffect, useMemo, useSyncExternalStore } from 'react'
+import { useEffect, useMemo, useState, useSyncExternalStore } from 'react'
+import { PlanSheet } from '../components/PlanSheet'
 import { Button, QuoteCard, Screen } from '../components/ui'
 import { fmtReps, fmtTime, selfPaced, tempoFor } from '../lib/logic'
 import { nextQuote } from '../lib/quotes'
@@ -26,6 +27,7 @@ export function PlayerView({ session, player, settings, onExit }: { session: Ses
   const st = useSyncExternalStore(player.subscribe, player.getState)
   useEffect(() => { player.start(); return () => player.stop() }, [player])
   useWakeLock(!st.finished)
+  const [plan, setPlan] = useState(false)
 
   const step = st.steps[st.i]
   // a new card per rest step, not per tick
@@ -103,7 +105,11 @@ export function PlayerView({ session, player, settings, onExit }: { session: Ses
         <Button onClick={player.press}>{paced && st.running ? 'Set done' : st.running ? 'Pause' : 'Resume'}</Button>
         <Button variant="ghost" onClick={player.skip}>Skip</Button>
       </div>
-      <Button variant="ghost" size="sm" className="mt-3 self-center" onClick={() => { if (!confirm('End the session now?')) return; if (player.getState().elapsed >= 60) player.endEarly(); else onExit() }}>End session</Button>
+      <div className="mt-3 flex justify-center gap-2">
+        <Button variant="ghost" size="sm" aria-haspopup="dialog" onClick={() => setPlan(true)}>Plan</Button>
+        <Button variant="ghost" size="sm" onClick={() => { if (!confirm('End the session now?')) return; if (player.getState().elapsed >= 60) player.endEarly(); else onExit() }}>End session</Button>
+      </div>
+      {plan && <PlanSheet player={player} onClose={() => setPlan(false)} />}
 
       {/* Full-screen cue: readable from a few metres away, phone on the ground */}
       <div aria-hidden={!st.cue} data-testid="cue"

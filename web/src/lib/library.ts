@@ -78,3 +78,13 @@ export const templateFor = (id: string): Template | undefined => TEMPLATES.find(
 
 export const BUILTIN_SESSIONS: Session[] = TEMPLATES.map(toSession)
 export const allSessions = (): Session[] => [...loadMySessions().map(toSession), ...BUILTIN_SESSIONS]
+
+// Mid-session swaps: an exercise as a session block, and the others in the same category (the rack's taken, no box...).
+export function exerciseBlock(id: string): Block | undefined {
+  const e = byId.get(id)
+  if (!e) return undefined
+  const { id: _id, sport: _s, positions: _p, ...block } = e
+  return block
+}
+export const alternativesFor = (b: Block) =>
+  EXERCISES.filter((e) => e.category === b.category && e.name !== b.name && e.kind === b.kind)
