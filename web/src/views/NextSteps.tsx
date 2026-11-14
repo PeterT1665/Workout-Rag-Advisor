@@ -14,10 +14,8 @@ export function NextSteps({ name, onSignUp, onDone }: { name: string; onSignUp?:
         <section className="rise mt-8 rounded-[22px] bg-surface p-4">
           <h2 className="m-0 font-display text-lg uppercase">Save your player</h2>
           <p className="m-0 mt-1 text-sm text-muted">A free account keeps your player and training on all your devices.</p>
-          <div className="mt-4 flex gap-2">
-            <Button className="flex-[1.4]" onClick={onSignUp}>Create account</Button>
-            <Button variant="ghost" className="flex-1 bg-surface-2" onClick={onDone}>Not now</Button>
-          </div>
+          <Button block className="mt-4" onClick={onSignUp}>Create account</Button>
+          <button onClick={onDone} className="mt-1 min-h-11 w-full text-sm font-semibold text-muted">Not now</button>
         </section>
       )}
       {install && (
