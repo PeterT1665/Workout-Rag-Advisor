@@ -9,6 +9,7 @@ export type Block = {
   needs?: string[]
   reps?: string // gym: reps per set; work is then an estimated set time
   category?: string // library category, picks the drill-card photo
+  superset?: boolean // done back to back with the exercise before it (alternating rounds, no rest between)
 }
 
 export type Session = {
@@ -32,6 +33,7 @@ export type Step = {
   how: string
   reps?: string
   category?: string
+  pair?: string // superset position, e.g. 'A1', 'A2'
   needs: string[]
 }
 

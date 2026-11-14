@@ -39,20 +39,24 @@ export function PlayerView({ session, player, settings, onExit }: { session: Ses
   const accent = isRest ? 'var(--muted)' : 'var(--red)'
   const frac = paced ? 1 : Math.max(0, Math.min(1, st.remainingMs / (step.seconds * 1000)))
   const next = st.steps[st.i + 1]
-  const blocks = session.blocks.map((_, bi) => {
-    let start = 0, len = 0
-    st.steps.forEach((x) => {
-      if (x.blockIdx < bi) start += x.seconds
-      else if (x.blockIdx === bi) len += x.seconds
-    })
-    return { start, len }
+  // progress segments in the order they're done: one per exercise, one per superset (its exercises alternate)
+  const blocks: { start: number; len: number; from: number; to: number }[] = []
+  let at = 0
+  st.steps.forEach((x, k) => {
+    const key = x.pair ? x.pair[0] : x.blockIdx
+    const prev = st.steps[k - 1]
+    const last = blocks.at(-1)
+    if (last && prev && (prev.pair ? prev.pair[0] : prev.blockIdx) === key) { last.len += x.seconds; last.to = k }
+    else blocks.push({ start: at, len: x.seconds, from: k, to: k })
+    at += x.seconds
   })
-  const phase = isRest ? 'Rest' : step.kind === 'warmup' ? 'Warm-up' : step.kind === 'cooldown' ? 'Cool-down' : 'Work'
+  const prevPair = isRest ? st.steps[st.i - 1]?.pair : undefined
+  const phase = isRest ? 'Rest' : step.kind === 'warmup' ? 'Warm-up' : step.kind === 'cooldown' ? 'Cool-down' : step.pair ? `Superset ${step.pair}` : 'Work'
 
   return (
     <Screen className="flex flex-col">
       <div className="flex items-center justify-between">
-        <span className="font-display text-sm font-bold uppercase tracking-[0.2em]" style={{ color: accent }}>{isRest ? `Round ${step.round} of ${step.rounds} done` : phase}</span>
+        <span className="font-display text-sm font-bold uppercase tracking-[0.2em]" style={{ color: accent }}>{isRest ? (prevPair ? `Superset ${prevPair[0]} round ${step.round} done` : `Round ${step.round} of ${step.rounds} done`) : phase}</span>
         <span className="font-display text-sm font-bold tabular-nums text-muted">{fmtTime(st.total - st.elapsed)} left</span>
       </div>
       <h1 key={st.i} className="slam m-0 mt-1 font-display text-3xl uppercase leading-none" data-testid="step-name">
@@ -83,11 +87,11 @@ export function PlayerView({ session, player, settings, onExit }: { session: Ses
           </div>
         : <p className="mt-3 mb-4 text-sm text-muted">Up next: {next ? (next.type === 'rest' ? 'Rest' : next.name) : 'Last one.'}</p>}
 
-      <div className="flex h-2 gap-[3px]" aria-label={`Block ${step.blockIdx + 1} of ${session.blocks.length}`}>
+      <div className="flex h-2 gap-[3px]" aria-label={`Part ${blocks.findIndex((b) => st.i >= b.from && st.i <= b.to) + 1} of ${blocks.length}`}>
         {blocks.map((b, bi) => {
           const fill = Math.max(0, Math.min(1, (st.elapsed - b.start) / b.len))
           return (
-            <div key={bi} className={`relative overflow-hidden rounded-full ${bi === step.blockIdx ? 'bg-surface-2' : 'bg-surface-2/70'}`} style={{ flex: b.len }}>
+            <div key={bi} className={`relative overflow-hidden rounded-full ${st.i >= b.from && st.i <= b.to ? 'bg-surface-2' : 'bg-surface-2/70'}`} style={{ flex: b.len }}>
               <div className="absolute inset-y-0 left-0 rounded-full bg-red" style={{ width: `${fill * 100}%` }} />
             </div>
           )

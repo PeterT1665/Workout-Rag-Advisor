@@ -6,7 +6,7 @@ import type { Block, Session } from './types'
 
 export type Sport = 'football' | 'gym' | 'mobility'
 export type Exercise = Block & { id: string; sport: Sport; category: string; positions?: string[] }
-export type Item = { ex: string; work?: number; rest?: number; rounds?: number; how?: string }
+export type Item = { ex: string; work?: number; rest?: number; rounds?: number; how?: string; superset?: boolean }
 export type Template = { id: string; title: string; type: string; summary: string; needs: string[]; items: Item[] }
 export type MySession = Template & { mine: true; updated: string }
 

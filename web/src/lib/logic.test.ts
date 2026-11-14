@@ -19,6 +19,22 @@ describe('session logic', () => {
     expect(L.totalSeconds(steps)).toBe(60 + 90 + 30 + 40 + 20)
   })
 
+  test('supersets alternate rounds, rest only after each pair', () => {
+    const ss: Session = { ...session, blocks: [
+      { name: 'Warm', kind: 'warmup', work: 60 },
+      { name: 'Squat', kind: 'drill', work: 40, rest: 150, rounds: 2, reps: '5' },
+      { name: 'Jump', kind: 'drill', work: 20, rest: 90, rounds: 3, reps: '5', superset: true },
+      { name: 'Plank', kind: 'drill', work: 30, rest: 30, rounds: 2 },
+      { name: 'Bug', kind: 'drill', work: 30, rest: 45, superset: true, rounds: 2 },
+      { name: 'Cool', kind: 'cooldown', work: 60 },
+    ] }
+    const seq = L.flattenSession(ss).map((s) => (s.type === 'rest' ? `rest${s.seconds}` : `${s.name}${s.pair ?? ''}`))
+    expect(seq).toEqual([
+      'Warm', 'SquatA1', 'JumpA2', 'rest90', 'SquatA1', 'JumpA2', 'rest90', 'JumpA2', 'rest90',
+      'PlankB1', 'BugB2', 'rest45', 'PlankB1', 'BugB2', 'rest45', 'Cool',
+    ])
+  })
+
   test('only cue blocks carry cues', () => {
     const names = new Set(L.flattenSession(session).filter((s) => s.cue).map((s) => s.name))
     expect([...names]).toEqual(['1v1'])

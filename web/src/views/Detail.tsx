@@ -23,7 +23,9 @@ function downloadICS(s: Session, date: string, time: string) {
 export function Detail({ session: s, onBack, onStart, onEdit, onInvite, onSchedule, desktop = false }: { session: Session; onBack: () => void; onStart: () => void; onEdit?: () => void; onInvite?: () => void; onSchedule?: (day: number) => void; desktop?: boolean }) {
   const [pickDay, setPickDay] = useState(false)
   const withPartner = s.blocks.some((b) => b.needs?.includes('partner'))
-  const hasCue = flattenSession(s).some((x) => x.cue)
+  const steps = flattenSession(s)
+  const hasCue = steps.some((x) => x.cue)
+  const pairOf = new Map(steps.filter((x) => x.pair).map((x) => [x.blockIdx, x.pair!]))
   const [date, setDate] = useState(() => new Date(Date.now() + 864e5).toISOString().slice(0, 10))
   const [time, setTime] = useState('17:30')
   return (
@@ -67,9 +69,10 @@ export function Detail({ session: s, onBack, onStart, onEdit, onInvite, onSchedu
       <div className="mt-2 flex justify-between font-display text-[11px] uppercase text-muted"><span>Kick-off</span><span>Full-time · {sessionMinutes(s)}′</span></div>
 
       {(['warmup', 'drill', 'cooldown'] as const).map((kind) => {
-        const items = s.blocks.filter((b) => (kind === 'drill' ? b.kind !== 'warmup' && b.kind !== 'cooldown' : b.kind === kind))
+        const items = s.blocks.map((b, i) => ({ b, i })).filter(({ b }) => (kind === 'drill' ? b.kind !== 'warmup' && b.kind !== 'cooldown' : b.kind === kind))
         if (!items.length) return null
-        const mins = Math.round(items.reduce((a, b) => a + (b.rounds || 1) * (b.work + (b.rest || 0)), 0) / 60)
+        const ids = new Set(items.map(({ i }) => i))
+        const mins = Math.round(steps.filter((x) => ids.has(x.blockIdx)).reduce((a, x) => a + x.seconds, 0) / 60)
         return (
           <section key={kind}>
             <div className="mt-8 mb-3 flex items-baseline justify-between">
@@ -77,14 +80,20 @@ export function Detail({ session: s, onBack, onStart, onEdit, onInvite, onSchedu
               <span className="text-sm text-muted">{mins} min</span>
             </div>
             <ol className="m-0 flex list-none flex-col gap-2 p-0">
-              {items.map((b) => (
-                <li key={b.name} className="rounded-[18px] bg-surface p-4">
-                  <strong className="block font-semibold">{b.name.replace(/\s*\([^)]*\)/g, '')}</strong>
-                  <span className="mt-1 block font-display text-xs tabular-nums text-muted">{b.rounds || 1} × {b.reps ? fmtReps(b.reps) : `${b.work}s`}{b.rest ? ` · ${b.rest}s rest` : ''}</span>
+              {items.map(({ b, i }) => {
+                const pair = pairOf.get(i)
+                const next = pairOf.get(i + 1)
+                const joined = !!next && next[0] === pair?.[0] // the next row is in the same superset
+                return (
+                <li key={i} className={`bg-surface p-4 ${pair && pair[1] !== '1' ? '-mt-1.5 rounded-b-[18px] border-l-4 border-red' : 'rounded-t-[18px]'} ${joined ? 'rounded-t-[18px] border-l-4 border-red' : 'rounded-b-[18px]'}`}>
+                  {pair?.endsWith('1') && <span className="mb-1 block font-display text-[11px] uppercase tracking-wide text-red-ink">Superset {pair[0]}: back to back, then rest</span>}
+                  <strong className="block font-semibold">{pair && <span className="mr-1.5 font-display text-red-ink">{pair}</span>}{b.name.replace(/\s*\([^)]*\)/g, '')}</strong>
+                  <span className="mt-1 block font-display text-xs tabular-nums text-muted">{b.rounds || 1} × {b.reps ? fmtReps(b.reps) : `${b.work}s`}{joined ? ' · straight into the next' : b.rest ? ` · ${b.rest}s rest` : ''}</span>
                   {b.cue && <span className="mt-2 inline-block rounded-full bg-red px-2.5 py-0.5 font-display text-[11px] uppercase text-on-red">Voice cues</span>}
                   <p className="m-0 mt-2 text-sm text-muted">{b.how}</p>
                 </li>
-              ))}
+                )
+              })}
             </ol>
           </section>
         )

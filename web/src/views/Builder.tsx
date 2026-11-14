@@ -54,7 +54,9 @@ export function Builder({ from, onSave, onCancel, onDelete }: {
 
       <Reorder.Group as="ol" axis="y" values={items} onReorder={setItems} className="m-0 flex list-none flex-col gap-2 p-0">
         {items.map((it, i) => (
-          <BuilderRow key={keyOf(it)} item={it} index={i} last={i === items.length - 1}
+          <BuilderRow key={keyOf(it)} item={it} index={i} last={i === items.length - 1} intoNext={!!items[i + 1]?.superset}
+            canPair={i > 0 && exercise(it.ex)?.kind === 'drill' && exercise(items[i - 1].ex)?.kind === 'drill'}
+            onPair={() => update(i, { superset: !it.superset || undefined })}
             onMove={(d) => move(i, d)} onUpdate={(p) => update(i, p)} onRemove={() => setItems((xs) => xs.filter((_, j) => j !== i))} />
         ))}
       </Reorder.Group>
@@ -82,8 +84,10 @@ const keyOf = (it: Item) => { let k = keys.get(it); if (!k) { k = `row-${nextKey
 const withKeyOf = (from: Item, to: Item) => { keys.set(to, keyOf(from)); return to }
 
 // One exercise in the session. Hold the grip to drag it up or down; with a keyboard, focus the grip and use the arrows.
-function BuilderRow({ item: it, index: i, last, onMove, onUpdate, onRemove }: {
-  item: Item; index: number; last: boolean; onMove: (d: -1 | 1) => void; onUpdate: (p: Partial<Item>) => void; onRemove: () => void
+// A row marked superset is done back to back with the row above (A1 then A2, then rest): push + pull, or heavy + explosive.
+function BuilderRow({ item: it, index: i, last, intoNext, canPair, onPair, onMove, onUpdate, onRemove }: {
+  item: Item; index: number; last: boolean; intoNext: boolean; canPair: boolean; onPair: () => void
+  onMove: (d: -1 | 1) => void; onUpdate: (p: Partial<Item>) => void; onRemove: () => void
 }) {
   const drag = useDragControls()
   const e = exercise(it.ex)
@@ -94,7 +98,7 @@ function BuilderRow({ item: it, index: i, last, onMove, onUpdate, onRemove }: {
   return (
     <Reorder.Item value={it} dragListener={false} dragControls={drag} as="li"
       whileDrag={{ scale: 1.02, boxShadow: '0 16px 40px rgba(0,0,0,.5)', zIndex: 10 }}
-      className="relative rounded-[18px] bg-surface p-3">
+      className={`relative bg-surface p-3 ${it.superset && i > 0 ? '-mt-1.5 rounded-b-[18px] border-l-4 border-red' : 'rounded-t-[18px]'} ${intoNext ? 'rounded-t-[18px] border-l-4 border-red' : 'rounded-b-[18px]'}`}>
       <div className="flex items-start gap-2">
         <button aria-label={`Reorder ${e.name}: drag, or use the arrow keys`} onPointerDown={(ev) => drag.start(ev)}
           onKeyDown={(ev) => { if (ev.key === 'ArrowUp' && i > 0) { ev.preventDefault(); onMove(-1) } if (ev.key === 'ArrowDown' && !last) { ev.preventDefault(); onMove(1) } }}
@@ -106,13 +110,21 @@ function BuilderRow({ item: it, index: i, last, onMove, onUpdate, onRemove }: {
         <div className="min-w-0 flex-1 pt-0.5">
           <strong className="block font-semibold leading-tight">{e.name}</strong>
           <span className="text-xs text-muted">{CATEGORY_LABELS[e.category] ?? e.category}{e.reps ? ` · ${fmtReps(e.reps)}` : ''}</span>
+          {canPair && (
+            <button aria-pressed={!!it.superset} onClick={onPair}
+              className={`mt-1.5 block min-h-8 rounded-full px-3 font-display text-[11px] uppercase ${it.superset ? 'bg-red text-on-red' : 'bg-surface-2 text-muted'}`}>
+              {it.superset ? 'Superset with above ✓' : '+ Superset with above'}
+            </button>
+          )}
         </div>
         <IconBtn label={`Remove ${e.name}`} onClick={onRemove}>✕</IconBtn>
       </div>
       <div className="mt-3 grid grid-cols-3 gap-2">
         <Stepper label={e.reps ? 'Sets' : 'Rounds'} value={rounds} text={`${rounds}`} onChange={(v) => onUpdate({ rounds: Math.max(1, Math.min(20, v)) })} step={1} />
         <Stepper label={e.reps ? 'Set time' : 'Work'} value={work} text={fmtSec(work)} onChange={(v) => onUpdate({ work: Math.max(5, Math.min(1200, v)) })} step={work >= 120 ? 30 : 5} />
-        <Stepper label="Rest" value={rest} text={fmtSec(rest)} onChange={(v) => onUpdate({ rest: Math.max(0, Math.min(600, v)) })} step={rest >= 120 ? 30 : 15} />
+        {intoNext
+          ? <div className="grid place-items-center rounded-xl bg-surface-2 px-2 py-1.5 text-center text-[11px] uppercase leading-tight tracking-wide text-muted">Straight into the next</div>
+          : <Stepper label={it.superset ? 'Rest after pair' : 'Rest'} value={rest} text={fmtSec(rest)} onChange={(v) => onUpdate({ rest: Math.max(0, Math.min(600, v)) })} step={rest >= 120 ? 30 : 15} />}
       </div>
     </Reorder.Item>
   )

@@ -5,22 +5,37 @@ export type Rng = () => number
 
 export function flattenSession(session: Session): Step[] {
   const steps: Step[] = []
-  session.blocks.forEach((b, bi) => {
-    const rounds = b.rounds || 1
-    for (let r = 1; r <= rounds; r++) {
-      steps.push({
-        type: 'work', blockIdx: bi, name: b.name, kind: b.kind, round: r, rounds,
-        seconds: b.work, cue: !!b.cue, how: b.how || '', needs: b.needs || [], reps: b.reps, category: b.category,
-      })
-      const isLast = bi === session.blocks.length - 1 && r === rounds
-      if (b.rest && !isLast) {
+  const blocks = session.blocks
+  let letter = 0
+  for (let bi = 0; bi < blocks.length;) {
+    // a superset is this block plus the following ones marked superset: their rounds alternate, A1 A2 rest A1 A2...
+    const group = [bi]
+    while (bi + group.length < blocks.length && blocks[bi + group.length].superset) group.push(bi + group.length)
+    const isSet = group.length > 1
+    const tag = isSet ? String.fromCharCode(65 + letter++) : ''
+    const maxRounds = Math.max(...group.map((g) => blocks[g].rounds || 1))
+    const lastBlock = bi + group.length >= blocks.length
+    for (let r = 1; r <= maxRounds; r++) {
+      const active = group.filter((g) => r <= (blocks[g].rounds || 1))
+      active.forEach((g, k) => {
+        const b = blocks[g]
         steps.push({
-          type: 'rest', blockIdx: bi, name: 'Rest', kind: b.kind, round: r, rounds,
-          seconds: b.rest, cue: false, how: '', needs: [],
+          type: 'work', blockIdx: g, name: b.name, kind: b.kind, round: r, rounds: b.rounds || 1,
+          seconds: b.work, cue: !!b.cue, how: b.how || '', needs: b.needs || [], reps: b.reps, category: b.category,
+          ...(isSet ? { pair: `${tag}${group.indexOf(g) + 1}` } : {}),
         })
-      }
+        const endOfRound = k === active.length - 1
+        const rest = isSet ? blocks[group[group.length - 1]].rest : b.rest
+        if (endOfRound && rest && !(lastBlock && r === maxRounds)) {
+          steps.push({
+            type: 'rest', blockIdx: g, name: 'Rest', kind: b.kind, round: r, rounds: maxRounds,
+            seconds: rest, cue: false, how: '', needs: [],
+          })
+        }
+      })
     }
-  })
+    bi += group.length
+  }
   return steps
 }
 

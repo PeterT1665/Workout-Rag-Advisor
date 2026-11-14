@@ -1621,7 +1621,7 @@
    "id": "gym-upper-core",
    "title": "Gym: upper body + core",
    "type": "gym",
-   "summary": "Upper strength and a strong trunk for holding off defenders.",
+   "summary": "Upper strength and a strong trunk for holding off defenders. Supersets pair a push with a pull: do one, go straight into the other, then rest.",
    "needs": [
     "gym"
    ],
@@ -1636,19 +1636,23 @@
      "ex": "bench-press"
     },
     {
-     "ex": "pull-up"
+     "ex": "pull-up",
+     "superset": true,
+     "rest": 120
     },
     {
      "ex": "db-overhead-press"
     },
     {
-     "ex": "bent-over-row"
+     "ex": "bent-over-row",
+     "superset": true
     },
     {
      "ex": "pallof-press"
     },
     {
-     "ex": "dead-bug"
+     "ex": "dead-bug",
+     "superset": true
     },
     {
      "ex": "gym-cooldown"
@@ -1758,6 +1762,85 @@
     },
     {
      "ex": "gym-cooldown"
+    }
+   ]
+  },
+  {
+   "id": "gym-contrast",
+   "title": "Gym: contrast lifts",
+   "type": "gym",
+   "summary": "Heavy set, then straight into a light explosive set of the same movement. The heavy lift wakes the muscles up so the jump is faster. Rest fully between rounds.",
+   "needs": [],
+   "items": [
+    {
+     "ex": "gym-warmup"
+    },
+    {
+     "ex": "back-squat"
+    },
+    {
+     "ex": "jump-squat",
+     "superset": true,
+     "rest": 150
+    },
+    {
+     "ex": "romanian-deadlift"
+    },
+    {
+     "ex": "broad-jump",
+     "superset": true,
+     "rounds": 3,
+     "rest": 120
+    },
+    {
+     "ex": "bench-press"
+    },
+    {
+     "ex": "plyo-push-up",
+     "superset": true,
+     "rounds": 4,
+     "rest": 120
+    },
+    {
+     "ex": "copenhagen-plank"
+    },
+    {
+     "ex": "gym-cooldown"
+    }
+   ]
+  },
+  {
+   "id": "hybrid-legs-close-control",
+   "title": "Hybrid: light legs + close control",
+   "type": "football",
+   "summary": "For MD+2 or a day you have the gym and a pitch: light explosive lower body, then out to the field for tight-space control.",
+   "needs": [],
+   "items": [
+    {
+     "ex": "gym-warmup"
+    },
+    {
+     "ex": "jump-squat"
+    },
+    {
+     "ex": "back-squat",
+     "rounds": 3
+    },
+    {
+     "ex": "single-leg-rdl",
+     "rounds": 2
+    },
+    {
+     "ex": "tight-space-close-control"
+    },
+    {
+     "ex": "dribble-change-direction"
+    },
+    {
+     "ex": "freestyle-dribbling"
+    },
+    {
+     "ex": "cool-down-hips-quads-hamstrings-it-band"
     }
    ]
   }
