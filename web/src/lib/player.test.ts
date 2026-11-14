@@ -115,4 +115,21 @@ describe('player engine', () => {
     expect(log).toContain('clip:siuu')
     expect(said(log)).not.toContain('Session complete. Nice work.')
   })
+  test('sets with reps run at your own pace: no time limit, Set done goes to the timed rest', () => {
+    const gym: Session = { id: 'g', title: 'G', type: 'gym', summary: '', needs: [],
+      blocks: [{ name: 'Back squat', kind: 'drill', work: 40, rest: 90, rounds: 2, reps: '5', category: 'lower-strength' }] }
+    const { deps } = fakeAudio()
+    const p = createPlayer(gym, { audio: deps, getSettings: settings() })
+    p.start()
+    vi.advanceTimersByTime(5 * 60_000) // a slow, heavy set: still the same set
+    expect(p.getState().i).toBe(0)
+    expect(p.getState().setMs).toBeGreaterThanOrEqual(5 * 60_000 - 200)
+    p.press() // Set done (button or earbud)
+    expect(p.getState().steps[p.getState().i].type).toBe('rest')
+    vi.advanceTimersByTime(91_000) // rest is timed
+    expect(p.getState().steps[p.getState().i].name).toBe('Back squat')
+    expect(p.getState().steps[p.getState().i].round).toBe(2)
+    p.press()
+    expect(p.getState().finished).toBe(true)
+  })
 })

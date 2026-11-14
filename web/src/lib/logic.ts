@@ -10,7 +10,7 @@ export function flattenSession(session: Session): Step[] {
     for (let r = 1; r <= rounds; r++) {
       steps.push({
         type: 'work', blockIdx: bi, name: b.name, kind: b.kind, round: r, rounds,
-        seconds: b.work, cue: !!b.cue, how: b.how || '', needs: b.needs || [], reps: b.reps,
+        seconds: b.work, cue: !!b.cue, how: b.how || '', needs: b.needs || [], reps: b.reps, category: b.category,
       })
       const isLast = bi === session.blocks.length - 1 && r === rounds
       if (b.rest && !isLast) {
@@ -102,3 +102,17 @@ export function fmtTime(sec: number) {
 
 // "8" -> "8 reps"; descriptive values like "8 each leg" or "45 s" stay as written.
 export const fmtReps = (r: string) => (/^\d+(-\d+)?$/.test(r) ? `${r} reps` : r)
+
+// Sets with reps run at the player's own pace: no countdown, the set ends when they tap Set done.
+export const selfPaced = (s: Step | undefined) => !!s && s.type === 'work' && !!s.reps
+
+// One-line tempo cue for a self-paced set, by exercise category.
+export function tempoFor(category?: string): string {
+  switch (category) {
+    case 'olympic': case 'explosive': case 'plyometrics': case 'sprints': case 'speed':
+      return 'Max intent: explode up, reset between reps'
+    case 'isometrics': return 'Hold it steady and breathe'
+    case 'core': return 'Slow and controlled'
+    default: return '3 seconds down, drive up fast'
+  }
+}

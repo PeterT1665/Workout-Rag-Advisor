@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useSyncExternalStore } from 'react'
 import { Button, QuoteCard, Screen } from '../components/ui'
-import { fmtReps, fmtTime } from '../lib/logic'
+import { fmtReps, fmtTime, selfPaced, tempoFor } from '../lib/logic'
 import { nextQuote } from '../lib/quotes'
 import { FullTime } from './FullTime'
 import { AnimateDigits } from '../components/AnimateDigits'
@@ -35,8 +35,9 @@ export function PlayerView({ session, player, settings, onExit }: { session: Ses
   if (!step) return null
 
   const isRest = step.type === 'rest'
+  const paced = selfPaced(step) // a set with reps: their own pace, ends on Set done
   const accent = isRest ? 'var(--muted)' : 'var(--red)'
-  const frac = Math.max(0, Math.min(1, st.remainingMs / (step.seconds * 1000)))
+  const frac = paced ? 1 : Math.max(0, Math.min(1, st.remainingMs / (step.seconds * 1000)))
   const next = st.steps[st.i + 1]
   const blocks = session.blocks.map((_, bi) => {
     let start = 0, len = 0
@@ -59,6 +60,7 @@ export function PlayerView({ session, player, settings, onExit }: { session: Ses
         {!isRest && step.rounds > 1 && <span className="text-muted"> {step.round}/{step.rounds}</span>}
       </h1>
       {!isRest && step.reps && <p className="m-0 mt-2 font-display text-lg uppercase text-[var(--red-ink)]">{fmtReps(step.reps)}</p>}
+      {paced && <p className="m-0 mt-1 text-sm text-muted">{tempoFor(step.category)}</p>}
 
       <div className="relative mx-auto my-6 aspect-square w-[min(78vw,320px)]">
         <svg viewBox="0 0 220 220" className="h-full w-full -rotate-90">
@@ -67,7 +69,7 @@ export function PlayerView({ session, player, settings, onExit }: { session: Ses
             strokeDasharray={C} strokeDashoffset={C * (1 - frac)} />
         </svg>
         <div className="absolute inset-0 grid place-items-center font-display text-[clamp(2.6rem,14vw,4.2rem)] tabular-nums">
-          <AnimateDigits calm value={fmtTime(st.remainingMs / 1000)} />
+          <AnimateDigits calm value={fmtTime((paced ? st.setMs : st.remainingMs) / 1000)} />
         </div>
       </div>
 
@@ -94,7 +96,7 @@ export function PlayerView({ session, player, settings, onExit }: { session: Ses
 
       <div className="mt-auto grid grid-cols-[1fr_2fr_1fr] gap-3 pt-6">
         <Button variant="ghost" onClick={player.back}>Back</Button>
-        <Button onClick={player.togglePause}>{st.running ? 'Pause' : 'Resume'}</Button>
+        <Button onClick={player.press}>{paced && st.running ? 'Set done' : st.running ? 'Pause' : 'Resume'}</Button>
         <Button variant="ghost" onClick={player.skip}>Skip</Button>
       </div>
       <Button variant="ghost" size="sm" className="mt-3 self-center" onClick={() => { if (!confirm('End the session now?')) return; if (player.getState().elapsed >= 60) player.endEarly(); else onExit() }}>End session</Button>

@@ -1,9 +1,10 @@
 // AirPods / earbud and lock-screen controls during a session (Media Session API).
 // iOS only sends earbud presses to a page that is playing audio, so a silent looping track plays while a
-// session runs: one press pauses or resumes, a double press skips, a triple press goes back.
+// session runs: one press is the session's main action (Set done in a gym set, otherwise pause/resume),
+// a double press skips, a triple press goes back. The track keeps playing so every press arrives the same way.
 // It must start inside a tap (Kick off), so begin() is called there and the player is attached later.
 
-type Controls = { toggle: () => void; next: () => void; prev: () => void; running: () => boolean }
+type Controls = { press: () => void; next: () => void; prev: () => void }
 
 let el: HTMLAudioElement | null = null
 let url: string | null = null
@@ -41,13 +42,11 @@ export function beginRemote(title: string) {
   try {
     m.metadata = new MediaMetadata({ title, artist: 'Football Personal Coach', artwork: [{ src: '/icon-512.png', sizes: '512x512', type: 'image/png' }] })
   } catch { /* MediaMetadata missing */ }
-  const press = (want: boolean) => () => {
-    if (controls && controls.running() !== want) controls.toggle()
-    setState(want)
-  }
+  // iOS sends play or pause depending on what it thinks is playing; both mean "the main action" here
+  const press = () => { controls?.press(); setState(true) }
   const handlers: [MediaSessionAction, MediaSessionActionHandler][] = [
-    ['play', press(true)],
-    ['pause', press(false)],
+    ['play', press],
+    ['pause', press],
     ['nexttrack', () => controls?.next()],
     ['previoustrack', () => controls?.prev()],
   ]
@@ -55,9 +54,8 @@ export function beginRemote(title: string) {
   m.playbackState = 'playing'
 }
 
-// Connect the running player; call sync() when it pauses/resumes from the screen.
+// Connect the running player.
 export function attachRemote(c: Controls) { controls = c }
-export function syncRemote(running: boolean) { if (el) setState(running) }
 
 export function endRemote() {
   controls = null

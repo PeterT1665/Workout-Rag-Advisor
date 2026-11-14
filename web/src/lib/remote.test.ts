@@ -3,23 +3,21 @@ import { attachRemote, beginRemote, endRemote } from './remote'
 
 afterEach(() => { endRemote(); vi.unstubAllGlobals() })
 
-test('earbud presses drive the session: pause/play toggle it, double press skips, triple goes back', () => {
+test('earbud presses drive the session: any single press is the main action, double skips, triple goes back', () => {
   const handlers: Record<string, (() => void) | null> = {}
-  vi.stubGlobal('navigator', { ...navigator, mediaSession: { playbackState: 'none', metadata: null, setActionHandler: (a: string, h: (() => void) | null) => { handlers[a] = h } } })
+  const session = { playbackState: 'none', metadata: null as unknown, setActionHandler: (a: string, h: (() => void) | null) => { handlers[a] = h } }
+  vi.stubGlobal('navigator', { ...navigator, mediaSession: session })
   vi.stubGlobal('MediaMetadata', class { init: object; constructor(init: object) { this.init = init } })
   vi.stubGlobal('Audio', class { loop = false; play() { return Promise.resolve() } pause() {} })
   URL.createObjectURL ??= () => 'blob:silence'
-  let running = true
-  const c = { toggle: vi.fn(() => { running = !running }), next: vi.fn(), prev: vi.fn(), running: () => running }
+  const c = { press: vi.fn(), next: vi.fn(), prev: vi.fn() }
   beginRemote('Close control')
   attachRemote(c)
   handlers.pause!()
-  expect(c.toggle).toHaveBeenCalledTimes(1)
-  expect(running).toBe(false)
-  handlers.pause!() // already paused: nothing more
-  expect(c.toggle).toHaveBeenCalledTimes(1)
   handlers.play!()
-  expect(running).toBe(true)
+  handlers.pause!()
+  expect(c.press).toHaveBeenCalledTimes(3) // every press arrives, whatever iOS thinks is playing
+  expect(session.playbackState).toBe('playing')
   handlers.nexttrack!()
   handlers.previoustrack!()
   expect(c.next).toHaveBeenCalledTimes(1)

@@ -1,5 +1,5 @@
 // Session player engine: timing, cues and clips, no React. Views subscribe to its state.
-import { flattenSession, pickCue, planCues, restClipWindow, totalSeconds, type Rng } from './logic'
+import { flattenSession, pickCue, planCues, restClipWindow, selfPaced, totalSeconds, type Rng } from './logic'
 import type { AudioDeps } from './audio'
 import type { Direction, Session, Settings, Step } from './types'
 
@@ -17,6 +17,7 @@ export type PlayerState = {
   startedAt: number
   cuesCalled: number
   drillsDone: number
+  setMs: number // time in the current self-paced set (sets with reps)
 }
 
 export type PlayerOptions = {
@@ -44,9 +45,11 @@ export function createPlayer(session: Session, opts: PlayerOptions) {
 
   let state: PlayerState = {
     steps, i: -1, running: false, remainingMs: 0, elapsed: 0, total: totalSeconds(steps),
-    cue: null, cueKey: 0, finished: false, siuu: false, startedAt: opts.resume?.startedAt ?? now(), cuesCalled: opts.resume?.cuesCalled ?? 0, drillsDone: 0,
+    cue: null, cueKey: 0, finished: false, siuu: false, startedAt: opts.resume?.startedAt ?? now(), cuesCalled: opts.resume?.cuesCalled ?? 0, drillsDone: 0, setMs: 0,
   }
   let endAt = 0
+  let setStart = 0 // self-paced set: when it (re)started counting
+  let setDone = 0 // self-paced set: time counted before a pause
   let lastBeepSec: number | null = null
   let tick: ReturnType<typeof setInterval> | null = null
   let timers: ReturnType<typeof setTimeout>[] = []
@@ -105,8 +108,9 @@ export function createPlayer(session: Session, opts: PlayerOptions) {
     if (s.type === 'work' && s.kind === 'drill') drillsSeen.add(s.blockIdx)
     const remainingMs = s.seconds * 1000
     endAt = now() + remainingMs
+    setStart = now(); setDone = 0
     lastBeepSec = null
-    set({ i, running: true, remainingMs, elapsed: elapsedAt(i, remainingMs), cue: null })
+    set({ i, running: true, remainingMs, elapsed: elapsedAt(i, remainingMs), cue: null, setMs: 0 })
     announce(i)
     if (s.type === 'work' && s.cue) scheduleCues(s.seconds, 3)
     const st = getSettings()
@@ -122,6 +126,7 @@ export function createPlayer(session: Session, opts: PlayerOptions) {
   function update() {
     if (state.finished || !state.running) return
     const s = steps[state.i]
+    if (selfPaced(s)) { set({ setMs: setDone + now() - setStart }); return } // ends on Set done, not on time
     const rem = endAt - now()
     const sec = Math.ceil(rem / 1000)
     if (sec <= 3 && sec >= 1 && s.seconds > 3 && lastBeepSec !== sec) {
@@ -141,9 +146,12 @@ export function createPlayer(session: Session, opts: PlayerOptions) {
     if (state.running) {
       clearTimers()
       audio.stopClip()
-      set({ running: false, remainingMs: endAt - now(), cue: null })
+      const paced = selfPaced(steps[state.i])
+      if (paced) setDone += now() - setStart
+      set({ running: false, remainingMs: paced ? state.remainingMs : endAt - now(), cue: null })
     } else {
       endAt = now() + state.remainingMs
+      setStart = now()
       set({ running: true })
       const s = steps[state.i]
       if (s.type === 'work' && s.cue) scheduleCues(state.remainingMs / 1000, 2)
@@ -182,6 +190,10 @@ export function createPlayer(session: Session, opts: PlayerOptions) {
       startedAt: state.startedAt, cuesCalled: state.cuesCalled, drills: [...drillsSeen],
     }),
     endEarly: () => finish(true),
+    // self-paced set finished: on to the rest
+    setDone: () => { if (selfPaced(steps[state.i])) { audio.beep(1320, 200); goto(state.i + 1) } },
+    // one button / earbud press: ends a self-paced set, otherwise pause or resume
+    press: () => (selfPaced(steps[state.i]) && state.running ? (audio.beep(1320, 200), goto(state.i + 1)) : togglePause()),
     togglePause,
     skip: () => goto(state.i + 1),
     back: () => goto(state.i - 1),

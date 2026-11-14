@@ -31,6 +31,7 @@ export type Step = {
   cue: boolean
   how: string
   reps?: string
+  category?: string
   needs: string[]
 }
 

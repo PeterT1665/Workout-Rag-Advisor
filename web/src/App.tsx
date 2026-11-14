@@ -19,7 +19,7 @@ import { TabBar, type Tab } from './components/TabBar'
 import { allClips, openClips, subscribeClips } from './lib/clips'
 import { openPhotos } from './lib/photos'
 import { setBusy } from './lib/updates'
-import { attachRemote, beginRemote, endRemote, syncRemote } from './lib/remote'
+import { attachRemote, beginRemote, endRemote } from './lib/remote'
 import { clearActive, loadActive, saveActive } from './lib/activeSession'
 import { beep, playClip, realAudio, stopClip, unlockAudio } from './lib/audio'
 import { createPlayer, type Player, type Snapshot } from './lib/player'
@@ -110,9 +110,7 @@ export default function App() {
     document.addEventListener('visibilitychange', onHide)
     stopPersist.current = () => document.removeEventListener('visibilitychange', onHide)
     // earbud presses (started in the Kick off tap) now drive this player
-    attachRemote({ toggle: player.togglePause, next: player.skip, prev: player.back, running: () => player.getState().running })
-    let wasRunning = true
-    player.subscribe(() => { const r = player.getState().running; if (r !== wasRunning) { wasRunning = r; syncRemote(r) } })
+    attachRemote({ press: player.press, next: player.skip, prev: player.back })
     setOverlay({ name: 'player', session, player })
   }
 
