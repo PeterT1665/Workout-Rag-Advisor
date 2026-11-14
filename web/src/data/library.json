@@ -1419,6 +1419,337 @@
    "rounds": 3,
    "reps": "30 s",
    "how": "Heels on a bench, legs nearly straight, lift the hips and hold. Hamstring protection."
+  },
+  {
+   "id": "home-warmup",
+   "name": "Home warm-up: march, mobility, activation",
+   "sport": "home",
+   "category": "warmup",
+   "kind": "warmup",
+   "work": 240,
+   "how": "March on the spot, arm circles, leg swings holding a wall, 10 glute bridges, 10 slow squats. Get warm before anything fast."
+  },
+  {
+   "id": "home-tempo-squat",
+   "name": "Tempo bodyweight squat",
+   "sport": "home",
+   "category": "lower-strength",
+   "kind": "drill",
+   "work": 45,
+   "rest": 60,
+   "rounds": 3,
+   "reps": "12",
+   "how": "3 seconds down, pause at the bottom, drive up fast. Too easy? Hold a backpack full of books."
+  },
+  {
+   "id": "home-reverse-lunge",
+   "name": "Reverse lunge",
+   "sport": "home",
+   "category": "single-limb",
+   "kind": "drill",
+   "work": 50,
+   "rest": 60,
+   "rounds": 3,
+   "reps": "10 each leg",
+   "how": "Step back, back knee just above the floor, push through the front heel. Stay tall."
+  },
+  {
+   "id": "home-sofa-split-squat",
+   "name": "Split squat, back foot on the sofa",
+   "sport": "home",
+   "category": "single-limb",
+   "kind": "drill",
+   "work": 60,
+   "rest": 60,
+   "rounds": 3,
+   "reps": "8 each leg",
+   "how": "Bulgarian split squat at home: back foot on the sofa or a chair, slow down, strong up.",
+   "needs": [
+    "sofa or chair"
+   ]
+  },
+  {
+   "id": "home-glute-bridge-sl",
+   "name": "Single-leg glute bridge",
+   "sport": "home",
+   "category": "single-limb",
+   "kind": "drill",
+   "work": 50,
+   "rest": 45,
+   "rounds": 3,
+   "reps": "12 each leg",
+   "how": "Shoulders on the floor, one foot planted, drive the hips up and squeeze for a second at the top."
+  },
+  {
+   "id": "home-hamstring-slide",
+   "name": "Hamstring slider curl (towel)",
+   "sport": "home",
+   "category": "lower-strength",
+   "kind": "drill",
+   "work": 40,
+   "rest": 60,
+   "rounds": 3,
+   "reps": "8",
+   "how": "On a smooth floor, heels on a towel: bridge up, slide the heels out slowly, pull them back in. Hamstring insurance.",
+   "needs": [
+    "towel"
+   ]
+  },
+  {
+   "id": "home-cossack",
+   "name": "Cossack squat",
+   "sport": "home",
+   "category": "single-limb",
+   "kind": "drill",
+   "work": 45,
+   "rest": 45,
+   "rounds": 3,
+   "reps": "6 each side",
+   "how": "Wide stance, sit into one hip with the other leg straight, toes up. Good for groins and hips."
+  },
+  {
+   "id": "home-wall-sit",
+   "name": "Wall sit hold",
+   "sport": "home",
+   "category": "isometrics",
+   "kind": "drill",
+   "work": 45,
+   "rest": 45,
+   "rounds": 3,
+   "reps": "45 s",
+   "how": "Back flat on a wall, thighs parallel to the floor. Breathe and hold.",
+   "needs": [
+    "wall"
+   ]
+  },
+  {
+   "id": "home-squat-jump",
+   "name": "Squat jump",
+   "sport": "home",
+   "category": "plyometrics",
+   "kind": "drill",
+   "work": 25,
+   "rest": 60,
+   "rounds": 4,
+   "reps": "6",
+   "how": "Quick dip and jump as high as you can. Land soft and quiet, reset, then go again."
+  },
+  {
+   "id": "home-skater-hops",
+   "name": "Skater hops",
+   "sport": "home",
+   "category": "plyometrics",
+   "kind": "drill",
+   "work": 30,
+   "rest": 45,
+   "rounds": 3,
+   "reps": "6 each side",
+   "how": "Jump sideways from one leg to the other, stick each landing for a second."
+  },
+  {
+   "id": "home-split-jump",
+   "name": "Split jumps",
+   "sport": "home",
+   "category": "plyometrics",
+   "kind": "drill",
+   "work": 30,
+   "rest": 60,
+   "rounds": 3,
+   "reps": "5 each leg",
+   "how": "From a lunge, jump and switch legs in the air. Land soft, stay balanced."
+  },
+  {
+   "id": "home-push-up",
+   "name": "Tempo push-up",
+   "sport": "home",
+   "category": "upper-strength",
+   "kind": "drill",
+   "work": 45,
+   "rest": 60,
+   "rounds": 3,
+   "reps": "10-15",
+   "how": "2 seconds down, chest to the floor, push up fast. Knees down if the form goes."
+  },
+  {
+   "id": "home-pike-push-up",
+   "name": "Pike push-up",
+   "sport": "home",
+   "category": "upper-strength",
+   "kind": "drill",
+   "work": 40,
+   "rest": 60,
+   "rounds": 3,
+   "reps": "8",
+   "how": "Hips high in an upside-down V, lower the head towards the floor, press back up. Shoulders."
+  },
+  {
+   "id": "home-table-row",
+   "name": "Table row",
+   "sport": "home",
+   "category": "upper-strength",
+   "kind": "drill",
+   "work": 40,
+   "rest": 60,
+   "rounds": 3,
+   "reps": "10",
+   "how": "Lie under a sturdy table, grip the edge, pull your chest up to it with a straight body. Back and arms.",
+   "needs": [
+    "sturdy table"
+   ]
+  },
+  {
+   "id": "home-chair-dip",
+   "name": "Chair dips",
+   "sport": "home",
+   "category": "upper-strength",
+   "kind": "drill",
+   "work": 40,
+   "rest": 60,
+   "rounds": 3,
+   "reps": "10",
+   "how": "Hands on the edge of a chair, lower until the elbows are at 90 degrees, press up.",
+   "needs": [
+    "sofa or chair"
+   ]
+  },
+  {
+   "id": "home-plank-taps",
+   "name": "Plank with shoulder taps",
+   "sport": "home",
+   "category": "core",
+   "kind": "drill",
+   "work": 40,
+   "rest": 45,
+   "rounds": 3,
+   "reps": "20 taps",
+   "how": "High plank, feet wide, tap the opposite shoulder without the hips rocking."
+  },
+  {
+   "id": "home-side-plank",
+   "name": "Side plank",
+   "sport": "home",
+   "category": "core",
+   "kind": "drill",
+   "work": 60,
+   "rest": 30,
+   "rounds": 3,
+   "reps": "30 s each side",
+   "how": "Elbow under the shoulder, body in a straight line. Hips up the whole time."
+  },
+  {
+   "id": "home-hollow-hold",
+   "name": "Hollow hold",
+   "sport": "home",
+   "category": "core",
+   "kind": "drill",
+   "work": 20,
+   "rest": 40,
+   "rounds": 3,
+   "reps": "20 s",
+   "how": "Lower back pressed into the floor, arms and legs long and just off the ground."
+  },
+  {
+   "id": "home-copenhagen-sofa",
+   "name": "Copenhagen plank on the sofa",
+   "sport": "home",
+   "category": "core",
+   "kind": "drill",
+   "work": 40,
+   "rest": 45,
+   "rounds": 3,
+   "reps": "20 s each side",
+   "how": "Side plank with the top leg on the sofa, bottom leg hanging. Groin strength for footballers.",
+   "needs": [
+    "sofa or chair"
+   ]
+  },
+  {
+   "id": "home-burpees",
+   "name": "Burpee intervals",
+   "sport": "home",
+   "category": "conditioning",
+   "kind": "drill",
+   "work": 30,
+   "rest": 30,
+   "rounds": 6,
+   "how": "Steady rhythm for the whole interval, not a sprint and a stop."
+  },
+  {
+   "id": "home-high-knees",
+   "name": "High knees + fast feet",
+   "sport": "home",
+   "category": "conditioning",
+   "kind": "drill",
+   "work": 20,
+   "rest": 40,
+   "rounds": 6,
+   "how": "10 seconds high knees, 10 seconds fast feet on the spot, repeat. Arms working."
+  },
+  {
+   "id": "home-toe-taps",
+   "name": "Toe taps and sole rolls",
+   "sport": "home",
+   "category": "ball-mastery",
+   "kind": "drill",
+   "work": 45,
+   "rest": 15,
+   "rounds": 4,
+   "how": "Alternate toe taps on top of the ball, then roll it side to side under the sole. Light and quick.",
+   "needs": [
+    "ball"
+   ]
+  },
+  {
+   "id": "home-v-pulls",
+   "name": "V-pulls and inside-outside",
+   "sport": "home",
+   "category": "ball-mastery",
+   "kind": "drill",
+   "work": 45,
+   "rest": 15,
+   "rounds": 4,
+   "how": "Pull the ball back with the sole and push it away with the inside of the same foot, both feet. Small space is fine.",
+   "needs": [
+    "ball"
+   ]
+  },
+  {
+   "id": "home-keepy-uppy",
+   "name": "Keepy-uppy, weak foot only",
+   "sport": "home",
+   "category": "ball-mastery",
+   "kind": "drill",
+   "work": 60,
+   "rest": 30,
+   "rounds": 3,
+   "how": "Weak foot only, count your best streak. Low touches, ankle locked.",
+   "needs": [
+    "ball"
+   ]
+  },
+  {
+   "id": "home-wall-touch",
+   "name": "Wall passes, one touch (small space)",
+   "sport": "home",
+   "category": "first-touch",
+   "kind": "drill",
+   "work": 60,
+   "rest": 30,
+   "rounds": 3,
+   "how": "Close to a wall, one-touch passes with the inside of both feet. Soft ankle to control.",
+   "needs": [
+    "ball",
+    "wall"
+   ]
+  },
+  {
+   "id": "home-cooldown",
+   "name": "Home cool-down: floor stretch",
+   "sport": "home",
+   "category": "cooldown",
+   "kind": "cooldown",
+   "work": 240,
+   "how": "Hip flexor stretch, hamstring stretch, figure-4 glute, child's pose. Slow breathing."
   }
  ],
  "templates": [
@@ -1841,6 +2172,144 @@
     },
     {
      "ex": "cool-down-hips-quads-hamstrings-it-band"
+    }
+   ]
+  },
+  {
+   "id": "home-legs-power",
+   "title": "Home: legs + power (no gym)",
+   "type": "home",
+   "summary": "No gym, no problem: jumps first while fresh, then single-leg strength with the sofa, a towel and a wall.",
+   "needs": [],
+   "items": [
+    {
+     "ex": "home-warmup"
+    },
+    {
+     "ex": "home-squat-jump"
+    },
+    {
+     "ex": "home-tempo-squat"
+    },
+    {
+     "ex": "home-sofa-split-squat"
+    },
+    {
+     "ex": "home-reverse-lunge"
+    },
+    {
+     "ex": "home-hamstring-slide",
+     "superset": true
+    },
+    {
+     "ex": "home-wall-sit"
+    },
+    {
+     "ex": "home-copenhagen-sofa"
+    },
+    {
+     "ex": "home-cooldown"
+    }
+   ]
+  },
+  {
+   "id": "home-upper-core",
+   "title": "Home: upper body + core",
+   "type": "home",
+   "summary": "Push and pull with a table and a chair, then core. Supersets keep it short.",
+   "needs": [],
+   "items": [
+    {
+     "ex": "home-warmup"
+    },
+    {
+     "ex": "home-push-up"
+    },
+    {
+     "ex": "home-table-row",
+     "superset": true
+    },
+    {
+     "ex": "home-pike-push-up"
+    },
+    {
+     "ex": "home-plank-taps",
+     "superset": true
+    },
+    {
+     "ex": "home-chair-dip"
+    },
+    {
+     "ex": "home-side-plank",
+     "superset": true
+    },
+    {
+     "ex": "home-hollow-hold"
+    },
+    {
+     "ex": "home-cooldown"
+    }
+   ]
+  },
+  {
+   "id": "home-full-body",
+   "title": "Home: full body, short (game week)",
+   "type": "home",
+   "summary": "A short full-body session for game weeks or busy days: a bit of power, a bit of strength, nothing that leaves the legs heavy.",
+   "needs": [],
+   "items": [
+    {
+     "ex": "home-warmup"
+    },
+    {
+     "ex": "home-skater-hops"
+    },
+    {
+     "ex": "home-tempo-squat",
+     "rounds": 2
+    },
+    {
+     "ex": "home-push-up"
+    },
+    {
+     "ex": "home-table-row",
+     "superset": true
+    },
+    {
+     "ex": "home-side-plank"
+    },
+    {
+     "ex": "home-cooldown"
+    }
+   ]
+  },
+  {
+   "id": "home-ball-small-space",
+   "title": "Home: ball in a small space",
+   "type": "home",
+   "summary": "Touches in the living room, garage or garden: sole work, weak foot and one-touch on a wall, then a quick burn.",
+   "needs": [],
+   "items": [
+    {
+     "ex": "home-warmup"
+    },
+    {
+     "ex": "home-toe-taps"
+    },
+    {
+     "ex": "home-v-pulls"
+    },
+    {
+     "ex": "home-keepy-uppy"
+    },
+    {
+     "ex": "home-wall-touch"
+    },
+    {
+     "ex": "home-high-knees"
+    },
+    {
+     "ex": "home-cooldown"
     }
    ]
   }

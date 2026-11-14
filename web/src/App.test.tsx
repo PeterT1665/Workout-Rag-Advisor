@@ -324,6 +324,8 @@ describe('app', () => {
     fireEvent.click(screen.getByRole('button', { name: /^Week$/ }))
     expect(screen.getAllByText('Changed').length).toBe(1)
     const today = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'][(new Date().getDay() + 6) % 7]
+    expect(screen.queryByRole('button', { name: new RegExp(`^Change ${today}$`) })).toBeNull() // days change only in Edit
+    click(/^Edit$/)
     click(new RegExp(`^Change ${today}$`))
     const sheet = screen.getByRole('dialog', { name: `Change ${today}` })
     fireEvent.click(within(sheet).getByRole('button', { name: 'Back to plan' }))

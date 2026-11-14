@@ -44,3 +44,18 @@ export function BrushIcon() {
     </svg>
   )
 }
+
+// Streak flame: orange-to-red while there's a streak, grey at 0. Home adds a glow once today counts.
+export function FlameIcon({ lit = true, className = 'h-6 w-6' }: { lit?: boolean; className?: string }) {
+  return (
+    <svg viewBox="0 0 24 24" className={className} aria-hidden="true">
+      <defs>
+        <linearGradient id="flame-outer" x1="0" y1="1" x2="0" y2="0">
+          <stop offset="0" stopColor={lit ? '#ff3b1f' : '#7a7d84'} /><stop offset="1" stopColor={lit ? '#ff9a1f' : '#a3a6ad'} />
+        </linearGradient>
+      </defs>
+      <path fill="url(#flame-outer)" d="M12 1.8c.6 3.1-1 4.9-2.6 6.6C7.8 10.1 6 12 6 15a6 6 0 0 0 12 0c0-2.4-1.1-4.3-2.3-5.8-.2 1.3-.8 2.3-1.8 2.9.3-3.9-.9-7.6-1.9-10.3Z" />
+      <path fill={lit ? '#ffd23f' : '#c9cbd0'} d="M12 12.2c-.3 1.4-1.1 2.1-1.8 2.8-.6.6-1 1.2-1 2.1a2.8 2.8 0 0 0 5.6 0c0-1.2-.6-2.1-1.3-2.8-.2.6-.6 1-1.1 1.2.1-1.2 0-2.3-.4-3.3Z" />
+    </svg>
+  )
+}

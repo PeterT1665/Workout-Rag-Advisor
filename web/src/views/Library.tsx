@@ -9,7 +9,8 @@ export function Library({ sessions, onOpen, onNew, onBack, wide = false }: {
 }) {
   const last = loadHistory().at(-1)
   const mine = sessions.filter((s) => isMine(s.id))
-  const recommended = sessions.filter((s) => !isMine(s.id))
+  const recommended = sessions.filter((s) => !isMine(s.id) && s.type !== 'home')
+  const home = sessions.filter((s) => !isMine(s.id) && s.type === 'home')
   const grid = `m-0 list-none gap-3 p-0 ${wide ? 'grid grid-cols-2 xl:grid-cols-3' : 'flex flex-col'}`
   const card = (s: Session) => (
     <li key={s.id}>
@@ -42,6 +43,12 @@ export function Library({ sessions, onOpen, onNew, onBack, wide = false }: {
 
       <SectionHead title="Recommended" />
       <ul className={grid}>{recommended.map(card)}</ul>
+
+      {!!home.length && <>
+        <SectionHead title="Home workouts" />
+        <p className="m-0 mb-3 text-sm text-muted">No gym needed: bodyweight, a sofa, a table, a towel and a wall.</p>
+        <ul className={grid}>{home.map(card)}</ul>
+      </>}
     </Screen>
   )
 }

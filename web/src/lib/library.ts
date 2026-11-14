@@ -4,7 +4,7 @@ import data from '../data/library.json'
 import { load, save } from './storage'
 import type { Block, Session } from './types'
 
-export type Sport = 'football' | 'gym' | 'mobility'
+export type Sport = 'football' | 'gym' | 'home' | 'mobility'
 export type Exercise = Block & { id: string; sport: Sport; category: string; positions?: string[] }
 export type Item = { ex: string; work?: number; rest?: number; rounds?: number; how?: string; superset?: boolean }
 export type Template = { id: string; title: string; type: string; summary: string; needs: string[]; items: Item[] }
@@ -16,7 +16,7 @@ const byId = new Map(EXERCISES.map((e) => [e.id, e]))
 export const exercise = (id: string) => byId.get(id)
 
 export const SPORTS: { id: Sport; label: string }[] = [
-  { id: 'football', label: 'Football' }, { id: 'gym', label: 'Gym' }, { id: 'mobility', label: 'Mobility' },
+  { id: 'football', label: 'Football' }, { id: 'gym', label: 'Gym' }, { id: 'home', label: 'Home' }, { id: 'mobility', label: 'Mobility' },
 ]
 export const CATEGORY_LABELS: Record<string, string> = {
   warmup: 'Warm-up', cooldown: 'Cool-down', 'ball-mastery': 'Dribbling', 'first-touch': 'First touch', passing: 'Passing',
@@ -53,7 +53,7 @@ const stripUndefined = (o: object) => Object.fromEntries(Object.entries(o).filte
 // Session type follows its content: any football drill makes it football, then gym, else recovery.
 export function inferType(items: Item[]) {
   const sports = items.map((i) => byId.get(i.ex)?.sport)
-  return sports.includes('football') ? 'football' : sports.includes('gym') ? 'gym' : 'recovery'
+  return sports.includes('football') ? 'football' : sports.includes('gym') ? 'gym' : sports.includes('home') ? 'home' : 'recovery'
 }
 
 export const loadMySessions = () => load<MySession[]>('mySessions', [])
@@ -88,3 +88,17 @@ export function exerciseBlock(id: string): Block | undefined {
 }
 export const alternativesFor = (b: Block) =>
   EXERCISES.filter((e) => e.category === b.category && e.name !== b.name && e.kind === b.kind)
+
+// No gym today: the home session closest to a gym session (bodyweight and household kit only).
+const HOME_VERSION: Record<string, string> = {
+  'gym-lower-power': 'home-legs-power', 'gym-explosive': 'home-legs-power', 'gym-single-leg': 'home-legs-power', 'gym-contrast': 'home-legs-power',
+  'gym-upper-core': 'home-upper-core', 'gym-full-light': 'home-full-body',
+}
+export function homeVersion(s: Session): Session | undefined {
+  if (s.type !== 'gym') return undefined
+  const id = HOME_VERSION[s.id] ?? 'home-full-body'
+  return BUILTIN_SESSIONS.find((x) => x.id === id)
+}
+
+// Planner day kind for a session: a home workout stands in for a gym day.
+export const dayKindOf = (s: Session) => (s.type === 'gym' || s.type === 'home' ? 'gym' : s.type === 'recovery' ? 'recovery' : 'football')

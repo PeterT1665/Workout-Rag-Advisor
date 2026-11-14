@@ -3,6 +3,7 @@ import { DEFAULT_GYM, buildWeek, matchdayLabel, todayIndex, type Game, type Slot
 import { load, save } from './storage'
 import type { Session } from './types'
 import { changedSession, type DayChange } from './weekChanges'
+import { dayKindOf } from './library'
 
 export const DEFAULT_GAMES: Game[] = [{ day: 2, kind: 'competitive' }] // futsal, Wednesday night
 export const loadGames = () => load<Game[]>('games', DEFAULT_GAMES)
@@ -61,6 +62,6 @@ export function withChange(t: Today, change: DayChange | null, library: Session[
   if ('rest' in change) return { ...t, slot: t.slot?.kind === 'game' ? t.slot : null, scheduled: false, changed: 'rest' }
   const s = changedSession(change, library)
   if (!s) return t
-  const kind = s.type === 'gym' ? 'gym' : s.type === 'recovery' ? 'recovery' : 'football'
+  const kind = dayKindOf(s)
   return { ...t, session: s, scheduled: true, changed: 'session', slot: t.slot?.kind === 'game' ? t.slot : { day: t.day, kind } }
 }

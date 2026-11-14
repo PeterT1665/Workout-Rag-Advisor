@@ -7,7 +7,7 @@ export type KitItem = { id: string; label: string; photo?: string }
 export function kitFor(s: Session): KitItem[] {
   const needs = [...s.needs, ...s.blocks.flatMap((b) => b.needs ?? [])].join(' ').toLowerCase()
   if (s.type === 'recovery') return [{ id: 'mat', label: 'Mat' }, { id: 'roller', label: 'Roller' }, { id: 'water', label: 'Water', photo: 'kit-water.jpg' }]
-  const items: KitItem[] = [{ id: 'boots', label: 'Boots', photo: 'kit-boots.jpg' }]
+  const items: KitItem[] = s.type === 'home' ? [{ id: 'mat', label: 'Mat' }] : [{ id: 'boots', label: 'Boots', photo: 'kit-boots.jpg' }]
   if (needs.includes('ball')) items.push({ id: 'ball', label: 'Ball', photo: 'kit-ball.jpg' })
   if (/marker|cone/.test(needs)) items.push({ id: 'discs', label: 'Discs', photo: 'kit-discs.jpg' })
   items.push({ id: 'water', label: 'Water', photo: 'kit-water.jpg' })

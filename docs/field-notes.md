@@ -34,3 +34,9 @@ Problems Peter hits while planning and training, and what was done about each.
    - Now: one path on the welcome screen. Every button has press and hover feedback. A "You're in" screen shows the save-your-player and install steps. Match days and gym sessions are separate, bold sections. *(staging)*
 10. **Logo.** Keep the 7 for now; explore universal designs (not everyone wears 7). Ongoing in Figma.
 11. **Later:** video instructions per drill; how a manual week change should work around match day (to discuss).
+
+## 2026-11-15
+
+12. **Streak on Home** instead of the app name (top left): a flame with the number of days in a row you've kept to the week plan. A day counts if you trained, or if the plan had no training (rest day, game day, a day changed to rest). Today only counts once it's done, and the flame glows then. Tap it to open the Player tab and the training log. *(staging)*
+13. **Week plan Edit button** next to "The plan": tap Edit, then tap any day to change it. Outside Edit, session names open the session. *(staging)*
+14. **Home workouts:** a new Home library (bodyweight, sofa, table, towel, wall, small-space ball work). Four sessions: legs + power, upper body + core, short full body, and ball in a small space. Every gym session shows **No gym today? Do the home version**, and the mid-session Swap offers home exercises from the same category. *(staging)*

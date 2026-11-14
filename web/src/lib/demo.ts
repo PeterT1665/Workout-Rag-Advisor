@@ -1,7 +1,7 @@
 // Public demo mode (build flag VITE_DEMO=1): no login, no sync, sample data, only licensed photos.
 // The private build never seeds anything. Dates are relative to "today" so the demo always looks current.
 import { DEFAULT_SETTINGS, save, type HistoryEntry } from './storage'
-import type { Game } from './weekplan'
+import { DEFAULT_GYM, buildWeek, type Game } from './weekplan'
 import { BUILTIN_SESSIONS as sessions } from './library'
 
 export const DEMO = import.meta.env.VITE_DEMO === '1'
@@ -37,6 +37,17 @@ export function buildDemoHistory(now = new Date()): HistoryEntry[] {
   // Monday and Tuesday have no earlier day of this week in the sample above, so add one: keeps the weekly chart non-empty.
   const weekday = (now.getDay() + 6) % 7
   if (weekday <= 1) rows.push([weekday === 0 ? 0 : -1, 'fb-wall-weakfoot-shooting', 58, 6, 'ok', [], 9, 0])
+  // the sample player sticks to the plan (so the streak flame has a number): fill planned training days of the last 9
+  const plan = buildWeek([{ day: 2, kind: 'competitive' }], { gym: DEFAULT_GYM }).slots
+  const FILL: Record<string, [string, number, number]> = { football: ['fb-close-control-1v1', 40, 5], gym: ['gym-full-light', 45, 6], recovery: ['recovery-hips', 20, 2] }
+  for (let off = -1; off >= -9; off--) {
+    if (rows.some((r) => r[0] === off)) continue
+    const day = (weekday + off + 70) % 7
+    const slot = plan.find((x) => x.day === day && x.kind !== 'game')
+    const fill = slot && !plan.some((x) => x.day === day && x.kind === 'game') ? FILL[slot.kind] : undefined
+    if (fill) rows.push([off, fill[0], fill[1], fill[2], 'ok', [], 5, 0])
+  }
+  rows.sort((x, y) => x[0] - y[0])
   return rows.map(([off, id, minutes, rpe, legs, sore, drills, cues]) => {
     const d = new Date(now.getFullYear(), now.getMonth(), now.getDate() + off)
     return { id, title: title(id), date: ymd(d), minutes, rpe, legs, sore, load: Math.round(minutes * rpe), drills, cues }

@@ -1,5 +1,5 @@
 import { useEffect, useLayoutEffect, useMemo, useRef, useState, useSyncExternalStore } from 'react'
-import { allSessions, BUILTIN_SESSIONS, deleteMySession, saveMySession, templateFor, toSession, type MySession, type Template } from './lib/library'
+import { allSessions, BUILTIN_SESSIONS, dayKindOf, deleteMySession, saveMySession, templateFor, toSession, type MySession, type Template } from './lib/library'
 import { Home } from './views/Home'
 import { Library } from './views/Library'
 import { Builder } from './views/Builder'
@@ -24,8 +24,10 @@ import { clearActive, loadActive, saveActive } from './lib/activeSession'
 import { beep, playClip, realAudio, stopClip, unlockAudio } from './lib/audio'
 import { createPlayer, type Player, type Snapshot } from './lib/player'
 import { nextQuote } from './lib/quotes'
-import { addHistory, loadSettings, save } from './lib/storage'
+import { addHistory, loadHistory, loadSettings, save } from './lib/storage'
 import { loadGames, planToday, saveGames, withChange } from './lib/today'
+import { planStreak } from './lib/streak'
+import { DEFAULT_GYM } from './lib/weekplan'
 import { changeFor, changedSession, loadWeekChanges, saveWeekChange, type DayChange } from './lib/weekChanges'
 import type { Game } from './lib/weekplan'
 import type { Session, Settings } from './lib/types'
@@ -145,7 +147,7 @@ export default function App() {
       case 'library':
         return <Library sessions={library} onOpen={openFromLibrary} onNew={() => build(null)} onBack={close} />
       case 'detail':
-        return <Detail session={overlay.session} onSchedule={(day: number) => { changeDay(day, { sessionId: overlay.session.id }); setTab(day === today.day ? 'home' : 'week'); close() }} onBack={() => (overlay.fromLibrary ? setOverlay({ name: 'library' }) : close())} onStart={() => onStart(overlay.session)}
+        return <Detail session={overlay.session} onSchedule={(day: number) => { changeDay(day, { sessionId: overlay.session.id }); setTab(day === today.day ? 'home' : 'week'); close() }} onBack={() => (overlay.fromLibrary ? setOverlay({ name: 'library' }) : close())} onStart={() => onStart(overlay.session)} onAlternative={(alt) => setOverlay({ ...overlay, session: alt })}
           onEdit={() => { const t = templateFor(overlay.session.id); if (t) build(t) }}
           onInvite={() => setOverlay({ name: 'invite', partner: true, back: overlay })} />
       case 'builder':
@@ -184,13 +186,14 @@ export default function App() {
           onPlayClip={() => { unlockAudio(); playClip(settingsRef.current, 'mindset') }}
           onAddClips={() => setOverlay({ name: 'media', from: 'home' })}
           onPlayer={() => setTab('player')}
+          streak={planStreak(loadHistory(), games, gymPerWeek ?? DEFAULT_GYM, changes)}
           onWeek={() => setTab('week')}
           active={active ? { title: active.session.title, onResume: () => { unlockAudio(); if (settingsRef.current.earbuds) beginRemote(active.session.title); started.current = false; beginSession(active.session, active.snap) }, onDiscard: () => { clearActive(); setActive(null) } } : null}
           dayKind={(day) => {
             const c = changeFor(day, changes)
             if (!c) return undefined
             const s = changedSession(c, library)
-            return s ? (s.type === 'gym' ? 'gym' : s.type === 'recovery' ? 'recovery' : 'football') : null
+            return s ? dayKindOf(s) : null
           }}
         />
       )}

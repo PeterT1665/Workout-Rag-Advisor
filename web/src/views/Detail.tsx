@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { Button, Panel, Screen, Tag, Title, TopBar } from '../components/ui'
 import { flattenSession, fmtReps, makeICS, sessionMinutes } from '../lib/logic'
-import { isMine } from '../lib/library'
+import { homeVersion, isMine } from '../lib/library'
 import { KitCheck } from './Home'
 import { DAYS, todayIndex } from '../lib/weekplan'
 import type { Session } from '../lib/types'
@@ -20,11 +20,12 @@ function downloadICS(s: Session, date: string, time: string) {
   a.remove()
 }
 
-export function Detail({ session: s, onBack, onStart, onEdit, onInvite, onSchedule, desktop = false }: { session: Session; onBack: () => void; onStart: () => void; onEdit?: () => void; onInvite?: () => void; onSchedule?: (day: number) => void; desktop?: boolean }) {
+export function Detail({ session: s, onBack, onStart, onEdit, onInvite, onSchedule, onAlternative, desktop = false }: { session: Session; onBack: () => void; onStart: () => void; onEdit?: () => void; onInvite?: () => void; onSchedule?: (day: number) => void; onAlternative?: (s: Session) => void; desktop?: boolean }) {
   const [pickDay, setPickDay] = useState(false)
   const withPartner = s.blocks.some((b) => b.needs?.includes('partner'))
   const steps = flattenSession(s)
   const hasCue = steps.some((x) => x.cue)
+  const home = homeVersion(s)
   const pairOf = new Map(steps.filter((x) => x.pair).map((x) => [x.blockIdx, x.pair!]))
   const [date, setDate] = useState(() => new Date(Date.now() + 864e5).toISOString().slice(0, 10))
   const [time, setTime] = useState('17:30')
@@ -40,6 +41,12 @@ export function Detail({ session: s, onBack, onStart, onEdit, onInvite, onSchedu
       <p className="text-sm text-muted">About {sessionMinutes(s)} min.</p>
       <div className="flex flex-wrap gap-2">{s.needs.map((n) => <Tag key={n}>{n}</Tag>)}</div>
       {hasCue && <p className="text-sm">LEFT/RIGHT voice cues: volume up.</p>}
+      {home && onAlternative && (
+        <button onClick={() => onAlternative(home)} className="mt-3 flex min-h-12 w-full items-center justify-between rounded-2xl bg-surface px-4 text-left active:scale-[0.98]">
+          <span><span className="block text-sm text-muted">No gym today?</span><span className="font-semibold">Do the home version: {home.title.replace(/^Home: /, '')}</span></span>
+          <span aria-hidden="true" className="text-red-ink">→</span>
+        </button>
+      )}
       {withPartner && onInvite && <Button block variant="ghost" className="mt-4 bg-surface-2" onClick={onInvite}>Train together: invite your partner</Button>}
       {onSchedule && (
         <div className="mt-4">

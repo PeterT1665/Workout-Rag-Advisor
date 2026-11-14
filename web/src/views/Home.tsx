@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { Button, Pill, SectionHead } from '../components/ui'
-import { BallIcon, BrushIcon, GearIcon, KitGlyph } from '../components/icons'
+import { BallIcon, BrushIcon, FlameIcon, GearIcon, KitGlyph } from '../components/icons'
+import type { Streak } from '../lib/streak'
 import { usePersonalImage } from '../lib/personal'
 import { DEMO } from '../lib/demo'
 import { useProfile } from '../lib/profile'
@@ -28,6 +29,7 @@ type Props = {
   onWeek?: () => void
   active?: { title: string; onResume: () => void; onDiscard: () => void } | null // unfinished session
   dayKind?: (day: number) => string | null | undefined // hand-changed day: session type, null = rest, undefined = unchanged
+  streak?: Streak
 }
 
 const SLOT_LABEL: Record<SlotKind, string> = { game: 'Game day', football: 'Football', gym: 'Gym', recovery: 'Recovery', cheer: 'Cheer' }
@@ -37,7 +39,7 @@ const dateKey = () => new Date().toISOString().slice(0, 10)
 // The hero's text slides in once per app open, not every time Home is shown again.
 let heroIntroDone = false
 
-export function Hero({ today, onKickOff, onOpen, onSettings, onCustomise, desktop = false }: Pick<Props, 'today' | 'onKickOff' | 'onOpen' | 'onSettings'> & { onCustomise?: () => void; desktop?: boolean }) {
+export function Hero({ today, onKickOff, onOpen, onSettings, onCustomise, streak, onStreak, desktop = false }: Pick<Props, 'today' | 'onKickOff' | 'onOpen' | 'onSettings' | 'streak'> & { onCustomise?: () => void; onStreak?: () => void; desktop?: boolean }) {
   const hero = usePersonalImage('hero.jpg')
   const [entrance] = useState(() => { const first = !heroIntroDone; heroIntroDone = true; return first })
   const s = today.session
@@ -63,7 +65,13 @@ export function Hero({ today, onKickOff, onOpen, onSettings, onCustomise, deskto
         ? 'absolute inset-0 bg-[linear-gradient(90deg,rgba(10,12,11,.95)_0%,rgba(10,12,11,.7)_38%,rgba(10,12,11,0)_70%)]'
         : 'absolute inset-0 bg-[linear-gradient(to_bottom,rgba(10,12,11,.6)_0%,rgba(10,12,11,0)_22%,rgba(10,12,11,0)_55%,rgba(10,12,11,.96)_86%)]'} />
       {!desktop && <div className="absolute inset-x-4 top-[max(16px,var(--sat))] flex items-center justify-between">
-        <span className="font-display text-sm uppercase leading-[1.05] text-white [text-shadow:0_1px_8px_rgba(0,0,0,.6)]">Football Personal<br />Coach</span>
+        {streak ? (
+          <button onClick={onStreak} aria-label={`Plan streak: ${streak.days} ${streak.days === 1 ? 'day' : 'days'}${streak.today ? '' : ', train today to keep it going'}. Open your training log`}
+            className="flex h-10 items-center gap-1.5 rounded-full bg-white/15 pr-3.5 pl-2.5 text-white backdrop-blur-md active:scale-95">
+            <FlameIcon lit={streak.days > 0} className={`h-6 w-6 ${streak.today ? 'drop-shadow-[0_0_6px_rgba(255,90,31,.7)]' : ''}`} />
+            <span className={`font-display text-lg tabular-nums leading-none ${streak.days > 0 ? 'text-[#ff9a1f]' : 'text-white/80'}`}>{streak.days}</span>
+          </button>
+        ) : <span />}
         <span className="flex items-center gap-2">
           {canInstall() ? <InstallButton /> : <Pill tone="glass">{sample ? 'Sample data' : date}</Pill>}
           {onCustomise && <button onClick={onCustomise} aria-label="Make it yours" className="grid h-10 w-10 place-items-center rounded-full bg-white/15 text-white backdrop-blur-md active:scale-95">
@@ -194,7 +202,7 @@ export function Home(p: Props) {
   const [drill, setDrill] = useState<Block | null>(null)
   return (
     <main className="mx-auto max-w-xl px-4 pb-32">
-      <Hero today={p.today} onKickOff={p.onKickOff} onOpen={p.onOpen} onSettings={p.onSettings} onCustomise={p.onAddClips} />
+      <Hero today={p.today} onKickOff={p.onKickOff} onOpen={p.onOpen} onSettings={p.onSettings} onCustomise={p.onAddClips} streak={p.streak} onStreak={p.onPlayer} />
       {p.active && (
         <section aria-label="Unfinished session" className="rise mt-6 flex items-center gap-3 rounded-[22px] border border-red/50 bg-surface p-4">
           <div className="min-w-0 flex-1">
