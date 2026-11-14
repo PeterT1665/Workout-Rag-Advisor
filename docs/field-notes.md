@@ -40,3 +40,7 @@ Problems Peter hits while planning and training, and what was done about each.
 12. **Streak on Home** instead of the app name (top left): a flame with the number of days in a row you've kept to the week plan. A day counts if you trained, or if the plan had no training (rest day, game day, a day changed to rest). Today only counts once it's done, and the flame glows then. Tap it to open the Player tab and the training log. *(staging)*
 13. **Week plan Edit button** next to "The plan": tap Edit, then tap any day to change it. Outside Edit, session names open the session. *(staging)*
 14. **Home workouts:** a new Home library (bodyweight, sofa, table, towel, wall, small-space ball work). Four sessions: legs + power, upper body + core, short full body, and ball in a small space. Every gym session shows **No gym today? Do the home version**, and the mid-session Swap offers home exercises from the same category. *(staging)*
+15. **Streak redemption** instead of losing the streak over one miss:
+    - Any session keeps a planned day: no pitch, do the gym; no gym, do a home workout; nothing proper, do recovery.
+    - A day missed entirely can be made up with an **extra** session of at least 20 minutes within the next 2 days. It must be on top of that day's own plan, or on a rest or game day. Each extra session makes up one missed day.
+    - Until the deadline the streak isn't broken, and Home shows **Make up for <day>** with a ~30 min home workout and a recovery session ready. *(staging)*

@@ -47,6 +47,14 @@ type Overlay =
   | { name: 'testday' }
   | { name: 'invite'; partner?: boolean; back?: Overlay }
 
+// Make-up sessions for a missed day, by what the plan had: about 30 min at home, or recovery.
+const MAKEUP_PICKS: Record<string, string[]> = {
+  football: ['home-ball-small-space', 'recovery-hips'], gym: ['home-upper-core', 'recovery-hips'],
+  recovery: ['recovery-hips', 'home-full-body'], session: ['home-full-body', 'recovery-hips'],
+}
+const ymd = (d: Date) => d.toLocaleDateString('en-CA')
+const dayName = (date: string) => new Date(`${date}T12:00:00`).toLocaleDateString('en-GB', { weekday: 'long' })
+
 export default function App() {
   const [tab, setTab] = useState<Tab>('home')
   const [overlay, setOverlay] = useState<Overlay | null>(null)
@@ -136,6 +144,14 @@ export default function App() {
   const saveBuilt = (s: MySession) => { saveMySession(s); setLibrary(allSessions()); setOverlay({ name: 'detail', session: toSession(s), fromLibrary: true }) }
   const deleteBuilt = (id: string) => { deleteMySession(id); setLibrary(allSessions()); setOverlay({ name: 'library' }) }
 
+  // plan streak, and a missed day that can still be made up (Home shows ready-made sessions for it)
+  const streak = planStreak(loadHistory(), games, gymPerWeek ?? DEFAULT_GYM, changes)
+  const makeup = streak.makeup ? {
+    missed: dayName(streak.makeup.date),
+    by: streak.makeup.by === ymd(new Date()) ? 'tonight' : streak.makeup.by === ymd(new Date(Date.now() + 864e5)) ? 'tomorrow' : dayName(streak.makeup.by),
+    picks: (MAKEUP_PICKS[streak.makeup.kind] ?? MAKEUP_PICKS.session).map((id) => library.find((s) => s.id === id)).filter((s): s is Session => !!s),
+  } : null
+
   if (overlay) {
     // full-screen moments (kick-off, player) bring their own entrance
     if (overlay.name === 'preroll' || overlay.name === 'player') return renderOverlay(overlay)
@@ -186,7 +202,8 @@ export default function App() {
           onPlayClip={() => { unlockAudio(); playClip(settingsRef.current, 'mindset') }}
           onAddClips={() => setOverlay({ name: 'media', from: 'home' })}
           onPlayer={() => setTab('player')}
-          streak={planStreak(loadHistory(), games, gymPerWeek ?? DEFAULT_GYM, changes)}
+          streak={streak}
+          makeup={makeup}
           onWeek={() => setTab('week')}
           active={active ? { title: active.session.title, onResume: () => { unlockAudio(); if (settingsRef.current.earbuds) beginRemote(active.session.title); started.current = false; beginSession(active.session, active.snap) }, onDiscard: () => { clearActive(); setActive(null) } } : null}
           dayKind={(day) => {

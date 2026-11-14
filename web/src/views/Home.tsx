@@ -30,6 +30,7 @@ type Props = {
   active?: { title: string; onResume: () => void; onDiscard: () => void } | null // unfinished session
   dayKind?: (day: number) => string | null | undefined // hand-changed day: session type, null = rest, undefined = unchanged
   streak?: Streak
+  makeup?: { missed: string; by: string; picks: Session[] } | null // a missed day that can still be made up
 }
 
 const SLOT_LABEL: Record<SlotKind, string> = { game: 'Game day', football: 'Football', gym: 'Gym', recovery: 'Recovery', cheer: 'Cheer' }
@@ -211,6 +212,24 @@ export function Home(p: Props) {
           </div>
           <button onClick={p.active.onDiscard} className="min-h-11 shrink-0 px-2 text-sm font-semibold text-muted">Discard</button>
           <Button size="sm" onClick={p.active.onResume}>Resume</Button>
+        </section>
+      )}
+      {p.makeup && p.streak && (
+        <section aria-label="Make up a missed session" className="rise mt-6 rounded-[22px] border border-[#ff7a1f]/50 bg-surface p-4">
+          <div className="flex items-center gap-2">
+            <FlameIcon className="h-5 w-5" />
+            <p className="m-0 font-display text-xs uppercase text-[#ff9a1f]">Make up for {p.makeup.missed}</p>
+          </div>
+          <p className="m-0 mt-1.5 font-semibold">An extra session (20+ min) by {p.makeup.by} keeps your {p.streak.days}-day streak.</p>
+          <div className="mt-3 flex flex-col gap-2">
+            {p.makeup.picks.map((s) => (
+              <button key={s.id} onClick={() => p.onOpen(s)}
+                className="flex min-h-12 items-center justify-between gap-3 rounded-2xl bg-surface-2 px-4 text-left transition-transform duration-150 ease-snap active:scale-[0.98]">
+                <span className="font-semibold">{s.title}</span>
+                <span className="shrink-0 font-display text-xs tabular-nums text-muted">{sessionMinutes(s)} min</span>
+              </button>
+            ))}
+          </div>
         </section>
       )}
       <HowItWorks onWeek={p.onWeek} />
