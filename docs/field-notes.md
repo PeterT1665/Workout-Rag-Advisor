@@ -44,3 +44,27 @@ Problems Peter hits while planning and training, and what was done about each.
     - Any session keeps a planned day: no pitch, do the gym; no gym, do a home workout; nothing proper, do recovery.
     - A day missed entirely can be made up with an **extra** session of at least 20 minutes within the next 2 days. It must be on top of that day's own plan, or on a rest or game day. Each extra session makes up one missed day.
     - Until the deadline the streak isn't broken, and Home shows **Make up for <day>** with a ~30 min home workout and a recovery session ready. *(staging)*
+
+## 2026-11-15 (after the session)
+
+16. **Music stopped during a session.** The AirPods controls keep a silent track playing, and iPhone gives the audio to the page, which pauses Spotify or Apple Music. Web apps can't share it.
+    - Now: AirPods controls are **off by default**, so music keeps playing. Turn them on in Settings if you'd rather pause with the earbuds (it stops music). *(staging)*
+17. **A 5-minute session saved the streak.**
+    - Now: a training day needs **20+ minutes** of training. Logged sessions can be deleted (✕ in the Player tab's Training log), and a delete stays deleted on every device. *(staging)*
+18. **No more mindset.**
+    - Now: mindset clips, the end-of-session clip and the mindset photo slots are removed. Clips saved on the phone are deleted on next open. Quote cards stay for now (to confirm). *(staging)*
+19. **Chart by kind of session.**
+    - Now: "Minutes trained this week", stacked by football, gym, recovery & mobility, and home. It has a legend and tap details. The "N done" count is gone. *(staging)*
+20. **Coach → Week, Team tab.**
+    - Now: **AI Coach** is a button at the top of the Week page. The tab is now **Team**: a preview with you on the leaderboard and friend search marked "soon". Real friends and leaderboards need the backend redesign (docs/system-design.md). *(staging)*
+21. **Video instructions per exercise (priority).**
+    - Now: paste a TikTok, YouTube or Instagram link on any exercise (drill sheet, builder, or **Video** during a session). It plays inside the app, and **Find one on TikTok** searches for the exercise.
+    - Links are private to you (creators own them) and sync as `videos` once `supabase/migrations/0004_videos.sql` is run.
+    - Later: licensed videos in the shared library. *(staging)*
+22. **Next week's plan on Sunday.**
+    - Now: on Sundays the Week page shows **Next week** under this week, editable the same way. On Monday it's simply this week.
+    - The Sunday notification needs push (server job), planned in docs/system-design.md. *(staging)*
+23. **Repo clean-up:** removed the retired FastAPI backend and EC2 deploy scripts. CI now runs the web app and the Python week-rule tests only.
+24. **Product focus** (Peter):
+    - Core: plan the week around the game, correct instructions per exercise, detailed football sessions.
+    - Growth: friends leaderboard (streaks), player card rating, training with friends.

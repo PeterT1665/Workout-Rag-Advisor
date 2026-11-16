@@ -72,7 +72,9 @@ export default function App() {
   const planned = useMemo(() => planToday(sessions, games, new Date(), gymPerWeek), [games, gymPerWeek])
   const [library, setLibrary] = useState(allSessions) // recommended + the user's own
   const today = useMemo(() => withChange(planned, changeFor(planned.day, changes), library), [planned, changes, library])
-  const changeDay = (day: number, change: DayChange | null) => setChanges(saveWeekChange(day, change))
+  // week 1 = next week (planned on Sunday)
+  const changeDay = (day: number, change: DayChange | null, week: 0 | 1 = 0) =>
+    setChanges(saveWeekChange(day, change, week ? new Date(Date.now() + 7 * 864e5) : new Date()))
 
   useEffect(() => { removeOldClips(); void openPhotos() }, [])
   // another device changed something: re-read synced state

@@ -301,6 +301,19 @@ describe('app', () => {
     expect(JSON.parse(localStorage.getItem('weekPlan') || '{}')).toEqual({})
   })
 
+  test('week: on Sunday next week shows below, and changing a day there saves next week\'s date', () => {
+    vi.useFakeTimers({ toFake: ['Date'] })
+    vi.setSystemTime(new Date('2026-11-22T18:00:00')) // a Sunday
+    render(<App />)
+    fireEvent.click(screen.getByRole('button', { name: /^Week$/ }))
+    const next = screen.getByRole('region', { name: 'Next week' })
+    expect(within(next).getByText(/from Mon 23 Nov/)).toBeTruthy()
+    click(/^Edit$/)
+    click(/^Change next Tuesday$/)
+    fireEvent.click(within(screen.getByRole('dialog')).getByRole('button', { name: /^Rest/ }))
+    expect(JSON.parse(localStorage.getItem('weekPlan') || '{}')).toEqual({ '2026-11-24': { rest: true } })
+  })
+
   test('builder: an exercise can be moved up with the grip (keyboard), and the order is saved', () => {
     render(<App />)
     click(/All sessions/)

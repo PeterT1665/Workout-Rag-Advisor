@@ -1,5 +1,5 @@
 import { Panel, Pill, SectionHead, Title } from '../components/ui'
-import { DAYS, DAY_SHORT, DEFAULT_GYM, matchdayLabel, type Game } from '../lib/weekplan'
+import { DAYS, DAY_SHORT, DEFAULT_GYM, matchdayLabel, todayIndex, type Game } from '../lib/weekplan'
 import { changeFor, changedSession, type DayChange, type WeekChanges } from '../lib/weekChanges'
 import { DayPicker } from '../components/DayPicker'
 import { useState } from 'react'
@@ -17,9 +17,12 @@ const NEXT: Record<string, Game['kind'] | null> = { none: 'casual', casual: 'com
 
 export function WeekView({ today, games, sessions, library, changes, onChange, onGames, onOpen, onCoach, wide = false }: {
   today: Today; games: Game[]; sessions: Session[]; library: Session[]; changes: WeekChanges
-  onChange: (day: number, change: DayChange | null) => void; onGames: (g: Game[]) => void; onOpen: (s: Session) => void; onCoach?: () => void; wide?: boolean
+  onChange: (day: number, change: DayChange | null, week?: 0 | 1) => void; onGames: (g: Game[]) => void; onOpen: (s: Session) => void; onCoach?: () => void; wide?: boolean
 }) {
-  const [picking, setPicking] = useState<number | null>(null)
+  const [picking, setPicking] = useState<string | null>(null) // `${week}-${day}`
+  // Sunday: next week's plan shows under this week's, ready to plan
+  const showNext = todayIndex() === 6
+  const nextMonday = new Date(Date.now() + 864e5).toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short' })
   const [editing, setEditing] = useState(false) // Edit: tap any day to change it
   const me = useProfile()
   const gym = me.gym ?? DEFAULT_GYM
@@ -29,6 +32,62 @@ export function WeekView({ today, games, sessions, library, changes, onChange, o
     const next = NEXT[kindOn(day)]
     const rest = games.filter((g) => g.day !== day)
     onGames(next ? [...rest, { day, kind: next }].sort((a, b) => a.day - b.day) : rest)
+  }
+  // one week's plan, this week (0) or next (1): same planner, its own changes by date
+  const planList = (week: 0 | 1) => {
+    const when = week ? new Date(Date.now() + 7 * 864e5) : new Date()
+    return (
+        <ol className="m-0 flex list-none flex-col gap-2 p-0">
+          {DAYS.map((name, day) => {
+            const slots = today.plan.slots.filter((s) => s.day === day)
+            const change = changeFor(day, changes, when)
+            const changed = changedSession(change, library)
+            const gameSlots = slots.filter((s) => s.kind === 'game')
+            const planned = slots.map((s) => (s.kind === 'game' ? `${s.note} game` : sessionForSlot(s, today.plan, sessions)?.title ?? s.kind)).join(' + ') || 'Rest'
+            // links: session titles open the session (outside Edit, where the whole row changes the day)
+            const title = (session: Session, links: boolean) => links
+              ? <button onClick={() => onOpen(session)} className="text-left font-semibold underline decoration-red decoration-2 underline-offset-4">{session.title}</button>
+              : <span className="font-semibold">{session.title}</span>
+            const row = (links: boolean) => change
+              ? <>
+                  {gameSlots.map((g, i) => <Pill key={i} tone="red">{`${g.note} game`}</Pill>)}
+                  {changed ? title(changed, links) : <span className="text-muted">Rest</span>}
+                  <Pill>Changed</Pill>
+                </>
+              : <>
+                  {slots.length === 0 && <span className="text-muted">Rest</span>}
+                  {slots.map((s, i) => {
+                    const session = sessionForSlot(s, today.plan, sessions)
+                    return session
+                      ? <span key={i} className="flex items-center gap-2">
+                          {title(session, links)}
+                          {s.light && <span title={s.note}><Pill>Light</Pill></span>}
+                        </span>
+                      : <Pill key={i} tone={s.kind === 'game' ? 'red' : 'muted'}>{s.kind === 'game' ? `${s.note} game` : s.kind}</Pill>
+                  })}
+                </>
+            return (
+              <li key={day} className={`relative rounded-[16px] ${week === 0 && day === today.day ? 'bg-surface-2' : 'bg-surface'} ${editing ? 'ring-1 ring-red/50' : ''}`}>
+                {editing
+                  ? <button onClick={() => setPicking(`${week}-${day}`)} aria-label={week ? `Change next ${name}` : `Change ${name}`}
+                      className="flex min-h-14 w-full items-center gap-3 rounded-[16px] py-2 pr-3 pl-4 text-left transition-transform duration-150 ease-snap active:scale-[0.98]">
+                      <span className="w-10 font-display text-xs uppercase text-muted">{name.slice(0, 3)}</span>
+                      <span className="flex flex-1 flex-wrap items-center gap-2">{row(false)}</span>
+                      <PencilIcon />
+                    </button>
+                  : <div className="flex min-h-14 items-center gap-3 py-2 pr-2 pl-4">
+                      <span className="w-10 font-display text-xs uppercase text-muted">{name.slice(0, 3)}</span>
+                      <span className="flex flex-1 flex-wrap items-center gap-2">{row(true)}</span>
+                    </div>}
+                {picking === `${week}-${day}` && (
+                  <DayPicker day={day} planned={planned} current={change} library={library} md={matchdayLabel(day, games)}
+                    onPick={(c) => { onChange(day, c, week); setPicking(null) }} onClose={() => setPicking(null)} />
+                )}
+              </li>
+            )
+          })}
+        </ol>
+    )
   }
   return (
     <main className={wide ? 'px-10 pt-10 pb-12' : 'mx-auto max-w-xl px-4 pt-[max(20px,var(--sat))] pb-32'}>
@@ -71,56 +130,14 @@ export function WeekView({ today, games, sessions, library, changes, onChange, o
         <button onClick={() => { setEditing(!editing); setPicking(null) }} aria-pressed={editing}
           className={`min-h-9 rounded-full px-4 text-sm font-semibold ${editing ? 'bg-red text-on-red' : 'bg-surface-2 text-ink'}`}>{editing ? 'Done' : 'Edit'}</button>} />
       {editing && <p className="m-0 mb-3 text-sm text-muted">Tap a day to change it.</p>}
-      <ol className="m-0 flex list-none flex-col gap-2 p-0">
-        {DAYS.map((name, day) => {
-          const slots = today.plan.slots.filter((s) => s.day === day)
-          const change = changeFor(day, changes)
-          const changed = changedSession(change, library)
-          const gameSlots = slots.filter((s) => s.kind === 'game')
-          const planned = slots.map((s) => (s.kind === 'game' ? `${s.note} game` : sessionForSlot(s, today.plan, sessions)?.title ?? s.kind)).join(' + ') || 'Rest'
-          // links: session titles open the session (outside Edit, where the whole row changes the day)
-          const title = (session: Session, links: boolean) => links
-            ? <button onClick={() => onOpen(session)} className="text-left font-semibold underline decoration-red decoration-2 underline-offset-4">{session.title}</button>
-            : <span className="font-semibold">{session.title}</span>
-          const row = (links: boolean) => change
-            ? <>
-                {gameSlots.map((g, i) => <Pill key={i} tone="red">{`${g.note} game`}</Pill>)}
-                {changed ? title(changed, links) : <span className="text-muted">Rest</span>}
-                <Pill>Changed</Pill>
-              </>
-            : <>
-                {slots.length === 0 && <span className="text-muted">Rest</span>}
-                {slots.map((s, i) => {
-                  const session = sessionForSlot(s, today.plan, sessions)
-                  return session
-                    ? <span key={i} className="flex items-center gap-2">
-                        {title(session, links)}
-                        {s.light && <span title={s.note}><Pill>Light</Pill></span>}
-                      </span>
-                    : <Pill key={i} tone={s.kind === 'game' ? 'red' : 'muted'}>{s.kind === 'game' ? `${s.note} game` : s.kind}</Pill>
-                })}
-              </>
-          return (
-            <li key={day} className={`relative rounded-[16px] ${day === today.day ? 'bg-surface-2' : 'bg-surface'} ${editing ? 'ring-1 ring-red/50' : ''}`}>
-              {editing
-                ? <button onClick={() => setPicking(day)} aria-label={`Change ${name}`}
-                    className="flex min-h-14 w-full items-center gap-3 rounded-[16px] py-2 pr-3 pl-4 text-left transition-transform duration-150 ease-snap active:scale-[0.98]">
-                    <span className="w-10 font-display text-xs uppercase text-muted">{name.slice(0, 3)}</span>
-                    <span className="flex flex-1 flex-wrap items-center gap-2">{row(false)}</span>
-                    <PencilIcon />
-                  </button>
-                : <div className="flex min-h-14 items-center gap-3 py-2 pr-2 pl-4">
-                    <span className="w-10 font-display text-xs uppercase text-muted">{name.slice(0, 3)}</span>
-                    <span className="flex flex-1 flex-wrap items-center gap-2">{row(true)}</span>
-                  </div>}
-              {picking === day && (
-                <DayPicker day={day} planned={planned} current={change} library={library} md={matchdayLabel(day, games)}
-                  onPick={(c) => { onChange(day, c); setPicking(null) }} onClose={() => setPicking(null)} />
-              )}
-            </li>
-          )
-        })}
-      </ol>
+      {planList(0)}
+      {showNext && (
+        <section aria-label="Next week">
+          <SectionHead title="Next week" right={<span className="text-sm text-muted">from {nextMonday}</span>} />
+          <p className="m-0 mb-3 text-sm text-muted">Plan it tonight: tap Edit to change any day.</p>
+          {planList(1)}
+        </section>
+      )}
       </div>
       </div>
     </main>
