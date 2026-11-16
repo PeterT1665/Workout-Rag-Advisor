@@ -15,9 +15,9 @@ const PencilIcon = () => (
 
 const NEXT: Record<string, Game['kind'] | null> = { none: 'casual', casual: 'competitive', competitive: null }
 
-export function WeekView({ today, games, sessions, library, changes, onChange, onGames, onOpen, wide = false }: {
+export function WeekView({ today, games, sessions, library, changes, onChange, onGames, onOpen, onCoach, wide = false }: {
   today: Today; games: Game[]; sessions: Session[]; library: Session[]; changes: WeekChanges
-  onChange: (day: number, change: DayChange | null) => void; onGames: (g: Game[]) => void; onOpen: (s: Session) => void; wide?: boolean
+  onChange: (day: number, change: DayChange | null) => void; onGames: (g: Game[]) => void; onOpen: (s: Session) => void; onCoach?: () => void; wide?: boolean
 }) {
   const [picking, setPicking] = useState<number | null>(null)
   const [editing, setEditing] = useState(false) // Edit: tap any day to change it
@@ -32,7 +32,10 @@ export function WeekView({ today, games, sessions, library, changes, onChange, o
   }
   return (
     <main className={wide ? 'px-10 pt-10 pb-12' : 'mx-auto max-w-xl px-4 pt-[max(20px,var(--sat))] pb-32'}>
-      <Title>This week</Title>
+      <div className="flex items-center justify-between gap-3">
+        <Title>This week</Title>
+        {onCoach && <button onClick={onCoach} className="min-h-10 shrink-0 rounded-full bg-surface-2 px-4 font-display text-xs uppercase text-ink active:scale-95">AI Coach</button>}
+      </div>
       <div className={wide ? 'mt-2 grid grid-cols-[minmax(0,1fr)_minmax(0,1.2fr)] gap-10' : ''}>
       <div>
       <p className="mt-2 text-muted">Tap the days you play.</p>

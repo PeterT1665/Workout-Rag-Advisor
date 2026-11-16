@@ -1,7 +1,7 @@
 import { motion } from 'motion/react'
 import { BallIcon } from './icons'
 
-export type Tab = 'home' | 'week' | 'player' | 'coach'
+export type Tab = 'home' | 'week' | 'player' | 'team'
 
 export function TabBar({ tab, onTab, onKickOff }: { tab: Tab; onTab: (t: Tab) => void; onKickOff: () => void }) {
   const item = (t: Tab, label: string) => (
@@ -21,7 +21,7 @@ export function TabBar({ tab, onTab, onKickOff }: { tab: Tab; onTab: (t: Tab) =>
         <BallIcon className="h-11 w-11" />
       </button>
       {item('player', 'Player')}
-      {item('coach', 'Coach')}
+      {item('team', 'Team')}
     </nav>
   )
 }

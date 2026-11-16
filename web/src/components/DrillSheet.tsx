@@ -2,6 +2,7 @@ import { Button, Pill } from './ui'
 import { CATEGORY_LABELS, drillPhoto } from '../lib/library'
 import { fmtReps } from '../lib/logic'
 import type { Block } from '../lib/types'
+import { VideoBox } from './VideoBox'
 
 const fmtSec = (s: number) => (s >= 60 ? `${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}` : `${s}s`)
 
@@ -32,7 +33,7 @@ export function DrillSheet({ block: b, onClose, onSession }: { block: Block; onC
           {!!b.needs?.length && (
             <div className="mt-4 flex flex-wrap gap-1.5">{b.needs.map((n) => <Pill key={n}>{n}</Pill>)}</div>
           )}
-          <p className="m-0 mt-4 text-sm text-muted">Video: coming soon</p>
+          <VideoBox name={b.name} />
           <div className="mt-5 flex gap-3">
             <Button variant="ghost" className="flex-1 bg-surface-2" onClick={onClose}>Close</Button>
             <Button className="flex-[1.4]" onClick={onSession}>Full session</Button>

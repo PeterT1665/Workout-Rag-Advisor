@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState, useSyncExternalStore } from 'react'
 import { PlanSheet } from '../components/PlanSheet'
+import { VideoBox } from '../components/VideoBox'
 import { Button, QuoteCard, Screen } from '../components/ui'
 import { fmtReps, fmtTime, selfPaced, tempoFor } from '../lib/logic'
 import { nextQuote } from '../lib/quotes'
@@ -28,6 +29,7 @@ export function PlayerView({ session, player, settings, onExit }: { session: Ses
   useEffect(() => { player.start(); return () => player.stop() }, [player])
   useWakeLock(!st.finished)
   const [plan, setPlan] = useState(false)
+  const [video, setVideo] = useState<string | null>(null) // exercise whose video is open
 
   const step = st.steps[st.i]
   // a new card per rest step, not per tick
@@ -106,10 +108,21 @@ export function PlayerView({ session, player, settings, onExit }: { session: Ses
         <Button variant="ghost" onClick={player.skip}>Skip</Button>
       </div>
       <div className="mt-3 flex justify-center gap-2">
+        <Button variant="ghost" size="sm" aria-haspopup="dialog" onClick={() => setVideo(isRest ? (next?.name ?? step.name) : step.name)}>Video</Button>
         <Button variant="ghost" size="sm" aria-haspopup="dialog" onClick={() => setPlan(true)}>Plan</Button>
         <Button variant="ghost" size="sm" onClick={() => { if (!confirm('End the session now?')) return; if (player.getState().elapsed >= 60) player.endEarly(); else onExit() }}>End session</Button>
       </div>
       {plan && <PlanSheet player={player} onClose={() => setPlan(false)} />}
+      {video && (
+        <div className="fixed inset-0 z-50 flex items-end justify-center" role="dialog" aria-modal="true" aria-label={`${video} video`}>
+          <button aria-label="Close" className="absolute inset-0 bg-black/60" onClick={() => setVideo(null)} />
+          <div className="rise relative max-h-[92dvh] w-full max-w-xl overflow-y-auto rounded-t-[28px] bg-surface px-5 pt-5 pb-[max(16px,env(safe-area-inset-bottom))]">
+            <h2 className="m-0 font-display text-xl uppercase leading-tight">{video.replace(/\s*\([^)]*\)/g, '')}</h2>
+            <VideoBox name={video} />
+            <Button block className="mt-4" onClick={() => setVideo(null)}>Back to the session</Button>
+          </div>
+        </div>
+      )}
 
       {/* Full-screen cue: readable from a few metres away, phone on the ground */}
       <div aria-hidden={!st.cue} data-testid="cue"

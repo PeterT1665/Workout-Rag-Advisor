@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { Reorder, useDragControls } from 'motion/react'
+import { VideoBox } from '../components/VideoBox'
 import { Button, Pill, Screen, Title, TopBar } from '../components/ui'
 import { fmtReps, sessionMinutes } from '../lib/logic'
 import {
@@ -218,13 +219,14 @@ function ExerciseSheet({ e, n, onAdd, onRemove, onClose }: { e: Exercise; n: num
     <div className="fixed inset-0 z-40 flex items-end justify-center" role="dialog" aria-modal="true" aria-label={e.name}
       onKeyDown={(ev) => ev.key === 'Escape' && onClose()}>
       <button aria-label="Close details" className="absolute inset-0 bg-black/55" onClick={onClose} />
-      <div className="rise relative w-full max-w-xl rounded-t-[28px] bg-surface px-5 pt-3 pb-[max(20px,env(safe-area-inset-bottom))]">
+      <div className="rise relative max-h-[88dvh] w-full max-w-xl overflow-y-auto rounded-t-[28px] bg-surface px-5 pt-3 pb-[max(20px,env(safe-area-inset-bottom))]">
         <div className="mx-auto mb-4 h-1.5 w-10 rounded-full bg-surface-2" aria-hidden="true" />
         <h2 className="m-0 font-display text-xl uppercase leading-tight">{e.name}</h2>
         <p className="mt-1 mb-3 font-display text-sm tabular-nums text-muted">
           {CATEGORY_LABELS[e.category]} · {e.rounds ?? 1} × {e.reps ? fmtReps(e.reps) : fmtSec(e.work)}{e.rest ? ` · ${fmtSec(e.rest)} rest` : ''}
         </p>
         <p className="m-0">{e.how}</p>
+        <VideoBox name={e.name} />
         {(e.cue || e.positions?.length || e.needs?.length) && (
           <div className="mt-3 flex flex-wrap gap-1.5">
             {e.cue && <Pill tone="red">Voice cues</Pill>}

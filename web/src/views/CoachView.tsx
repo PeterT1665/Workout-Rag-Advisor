@@ -1,4 +1,4 @@
-import { Title } from '../components/ui'
+import { Button, Title, TopBar } from '../components/ui'
 
 const ASKS = [
   'Two games this week, Monday and Wednesday. Plan it.',
@@ -8,10 +8,11 @@ const ASKS = [
 ]
 
 // Placeholder until the agent backend exists. Shows what it will do; nothing pretends to work.
-export function CoachView({ wide = false }: { wide?: boolean }) {
+export function CoachView({ onBack }: { onBack: () => void }) {
   return (
-    <main className={wide ? 'max-w-3xl px-10 pt-10 pb-12' : 'mx-auto max-w-xl px-4 pt-[max(20px,var(--sat))] pb-32'}>
-      <Title>Coach</Title>
+    <main className="mx-auto max-w-xl px-4 pt-[max(20px,var(--sat))] pb-12">
+      <TopBar left={<Button variant="ghost" size="sm" onClick={onBack}>Back</Button>} />
+      <Title>AI Coach</Title>
       <p className="m-0 mt-3 max-w-[60ch] text-muted">
         Coming soon: an AI coach that knows your week.
       </p>

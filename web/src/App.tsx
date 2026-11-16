@@ -15,6 +15,7 @@ import { PlayerTab } from './views/PlayerTab'
 import { TestDay } from './views/TestDay'
 import { Invite } from './views/Invite'
 import { CoachView } from './views/CoachView'
+import { TeamView } from './views/TeamView'
 import { TabBar, type Tab } from './components/TabBar'
 import { removeOldClips } from './lib/clips'
 import { openPhotos } from './lib/photos'
@@ -45,6 +46,7 @@ type Overlay =
   | { name: 'builder'; from: Template | null }
   | { name: 'profile' }
   | { name: 'testday' }
+  | { name: 'coach' }
   | { name: 'invite'; partner?: boolean; back?: Overlay }
 
 // Make-up sessions for a missed day, by what the plan had: about 30 min at home, or recovery.
@@ -156,6 +158,8 @@ export default function App() {
 
   function renderOverlay(overlay: Overlay) {
     switch (overlay.name) {
+      case 'coach':
+        return <CoachView onBack={() => { close(); setTab('week') }} />
       case 'library':
         return <Library sessions={library} onOpen={openFromLibrary} onNew={() => build(null)} onBack={close} />
       case 'detail':
@@ -208,9 +212,9 @@ export default function App() {
           }}
         />
       )}
-      {tab === 'week' && <WeekView today={today} games={games} sessions={sessions} library={library} changes={changes} onChange={changeDay} onGames={updateGames} onOpen={open} />}
+      {tab === 'week' && <WeekView today={today} games={games} sessions={sessions} library={library} changes={changes} onChange={changeDay} onGames={updateGames} onOpen={open} onCoach={() => setOverlay({ name: 'coach' })} />}
       {tab === 'player' && <PlayerTab onTestDay={() => setOverlay({ name: 'testday' })} />}
-      {tab === 'coach' && <CoachView />}
+      {tab === 'team' && <TeamView streak={streak} />}
       </div>
       <TabBar tab={tab} onTab={setTab} onKickOff={() => onStart(today.session)} />
     </>
