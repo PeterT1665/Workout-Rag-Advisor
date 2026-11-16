@@ -38,3 +38,30 @@ Game on Saturday. His gym days:
 - Matchday labels wrap around the week and follow football convention: MD+1 and MD+2, then counting down to the next game.
 
 **Open:** his exercises we don't have yet: plate halo, half-kneeling rotations, isometric hip thrust hold, foam roller routine.
+
+## 2. "How to train weekly like a Premier League player" (@ballersmindset_2 photos; video @effordelite, 2026-11-16)
+
+Game on Saturday:
+
+| Day | Matchday | Job |
+|---|---|---|
+| Mon | MD-5 | Upper body gym + ball work |
+| Tue | MD-4 | Team training + legs + speed |
+| Wed | MD-3 | Mobility / light session, or full rest |
+| Thu | MD-2 | Team training |
+| Fri | MD-1 | Tactical walk-through or light gym |
+| Sat | MD | Matchday |
+| Sun | MD+1 | Recovery or rest |
+
+**Agrees with reference 1:** legs at MD-4, a light day before the game, recovery after it. Gym and ball work on the same day is normal.
+
+**New lesson: hard days hard, easy days easy.** MD-4 stacks football, legs and speed on one day, and MD-3 after it is deliberately easy.
+
+**What changed:**
+- The high-intensity football session now goes **with** the MD-4 legs day (ball work and sprints first, gym after) instead of avoiding gym days.
+- MD-3 has no football. Its gym job (core & injury prevention) is low load.
+- Second football session: MD-2 or technique further out, as before.
+
+**Not taken:** upper body at MD-5. Reference 1 puts upper at MD-2, and both work; we keep MD-2 so it stays away from the legs day.
+
+The video caption couldn't be read (TikTok blocks fetching it). Paste the text if it adds anything.

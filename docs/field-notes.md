@@ -77,3 +77,4 @@ Problems Peter hits while planning and training, and what was done about each.
       - upper body power at MD-2
       - a ~23 min activation at MD-1
     - Three new sessions. The Week page shows MD-2 etc. under each day, and Home shows the day's job. *(staging)*
+28. **Second pro reference** (docs/training-references.md #2): **hard days hard, easy days easy.** The high-intensity football session now shares the MD-4 legs day, and MD-3 stays light (core, no football). *(staging)*

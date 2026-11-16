@@ -90,12 +90,13 @@ export function buildWeek(games: Game[], opts: { gym?: number } = {}): WeekPlan 
     slots.push({ day: d, kind: 'gym', focus, note: FOCUS_NOTE[focus] })
   })
 
-  // Football: high-intensity ball work at MD-3/MD-4, sharp work at MD-2, technique further out; never the day
-  // before a game when avoidable. Can share a gym day (ball work first, gym after).
+  // Football: hard days hard, easy days easy (both pro references). The high-intensity session goes with the MD-4
+  // legs day (football + legs + speed), sharp work at MD-2, technique further out; MD-3 stays light, never MD-1.
   const footballCost = (d: number) => {
     const { ahead, behind } = matchDistance(d, games)
-    return (ahead === 1 ? 10 : 0) + (behind === 1 ? 6 : 0) + (ahead === 2 ? 1 : 0) + (behind === 2 ? 1 : 0)
-      + (on(d, 'gym') ? 3 : 0) + (on(d, 'recovery') ? 4 : 0) + (on(d - 1, 'football') || on(d + 1, 'football') ? 1.5 : 0) + d * 0.01
+    const hardDay = n > 0 && ahead === 4
+    return (ahead === 1 ? 10 : 0) + (behind === 1 ? 6 : 0) + (ahead === 2 ? 1 : 0) + (ahead === 3 ? 2 : 0) + (behind === 2 ? 1 : 0)
+      + (on(d, 'gym') && !hardDay ? 3 : 0) + (on(d, 'recovery') ? 4 : 0) + (on(d - 1, 'football') || on(d + 1, 'football') ? 1.5 : 0) + d * 0.01
   }
   let doubled = 0
   for (let i = 0; i < footballCount; i++) {
@@ -105,14 +106,14 @@ export function buildWeek(games: Game[], opts: { gym?: number } = {}): WeekPlan 
     if (footballCost(best) >= 6) reasons.push(`Football on ${DAYS[best]} is close to a game: no cleaner day was free.`)
     if (on(best, 'gym')) doubled++
     const { ahead } = matchDistance(best, games)
-    const note = ahead === 3 || ahead === 4 ? 'high intensity: 1v1, finishing, sprints' : ahead === 2 ? 'sharp: passing and first touch' : 'technique and touches'
+    const note = ahead === 4 ? 'high intensity: 1v1, finishing, sprints (then legs in the gym)' : ahead === 3 ? 'high intensity: 1v1, finishing' : ahead === 2 ? 'sharp: passing and first touch' : 'technique and touches'
     slots.push({ day: best, kind: 'football', note: n ? note : undefined })
   }
 
   slots.sort((a, b) => a.day - b.day || order(a.kind) - order(b.kind))
   const label = n < 3 ? `${n} game${n === 1 ? '' : 's'}` : '3+ games'
   let why = `${label} this week: ${footballCount} football, ${gymCount} gym, ${RECOVERY_BY_GAMES[n]} recovery.`
-  if (n) why += ' Each gym day has a job set by how far it is from the game: legs early in the week, then core, upper body, and a short activation the day before.'
+  if (n) why += ' Each gym day has a job set by how far it is from the game: legs early in the week, then core, upper body, and a short activation the day before. Hard days are hard (football, legs and speed together at MD-4), easy days are easy.'
   if (n >= 3) why += ' Games carry the football load, so the focus is gym and recovery.'
   if (doubled) why += ` ${doubled} football session${doubled > 1 ? 's share' : ' shares'} a day with the gym: ball work first, gym after.`
   reasons.unshift(why)

@@ -45,6 +45,14 @@ describe('week plan v3', () => {
       expect(of(games, 'gym', 3).some((s) => games.some((x) => x.day === (s.day + 6) % 7))).toBe(false)
     }
   })
+  test('hard day hard: MD-4 has the legs session and the high-intensity football together; MD-3 has no football', () => {
+    for (const games of [g(5), g(2)]) {
+      const plan = buildWeek(games, { gym: 3 }).slots
+      const md4 = (games[0].day + 3) % 7
+      expect(plan.filter((s) => s.day === md4).map((s) => s.kind).sort()).toEqual(['football', 'gym'])
+      expect(plan.some((s) => s.day === (games[0].day + 4) % 7 && s.kind === 'football')).toBe(false)
+    }
+  })
   test('congested weeks (Wednesday + Saturday) drop heavy legs', () => {
     expect(of(g(2, 5), 'gym', 3).some((s) => s.focus === 'strength')).toBe(false)
   })
