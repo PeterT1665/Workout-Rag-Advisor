@@ -104,7 +104,7 @@ export default function App() {
         setActive(null)
         // training time actually covered (pauses and breaks don't count)
         addHistory({
-          id: session.id, title: session.title, date: new Date().toLocaleDateString('en-CA'),
+          id: session.id, title: session.title, type: session.type, date: new Date().toLocaleDateString('en-CA'),
           minutes: Math.max(1, Math.round(st.elapsed / 60)),
           drills: st.drillsDone, cues: st.cuesCalled,
         })

@@ -1,7 +1,8 @@
 // Plan streak (like Duolingo's): days in a row you kept to the week plan.
-// - A planned training day is kept by any session that day (no pitch? gym. No gym? home. Nothing proper? recovery).
+// - A planned training day is kept by STREAK_MIN+ minutes of any training that day (no pitch? gym. No gym? home.
+//   Nothing proper? recovery). A 5-minute session doesn't keep it.
 // - Rest days, game days and days changed to rest keep it too.
-// - A missed training day can be made up: an extra session (MAKEUP_MIN+ minutes) within the next MAKEUP_DAYS days,
+// - A missed training day can be made up: an extra session (STREAK_MIN+ minutes) within the next MAKEUP_DAYS days,
 //   on top of that day's own plan (or on a rest day). Each extra session makes up one missed day.
 //   Until the deadline the streak isn't broken; Home asks for the make-up.
 // - Today only adds once it's kept; an unfinished training day today doesn't break the streak.
@@ -9,7 +10,7 @@ import { buildWeek, todayIndex, type Game, type SlotKind } from './weekplan'
 import type { HistoryEntry } from './storage'
 import type { WeekChanges } from './weekChanges'
 
-export const MAKEUP_MIN = 20
+export const STREAK_MIN = 20
 export const MAKEUP_DAYS = 2
 
 const ymd = (d: Date) => d.toLocaleDateString('en-CA')
@@ -43,15 +44,19 @@ export function planStreak(history: HistoryEntry[], games: Game[], gym: number, 
     const key = ymd(d)
     const done = byDate.get(key) ?? []
     const plan = planned(d)
-    // a training day uses its longest session; anything else of MAKEUP_MIN+ minutes is extra
+    // a training day needs STREAK_MIN minutes (longest sessions first); any other session of STREAK_MIN+ minutes is extra
     const ordered = [...done].sort((a, b) => b.minutes - a.minutes)
-    const extra = (plan ? ordered.slice(1) : ordered).filter((h) => h.minutes >= MAKEUP_MIN)
+    let need = plan ? STREAK_MIN : 0
+    let used = 0
+    while (need > 0 && used < ordered.length) need -= ordered[used++].minutes
+    const enough = need <= 0
+    const extra = ordered.slice(used).filter((h) => h.minutes >= STREAK_MIN)
     extra.forEach(() => {
       // each extra session makes up the oldest missed day still inside its window
       const open = missed.find((m) => !madeUp.has(m) && key <= ymd(addDays(new Date(`${m}T12:00:00`), MAKEUP_DAYS)))
       if (open) madeUp.add(open)
     })
-    if (!plan || done.length) status.set(key, 'kept')
+    if (!plan || enough) status.set(key, 'kept')
     else if (key === todayKey) status.set(key, 'pending')
     else { status.set(key, 'missed'); missed.push(key) }
   }

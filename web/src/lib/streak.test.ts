@@ -35,8 +35,10 @@ describe('plan streak', () => {
   // week of 2026-11-16: Mon football, Tue gym, Wed game, Thu recovery, Fri football, Sat gym, Sun gym
   const h2 = (date: string, minutes: number): HistoryEntry => ({ id: 's', title: 'S', date, minutes })
 
-  test('any session keeps a training day (no pitch, gym; no gym, home)', () => {
-    expect(planStreak([h2('2026-11-16', 25), h2('2026-11-17', 15)], games, 3, {}, at('2026-11-17'))).toMatchObject({ days: 2, today: true })
+  test('20+ minutes of any training keeps a training day; 5 minutes does not', () => {
+    expect(planStreak([h2('2026-11-16', 25), h2('2026-11-17', 20)], games, 3, {}, at('2026-11-17'))).toMatchObject({ days: 2, today: true })
+    expect(planStreak([h2('2026-11-16', 25), h2('2026-11-17', 5)], games, 3, {}, at('2026-11-17'))).toMatchObject({ days: 1, today: false })
+    expect(planStreak([h2('2026-11-16', 25), h2('2026-11-17', 12), h2('2026-11-17', 10)], games, 3, {}, at('2026-11-17')).today).toBe(true)
   })
 
   test('a missed day is open for a make-up for 2 days, then breaks the streak', () => {

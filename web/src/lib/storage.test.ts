@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, test } from 'vitest'
-import { addHistory, loadHistory, reflectLast, sessionLoad, weekLoads } from './storage'
+import { addHistory, deleteHistory, loadHistory, reflectLast, sessionLoad, weekLoads } from './storage'
 
 beforeEach(() => localStorage.clear())
 
@@ -25,5 +25,15 @@ describe('training load', () => {
       { id: 'w', title: 'W', date: '2026-10-28', minutes: 40 },            // no check-in: ignored
     ], wed)
     expect(loads).toEqual([300, 0, 200, 0, 0, 0, 0])
+  })
+
+  test('deleting a logged session hides it but keeps a marker for syncing', () => {
+    addHistory({ id: 'a', title: 'A', date: '2026-11-15', minutes: 5 })
+    addHistory({ id: 'b', title: 'B', date: '2026-11-15', minutes: 40 })
+    deleteHistory(loadHistory()[0])
+    expect(loadHistory().map((h) => h.id)).toEqual(['b'])
+    expect(JSON.parse(localStorage.getItem('history')!)[0]).toMatchObject({ id: 'a', deleted: true })
+    addHistory({ id: 'c', title: 'C', date: '2026-11-16', minutes: 30 })
+    expect(JSON.parse(localStorage.getItem('history')!)).toHaveLength(3) // the marker survives new sessions
   })
 })

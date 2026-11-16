@@ -41,21 +41,32 @@ export const loadQuotes = () => load<string[]>('quotes', DEFAULT_QUOTES)
 export type Legs = 'fresh' | 'ok' | 'heavy'
 export type HistoryEntry = {
   id: string; title: string; date: string; minutes: number
+  type?: string // session type when it was done (football, gym, home, recovery)
   // filled by the 20-second reflection after the session
   rpe?: number; legs?: Legs; sore?: string[]; load?: number
   drills?: number; cues?: number
+  deleted?: true // removed by the player; kept as a marker so syncing doesn't bring it back
 }
-export const loadHistory = () => load<HistoryEntry[]>('history', [])
+const allHistory = () => load<HistoryEntry[]>('history', [])
+export const loadHistory = () => allHistory().filter((h) => !h.deleted)
 export function addHistory(e: HistoryEntry) {
-  save('history', [...loadHistory(), e].slice(-200))
+  save('history', [...allHistory(), e].slice(-200))
+}
+// Removes a logged session (e.g. one saved by mistake). The account's copy is merged, so it's marked, not dropped.
+export function deleteHistory(e: HistoryEntry) {
+  const all = allHistory()
+  const at = all.findIndex((x) => !x.deleted && x.date === e.date && x.id === e.id && x.minutes === e.minutes && x.title === e.title)
+  if (at < 0) return
+  save('history', all.map((x, i) => (i === at ? { ...x, deleted: true as const } : x)))
 }
 // Adds the reflection to the most recent session.
 export function reflectLast(r: { rpe: number; legs: Legs; sore: string[] }) {
-  const h = loadHistory()
-  const last = h.at(-1)
-  if (!last) return null
+  const h = allHistory()
+  const at = h.findLastIndex((x) => !x.deleted)
+  if (at < 0) return null
+  const last = h[at]
   const updated = { ...last, ...r, load: sessionLoad(last.minutes, r.rpe) }
-  save('history', [...h.slice(0, -1), updated])
+  save('history', h.map((x, i) => (i === at ? updated : x)))
   return updated
 }
 
