@@ -1,4 +1,4 @@
-import { useEffect, useLayoutEffect, useMemo, useRef, useState, useSyncExternalStore } from 'react'
+import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
 import { allSessions, BUILTIN_SESSIONS, dayKindOf, deleteMySession, saveMySession, templateFor, toSession, type MySession, type Template } from './lib/library'
 import { Home } from './views/Home'
 import { Library } from './views/Library'
@@ -16,12 +16,12 @@ import { TestDay } from './views/TestDay'
 import { Invite } from './views/Invite'
 import { CoachView } from './views/CoachView'
 import { TabBar, type Tab } from './components/TabBar'
-import { allClips, openClips, subscribeClips } from './lib/clips'
+import { removeOldClips } from './lib/clips'
 import { openPhotos } from './lib/photos'
 import { setBusy } from './lib/updates'
 import { attachRemote, beginRemote, endRemote } from './lib/remote'
 import { clearActive, loadActive, saveActive } from './lib/activeSession'
-import { beep, playClip, realAudio, stopClip, unlockAudio } from './lib/audio'
+import { beep, realAudio, unlockAudio } from './lib/audio'
 import { createPlayer, type Player, type Snapshot } from './lib/player'
 import { nextQuote } from './lib/quotes'
 import { addHistory, loadHistory, loadSettings, save } from './lib/storage'
@@ -38,7 +38,7 @@ const sessions = BUILTIN_SESSIONS // the week planner picks from the recommended
 type Overlay =
   | { name: 'library' }
   | { name: 'detail'; session: Session; fromLibrary?: boolean }
-  | { name: 'preroll'; session: Session; quote: string | null; clipName: string | null }
+  | { name: 'preroll'; session: Session; quote: string | null }
   | { name: 'player'; session: Session; player: Player }
   | { name: 'settings' }
   | { name: 'media'; from: 'settings' | 'home' }
@@ -62,7 +62,6 @@ export default function App() {
   const [games, setGames] = useState<Game[]>(loadGames)
   const settingsRef = useRef(settings)
   settingsRef.current = settings
-  const clips = useSyncExternalStore(subscribeClips, allClips)
   const started = useRef(false)
   const stopPersist = useRef<() => void>(() => {})
   const [active, setActive] = useState(loadActive) // a session left unfinished (app closed or reloaded)
@@ -73,7 +72,7 @@ export default function App() {
   const today = useMemo(() => withChange(planned, changeFor(planned.day, changes), library), [planned, changes, library])
   const changeDay = (day: number, change: DayChange | null) => setChanges(saveWeekChange(day, change))
 
-  useEffect(() => { void openClips(); void openPhotos() }, [])
+  useEffect(() => { removeOldClips(); void openPhotos() }, [])
   // another device changed something: re-read synced state
   const [, setSyncTick] = useState(0)
   useEffect(() => {
@@ -96,7 +95,6 @@ export default function App() {
   function beginSession(session: Session, resume?: Snapshot) {
     if (started.current) return
     started.current = true
-    stopClip()
     const player = createPlayer(session, {
       audio: realAudio(() => settingsRef.current),
       getSettings: () => settingsRef.current,
@@ -124,17 +122,15 @@ export default function App() {
     setOverlay({ name: 'player', session, player })
   }
 
-  // Runs inside the tap, so iOS allows the clip to play.
+  // Runs inside the tap, so iOS allows audio (whistle, voice, earbud controls).
   function onStart(session: Session) {
     unlockAudio()
     started.current = false
     const s = settingsRef.current
-    if (s.earbuds) beginRemote(session.title)
+    if (s.earbudControls) beginRemote(session.title)
     // referee whistle: two short blasts
     beep(s, 2900, 90); setTimeout(() => beep(s, 2900, 260), 160)
-    const wantClip = s.clipStart && clips.some((c) => c.kind === 'mindset')
-    const clip = wantClip ? playClip(s, 'mindset', () => beginSession(session)) : null
-    setOverlay({ name: 'preroll', session, quote: s.cards ? nextQuote() : null, clipName: clip?.name ?? null })
+    setOverlay({ name: 'preroll', session, quote: s.cards ? nextQuote() : null })
   }
 
   const close = () => setOverlay(null)
@@ -170,11 +166,11 @@ export default function App() {
         return <Builder from={overlay.from} onSave={saveBuilt} onDelete={deleteBuilt}
           onCancel={() => setOverlay(overlay.from ? { name: 'detail', session: toSession(overlay.from), fromLibrary: true } : { name: 'library' })} />
       case 'preroll':
-        return <Preroll session={overlay.session} quote={overlay.quote} clipName={overlay.clipName} onGo={() => beginSession(overlay.session)} />
+        return <Preroll session={overlay.session} quote={overlay.quote} onGo={() => beginSession(overlay.session)} />
       case 'player':
         return <PlayerView key={overlay.player.getState().startedAt} session={overlay.session} player={overlay.player} settings={settings} onExit={() => { endRemote(); stopPersist.current(); clearActive(); setActive(null); close() }} />
       case 'settings':
-        return <SettingsView settings={settings} clipCount={clips.length} onChange={updateSettings} onMedia={() => setOverlay({ name: 'media', from: 'settings' })} onProfile={() => setOverlay({ name: 'profile' })} onInvite={() => setOverlay({ name: 'invite', back: { name: 'settings' } })} onDone={close} />
+        return <SettingsView settings={settings} onChange={updateSettings} onMedia={() => setOverlay({ name: 'media', from: 'settings' })} onProfile={() => setOverlay({ name: 'profile' })} onInvite={() => setOverlay({ name: 'invite', back: { name: 'settings' } })} onDone={close} />
       case 'invite':
         return <Invite partner={overlay.partner} onDone={() => (overlay.back ? setOverlay(overlay.back) : close())} />
       case 'testday':
@@ -183,7 +179,7 @@ export default function App() {
         return <Onboarding initial={getProfile()} initialGames={games} onCancel={() => setOverlay({ name: 'settings' })}
           onDone={(p, g) => { setProfile({ ...p, sample: getProfile().sample }); updateGames(g); setOverlay({ name: 'settings' }) }} />
       case 'media':
-        return <MediaView settings={settings} onDone={() => (overlay.from === 'settings' ? setOverlay({ name: 'settings' }) : close())} />
+        return <MediaView onDone={() => (overlay.from === 'settings' ? setOverlay({ name: 'settings' }) : close())} />
     }
   }
 
@@ -194,18 +190,16 @@ export default function App() {
       {tab === 'home' && (
         <Home
           today={today}
-          hasClips={clips.some((c) => c.kind === 'mindset')}
           onKickOff={onStart}
           onOpen={open}
           onSettings={() => setOverlay({ name: 'settings' })}
           onAllSessions={() => setOverlay({ name: 'library' })}
-          onPlayClip={() => { unlockAudio(); playClip(settingsRef.current, 'mindset') }}
           onAddClips={() => setOverlay({ name: 'media', from: 'home' })}
           onPlayer={() => setTab('player')}
           streak={streak}
           makeup={makeup}
           onWeek={() => setTab('week')}
-          active={active ? { title: active.session.title, onResume: () => { unlockAudio(); if (settingsRef.current.earbuds) beginRemote(active.session.title); started.current = false; beginSession(active.session, active.snap) }, onDiscard: () => { clearActive(); setActive(null) } } : null}
+          active={active ? { title: active.session.title, onResume: () => { unlockAudio(); if (settingsRef.current.earbudControls) beginRemote(active.session.title); started.current = false; beginSession(active.session, active.snap) }, onDiscard: () => { clearActive(); setActive(null) } } : null}
           dayKind={(day) => {
             const c = changeFor(day, changes)
             if (!c) return undefined

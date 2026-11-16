@@ -50,7 +50,7 @@ export function FullTime({ session, st, onExit }: { session: Session; st: Player
     <div className="fixed inset-0 overflow-y-auto bg-[#0a0c0b] text-white">
       <div className="mx-auto flex min-h-full max-w-xl flex-col px-5 pt-[max(28px,var(--sat))] pb-[max(28px,env(safe-area-inset-bottom))]">
         <h1 className="slam m-0 font-display text-[clamp(3.5rem,19vw,6rem)] uppercase leading-[.85]">
-          {st.siuu ? <>Siuuu<span className="text-[var(--red-ink)]">!</span></> : <>Full<br /><span className="text-[var(--red-ink)]">time</span></>}
+          Full<br /><span className="text-[var(--red-ink)]">time</span>
         </h1>
         <p className="m-0 mt-3 text-white/70">{session.title}</p>
 

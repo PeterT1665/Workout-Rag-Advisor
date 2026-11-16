@@ -38,19 +38,12 @@ export type Step = {
 }
 
 export type Direction = 'left' | 'right'
-export type ClipKind = 'mindset' | 'siuu'
-export type Clip = { id: string; kind: ClipKind; name: string; blob: Blob }
 
 export type Settings = {
   voice: boolean
   volume: number
   cueMin: number
   cueMax: number
-  clipStart: boolean
-  clipRest: boolean
-  siuuEnd: boolean
   cards: boolean
-  clipVolume: number
-  restClipChance: number
-  earbuds: boolean // AirPods/lock-screen controls during a session (lib/remote.ts)
+  earbudControls: boolean // AirPods/lock-screen controls during a session (lib/remote.ts); off by default: it pauses your music
 }

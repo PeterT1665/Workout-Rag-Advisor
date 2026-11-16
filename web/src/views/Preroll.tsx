@@ -4,15 +4,15 @@ import type { Session } from '../lib/types'
 import { useProfile } from '../lib/profile'
 
 // Kick-off moment: a short "KICK OFF" intro (rare event, so it gets the delight budget),
-// then the mindset card and clip. Always dark and cinematic, whatever the system theme.
+// then the session title and a quote card. Always dark and cinematic, whatever the system theme.
 const INTRO_MS = 1100
 
 const reducedMotion = () => typeof matchMedia !== 'undefined' && matchMedia('(prefers-reduced-motion: reduce)').matches
 
-export function Preroll({ session, quote, clipName, onGo }: { session: Session; quote: string | null; clipName: string | null; onGo: () => void }) {
+export function Preroll({ session, quote, onGo }: { session: Session; quote: string | null; onGo: () => void }) {
   const bg = usePersonalImage('preroll.jpg')
   const [phase, setPhase] = useState<'intro' | 'leaving' | 'card'>('intro')
-  const nothingToShow = !quote && !clipName
+  const nothingToShow = !quote
   const by = useProfile().idol
 
   useEffect(() => {
@@ -47,10 +47,9 @@ export function Preroll({ session, quote, clipName, onGo }: { session: Session; 
               {by && <figcaption className="mt-2 text-sm text-white/60">{by}</figcaption>}
             </figure>
           )}
-          {clipName && <p style={{ '--i': 3 } as React.CSSProperties} className="m-0 text-sm text-white/70">▶ Playing: {clipName}</p>}
           <button style={{ '--i': 4 } as React.CSSProperties} onClick={onGo}
             className="min-h-14 w-full rounded-full bg-[var(--red)] font-display text-sm uppercase tracking-wide text-white shadow-[0_6px_16px_-6px_rgba(0,0,0,.6)] transition-transform duration-150 ease-snap active:scale-[0.97]">
-            {clipName ? "Skip, let's go" : "Let's go"}
+            Let's go
           </button>
         </div>
       )}

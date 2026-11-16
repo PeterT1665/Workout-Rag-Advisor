@@ -91,13 +91,6 @@ export function pickNoRepeat<T>(items: T[], lastKey: unknown, rng: Rng = Math.ra
   return pool[Math.floor(rng() * pool.length)]
 }
 
-// Rest clips only on rests long enough to hear something and still get the "next" call.
-export const REST_CLIP = { start: 2.5, stopBeforeEnd: 4, minRest: 20 }
-export function restClipWindow(restSeconds: number, chance: number, rng: Rng = Math.random) {
-  if (restSeconds < REST_CLIP.minRest || rng() >= chance) return null
-  return { start: REST_CLIP.start, stop: restSeconds - REST_CLIP.stopBeforeEnd }
-}
-
 // ---- calendar export (.ics) ----
 const pad = (n: number) => String(n).padStart(2, '0')
 const icsDate = (d: Date) =>

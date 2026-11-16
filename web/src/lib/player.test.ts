@@ -2,7 +2,7 @@ import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest'
 import { createPlayer } from './player'
 import { DEFAULT_SETTINGS } from './storage'
 import type { AudioDeps } from './audio'
-import type { ClipKind, Session, Settings } from './types'
+import type { Session, Settings } from './types'
 
 const session: Session = {
   id: 't', title: 'T', type: 'football', summary: '', needs: [],
@@ -13,14 +13,11 @@ const session: Session = {
   ],
 }
 
-function fakeAudio(clips: Partial<Record<ClipKind, number>> = {}) {
+function fakeAudio() {
   const log: string[] = []
   const deps: AudioDeps = {
     say: (t) => log.push('say:' + t),
     beep: () => {},
-    playClip: (k) => { log.push('clip:' + k); return (clips[k] ?? 0) > 0 ? { id: k, kind: k, name: k, blob: new Blob() } : null },
-    stopClip: () => log.push('stop'),
-    hasClips: (k) => (clips[k] ?? 0) > 0,
   }
   return { deps, log }
 }
@@ -95,26 +92,6 @@ describe('player engine', () => {
     expect(p.getState().i).toBe(0)
   })
 
-  test('rest clip plays during a long rest and stops before it ends', () => {
-    const { deps, log } = fakeAudio({ mindset: 2 })
-    const p = createPlayer(session, { audio: deps, getSettings: settings({ restClipChance: 1 }), rng: () => 0.3 })
-    p.start()
-    vi.advanceTimersByTime(3200 + 14000 + 3000)
-    expect(log).toContain('clip:mindset')
-    const idx = log.lastIndexOf('clip:mindset')
-    vi.advanceTimersByTime(17000) // 4s before rest end
-    expect(log.slice(idx + 1)).toContain('stop')
-  })
-
-  test('SIUUU clip replaces the spoken ending when available', () => {
-    const { deps, log } = fakeAudio({ siuu: 1 })
-    const p = createPlayer(session, { audio: deps, getSettings: settings() })
-    p.start()
-    vi.advanceTimersByTime(90000)
-    expect(p.getState().siuu).toBe(true)
-    expect(log).toContain('clip:siuu')
-    expect(said(log)).not.toContain('Session complete. Nice work.')
-  })
   test('sets with reps run at your own pace: no time limit, Set done goes to the timed rest', () => {
     const gym: Session = { id: 'g', title: 'G', type: 'gym', summary: '', needs: [],
       blocks: [{ name: 'Back squat', kind: 'drill', work: 40, rest: 90, rounds: 2, reps: '5', category: 'lower-strength' }] }

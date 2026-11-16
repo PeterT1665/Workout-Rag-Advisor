@@ -85,9 +85,4 @@ describe('session logic', () => {
     expect(L.pickNoRepeat([], null)).toBeNull()
   })
 
-  test('rest clips only on long rests, stopping before the beeps', () => {
-    expect(L.restClipWindow(15, 1, () => 0)).toBeNull()
-    expect(L.restClipWindow(45, 0, () => 0.5)).toBeNull()
-    expect(L.restClipWindow(45, 1, () => 0.5)).toEqual({ start: 2.5, stop: 41 })
-  })
 })

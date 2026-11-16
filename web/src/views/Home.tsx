@@ -18,12 +18,10 @@ import type { Block, Session } from '../lib/types'
 
 type Props = {
   today: Today
-  hasClips: boolean
   onKickOff: (s: Session) => void
   onOpen: (s: Session) => void
   onSettings: () => void
   onAllSessions: () => void
-  onPlayClip: () => void
   onAddClips: () => void
   onPlayer: () => void
   onWeek?: () => void

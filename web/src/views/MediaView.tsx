@@ -1,9 +1,6 @@
 import { useState } from 'react'
 import { Button, Panel, Screen, Title, TopBar } from '../components/ui'
-import { addClip, clipsOf, removeClip } from '../lib/clips'
-import { playBlob, stopClip } from '../lib/audio'
 import { DEFAULT_QUOTES, loadQuotes, save } from '../lib/storage'
-import type { ClipKind, Settings } from '../lib/types'
 import { PHOTO_SLOTS, removePhoto, setPhoto, usePhotos, type Slot } from '../lib/photos'
 import { usePersonalImage } from '../lib/personal'
 import { syncEnabled } from '../lib/sync'
@@ -39,32 +36,13 @@ function PhotoTile({ id, label, hint }: { id: Slot; label: string; hint: string 
   )
 }
 
-function ClipList({ kind, settings }: { kind: ClipKind; settings: Settings }) {
-  const items = clipsOf(kind)
-  if (!items.length) return <p className="text-sm text-muted">None yet.</p>
-  return (
-    <ul className="m-0 flex list-none flex-col gap-2 p-0">
-      {items.map((c) => (
-        <li key={c.id} className="flex items-center justify-between gap-3 rounded-2xl bg-surface-2 px-4 py-2">
-          <span className="truncate">{c.name}</span>
-          <span className="flex shrink-0 gap-2">
-            <Button variant="ghost" size="sm" className="bg-surface" onClick={() => playBlob(settings, c.blob)}>Play</Button>
-            <Button variant="ghost" size="sm" className="bg-surface" onClick={() => { stopClip(); void removeClip(c.id) }}>Delete</Button>
-          </span>
-        </li>
-      ))}
-    </ul>
-  )
-}
-
-export function MediaView({ settings, onDone }: { settings: Settings; onDone: () => void }) {
-  const [kind, setKind] = useState<ClipKind>('mindset')
+export function MediaView({ onDone }: { onDone: () => void }) {
   const [quotes, setQuotes] = useState(() => loadQuotes().join('\n'))
   const me = useProfile()
   const field = 'mt-1 block w-full rounded-2xl bg-surface-2 p-3 text-ink'
   return (
     <Screen>
-      <TopBar left={<Title>Make it yours</Title>} right={<Button variant="ghost" size="sm" onClick={() => { stopClip(); onDone() }}>Done</Button>} />
+      <TopBar left={<Title>Make it yours</Title>} right={<Button variant="ghost" size="sm" onClick={onDone}>Done</Button>} />
       <div className="mb-4" />
 
       <Section title="Team colour">
@@ -92,28 +70,6 @@ export function MediaView({ settings, onDone }: { settings: Settings; onDone: ()
         </div>
       </Section>
 
-      <Section title="Audio clips" hint="Play before sessions and at the end. Stay on this phone.">
-        <div className="flex gap-2">
-          <select id="kind" aria-label="Clip type" value={kind} onChange={(e) => setKind(e.target.value as ClipKind)} className="min-h-11 flex-1 rounded-full bg-surface-2 px-4 text-ink">
-            <option value="mindset">Mindset clip</option>
-            <option value="siuu">End-of-session clip</option>
-          </select>
-          <label className="grid min-h-11 cursor-pointer place-items-center rounded-full bg-red px-5 font-display text-xs uppercase text-on-red">
-            + Add
-            <input id="files" type="file" accept="audio/*" multiple className="sr-only" aria-label="Audio files"
-              onChange={async (e) => {
-                for (const f of Array.from(e.target.files ?? [])) {
-                  await addClip({ id: `${Date.now()}-${Math.random().toString(36).slice(2)}`, kind, name: f.name.replace(/\.[^.]+$/, ''), blob: f })
-                }
-                e.target.value = ''
-              }} />
-          </label>
-        </div>
-        <h4 className="mt-5 mb-2 font-display text-sm uppercase text-muted">Mindset</h4>
-        <ClipList kind="mindset" settings={settings} />
-        <h4 className="mt-5 mb-2 font-display text-sm uppercase text-muted">End of session</h4>
-        <ClipList kind="siuu" settings={settings} />
-      </Section>
     </Screen>
   )
 }

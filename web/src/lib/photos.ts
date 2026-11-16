@@ -7,8 +7,6 @@ export const PHOTO_SLOTS = [
   { id: 'hero', label: 'Home hero', hint: 'Big photo on the home screen' },
   { id: 'card', label: 'Player card', hint: 'Behind your player card' },
   { id: 'preroll', label: 'Kick-off', hint: 'Shown before each session' },
-  { id: 'mindset-1', label: 'Mindset 1', hint: 'Motivation card' },
-  { id: 'mindset-2', label: 'Mindset 2', hint: 'Motivation card' },
 ] as const
 export type Slot = (typeof PHOTO_SLOTS)[number]['id']
 type Photo = { slot: Slot; blob: Blob; updated: number }

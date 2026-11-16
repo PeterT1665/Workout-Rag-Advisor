@@ -6,7 +6,6 @@ import { getProfile, reloadProfile } from './lib/profile'
 
 const spoken: string[] = []
 const played: string[] = []
-let lastAudio: { onended: (() => void) | null } | null = null
 
 beforeEach(() => {
   spoken.length = 0
@@ -20,8 +19,6 @@ beforeEach(() => {
   URL.revokeObjectURL = () => {}
   window.HTMLMediaElement.prototype.play = function (this: HTMLMediaElement) {
     played.push(this.src)
-    // eslint-disable-next-line @typescript-eslint/no-this-alias
-    lastAudio = this as unknown as { onended: (() => void) | null }
     return Promise.resolve()
   }
   window.HTMLMediaElement.prototype.pause = () => {}
@@ -83,35 +80,6 @@ describe('app', () => {
     expect(spoken.at(-1)).toBe('Session complete. Nice work.')
     const hist = JSON.parse(localStorage.getItem('history')!)
     expect(hist[0].id).toBe('fb-close-control-1v1')
-  })
-
-  test('clips: upload, mindset clip before the session, SIUUU at the end', async () => {
-    render(<App />)
-    click(/^Settings$/)
-    click(/Make it yours: photos, colour, clips \(/)
-    fireEvent.change(screen.getByLabelText(/Clip type/), { target: { value: 'mindset' } })
-    fireEvent.change(screen.getByLabelText(/Audio files/), { target: { files: [new File(['x'], 'cr7-interview.mp3')] } })
-    await waitFor(() => expect(screen.getByText('cr7-interview')).toBeTruthy())
-    fireEvent.change(screen.getByLabelText(/Clip type/), { target: { value: 'siuu' } })
-    fireEvent.change(screen.getByLabelText(/Audio files/), { target: { files: [new File(['x'], 'siuu.m4a')] } })
-    await waitFor(() => expect(screen.getByText('siuu')).toBeTruthy())
-    click(/^Done$/)
-    expect(screen.getByRole('button', { name: /Make it yours: photos, colour, clips \(2\)/ })).toBeTruthy()
-    click(/^Done$/)
-
-    click(/All sessions/)
-    click(/Wall passing/)
-    click(/Start session/)
-    expect(await screen.findByText(/Playing: cr7-interview/, {}, { timeout: 3000 })).toBeTruthy()
-    expect(played).toHaveLength(1) // the mindset clip (name checked above; the test DB drops File names)
-    act(() => { lastAudio?.onended?.() }) // clip ends -> session starts
-    expect(stepName()).toMatch(/Jog/)
-
-    let guard = 0
-    while (screen.queryByRole('button', { name: /^Skip$/ }) && guard++ < 200) click(/^Skip$/)
-    expect(screen.getByRole('heading', { name: /siuuu/i })).toBeTruthy()
-    expect(played).toHaveLength(2) // + SIUUU (no rest clips: they need real time to pass)
-    expect(spoken).not.toContain('Session complete. Nice work.')
   })
 
   test('session details: kit check toggles and remembers packed items', () => {
@@ -235,7 +203,7 @@ describe('app', () => {
   test('photos: upload your own role model photo, it replaces the app photo, remove it again', async () => {
     render(<App />)
     click(/^Settings$/)
-    click(/Make it yours: photos, colour, clips \(/)
+    click(/Make it yours: photos, colour, quotes/)
     const input = screen.getByLabelText('Add Home hero photo')
     fireEvent.change(input, { target: { files: [new File(['x'], 'idol.jpg', { type: 'image/jpeg' })] } })
     const removeBtn = await screen.findByRole('button', { name: 'Remove Home hero photo' })

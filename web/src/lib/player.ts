@@ -1,5 +1,5 @@
 // Session player engine: timing, cues and clips, no React. Views subscribe to its state.
-import { flattenSession, pickCue, planCues, restClipWindow, selfPaced, totalSeconds, type Rng } from './logic'
+import { flattenSession, pickCue, planCues, selfPaced, totalSeconds, type Rng } from './logic'
 import type { AudioDeps } from './audio'
 import { editableFrom } from './logic'
 import type { Block, Direction, Session, Settings, Step } from './types'
@@ -14,7 +14,6 @@ export type PlayerState = {
   cue: Direction | null
   cueKey: number
   finished: boolean
-  siuu: boolean
   startedAt: number
   cuesCalled: number
   drillsDone: number
@@ -46,7 +45,7 @@ export function createPlayer(session: Session, opts: PlayerOptions) {
 
   let state: PlayerState = {
     steps, i: -1, running: false, remainingMs: 0, elapsed: 0, total: totalSeconds(steps),
-    cue: null, cueKey: 0, finished: false, siuu: false, startedAt: opts.resume?.startedAt ?? now(), cuesCalled: opts.resume?.cuesCalled ?? 0, drillsDone: 0, setMs: 0,
+    cue: null, cueKey: 0, finished: false, startedAt: opts.resume?.startedAt ?? now(), cuesCalled: opts.resume?.cuesCalled ?? 0, drillsDone: 0, setMs: 0,
   }
   let endAt = 0
   let setStart = 0 // self-paced set: when it (re)started counting
@@ -102,7 +101,6 @@ export function createPlayer(session: Session, opts: PlayerOptions) {
   function goto(i: number) {
     if (state.finished) return
     clearTimers()
-    audio.stopClip()
     if (i >= steps.length) return finish()
     i = Math.max(0, i)
     const s = steps[i]
@@ -114,14 +112,6 @@ export function createPlayer(session: Session, opts: PlayerOptions) {
     set({ i, running: true, remainingMs, elapsed: elapsedAt(i, remainingMs), cue: null, setMs: 0 })
     announce(i)
     if (s.type === 'work' && s.cue) scheduleCues(s.seconds, 3)
-    const st = getSettings()
-    if (s.type === 'rest' && st.clipRest && audio.hasClips('mindset')) {
-      const w = restClipWindow(s.seconds, st.restClipChance, rng)
-      if (w) {
-        later(w.start * 1000, () => { if (state.running) audio.playClip('mindset') })
-        later(w.stop * 1000, audio.stopClip)
-      }
-    }
   }
 
   function update() {
@@ -146,7 +136,6 @@ export function createPlayer(session: Session, opts: PlayerOptions) {
     if (state.finished) return
     if (state.running) {
       clearTimers()
-      audio.stopClip()
       const paced = selfPaced(steps[state.i])
       if (paced) setDone += now() - setStart
       set({ running: false, remainingMs: paced ? state.remainingMs : endAt - now(), cue: null })
@@ -163,12 +152,8 @@ export function createPlayer(session: Session, opts: PlayerOptions) {
   function finish(early = false) {
     if (tick) clearInterval(tick)
     clearTimers()
-    audio.stopClip()
-    const st = getSettings()
-    const siuu = st.siuuEnd && audio.hasClips('siuu')
-    if (siuu) audio.playClip('siuu')
-    else audio.say('Session complete. Nice work.')
-    set({ finished: true, running: false, siuu, cue: null, elapsed: early ? state.elapsed : state.total, remainingMs: 0, drillsDone: drillsSeen.size })
+    audio.say('Session complete. Nice work.')
+    set({ finished: true, running: false, cue: null, elapsed: early ? state.elapsed : state.total, remainingMs: 0, drillsDone: drillsSeen.size })
     onFinish?.(state)
   }
 
@@ -212,7 +197,6 @@ export function createPlayer(session: Session, opts: PlayerOptions) {
     stop() {
       if (tick) clearInterval(tick)
       clearTimers()
-      audio.stopClip()
       try { speechSynthesis.cancel() } catch { /* ignore */ }
     },
   }
