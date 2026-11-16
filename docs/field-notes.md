@@ -78,3 +78,6 @@ Problems Peter hits while planning and training, and what was done about each.
       - a ~23 min activation at MD-1
     - Three new sessions. The Week page shows MD-2 etc. under each day, and Home shows the day's job. *(staging)*
 28. **Second pro reference** (docs/training-references.md #2): **hard days hard, easy days easy.** The high-intensity football session now shares the MD-4 legs day, and MD-3 stays light (core, no football). *(staging)*
+29. **The week explanation was a block of text.**
+    - Now: a small **How your week works** button (e.g. "1 game · 2 football · 3 gym · 1 recovery").
+    - It opens a sheet: each day with its matchday and job, the planner's rules, and the pro references each rule came from. *(staging)*

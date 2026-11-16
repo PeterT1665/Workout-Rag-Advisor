@@ -96,9 +96,11 @@ describe('app', () => {
   test('week: tapping game days rebuilds the plan', () => {
     render(<App />)
     click(/^Week$/)
-    expect(screen.getByText(/1 game this week/)).toBeTruthy()
+    expect(screen.getByRole('button', { name: /How your week works/ }).textContent).toMatch(/1 game · 2 football/)
     fireEvent.click(screen.getByRole('button', { name: /Monday: no game/ }))
-    expect(screen.getByText(/2 games this week/)).toBeTruthy()
+    expect(screen.getByRole('button', { name: /How your week works/ }).textContent).toMatch(/2 games · 1 football/)
+    click(/How your week works/)
+    expect(within(screen.getByRole('dialog', { name: 'How your week works' })).getByText('Hard days hard, easy days easy')).toBeTruthy()
     const saved = JSON.parse(localStorage.getItem('games')!)
     expect(saved.map((g: { day: number }) => g.day)).toEqual([0, 2])
   })

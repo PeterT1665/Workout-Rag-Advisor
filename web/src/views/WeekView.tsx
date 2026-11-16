@@ -1,7 +1,8 @@
-import { Panel, Pill, SectionHead, Title } from '../components/ui'
+import { Pill, SectionHead, Title } from '../components/ui'
 import { DAYS, DAY_SHORT, DEFAULT_GYM, FOCUS_SHORT, matchdayLabel, todayIndex, type Game } from '../lib/weekplan'
 import { changeFor, changedSession, type DayChange, type WeekChanges } from '../lib/weekChanges'
 import { DayPicker } from '../components/DayPicker'
+import { WeekGuide } from '../components/WeekGuide'
 import { useState } from 'react'
 import { setProfile, useProfile } from '../lib/profile'
 import { sessionForSlot, type Today } from '../lib/today'
@@ -121,9 +122,7 @@ export function WeekView({ today, games, sessions, library, changes, onChange, o
         </span>
       </div>
 
-      <Panel className="mt-4">
-        {today.plan.reasons.map((r, i) => <p key={i} className={`m-0 ${i ? 'mt-2 text-sm text-muted' : ''}`}>{r}</p>)}
-      </Panel>
+      <WeekGuide plan={today.plan} games={games} />
 
       </div>
       <div>
