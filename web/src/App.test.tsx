@@ -180,7 +180,7 @@ describe('app', () => {
     render(<App />)
     click(/All sessions/)
     click(/Gym: lower body \+ power/)
-    expect(screen.getByText(/4 × 5 reps · 150s rest/)).toBeTruthy()
+    expect(screen.getByText(/4 × 5 reps · 2:30 rest/)).toBeTruthy()
   })
 
   test('settings: edit player changes name, positions and team colour', () => {

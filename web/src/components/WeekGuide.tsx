@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { Sheet } from './Sheet'
 import { Button, Pill } from './ui'
 import { DAYS, FOCUS_LABEL, matchdayLabel, type Game, type WeekPlan } from '../lib/weekplan'
 
@@ -38,9 +39,7 @@ export function WeekGuide({ plan, games }: { plan: WeekPlan; games: Game[] }) {
       </button>
 
       {open && (
-        <div className="fixed inset-0 z-50 flex items-end justify-center" role="dialog" aria-modal="true" aria-label="How your week works">
-          <button aria-label="Close" className="absolute inset-0 bg-black/60" onClick={() => setOpen(false)} />
-          <div className="rise relative max-h-[90dvh] w-full max-w-xl overflow-y-auto rounded-t-[28px] bg-surface px-5 pt-5 pb-[max(16px,env(safe-area-inset-bottom))]">
+        <Sheet label="How your week works" onClose={() => setOpen(false)}>
             <h2 className="m-0 font-display text-xl uppercase">How your week works</h2>
             <p className="m-0 mt-1 text-sm text-muted">{summary}. Built around your game{count('game') === 1 ? '' : 's'}, the way pros plan theirs.</p>
 
@@ -93,8 +92,7 @@ export function WeekGuide({ plan, games }: { plan: WeekPlan; games: Game[] }) {
             </ul>
 
             <Button block className="mt-5" onClick={() => setOpen(false)}>Got it</Button>
-          </div>
-        </div>
+        </Sheet>
       )}
     </>
   )

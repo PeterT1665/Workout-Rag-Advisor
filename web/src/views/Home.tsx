@@ -6,7 +6,7 @@ import { usePersonalImage } from '../lib/personal'
 import { DEMO } from '../lib/demo'
 import { useProfile } from '../lib/profile'
 import { kitFor, loadPacked, togglePacked, type KitItem } from '../lib/kit'
-import { fmtReps, sessionMinutes } from '../lib/logic'
+import { fmtDose, fmtDuration, sessionMinutes } from '../lib/logic'
 import { InstallButton } from '../components/InstallButton'
 import { DrillSheet } from '../components/DrillSheet'
 import { canInstall } from '../lib/install'
@@ -236,7 +236,7 @@ export function Home(p: Props) {
       <div className="no-scrollbar -mx-4 flex snap-x scroll-px-4 gap-3 overflow-x-auto px-4">
         {drills.slice(0, 5).map((b, i) => (
           <DrillCard key={b.name} i={i} category={b.category} name={b.name.replace(/\s*\([^)]*\)/g, '')} cue={!!b.cue}
-            meta={`${b.rounds || 1} × ${b.reps ? fmtReps(b.reps) : `${b.work}s`}${b.rest ? ` · rest ${b.rest}s` : ''}`} football={s.type === 'football'} onOpen={() => setDrill(b)} />
+            meta={`${fmtDose(b)}${b.rest ? ` · rest ${fmtDuration(b.rest)}` : ''}`} football={s.type === 'football'} onOpen={() => setDrill(b)} />
         ))}
       </div>
 

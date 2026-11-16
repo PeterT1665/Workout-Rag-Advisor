@@ -1,13 +1,14 @@
 import { useState, useSyncExternalStore } from 'react'
 import { Reorder, useDragControls } from 'motion/react'
 import { Button } from './ui'
+import { useSheet } from '../lib/useSheet'
 import { alternativesFor, exerciseBlock } from '../lib/library'
-import { editableFrom, fmtReps } from '../lib/logic'
+import { editableFrom, fmtDose } from '../lib/logic'
 import type { Player } from '../lib/player'
 import type { Block } from '../lib/types'
 
 const short = (name: string) => name.replace(/\s*\([^)]*\)/g, '')
-const detail = (b: Block) => `${b.rounds || 1} × ${b.reps ? fmtReps(b.reps) : `${b.work}s`}`
+const detail = (b: Block) => fmtDose(b)
 
 // Upcoming rows keep a stable key while they're dragged, swapped or removed.
 type Row = { key: string; block: Block }
@@ -16,7 +17,10 @@ let nextKey = 0
 // The whole session while it runs: what's done, what's now, and the exercises still to come,
 // which can be reordered, swapped for another from the same category (kit taken) or dropped.
 export function PlanSheet({ player, onClose }: { player: Player; onClose: () => void }) {
-  const st = useSyncExternalStore(player.subscribe, player.getState)
+  // only re-render when the step changes: the timer ticks several times a second and would jolt a drag
+  useSyncExternalStore(player.subscribe, () => player.getState().i)
+  const st = player.getState()
+  useSheet(onClose)
   const blocks = player.getSession().blocks
   const from = editableFrom(st.steps, st.i)
   const fresh = () => ({ from, rows: player.upcoming().map((block): Row => ({ key: `r${nextKey++}`, block })) })
@@ -126,7 +130,7 @@ function PlanRow({ row: { block: b }, row, pair, first, last, swapping, onSwapTo
             <button key={e.id} onClick={() => onSwap(e.id)}
               className="flex min-h-11 items-center justify-between gap-2 rounded-xl bg-surface px-3 text-left text-sm active:bg-bg">
               <span>{short(e.name)}</span>
-              <span className="shrink-0 font-display text-[11px] tabular-nums text-muted">{e.rounds ?? 1} × {e.reps ? fmtReps(e.reps) : `${e.work}s`}</span>
+              <span className="shrink-0 font-display text-[11px] tabular-nums text-muted">{fmtDose(e)}</span>
             </button>
           ))}
         </div>

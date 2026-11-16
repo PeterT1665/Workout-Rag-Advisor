@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from 'react'
 import { Button, Title } from '../components/ui'
 import { FlameIcon } from '../components/icons'
+import { Sheet } from '../components/Sheet'
 import { PlayerCard, overall } from '../components/PlayerCard'
 import { cardStatsFor } from '../lib/cardStats'
 import { useProfile, type Accent, type Foot, type Position, type Profile } from '../lib/profile'
@@ -289,9 +290,7 @@ function FriendSheet({ p, photo, you, onClose, onRemove }: { p: TeamProfile; pho
   }
   const a = activity(p.last_active)
   return (
-    <div className="fixed inset-0 z-50 flex items-end justify-center" role="dialog" aria-modal="true" aria-label={`${profile.name}'s card`}>
-      <button aria-label="Close" className="absolute inset-0 bg-black/60" onClick={onClose} />
-      <div className="rise relative max-h-[92dvh] w-full max-w-xl overflow-y-auto rounded-t-[28px] bg-surface px-5 pt-5 pb-[max(16px,env(safe-area-inset-bottom))]">
+    <Sheet label={`${profile.name}'s card`} onClose={onClose}>
         <div className="mx-auto w-full max-w-[260px]"><PlayerCard p={profile} stats={p.card} photo={photo} /></div>
         <div className="mt-4 grid grid-cols-3 gap-2 text-center">
           <Stat label="Streak" value={`${p.streak}`} />
@@ -303,8 +302,7 @@ function FriendSheet({ p, photo, you, onClose, onRemove }: { p: TeamProfile; pho
           {!you && <Button variant="ghost" className="flex-1 bg-surface-2" onClick={onRemove}>Remove friend</Button>}
           <Button className="flex-1" onClick={onClose}>Close</Button>
         </div>
-      </div>
-    </div>
+    </Sheet>
   )
 }
 

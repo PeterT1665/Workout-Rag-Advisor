@@ -1,4 +1,5 @@
 import { Button, Pill } from './ui'
+import { useSheet } from '../lib/useSheet'
 import { CATEGORY_LABELS, drillPhoto } from '../lib/library'
 import { fmtReps } from '../lib/logic'
 import type { Block } from '../lib/types'
@@ -8,12 +9,13 @@ const fmtSec = (s: number) => (s >= 60 ? `${Math.floor(s / 60)}:${String(s % 60)
 
 // One drill's details, opened from a drill card. Video instructions will live here later.
 export function DrillSheet({ block: b, onClose, onSession }: { block: Block; onClose: () => void; onSession: () => void }) {
+  useSheet(onClose)
   const label = b.category ? CATEGORY_LABELS[b.category] ?? b.category : null
   const name = b.name.replace(/\s*\([^)]*\)/g, '')
   return (
     <div className="fixed inset-0 z-50 flex items-end justify-center" role="dialog" aria-modal="true" aria-label={name}>
       <button aria-label="Close" className="absolute inset-0 bg-black/60" onClick={onClose} />
-      <div className="rise relative max-h-[88dvh] w-full max-w-xl overflow-y-auto rounded-t-[28px] bg-surface pb-[max(20px,env(safe-area-inset-bottom))]">
+      <div className="rise relative max-h-[88dvh] w-full max-w-xl overflow-y-auto overscroll-contain rounded-t-[28px] bg-surface pb-[max(20px,env(safe-area-inset-bottom))]">
         <div className="relative h-52 overflow-hidden rounded-t-[28px]">
           <img src={drillPhoto(b.category)} alt="" data-fade className="h-full w-full object-cover" />
           <div className="absolute inset-0 bg-[linear-gradient(to_bottom,rgba(0,0,0,0)_40%,var(--surface)_100%)]" />

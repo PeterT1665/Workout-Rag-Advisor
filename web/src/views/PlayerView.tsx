@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState, useSyncExternalStore } from 'react'
+import { Sheet } from '../components/Sheet'
 import { PlanSheet } from '../components/PlanSheet'
 import { VideoBox } from '../components/VideoBox'
 import { Button, QuoteCard, Screen } from '../components/ui'
@@ -114,14 +115,11 @@ export function PlayerView({ session, player, settings, onExit }: { session: Ses
       </div>
       {plan && <PlanSheet player={player} onClose={() => setPlan(false)} />}
       {video && (
-        <div className="fixed inset-0 z-50 flex items-end justify-center" role="dialog" aria-modal="true" aria-label={`${video} video`}>
-          <button aria-label="Close" className="absolute inset-0 bg-black/60" onClick={() => setVideo(null)} />
-          <div className="rise relative max-h-[92dvh] w-full max-w-xl overflow-y-auto rounded-t-[28px] bg-surface px-5 pt-5 pb-[max(16px,env(safe-area-inset-bottom))]">
+        <Sheet label={`${video} video`} onClose={() => setVideo(null)}>
             <h2 className="m-0 font-display text-xl uppercase leading-tight">{video.replace(/\s*\([^)]*\)/g, '')}</h2>
             <VideoBox name={video} />
             <Button block className="mt-4" onClick={() => setVideo(null)}>Back to the session</Button>
-          </div>
-        </div>
+        </Sheet>
       )}
 
       {/* Full-screen cue: readable from a few metres away, phone on the ground */}

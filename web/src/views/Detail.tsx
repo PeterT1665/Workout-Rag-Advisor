@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Button, Panel, Screen, Tag, Title, TopBar } from '../components/ui'
-import { flattenSession, fmtReps, makeICS, sessionMinutes } from '../lib/logic'
+import { flattenSession, fmtDose, fmtDuration, makeICS, sessionMinutes } from '../lib/logic'
 import { homeVersion, isMine } from '../lib/library'
 import { KitCheck } from './Home'
 import { DAYS, todayIndex } from '../lib/weekplan'
@@ -95,7 +95,7 @@ export function Detail({ session: s, onBack, onStart, onEdit, onInvite, onSchedu
                 <li key={i} className={`bg-surface p-4 ${pair && pair[1] !== '1' ? '-mt-1.5 rounded-b-[18px] border-l-4 border-red' : 'rounded-t-[18px]'} ${joined ? 'rounded-t-[18px] border-l-4 border-red' : 'rounded-b-[18px]'}`}>
                   {pair?.endsWith('1') && <span className="mb-1 block font-display text-[11px] uppercase tracking-wide text-red-ink">Superset {pair[0]}: back to back, then rest</span>}
                   <strong className="block font-semibold">{pair && <span className="mr-1.5 font-display text-red-ink">{pair}</span>}{b.name.replace(/\s*\([^)]*\)/g, '')}</strong>
-                  <span className="mt-1 block font-display text-xs tabular-nums text-muted">{b.rounds || 1} × {b.reps ? fmtReps(b.reps) : `${b.work}s`}{joined ? ' · straight into the next' : b.rest ? ` · ${b.rest}s rest` : ''}</span>
+                  <span className="mt-1 block font-display text-xs tabular-nums text-muted">{fmtDose(b)}{joined ? ' · straight into the next' : b.rest ? ` · ${fmtDuration(b.rest)} rest` : ''}</span>
                   {b.cue && <span className="mt-2 inline-block rounded-full bg-red px-2.5 py-0.5 font-display text-[11px] uppercase text-on-red">Voice cues</span>}
                   <p className="m-0 mt-2 text-sm text-muted">{b.how}</p>
                 </li>

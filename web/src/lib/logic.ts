@@ -55,6 +55,12 @@ export function editableFrom(steps: Step[], i: number): number {
   return last + 1
 }
 
+// 45 -> "45s", 300 -> "5 min", 90 -> "1:30"
+export const fmtDuration = (sec: number) => (sec < 60 ? `${sec}s` : sec % 60 === 0 ? `${sec / 60} min` : `${Math.floor(sec / 60)}:${String(sec % 60).padStart(2, '0')}`)
+// How much of an exercise: "3 × 6 reps", "4 × 45s", or just "5 min" for a single timed block
+export const fmtDose = (b: { rounds?: number; reps?: string; work: number }) =>
+  (b.rounds ?? 1) > 1 || b.reps ? `${b.rounds ?? 1} × ${b.reps ? fmtReps(b.reps) : fmtDuration(b.work)}` : fmtDuration(b.work)
+
 export const totalSeconds = (steps: Step[]) => steps.reduce((a, s) => a + s.seconds, 0)
 export const sessionMinutes = (s: Session) => Math.round(totalSeconds(flattenSession(s)) / 60)
 
