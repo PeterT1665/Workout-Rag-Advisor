@@ -1,5 +1,5 @@
 import { Panel, Pill, SectionHead, Title } from '../components/ui'
-import { DAYS, DAY_SHORT, DEFAULT_GYM, matchdayLabel, todayIndex, type Game } from '../lib/weekplan'
+import { DAYS, DAY_SHORT, DEFAULT_GYM, FOCUS_SHORT, matchdayLabel, todayIndex, type Game } from '../lib/weekplan'
 import { changeFor, changedSession, type DayChange, type WeekChanges } from '../lib/weekChanges'
 import { DayPicker } from '../components/DayPicker'
 import { useState } from 'react'
@@ -33,6 +33,7 @@ export function WeekView({ today, games, sessions, library, changes, onChange, o
     const rest = games.filter((g) => g.day !== day)
     onGames(next ? [...rest, { day, kind: next }].sort((a, b) => a.day - b.day) : rest)
   }
+  const md = (day: number) => matchdayLabel(day, games)
   // one week's plan, this week (0) or next (1): same planner, its own changes by date
   const planList = (week: 0 | 1) => {
     const when = week ? new Date(Date.now() + 7 * 864e5) : new Date()
@@ -61,7 +62,7 @@ export function WeekView({ today, games, sessions, library, changes, onChange, o
                     return session
                       ? <span key={i} className="flex items-center gap-2">
                           {title(session, links)}
-                          {s.light && <span title={s.note}><Pill>Light</Pill></span>}
+                          {s.focus && <span title={s.note}><Pill>{FOCUS_SHORT[s.focus]}</Pill></span>}
                         </span>
                       : <Pill key={i} tone={s.kind === 'game' ? 'red' : 'muted'}>{s.kind === 'game' ? `${s.note} game` : s.kind}</Pill>
                   })}
@@ -71,12 +72,12 @@ export function WeekView({ today, games, sessions, library, changes, onChange, o
                 {editing
                   ? <button onClick={() => setPicking(`${week}-${day}`)} aria-label={week ? `Change next ${name}` : `Change ${name}`}
                       className="flex min-h-14 w-full items-center gap-3 rounded-[16px] py-2 pr-3 pl-4 text-left transition-transform duration-150 ease-snap active:scale-[0.98]">
-                      <span className="w-10 font-display text-xs uppercase text-muted">{name.slice(0, 3)}</span>
+                      <span className="w-12 shrink-0 font-display text-xs uppercase text-muted">{name.slice(0, 3)}{md(day) && <span className={`block text-[10px] ${md(day) === 'MD' ? 'text-red-ink' : ''}`}>{md(day)}</span>}</span>
                       <span className="flex flex-1 flex-wrap items-center gap-2">{row(false)}</span>
                       <PencilIcon />
                     </button>
                   : <div className="flex min-h-14 items-center gap-3 py-2 pr-2 pl-4">
-                      <span className="w-10 font-display text-xs uppercase text-muted">{name.slice(0, 3)}</span>
+                      <span className="w-12 shrink-0 font-display text-xs uppercase text-muted">{name.slice(0, 3)}{md(day) && <span className={`block text-[10px] ${md(day) === 'MD' ? 'text-red-ink' : ''}`}>{md(day)}</span>}</span>
                       <span className="flex flex-1 flex-wrap items-center gap-2">{row(true)}</span>
                     </div>}
                 {picking === `${week}-${day}` && (

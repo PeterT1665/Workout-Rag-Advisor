@@ -30,20 +30,34 @@ describe('week plan v3', () => {
       }
     }
   })
-  test('heavy weeks (2+ games) make every gym session light', () => {
-    expect(of(g(1, 5), 'gym', 4).every((s) => s.light)).toBe(true)
-    expect(of(g(2), 'gym', 3).some((s) => !s.light)).toBe(true)
+  test('Saturday game, like the pro week: legs MD-4, core MD-3, upper power MD-2, activation MD-1', () => {
+    const focus = (gym: number) => of(g(5), 'gym', gym).map((s) => `${s.day}:${s.focus}`)
+    expect(focus(3)).toEqual(['1:strength', '2:core', '3:upper-power'])
+    expect(focus(4)).toEqual(['1:strength', '2:core', '3:upper-power', '4:activation'])
+    expect(daysOf(g(5), 'recovery')).toEqual([6]) // Sunday, the day after
+    expect(daysOf(g(5), 'football')).not.toContain(4) // never the day before
   })
-  test('gym the day before a game is upper body only', () => {
-    for (const games of [g(2), g(1, 5), g(0, 2, 4)]) {
-      for (const s of of(games, 'gym', 5)) {
-        if (games.some((x) => x.day === s.day + 1)) expect(s.note).toMatch(/no heavy legs/)
+  test('the day before a game is only ever activation; the day after a game gets no gym unless the week is full', () => {
+    for (const games of [g(2), g(5), g(1, 5), g(2, 6)]) {
+      for (const s of of(games, 'gym', 4)) {
+        if (games.some((x) => x.day === (s.day + 1) % 7)) expect(s.focus).toBe('activation')
       }
+      expect(of(games, 'gym', 3).some((s) => games.some((x) => x.day === (s.day + 6) % 7))).toBe(false)
     }
   })
-  test('gym the day after a game (only when the week is full) is light too', () => {
-    const thu = of(g(2), 'gym', 4).find((s) => s.day === 3)
-    if (thu) expect(thu.note).toMatch(/day after a game/)
+  test('congested weeks (Wednesday + Saturday) drop heavy legs', () => {
+    expect(of(g(2, 5), 'gym', 3).some((s) => s.focus === 'strength')).toBe(false)
+  })
+  test('no games: the jobs rotate and gym days are spread out', () => {
+    const gym = of([], 'gym', 3)
+    expect(gym.map((s) => s.focus)).toEqual(['strength', 'upper-power', 'core'])
+    const days = gym.map((s) => s.day)
+    for (let k = 1; k < days.length; k++) expect(days[k] - days[k - 1]).toBeGreaterThan(1)
+  })
+  test('matchday distance wraps around the week', () => {
+    expect(matchdayLabel(4, g(2))).toBe('MD+2') // Friday after a Wednesday game
+    expect(matchdayLabel(5, g(2))).toBe('MD-4') // Saturday: counting down to next Wednesday
+    expect(matchdayLabel(6, g(2))).toBe('MD-3') // Sunday: three days before next Wednesday
   })
   test('no football the day before a game when avoidable', () => {
     expect(daysOf(g(2), 'football')).not.toContain(1)
@@ -61,7 +75,7 @@ describe('week plan v3', () => {
   })
   test('the first reason explains the week', () => {
     expect(buildWeek(g(2)).reasons[0]).toMatch(/1 game this week: 2 football, 3 gym/)
-    expect(buildWeek(g(1, 5)).reasons[0]).toMatch(/lighter/)
+    expect(buildWeek(g(1, 5)).reasons[0]).toMatch(/job set by how far it is from the game/)
   })
   test('matchday labels', () => {
     expect(matchdayLabel(0, g(2))).toBe('MD-2')

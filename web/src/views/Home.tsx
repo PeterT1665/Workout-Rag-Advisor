@@ -12,7 +12,7 @@ import { DrillSheet } from '../components/DrillSheet'
 import { canInstall } from '../lib/install'
 import { CATEGORY_LABELS, drillPhoto } from '../lib/library'
 import { load, save } from '../lib/storage'
-import { DAYS, DAY_SHORT, type SlotKind } from '../lib/weekplan'
+import { DAYS, DAY_SHORT, FOCUS_LABEL, type SlotKind } from '../lib/weekplan'
 import type { Today } from '../lib/today'
 import type { Block, Session } from '../lib/types'
 
@@ -85,7 +85,7 @@ export function Hero({ today, onKickOff, onOpen, onSettings, onCustomise, streak
         <div className="flex flex-wrap gap-2">
           {desktop && <Pill tone="glass">{sample ? 'Sample data' : date}</Pill>}
           {today.md && <Pill tone="red">{today.md}</Pill>}
-          <Pill tone="glass">{when}{today.scheduled && today.slot ? ` · ${SLOT_LABEL[today.slot.kind]}` : ''}</Pill>
+          <Pill tone="glass">{when}{today.scheduled && today.slot ? ` · ${today.slot.focus ? FOCUS_LABEL[today.slot.focus] : SLOT_LABEL[today.slot.kind]}` : ''}</Pill>
         </div>
         <h1 className={`m-0 mt-3 mb-2 font-display uppercase leading-[.95] text-white ${desktop ? 'text-[38px]' : 'text-[32px]'}`}>{s.title}</h1>
         {status && <p className="m-0 mb-3 text-sm text-white/75">{status}</p>}

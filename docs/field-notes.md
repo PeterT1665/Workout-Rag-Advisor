@@ -70,3 +70,10 @@ Problems Peter hits while planning and training, and what was done about each.
     - Growth: friends leaderboard (streaks), player card rating, training with friends.
 25. **Quotes without names.** The app showed your role model's name under every quote, whoever said it (the "Speed didn't say that" moment). Names are gone; quotes stay. *(staging)*
 26. **Team, phase 1.** Pick a username and photo, find friends by exact username + shirt number, send and accept requests. The leaderboard ranks friends by streak, then rating, and shows who's online. Tap a friend to see their card. Friends-only. Needs `supabase/migrations/0005_team.sql` to be run. *(staging)*
+27. **"Light" sessions were the same session with a label** (upper + core took the same time light or not).
+    - Now: planner v4, learned from a pro's week (docs/training-references.md). Each gym day has a job by distance to the game:
+      - legs / contrast at MD-4+
+      - core & injury prevention at MD-3
+      - upper body power at MD-2
+      - a ~23 min activation at MD-1
+    - Three new sessions. The Week page shows MD-2 etc. under each day, and Home shows the day's job. *(staging)*

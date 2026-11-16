@@ -93,6 +93,7 @@ export const alternativesFor = (b: Block) =>
 const HOME_VERSION: Record<string, string> = {
   'gym-lower-power': 'home-legs-power', 'gym-explosive': 'home-legs-power', 'gym-single-leg': 'home-legs-power', 'gym-contrast': 'home-legs-power',
   'gym-upper-core': 'home-upper-core', 'gym-full-light': 'home-full-body',
+  'gym-upper-power': 'home-upper-core', 'gym-core-prevention': 'home-upper-core', 'gym-activation': 'home-full-body',
 }
 export function homeVersion(s: Session): Session | undefined {
   if (s.type !== 'gym') return undefined

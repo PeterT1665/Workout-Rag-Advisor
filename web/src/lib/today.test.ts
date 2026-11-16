@@ -2,6 +2,7 @@ import { describe, expect, test } from 'vitest'
 import { BUILTIN_SESSIONS as sessions } from './library'
 import { planToday, sessionForSlot } from './today'
 import { kitFor } from './kit'
+import { buildWeek } from './weekplan'
 import type { Session } from './types'
 
 // 2026-10-26 is a Monday
@@ -11,12 +12,14 @@ const thursday = new Date(2026, 9, 29, 9)
 
 describe('today', () => {
   test('a football day gets a solo football session and a matchday label', () => {
-    const t = planToday(sessions, [{ day: 2, kind: 'competitive' }], monday)
+    const games = [{ day: 2, kind: 'competitive' as const }]
+    const fbDay = buildWeek(games).slots.find((x) => x.kind === 'football' && !buildWeek(games).slots.some((y) => y.day === x.day && y.kind === 'gym'))!.day
+    const t = planToday(sessions, games, new Date(2026, 9, 26 + fbDay, 9))
     expect(t.slot?.kind).toBe('football')
     expect(t.scheduled).toBe(true)
     expect(t.session.type).toBe('football')
     expect(t.session.id).not.toContain('partner')
-    expect(t.md).toBe('MD-2')
+    expect(t.md).toMatch(/^MD[+-]\d$/)
   })
   test('game day is not a training day; Kick off offers the next session', () => {
     const t = planToday(sessions, [{ day: 2, kind: 'competitive' }], wednesday)

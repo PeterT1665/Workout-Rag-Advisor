@@ -2312,6 +2312,125 @@
      "ex": "home-cooldown"
     }
    ]
+  },
+  {
+   "id": "gym-upper-power",
+   "title": "Gym: upper body power (submax)",
+   "type": "gym",
+   "summary": "MD-2: upper body strength without grinding (stop 2-3 reps short), plus fast throws and presses. Legs stay fresh for the game.",
+   "needs": [],
+   "items": [
+    {
+     "ex": "gym-warmup"
+    },
+    {
+     "ex": "med-ball-chest-pass"
+    },
+    {
+     "ex": "bench-press",
+     "rounds": 3,
+     "how": "Submax: a weight you could do 2-3 more reps with. Controlled down, drive up fast."
+    },
+    {
+     "ex": "plyo-push-up",
+     "superset": true,
+     "rounds": 3,
+     "rest": 120
+    },
+    {
+     "ex": "pull-up"
+    },
+    {
+     "ex": "landmine-push-press"
+    },
+    {
+     "ex": "single-arm-row",
+     "superset": true
+    },
+    {
+     "ex": "med-ball-slam"
+    },
+    {
+     "ex": "gym-cooldown"
+    }
+   ]
+  },
+  {
+   "id": "gym-core-prevention",
+   "title": "Gym: core & injury prevention",
+   "type": "gym",
+   "summary": "MD-3: the work that keeps you on the pitch. Hamstrings (Nordics), groin (Copenhagen), rotational core and single-leg control.",
+   "needs": [],
+   "items": [
+    {
+     "ex": "gym-warmup"
+    },
+    {
+     "ex": "nordic-curl"
+    },
+    {
+     "ex": "copenhagen-plank"
+    },
+    {
+     "ex": "med-ball-throw"
+    },
+    {
+     "ex": "pallof-press"
+    },
+    {
+     "ex": "dead-bug",
+     "superset": true
+    },
+    {
+     "ex": "single-leg-rdl",
+     "rounds": 2
+    },
+    {
+     "ex": "calf-raise"
+    },
+    {
+     "ex": "gym-cooldown"
+    }
+   ]
+  },
+  {
+   "id": "gym-activation",
+   "title": "Gym: match-eve activation",
+   "type": "gym",
+   "summary": "MD-1: about 25 minutes. Short maximal isometric holds and a few fast jumps wake the nervous system up without tiring the legs. Leave feeling sharp, not tired.",
+   "needs": [],
+   "items": [
+    {
+     "ex": "gym-warmup"
+    },
+    {
+     "ex": "iso-mid-thigh-pull",
+     "rounds": 3,
+     "rest": 60
+    },
+    {
+     "ex": "iso-split-squat",
+     "rounds": 2,
+     "rest": 45
+    },
+    {
+     "ex": "iso-hamstring-bridge",
+     "rounds": 2
+    },
+    {
+     "ex": "countermovement-jump",
+     "rounds": 2,
+     "rest": 60
+    },
+    {
+     "ex": "pogo-hops",
+     "rounds": 2,
+     "rest": 45
+    },
+    {
+     "ex": "gym-cooldown"
+    }
+   ]
   }
  ]
 }
