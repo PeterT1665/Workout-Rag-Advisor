@@ -13,7 +13,7 @@ export type Profile = {
   positions: Position[]
   foot: Foot
   accent: Accent
-  idol: string // role model's name, shown on quotes; empty = no attribution
+  idol: string // role model (profile info; never shown under quotes: we can't verify who said what)
   gym?: number // gym sessions a week (default 3)
   sample?: boolean // the demo's sample player: history is reseeded daily
   ratings?: Ratings // latest rating session (test day)
