@@ -1,7 +1,7 @@
 -- Minimal stand-in for Supabase on plain Postgres, to test the migrations locally:
 --   docker run -d --name sbtest -e POSTGRES_PASSWORD=pw postgres:16-alpine
 --   psql -f stub_supabase.sql, then each migration in order, then rls_test.sql
-create role anon nologin; create role authenticated nologin;
+create role anon nologin; create role authenticated nologin; create role service_role nologin bypassrls;
 create schema auth;
 create table auth.users (id uuid primary key);
 create function auth.uid() returns uuid language sql stable as $$ select nullif(current_setting('request.jwt.claim.sub', true), '')::uuid $$;

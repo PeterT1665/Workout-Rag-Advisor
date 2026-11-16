@@ -97,3 +97,9 @@ Problems Peter hits while planning and training, and what was done about each.
     - Now: picking a card photo (Player tab → **Change photo**, or Make it yours) opens a crop screen. Drag, pinch or slide to zoom, inside a circle like a profile picture.
     - The Team profile picture uses the same crop. *(staging)*
 33. **Rest-over notification** ("Come back to training. Lock in, let's go" / "No more doom scroll, let's roll"). Needs server push on iPhone. Waiting on Peter's go-ahead (see the 16/11 chat).
+34. **Rest-over notifications and the Sunday reminder** are built.
+    - Leave the app mid-rest and you get called back when the rest ends: "Rest is over · Bench press". Lines: "Come back to training. Lock in, let's go." / "No more doom scroll. Let's roll." / ...
+    - Sunday 18:00: "Plan next week", which opens the Week page.
+    - Ask: a one-time **Turn on** card on Home; Settings → Notifications has a toggle for each.
+    - Needs an account and the app on the Home Screen.
+    - Setup steps: docs/push-setup.md. *(staging, waiting on Peter's Supabase setup)*

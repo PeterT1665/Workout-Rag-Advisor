@@ -2,6 +2,7 @@ import { Button, Panel, Screen, Slider, Title, Toggle, TopBar } from '../compone
 import { say } from '../lib/audio'
 import type { Settings } from '../lib/types'
 import { deleteAccount, signOut, syncEnabled } from '../lib/sync'
+import { NotificationSettings } from '../components/Notifications'
 import { safeAreaInfo } from '../lib/safeArea'
 import { seedDemo, startOverDemo } from '../lib/demo'
 import { positionTag, useProfile } from '../lib/profile'
@@ -31,6 +32,9 @@ export function SettingsView({ settings: s, onChange, onMedia, onProfile, onInvi
         <Button variant="ghost" className="bg-surface-2" onClick={() => { say(s, 'Left', true); setTimeout(() => say(s, 'Right', true), 900) }}>Test voice</Button>
       </Panel>
       <p className="text-sm text-muted">Cues come at random times, only in the 1v1 drills. Left/right means the defender is committing that way: go the other way.</p>
+
+      <h2 className="mt-8 mb-3 font-display text-lg uppercase">Notifications</h2>
+      <NotificationSettings />
 
       <h2 className="mt-8 mb-3 font-display text-lg uppercase">Look</h2>
       <Panel className="flex flex-col gap-4">

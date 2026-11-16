@@ -17,6 +17,7 @@ import { Invite } from './views/Invite'
 import { CoachView } from './views/CoachView'
 import { TeamView } from './views/TeamView'
 import { publishStats } from './lib/team'
+import { cancelRest, scheduleRest } from './lib/push'
 import { syncEnabled } from './lib/sync'
 import { cardStatsFor } from './lib/cardStats'
 import { overall } from './components/PlayerCard'
@@ -63,7 +64,8 @@ const dayName = (date: string) => new Date(`${date}T12:00:00`).toLocaleDateStrin
 
 // onSignUp: guests can start making an account from inside the app (Team needs one)
 export default function App({ onSignUp }: { onSignUp?: () => void } = {}) {
-  const [tab, setTab] = useState<Tab>('home')
+  // a notification can open a tab directly ("plan next week" opens the week)
+  const [tab, setTab] = useState<Tab>(() => (typeof location !== 'undefined' && new URLSearchParams(location.search).get('tab') === 'week' ? 'week' : 'home'))
   const [overlay, setOverlay] = useState<Overlay | null>(null)
   const [settings, setSettings] = useState<Settings>(loadSettings)
   const [games, setGames] = useState<Game[]>(loadGames)
@@ -123,7 +125,15 @@ export default function App({ onSignUp }: { onSignUp?: () => void } = {}) {
     let lastSave = 0
     const persist = () => { if (!player.getState().finished) saveActive(player.getSession(), player.snapshot()) } // keeps mid-session edits
     player.subscribe(() => { if (Date.now() - lastSave > 1500) { lastSave = Date.now(); persist() } })
-    const onHide = () => { if (document.visibilityState === 'hidden') persist() }
+    const onHide = () => {
+      const s = player.getState()
+      if (document.visibilityState === 'hidden') {
+        persist()
+        // left the app mid-rest (TikTok...): the server calls you back when the rest is over
+        const step = s.steps[s.i]
+        if (!s.finished && s.running && step?.type === 'rest') void scheduleRest(s.remainingMs / 1000, s.steps[s.i + 1]?.name.replace(/\s*\([^)]*\)/g, ''))
+      } else void cancelRest()
+    }
     document.addEventListener('visibilitychange', onHide)
     stopPersist.current = () => document.removeEventListener('visibilitychange', onHide)
     // earbud presses (started in the Kick off tap) now drive this player
@@ -191,7 +201,7 @@ export default function App({ onSignUp }: { onSignUp?: () => void } = {}) {
       case 'preroll':
         return <Preroll session={overlay.session} quote={overlay.quote} onGo={() => beginSession(overlay.session)} />
       case 'player':
-        return <PlayerView key={overlay.player.getState().startedAt} session={overlay.session} player={overlay.player} settings={settings} onExit={() => { endRemote(); stopPersist.current(); clearActive(); setActive(null); close() }} />
+        return <PlayerView key={overlay.player.getState().startedAt} session={overlay.session} player={overlay.player} settings={settings} onExit={() => { endRemote(); stopPersist.current(); void cancelRest(); clearActive(); setActive(null); close() }} />
       case 'settings':
         return <SettingsView settings={settings} onChange={updateSettings} onMedia={() => setOverlay({ name: 'media', from: 'settings' })} onProfile={() => setOverlay({ name: 'profile' })} onInvite={() => setOverlay({ name: 'invite', back: { name: 'settings' } })} onDone={close} />
       case 'invite':

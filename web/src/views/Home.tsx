@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { Button, Pill, SectionHead } from '../components/ui'
 import { BallIcon, BrushIcon, FlameIcon, GearIcon, KitGlyph } from '../components/icons'
 import type { Streak } from '../lib/streak'
+import { NotifyPrompt } from '../components/Notifications'
 import { usePersonalImage } from '../lib/personal'
 import { DEMO } from '../lib/demo'
 import { useProfile } from '../lib/profile'
@@ -230,6 +231,7 @@ export function Home(p: Props) {
           </div>
         </section>
       )}
+      <NotifyPrompt />
       <HowItWorks onWeek={p.onWeek} />
 
       <SectionHead title="Today's drills" right={<button onClick={p.onAllSessions} className="text-sm font-semibold text-muted">All sessions</button>} />

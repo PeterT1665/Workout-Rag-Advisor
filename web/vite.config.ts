@@ -26,7 +26,7 @@ export default defineConfig({
       },
       // never cache the API or private photos in the offline cache
       // skipWaiting + clientsClaim: a new version takes over at once, so a reload always shows it
-      workbox: { skipWaiting: true, clientsClaim: true, cleanupOutdatedCaches: true, globPatterns: ['**/*.{js,css,html,svg,png,jpg,woff2}'], globIgnores: ['personal/**'], navigateFallbackDenylist: [/^\/api\//, /^\/personal\//] },
+      workbox: { importScripts: ['push-sw.js'], skipWaiting: true, clientsClaim: true, cleanupOutdatedCaches: true, globPatterns: ['**/*.{js,css,html,svg,png,jpg,woff2}'], globIgnores: ['personal/**'], navigateFallbackDenylist: [/^\/api\//, /^\/personal\//] },
     }),
   ],
   server: { host: '0.0.0.0', proxy: { '/api': 'http://localhost:8788' } },

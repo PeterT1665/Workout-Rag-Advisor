@@ -3,6 +3,9 @@ import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest'
 import App from './App'
 import { PhoneFrame, showPhoneFrame } from './views/PhoneFrame'
 import { getProfile, reloadProfile } from './lib/profile'
+import * as push from './lib/push'
+
+vi.mock('./lib/push', async (orig) => ({ ...(await orig<object>()), scheduleRest: vi.fn(async () => {}), cancelRest: vi.fn(async () => {}) }))
 
 const spoken: string[] = []
 const played: string[] = []
@@ -112,6 +115,26 @@ describe('app', () => {
     click(/More gym sessions/)
     expect(screen.getByText(/4 gym/)).toBeTruthy()
     expect(getProfile().gym).toBe(4)
+  })
+
+  test('leaving the app mid-rest schedules a call-back; coming back cancels it', () => {
+    render(<App />)
+    click(/All sessions/)
+    click(/Close control & 1v1/)
+    vi.useFakeTimers({ toFake: ['setTimeout', 'setInterval', 'clearTimeout', 'clearInterval', 'Date'] })
+    click(/Start session/)
+    act(() => { vi.advanceTimersByTime(1200) })
+    click(/Let's go/)
+    let guard = 0
+    while (stepName() !== 'Rest' && guard++ < 50) click(/^Skip$/)
+    const hide = (state: string) => { Object.defineProperty(document, 'visibilityState', { value: state, configurable: true }); act(() => { document.dispatchEvent(new Event('visibilitychange')) }) }
+    hide('hidden')
+    expect(push.scheduleRest).toHaveBeenCalledTimes(1)
+    const [secs, next] = vi.mocked(push.scheduleRest).mock.calls[0]
+    expect(secs).toBeGreaterThan(5)
+    expect(typeof next).toBe('string')
+    hide('visible')
+    expect(push.cancelRest).toHaveBeenCalled()
   })
 
   test('player: the cue fills the screen', () => {
