@@ -3,6 +3,7 @@ import { Button, Panel, Screen, Title, TopBar } from '../components/ui'
 import { DEFAULT_QUOTES, loadQuotes, save } from '../lib/storage'
 import { PHOTO_SLOTS, removePhoto, setPhoto, usePhotos, type Slot } from '../lib/photos'
 import { usePersonalImage } from '../lib/personal'
+import { CropSheet } from '../components/CropSheet'
 import { syncEnabled } from '../lib/sync'
 import { ACCENTS, setProfile, useProfile } from '../lib/profile'
 
@@ -14,6 +15,7 @@ function PhotoSlots() {
 function PhotoTile({ id, label, hint }: { id: Slot; label: string; hint: string }) {
   const own = usePhotos()[id]
   const shown = usePersonalImage(`${id}.jpg`) // own photo, else the app's default
+  const [cropping, setCropping] = useState<Blob | null>(null) // the player card photo is cropped like a profile picture
   return (
     <div className="relative overflow-hidden rounded-2xl bg-surface-2">
       <label className="block cursor-pointer">
@@ -26,8 +28,9 @@ function PhotoTile({ id, label, hint }: { id: Slot; label: string; hint: string 
           <span className="block text-xs text-muted">{hint}</span>
         </div>
         <input type="file" accept="image/*" className="sr-only" aria-label={`${own ? 'Replace' : 'Add'} ${label} photo`}
-          onChange={(e) => { const f = e.target.files?.[0]; if (f) void setPhoto(id, f); e.target.value = '' }} />
+          onChange={(e) => { const f = e.target.files?.[0]; if (f) { if (id === 'card') setCropping(f); else void setPhoto(id, f) } e.target.value = '' }} />
       </label>
+      {cropping && <CropSheet file={cropping} title="Your card photo" onCancel={() => setCropping(null)} onDone={(b) => { setCropping(null); void setPhoto(id, b) }} />}
       {own && (
         <button onClick={() => void removePhoto(id)} aria-label={`Remove ${label} photo`}
           className="absolute top-2 right-2 grid h-9 w-9 place-items-center rounded-full bg-black/60 text-white">✕</button>

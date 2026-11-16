@@ -81,3 +81,19 @@ Problems Peter hits while planning and training, and what was done about each.
 29. **The week explanation was a block of text.**
     - Now: a small **How your week works** button (e.g. "1 game · 2 football · 3 gym · 1 recovery").
     - It opens a sheet: each day with its matchday and job, the planner's rules, and the pro references each rule came from. *(staging)*
+
+## 2026-11-16 (after the gym)
+
+30. **Dragging exercises was buggy.** Supersets didn't move together, and the page scrolled while dragging.
+    - Now: a new drag in the builder and the in-session Plan.
+      - A superset moves as one block.
+      - The page stays still and only scrolls when you hold the exercise at the top or bottom edge.
+      - Others slide out of the way.
+      - Keyboard arrows still work. *(staging)*
+31. **Changing the session at the gym.**
+    - Now: Plan during a session has drag, **+ Superset with above** (combine two exercises on the spot), **+ Add exercise** (the full library, including Home), **Swap** (now opens and closes smoothly) and **remove**.
+    - Removing the first exercise of a superset leaves its partner as a normal exercise. *(staging)*
+32. **No crop for the card photo.**
+    - Now: picking a card photo (Player tab → **Change photo**, or Make it yours) opens a crop screen. Drag, pinch or slide to zoom, inside a circle like a profile picture.
+    - The Team profile picture uses the same crop. *(staging)*
+33. **Rest-over notification** ("Come back to training. Lock in, let's go" / "No more doom scroll, let's roll"). Needs server push on iPhone. Waiting on Peter's go-ahead (see the 16/11 chat).

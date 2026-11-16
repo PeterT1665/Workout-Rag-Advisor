@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState } from 'react'
 import { Button, Title } from '../components/ui'
 import { FlameIcon } from '../components/icons'
 import { Sheet } from '../components/Sheet'
+import { CropSheet } from '../components/CropSheet'
 import { PlayerCard, overall } from '../components/PlayerCard'
 import { cardStatsFor } from '../lib/cardStats'
 import { useProfile, type Accent, type Foot, type Position, type Profile } from '../lib/profile'
@@ -187,21 +188,25 @@ function Avatar({ url, name, big = false }: { url?: string; name: string; big?: 
 
 function AvatarPicker({ url, name, onChanged }: { url?: string; name: string; onChanged: () => void }) {
   const [busy, setBusy] = useState(false)
-  return (
+  const [cropping, setCropping] = useState<Blob | null>(null)
+  const upload = async (f: Blob) => {
+    setBusy(true)
+    const ok = await setAvatar(f)
+    setBusy(false)
+    if (ok) onChanged(); else alert("Couldn't upload the photo. Check your connection and try again.")
+  }
+  return (<>
+    {cropping && <CropSheet file={cropping} title="Profile picture" size={512} onCancel={() => setCropping(null)} onDone={(b) => { setCropping(null); void upload(b) }} />}
     <label className="relative shrink-0 cursor-pointer" aria-label="Change your profile picture">
       <Avatar url={url} name={name} big />
       <span className="absolute -right-1 -bottom-1 grid h-6 w-6 place-items-center rounded-full bg-red text-xs text-on-red">{busy ? '…' : '+'}</span>
       <input type="file" accept="image/*" className="sr-only" onChange={async (e) => {
         const f = e.target.files?.[0]
         e.target.value = ''
-        if (!f) return
-        setBusy(true)
-        const ok = await setAvatar(f)
-        setBusy(false)
-        if (ok) onChanged(); else alert("Couldn't upload the photo. Check your connection and try again.")
+        if (f) setCropping(f)
       }} />
     </label>
-  )
+  </>)
 }
 
 function UsernameForm({ current, profile, onDone, onCancel }: { current?: string; profile: Profile; onDone: () => void; onCancel?: () => void }) {

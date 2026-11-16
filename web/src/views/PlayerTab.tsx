@@ -2,6 +2,8 @@ import { Button, Panel, SectionHead, Title } from '../components/ui'
 import { PlayerCard } from '../components/PlayerCard'
 import { cardStatsFor } from '../lib/cardStats'
 import { usePersonalImage } from '../lib/personal'
+import { setPhoto } from '../lib/photos'
+import { CropSheet } from '../components/CropSheet'
 import { useProfile } from '../lib/profile'
 import { useState } from 'react'
 import { deleteHistory, loadHistory, type HistoryEntry } from '../lib/storage'
@@ -17,6 +19,7 @@ export function PlayerTab({ wide = false, onTestDay }: { wide?: boolean; onTestD
   const me = useProfile()
   const stats = cardStatsFor(me)
   const [, setVersion] = useState(0)
+  const [cropping, setCropping] = useState<Blob | null>(null)
   const all = loadHistory()
   const history = all.slice().reverse()
   const remove = (h: HistoryEntry) => {
@@ -34,7 +37,14 @@ export function PlayerTab({ wide = false, onTestDay }: { wide?: boolean; onTestD
       </div>
       <p className="mt-4 text-center text-sm text-muted">
         {me.sample ? 'Example ratings.' : me.ratings ? `Rated ${me.ratings.date}` : 'Not rated yet.'}
+        {' · '}
+        <label className="cursor-pointer font-semibold text-ink underline decoration-red decoration-2 underline-offset-4">
+          Change photo
+          <input type="file" accept="image/*" className="sr-only" aria-label="Change your card photo"
+            onChange={(e) => { const f = e.target.files?.[0]; if (f) setCropping(f); e.target.value = '' }} />
+        </label>
       </p>
+      {cropping && <CropSheet file={cropping} title="Your card photo" onCancel={() => setCropping(null)} onDone={(b) => { setCropping(null); void setPhoto('card', b) }} />}
       {onTestDay && <Button block className="mt-4" onClick={onTestDay}>{me.ratings ? 'New rating session' : 'Start rating session'}</Button>}
 
       </div>

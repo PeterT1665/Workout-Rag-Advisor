@@ -1,5 +1,6 @@
 import { useState } from 'react'
-import { Reorder, useDragControls } from 'motion/react'
+import { DragList, type GripProps } from '../components/DragList'
+import { moveUnit, unitsOf } from '../lib/units'
 import { VideoBox } from '../components/VideoBox'
 import { Button, Pill, Screen, Title, TopBar } from '../components/ui'
 import { fmtReps, sessionMinutes } from '../lib/logic'
@@ -29,12 +30,6 @@ export function Builder({ from, onSave, onCancel, onDelete }: {
 
   // edits keep the row's key, so the row isn't remounted
   const update = (i: number, p: Partial<Item>) => setItems((xs) => xs.map((x, j) => (j === i ? withKeyOf(x, { ...x, ...p }) : x)))
-  const move = (i: number, d: -1 | 1) => setItems((xs) => {
-    const j = i + d
-    if (j < 0 || j >= xs.length) return xs
-    const next = [...xs];[next[i], next[j]] = [next[j], next[i]]
-    return next
-  })
 
   if (picking) return (
     <Picker items={items} onDone={() => setPicking(false)}
@@ -53,14 +48,21 @@ export function Builder({ from, onSave, onCancel, onDelete }: {
         className="mt-1 mb-2 block min-h-12 w-full rounded-2xl bg-surface px-4 font-display text-lg uppercase text-ink placeholder:text-muted placeholder:normal-case" />
       <p className="mb-5 font-display text-sm tabular-nums text-muted">{items.length} exercises · about {minutes} min</p>
 
-      <Reorder.Group as="ol" axis="y" values={items} onReorder={setItems} className="m-0 flex list-none flex-col gap-2 p-0">
-        {items.map((it, i) => (
-          <BuilderRow key={keyOf(it)} item={it} index={i} last={i === items.length - 1} intoNext={!!items[i + 1]?.superset}
-            canPair={i > 0 && exercise(it.ex)?.kind === 'drill' && exercise(items[i - 1].ex)?.kind === 'drill'}
-            onPair={() => update(i, { superset: !it.superset || undefined })}
-            onMove={(d) => move(i, d)} onUpdate={(p) => update(i, p)} onRemove={() => setItems((xs) => xs.filter((_, j) => j !== i))} />
-        ))}
-      </Reorder.Group>
+      {/* a superset is one unit: it drags as a whole */}
+      <DragList units={unitsOf(items)} keyOf={(u) => keyOf(u.items[0])} onMove={(from, to) => setItems((xs) => moveUnit(xs, from, to))}
+        render={(u, _ui, grip) => (
+          <div className="flex flex-col">
+            {u.items.map((it, k) => {
+              const i = u.start + k
+              return (
+                <BuilderRow key={keyOf(it)} item={it} index={i} intoNext={!!items[i + 1]?.superset} grip={grip}
+                  canPair={i > 0 && exercise(it.ex)?.kind === 'drill' && exercise(items[i - 1].ex)?.kind === 'drill'}
+                  onPair={() => update(i, { superset: !it.superset || undefined })}
+                  onUpdate={(p) => update(i, p)} onRemove={() => setItems((xs) => xs.filter((_, j) => j !== i))} />
+              )
+            })}
+          </div>
+        )} />
 
       <Button variant="ghost" block className="mt-4" onClick={() => setPicking(true)}>+ Add exercises</Button>
       {editing && onDelete && (
@@ -86,24 +88,21 @@ const withKeyOf = (from: Item, to: Item) => { keys.set(to, keyOf(from)); return 
 
 // One exercise in the session. Hold the grip to drag it up or down; with a keyboard, focus the grip and use the arrows.
 // A row marked superset is done back to back with the row above (A1 then A2, then rest): push + pull, or heavy + explosive.
-function BuilderRow({ item: it, index: i, last, intoNext, canPair, onPair, onMove, onUpdate, onRemove }: {
-  item: Item; index: number; last: boolean; intoNext: boolean; canPair: boolean; onPair: () => void
-  onMove: (d: -1 | 1) => void; onUpdate: (p: Partial<Item>) => void; onRemove: () => void
+function BuilderRow({ item: it, index: i, intoNext, canPair, grip, onPair, onUpdate, onRemove }: {
+  item: Item; index: number; intoNext: boolean; canPair: boolean; grip: GripProps; onPair: () => void
+  onUpdate: (p: Partial<Item>) => void; onRemove: () => void
 }) {
-  const drag = useDragControls()
   const e = exercise(it.ex)
   if (!e) return null
   const rounds = it.rounds ?? e.rounds ?? 1
   const work = it.work ?? e.work
   const rest = it.rest ?? e.rest ?? 0
   return (
-    <Reorder.Item value={it} dragListener={false} dragControls={drag} as="li"
-      whileDrag={{ scale: 1.02, boxShadow: '0 16px 40px rgba(0,0,0,.5)', zIndex: 10 }}
-      className={`relative bg-surface p-3 ${it.superset && i > 0 ? '-mt-1.5 rounded-b-[18px] border-l-4 border-red' : 'rounded-t-[18px]'} ${intoNext ? 'rounded-t-[18px] border-l-4 border-red' : 'rounded-b-[18px]'}`}>
+    <div
+      className={`relative bg-surface p-3 ${it.superset && i > 0 ? 'mt-0.5 rounded-b-[18px] border-l-4 border-red' : 'rounded-t-[18px]'} ${intoNext ? 'rounded-t-[18px] border-l-4 border-red' : 'rounded-b-[18px]'}`}>
       <div className="flex items-start gap-2">
-        <button aria-label={`Reorder ${e.name}: drag, or use the arrow keys`} onPointerDown={(ev) => drag.start(ev)}
-          onKeyDown={(ev) => { if (ev.key === 'ArrowUp' && i > 0) { ev.preventDefault(); onMove(-1) } if (ev.key === 'ArrowDown' && !last) { ev.preventDefault(); onMove(1) } }}
-          className="-my-1 -ml-1 grid h-11 w-9 shrink-0 cursor-grab touch-none place-items-center rounded-xl text-muted active:cursor-grabbing active:bg-surface-2">
+        <button aria-label={`Reorder ${e.name}${it.superset || intoNext ? ' (moves with its superset)' : ''}: drag, or use the arrow keys`} {...grip}
+          className="-my-1 -ml-1 grid h-11 w-9 shrink-0 touch-none select-none place-items-center rounded-xl text-muted active:cursor-grabbing active:bg-surface-2">
           <svg viewBox="0 0 12 20" className="h-5 w-3" fill="currentColor" aria-hidden="true">
             {[3, 10, 17].map((y) => <g key={y}><circle cx="3" cy={y} r="1.6" /><circle cx="9" cy={y} r="1.6" /></g>)}
           </svg>
@@ -127,7 +126,7 @@ function BuilderRow({ item: it, index: i, last, intoNext, canPair, onPair, onMov
           ? <div className="grid place-items-center rounded-xl bg-surface-2 px-2 py-1.5 text-center text-[11px] uppercase leading-tight tracking-wide text-muted">Straight into the next</div>
           : <Stepper label={it.superset ? 'Rest after pair' : 'Rest'} value={rest} text={fmtSec(rest)} onChange={(v) => onUpdate({ rest: Math.max(0, Math.min(600, v)) })} step={rest >= 120 ? 30 : 15} />}
       </div>
-    </Reorder.Item>
+    </div>
   )
 }
 
@@ -155,7 +154,7 @@ function Stepper({ label, value, text, step, onChange }: { label: string; value:
   )
 }
 
-function Picker({ items, onAdd, onRemove, onDone }: { items: Item[]; onAdd: (id: string) => void; onRemove: (id: string) => void; onDone: () => void }) {
+export function Picker({ items, onAdd, onRemove, onDone }: { items: Item[]; onAdd: (id: string) => void; onRemove: (id: string) => void; onDone: () => void }) {
   const [sport, setSport] = useState<Sport>('football')
   const cats = categories(sport)
   const [cat, setCat] = useState<string>('all')
@@ -167,7 +166,7 @@ function Picker({ items, onAdd, onRemove, onDone }: { items: Item[]; onAdd: (id:
   return (
     <Screen>
       <TopBar left={<Title>Library</Title>} right={<Button size="sm" onClick={onDone}>Done · {items.length}</Button>} />
-      <div role="tablist" className="mb-3 grid grid-cols-3 gap-1 rounded-full bg-surface p-1">
+      <div role="tablist" className="mb-3 grid grid-cols-4 gap-1 rounded-full bg-surface p-1">
         {SPORTS.map((s) => (
           <button key={s.id} role="tab" aria-selected={sport === s.id} onClick={() => { setSport(s.id); setCat('all') }}
             className={`min-h-10 rounded-full font-display text-xs uppercase transition-colors duration-150 ${sport === s.id ? 'bg-red text-on-red' : 'text-muted'}`}>
