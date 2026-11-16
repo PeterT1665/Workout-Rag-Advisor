@@ -119,6 +119,23 @@ The **streak is calculated by the server** from `workouts`, using the same rules
    - Then licensed videos (record our own, or 3D).
 5. **Train with a friend.** A shared live session at the gym or pitch, on the same timer.
 
+## Decisions (2026-11-16)
+
+- **Visibility:** card, streak and rating are visible to **friends only**. Search shows only username, name, number and photo, and needs the exact username **and** shirt number.
+- **Leaderboard:** friends first. Teams and clubs come later on the same tables.
+- **PRs:** self-reported for now. A friend's "I was there ✓" comes later.
+- **Usernames:** unique and changeable. The first change is free, then once every 30 days.
+- **Quotes:** kept, never with a name underneath.
+- **RAG scripts:** kept, as the portfolio piece and the reference for the AI Coach (Claude + retrieval from our own database).
+
+## Phase 1: built (migration 0005)
+
+- `profiles`, `friendships`, `find_player()`, `friend_requests()` and the `avatars` bucket. Tested in `supabase/tests/team_test.sql`.
+- **Change from the plan:** the training log stays in `user_state`. The app publishes streak, rating and last active to `profiles`, and the database checks the ranges.
+  - Server-side streaks would mean rewriting the week planner in SQL or running an Edge Function.
+  - It wouldn't stop fake logs anyway.
+  - The log moves to a `workouts` table with phase 2 (PRs) and the AI Coach.
+- **Online** means active in the last 5 minutes. The app publishes on open and every 3 minutes while it's open.
 ## Open questions
 
 - **Who can see your card and streak:** friends only, or anyone who searches your username?

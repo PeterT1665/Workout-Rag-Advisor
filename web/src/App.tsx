@@ -16,6 +16,10 @@ import { TestDay } from './views/TestDay'
 import { Invite } from './views/Invite'
 import { CoachView } from './views/CoachView'
 import { TeamView } from './views/TeamView'
+import { publishStats } from './lib/team'
+import { syncEnabled } from './lib/sync'
+import { cardStatsFor } from './lib/cardStats'
+import { overall } from './components/PlayerCard'
 import { TabBar, type Tab } from './components/TabBar'
 import { removeOldClips } from './lib/clips'
 import { openPhotos } from './lib/photos'
@@ -57,7 +61,8 @@ const MAKEUP_PICKS: Record<string, string[]> = {
 const ymd = (d: Date) => d.toLocaleDateString('en-CA')
 const dayName = (date: string) => new Date(`${date}T12:00:00`).toLocaleDateString('en-GB', { weekday: 'long' })
 
-export default function App() {
+// onSignUp: guests can start making an account from inside the app (Team needs one)
+export default function App({ onSignUp }: { onSignUp?: () => void } = {}) {
   const [tab, setTab] = useState<Tab>('home')
   const [overlay, setOverlay] = useState<Overlay | null>(null)
   const [settings, setSettings] = useState<Settings>(loadSettings)
@@ -146,6 +151,18 @@ export default function App() {
 
   // plan streak, and a missed day that can still be made up (Home shows ready-made sessions for it)
   const streak = planStreak(loadHistory(), games, gymPerWeek ?? DEFAULT_GYM, changes)
+  // signed in: friends see your streak, rating and when you were last on (on open, on changes, every 3 min while open)
+  const me = useProfile()
+  useEffect(() => {
+    if (!syncEnabled()) return
+    const publish = () => {
+      const card = cardStatsFor(me)
+      void publishStats(me, { card, rating: card ? overall(card) : null, streak: streak.days, trainedToday: streak.today })
+    }
+    publish()
+    const t = setInterval(() => { if (document.visibilityState === 'visible') publish() }, 180000)
+    return () => clearInterval(t)
+  }, [me, streak.days, streak.today])
   const makeup = streak.makeup ? {
     missed: dayName(streak.makeup.date),
     by: streak.makeup.by === ymd(new Date()) ? 'tonight' : streak.makeup.by === ymd(new Date(Date.now() + 864e5)) ? 'tomorrow' : dayName(streak.makeup.by),
@@ -216,7 +233,7 @@ export default function App() {
       )}
       {tab === 'week' && <WeekView today={today} games={games} sessions={sessions} library={library} changes={changes} onChange={changeDay} onGames={updateGames} onOpen={open} onCoach={() => setOverlay({ name: 'coach' })} />}
       {tab === 'player' && <PlayerTab onTestDay={() => setOverlay({ name: 'testday' })} />}
-      {tab === 'team' && <TeamView streak={streak} />}
+      {tab === 'team' && <TeamView streak={streak} onSignUp={onSignUp} />}
       </div>
       <TabBar tab={tab} onTab={setTab} onKickOff={() => onStart(today.session)} />
     </>

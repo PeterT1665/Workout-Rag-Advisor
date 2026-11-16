@@ -75,7 +75,7 @@ function Guest({ onSignIn, onSignUp }: { onSignIn?: () => void; onSignUp?: () =>
   }
   if (next) return <NextSteps name={getProfile().name} onSignUp={onSignUp} onDone={() => setNext(false)} />
   if (getProfile().sample) seedDemo()
-  return <App />
+  return <App onSignUp={onSignUp} />
 }
 
 // Laptop preview of the welcome screen, whatever is saved. Choosing a player turns this phone into the real app.

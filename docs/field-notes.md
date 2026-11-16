@@ -68,3 +68,5 @@ Problems Peter hits while planning and training, and what was done about each.
 24. **Product focus** (Peter):
     - Core: plan the week around the game, correct instructions per exercise, detailed football sessions.
     - Growth: friends leaderboard (streaks), player card rating, training with friends.
+25. **Quotes without names.** The app showed your role model's name under every quote, whoever said it (the "Speed didn't say that" moment). Names are gone; quotes stay. *(staging)*
+26. **Team, phase 1.** Pick a username and photo, find friends by exact username + shirt number, send and accept requests. The leaderboard ranks friends by streak, then rating, and shows who's online. Tap a friend to see their card. Friends-only. Needs `supabase/migrations/0005_team.sql` to be run. *(staging)*
