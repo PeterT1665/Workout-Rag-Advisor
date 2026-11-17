@@ -61,9 +61,9 @@ export function PlayerView({ session, player, settings, onExit }: { session: Ses
 
   return (
     <Screen className="flex flex-col">
-      <div className="flex items-center justify-between">
-        <span className="font-display text-sm font-bold uppercase tracking-[0.2em]" style={{ color: accent }}>{isRest ? (prevPair ? t('Superset {x} round {n} done', { x: prevPair[0], n: step.round }) : t('Round {n} of {total} done', { n: step.round, total: step.rounds })) : phase}</span>
-        <span className="font-display text-sm font-bold tabular-nums text-muted">{t('{time} left', { time: fmtTime(st.total - st.elapsed) })}</span>
+      <div className="flex items-center justify-between gap-3">
+        <span className="min-w-0 font-display text-sm font-bold uppercase tracking-[0.2em]" style={{ color: accent }}>{isRest ? (prevPair ? t('Superset {x} round {n} done', { x: prevPair[0], n: step.round }) : t('Round {n} of {total} done', { n: step.round, total: step.rounds })) : phase}</span>
+        <span className="shrink-0 font-display text-sm font-bold tabular-nums text-muted">{t('{time} left', { time: fmtTime(st.total - st.elapsed) })}</span>
       </div>
       <h1 key={st.i} className="slam m-0 mt-1 font-display text-3xl uppercase leading-none" data-testid="step-name">
         {isRest ? t('Rest') : step.name}
@@ -104,12 +104,12 @@ export function PlayerView({ session, player, settings, onExit }: { session: Ses
         })}
       </div>
 
-      <div className="mt-auto grid grid-cols-[1fr_2fr_1fr] gap-3 pt-6">
-        <Button variant="ghost" onClick={player.back}>{t('Back')}</Button>
-        <Button onClick={player.press}>{paced && st.running ? t('Set done') : st.running ? t('Pause') : t('Resume')}</Button>
-        <Button variant="ghost" onClick={player.skip}>{t('Skip')}</Button>
+      <div className="mt-auto grid grid-cols-[minmax(0,1fr)_minmax(0,1.3fr)_minmax(0,1fr)] gap-3 pt-6">
+        <Button variant="ghost" className="min-w-0 px-1! tracking-normal!" onClick={player.back}>{t('Back')}</Button>
+        <Button className="min-w-0 px-2!" onClick={player.press}>{paced && st.running ? t('Set done') : st.running ? t('Pause') : t('Resume')}</Button>
+        <Button variant="ghost" className="min-w-0 px-1! tracking-normal!" onClick={player.skip}>{t('Skip')}</Button>
       </div>
-      <div className="mt-3 flex justify-center gap-2">
+      <div className="mt-3 flex flex-wrap justify-center gap-2">
         <Button variant="ghost" size="sm" aria-haspopup="dialog" onClick={() => setInfo(isRest && next ? st.i + 1 : st.i)}>{t('Video')}</Button>
         <Button variant="ghost" size="sm" aria-haspopup="dialog" onClick={() => setPlan(true)}>{t('Plan')}</Button>
         <Button variant="ghost" size="sm" onClick={() => { if (!confirm(t('End the session now?'))) return; if (player.getState().elapsed >= 60) player.endEarly(); else onExit() }}>{t('End session')}</Button>
@@ -131,8 +131,8 @@ export function PlayerView({ session, player, settings, onExit }: { session: Ses
       {/* Full-screen cue: readable from a few metres away, phone on the ground */}
       <div aria-hidden={!st.cue} data-testid="cue"
         className={`fixed inset-0 z-50 flex flex-col bg-red px-4 pt-[max(20px,var(--sat))] pb-[max(24px,env(safe-area-inset-bottom))] text-white transition-opacity duration-100 ${st.cue ? 'opacity-100' : 'pointer-events-none opacity-0'}`}>
-        <div className="flex justify-between font-display text-sm uppercase tracking-wider">
-          <span>{step.name.replace(/\s*\([^)]*\)/g, '')} · {step.round}/{step.rounds}</span>
+        <div className="flex justify-between gap-3 font-display text-sm uppercase tracking-wider">
+          <span className="min-w-0 truncate">{step.name.replace(/\s*\([^)]*\)/g, '')} · {step.round}/{step.rounds}</span>
           <span className="tabular-nums">{fmtTime(st.remainingMs / 1000)}</span>
         </div>
         {st.cue && (

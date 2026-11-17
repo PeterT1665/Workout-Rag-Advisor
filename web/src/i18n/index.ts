@@ -54,9 +54,11 @@ export const voiceLang = () => LANGS.find((l) => l.id === lang)!.voice
 // For dates and numbers shown to the player (storage keys keep their fixed formats).
 export const locale = () => (lang === 'en' ? 'en-GB' : voiceLang())
 
-// t('Round {n} of {total}', { n: 1, total: 3 })
+// t('Round {n} of {total}', { n: 1, total: 3 }). A '|note' after the text tells translators where it's used
+// (t('Rest|strip') is the short label in the week strip); English drops the note.
 export function t(en: string, vars?: Record<string, string | number>): string {
-  let s = dict[en] || en
+  const bar = en.indexOf('|')
+  let s = dict[en] || (bar > 0 ? en.slice(0, bar) : en)
   if (vars) for (const k in vars) s = s.split(`{${k}}`).join(String(vars[k]))
   return s
 }

@@ -38,7 +38,7 @@ function TeamGuest({ streak, onSignUp, onSignIn }: { streak: Streak; onSignUp?: 
       <p className="m-0 mt-2 text-muted">{t("Add your friends, see who's training, and compete on streaks and ratings.")}</p>
       <section className="mt-6 rounded-[24px] bg-surface p-4" aria-label={t('Leaderboard')}>
         <h2 className="m-0 mb-3 font-display text-base uppercase">{t('Leaderboard')}</h2>
-        <Row rank={1} name={me.name || 'You'} number={me.number} sub="You" streak={streak.days} lit={streak.today} rating={stats ? overall(stats) : null} />
+        <Row rank={1} name={me.name || t('You')} number={me.number} sub={t('You')} streak={streak.days} lit={streak.today} rating={stats ? overall(stats) : null} />
       </section>
       <section className="mt-4 rounded-[24px] bg-surface p-4">
         <h2 className="m-0 font-display text-base uppercase">{t('Play with friends')}</h2>
@@ -256,7 +256,7 @@ function UsernameForm({ current, profile, onDone, onCancel }: { current?: string
       <p className={`m-0 mt-1 text-sm ${msg ? 'text-red-ink' : 'text-muted'}`}>{msg ?? t('3–20 letters, numbers, dots or underscores.')}</p>
       <div className="mt-4 flex gap-2">
         {onCancel && <Button type="button" variant="ghost" className="flex-1 bg-surface-2" onClick={onCancel}>{t('Cancel')}</Button>}
-        <Button type="submit" className="flex-1" disabled={!valid || busy}>{busy ? 'Saving…' : 'Save'}</Button>
+        <Button type="submit" className="flex-1" disabled={!valid || busy}>{busy ? 'Saving…' : t('Save')}</Button>
       </div>
     </form>
   )
@@ -321,7 +321,7 @@ function FriendSheet({ p, photo, you, onClose, onRemove }: { p: TeamProfile; pho
         <div className="mt-4 grid grid-cols-3 gap-2 text-center">
           <Stat label={t('Streak')} value={`${p.streak}`} />
           <Stat label={t('Best')} value={`${p.best_streak}`} />
-          <Stat label={you ? 'You' : a.online ? 'Online' : 'Seen'} value={you ? '—' : a.online ? '●' : a.label} />
+          <Stat label={you ? t('You') : a.online ? t('Online') : t('Seen')} value={you ? '—' : a.online ? '●' : a.label} />
         </div>
         {!p.card && <p className="m-0 mt-3 text-center text-sm text-muted">{t('Not rated yet.')}</p>}
         <div className="mt-5 flex gap-3">

@@ -48,7 +48,7 @@ export function TestDay({ onDone }: { onDone: () => void }) {
   if (i === TESTS.length && saved) {
     const stats = toCardStats(saved.ratings, saved.prevRatings)
     const ovr = stats ? overall(stats) : null
-    const tier = ovr === null ? null : ovr >= 75 ? 'Gold' : ovr >= 65 ? 'Silver' : 'Bronze'
+    const tier = ovr === null ? null : ovr >= 75 ? t('Gold') : ovr >= 65 ? t('Silver') : 'Bronze'
     return (
       <Screen className="flex flex-col items-center text-center">
         <p className="m-0 mt-2 font-display text-sm uppercase text-red-ink">{t('Rating session done')}</p>
@@ -67,7 +67,7 @@ export function TestDay({ onDone }: { onDone: () => void }) {
     <Screen className="flex flex-col">
       <div className="mb-5 flex items-center gap-3">
         <Button variant="ghost" size="sm" onClick={() => setI(i - 1)}>{t('Back')}</Button>
-        <div className="flex flex-1 gap-1" aria-label={`Test ${i + 1} of ${TESTS.length}`}>
+        <div className="flex flex-1 gap-1" aria-label={t('Test {n} of {total}', { n: i + 1, total: TESTS.length })}>
           {TESTS.map((_, k) => <div key={k} className={`h-1.5 flex-1 rounded-full ${k <= i ? 'bg-red' : 'bg-surface-2'}`} />)}
         </div>
       </div>
@@ -121,7 +121,7 @@ function Stopwatch({ onStop }: { onStop: (seconds: number) => void }) {
   return (
     <button onClick={toggle} aria-label={start === null ? t('Start stopwatch') : t('Stop stopwatch')}
       className={`mt-5 flex min-h-24 w-full items-center justify-between rounded-[24px] px-6 transition-colors duration-150 ${start === null ? 'bg-surface' : 'bg-red text-on-red'}`}>
-      <span className="font-display text-sm uppercase">{start === null ? (ms ? 'Again' : 'Start') : 'Stop'}</span>
+      <span className="font-display text-sm uppercase">{start === null ? (ms ? t('Again') : t('Start')) : t('Stop')}</span>
       <span className="font-display text-5xl tabular-nums">{fmt(ms)}</span>
     </button>
   )
@@ -141,7 +141,7 @@ function Countdown({ seconds }: { seconds: number }) {
     <button onClick={() => { const s = loadSettings(); beep(s, 1800, 120); setLeft(seconds) }} disabled={left !== null && left > 0}
       aria-label={t('Start {n} second countdown', { n: seconds })}
       className={`mt-5 flex min-h-24 w-full items-center justify-between rounded-[24px] px-6 ${left !== null && left > 0 ? 'bg-red text-on-red' : 'bg-surface'}`}>
-      <span className="font-display text-sm uppercase">{left === null ? 'Start' : left > 0 ? 'Go' : 'Time · again'}</span>
+      <span className="font-display text-sm uppercase">{left === null ? t('Start') : left > 0 ? 'Go' : 'Time · again'}</span>
       <span className="font-display text-5xl tabular-nums">{left ?? seconds}s</span>
     </button>
   )

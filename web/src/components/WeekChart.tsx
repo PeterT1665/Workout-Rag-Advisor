@@ -10,7 +10,7 @@ export const KINDS = [
   { id: 'football', label: t('Football'), color: '#3987e5' },
   { id: 'gym', label: t('Gym'), color: '#d95926' },
   { id: 'recovery', label: t('Recovery & mobility'), color: '#199e70' },
-  { id: 'home', label: t('Home'), color: '#c98500' },
+  { id: 'home', label: t('At home'), color: '#c98500' },
 ] as const
 type Kind = (typeof KINDS)[number]['id']
 
@@ -42,7 +42,7 @@ export function WeekChart({ history }: { history: HistoryEntry[] }) {
   const week = totals.reduce((a, b) => a + b, 0)
   const byKind = KINDS.map((k) => days.reduce((a, d) => a + d[k.id], 0))
   const today = todayIndex()
-  const describe = (i: number) => `${DAYS[i]}: ${totals[i]} min${totals[i] ? ` (${KINDS.filter((k) => days[i][k.id]).map((k) => `${k.label} ${days[i][k.id]}`).join(', ')})` : ''}`
+  const describe = (i: number) => `${DAYS[i]}: ${t('{n} min', { n: totals[i] })}${totals[i] ? ` (${KINDS.filter((k) => days[i][k.id]).map((k) => `${k.label} ${days[i][k.id]}`).join(', ')})` : ''}`
 
   return (
     <figure className="m-0 rounded-[20px] bg-surface p-4">
@@ -60,7 +60,7 @@ export function WeekChart({ history }: { history: HistoryEntry[] }) {
         ))}
       </ul>
 
-      <div className="relative mt-6 grid h-36 grid-cols-7 items-end gap-2" role="img" aria-label={`Minutes by day: ${days.map((_, i) => describe(i)).join('; ')}`}>
+      <div className="relative mt-6 grid h-36 grid-cols-[repeat(7,minmax(0,1fr))] items-end gap-2" role="img" aria-label={`${t('Minutes by day')}: ${days.map((_, i) => describe(i)).join('; ')}`}>
         <div className="pointer-events-none absolute inset-x-0 bottom-0 h-px bg-[color-mix(in_oklab,var(--text)_14%,transparent)]" />
         {days.map((d, i) => (
           <button key={i} aria-label={describe(i)} onClick={() => setOpen(open === i ? null : i)}
@@ -89,7 +89,7 @@ export function WeekChart({ history }: { history: HistoryEntry[] }) {
           </button>
         ))}
       </div>
-      <div className="mt-2 grid grid-cols-7 gap-2 text-center font-display text-[11px] text-muted">
+      <div className="mt-2 grid grid-cols-[repeat(7,minmax(0,1fr))] gap-2 text-center font-display text-[11px] text-muted">
         {DAY_SHORT.map((s, i) => <span key={i} className={i === today ? 'text-ink' : ''}>{s}</span>)}
       </div>
       {week === 0 && <p className="m-0 mt-3 text-sm text-muted">{t('Finish a session and it shows up here, coloured by kind.')}</p>}

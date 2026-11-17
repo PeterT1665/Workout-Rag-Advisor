@@ -27,7 +27,7 @@ export type GymFocus = 'strength' | 'upper-power' | 'core' | 'activation'
 export type Slot = { day: number; kind: SlotKind; note?: string; focus?: GymFocus }
 export type WeekPlan = { slots: Slot[]; reasons: string[] }
 export const kindLabel = (k: SlotKind | string) =>
-  ({ game: t('Game'), football: t('Football'), gym: t('Gym'), recovery: t('Recovery'), home: t('Home') } as Record<string, string>)[k] ?? k
+  ({ game: t('Game'), football: t('Football'), gym: t('Gym'), recovery: t('Recovery'), home: t('At home') } as Record<string, string>)[k] ?? k
 
 export const FOCUS_LABEL: Record<GymFocus, string> = {
   strength: t('Strength & contrast: legs'), 'upper-power': t('Upper body power'), core: t('Core & injury prevention'), activation: t('Match-eve activation'),

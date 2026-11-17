@@ -56,6 +56,8 @@ test('no screen text outside t()', () => {
       }
       if (/^[A-Z][A-Za-z ,.'!?:;…-]+$/.test(s) && !s.endsWith(',')) found.push(`${at} ${s}`)
       if (/\b(confirm|alert)\(\s*['"`]/.test(line)) found.push(`${at} confirm/alert text`)
+      // a single word picked in code: cond ? 'Now' : ..., name || 'You', sub="You"
+      for (const m of code.matchAll(/(?:[?:]|\|\|)\s*'([A-Z][a-z]{2,})'(?=\s*[:)}])|\bsub="([A-Za-z][^"]*)"/g)) found.push(`${at} ${m[1] ?? m[2]}`)
     })
   }
   expect(found).toEqual([])

@@ -34,7 +34,7 @@ export function Detail({ session: s, onBack, onStart, onEdit, onInvite, onSchedu
     <Screen className="pb-0">
       <TopBar left={<Button variant="ghost" size="sm" onClick={onBack}>{t('Back')}</Button>} right={
         <div className="flex items-center gap-2">
-          {onEdit && <Button variant="ghost" size="sm" onClick={onEdit}>{isMine(s.id) ? 'Edit' : 'Customise'}</Button>}
+          {onEdit && <Button variant="ghost" size="sm" onClick={onEdit}>{isMine(s.id) ? t('Edit') : t('Customise')}</Button>}
           <Tag accent>{s.type}</Tag>
         </div>} />
       <Title>{s.title}</Title>
@@ -56,9 +56,9 @@ export function Detail({ session: s, onBack, onStart, onEdit, onInvite, onSchedu
             <Button variant="ghost" size="sm" className="flex-1 bg-surface-2" aria-expanded={pickDay} onClick={() => setPickDay(!pickDay)}>{t('Pick a day')}</Button>
           </div>
           {pickDay && (
-            <div className="rise mt-2 grid grid-cols-7 gap-1.5">
+            <div className="rise mt-2 grid grid-cols-[repeat(7,minmax(0,1fr))] gap-1.5">
               {DAYS.map((d, i) => (
-                <button key={d} onClick={() => onSchedule(i)} aria-label={`Do it on ${d}`}
+                <button key={d} onClick={() => onSchedule(i)} aria-label={t('Do it on {day}', { day: d })}
                   className={`min-h-11 rounded-2xl font-display text-xs uppercase ${i === todayIndex() ? 'bg-surface-2 text-ink ring-1 ring-red' : 'bg-surface-2 text-muted'}`}>{d.slice(0, 2)}</button>
               ))}
             </div>
@@ -84,7 +84,7 @@ export function Detail({ session: s, onBack, onStart, onEdit, onInvite, onSchedu
         return (
           <section key={kind}>
             <div className="mt-8 mb-3 flex items-baseline justify-between">
-              <h2 className="m-0 font-display text-lg uppercase">{kind === 'warmup' ? 'Warm-up' : kind === 'drill' ? 'Drills' : 'Cool-down'}</h2>
+              <h2 className="m-0 font-display text-lg uppercase">{kind === 'warmup' ? 'Warm-up' : kind === 'drill' ? t('Drills') : 'Cool-down'}</h2>
               <span className="text-sm text-muted">{t('{n} min', { n: mins })}</span>
             </div>
             <ol className="m-0 flex list-none flex-col gap-2 p-0">

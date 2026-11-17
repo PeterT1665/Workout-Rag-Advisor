@@ -25,7 +25,7 @@ export function PlayerCard({ p, stats, photo, className = '' }: { p: Profile; st
   const foot = p.foot === 'both' ? t('Both feet') : p.foot === 'left' ? t('Left foot') : t('Right foot')
   return (
     <div className={`@container relative aspect-[0.72] w-full select-none ${className}`} role="img"
-      aria-label={`${p.name || 'Player'} card${ovr !== null ? `, overall ${ovr}` : ', unrated'}`}>
+      aria-label={`${p.name || t('Player')} card${ovr !== null ? `, overall ${ovr}` : ', unrated'}`}>
       <div className="absolute inset-0 drop-shadow-[0_12px_24px_rgba(0,0,0,.45)]">
         <div className="absolute inset-0" style={{ clipPath: SHIELD, background: f.outer }} />
         <div className="absolute inset-[2.2%] overflow-hidden" style={{ clipPath: SHIELD, background: f.inner, color: f.ink } as CSSProperties}>

@@ -89,7 +89,7 @@ export function PlanSheet({ player, onClose }: { player: Player; onClose: () => 
               const now = steps[st.i]?.blockIdx === bi || (!!pair && pair[0] === nowLetter)
               return (
                 <li key={bi} className={`flex items-center gap-3 rounded-2xl px-4 py-3 ${now ? 'bg-surface-2 ring-1 ring-red' : 'bg-surface-2/50'}`}>
-                  <span className={`w-10 shrink-0 font-display text-[11px] uppercase ${now ? 'text-red-ink' : 'text-muted'}`}>{now ? 'Now' : '✓'}</span>
+                  <span className={`min-w-10 shrink-0 whitespace-nowrap font-display text-[11px] uppercase ${now ? 'text-red-ink' : 'text-muted'}`}>{now ? t('Now') : '✓'}</span>
                   <span className={`min-w-0 flex-1 ${now ? '' : 'text-muted'}`}>
                     {pair && <span className="mr-1.5 font-display text-red-ink">{pair}</span>}
                     {short(b.name)}
@@ -159,7 +159,7 @@ function PlanRow({ row: { block: b }, pair, grip, joined, inSet, canPair, swappi
           <button onClick={onSwapToggle} aria-expanded={swapping}
             className={`min-h-9 shrink-0 rounded-full px-3 font-display text-[11px] uppercase transition-colors duration-150 ${swapping ? 'bg-red text-on-red' : 'bg-surface text-ink'}`}>{t('Swap')}</button>
         )}
-        <button aria-label={`Remove ${name}`} onClick={onRemove}
+        <button aria-label={t('Remove {name}', { name })} onClick={onRemove}
           className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-surface text-sm active:scale-90">✕</button>
       </div>
       {canPair && (

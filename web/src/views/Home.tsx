@@ -33,7 +33,7 @@ type Props = {
   makeup?: { missed: string; by: string; picks: Session[] } | null // a missed day that can still be made up
 }
 
-const SLOT_LABEL = (): Record<SlotKind, string> => ({ game: t('Game day'), football: t('Football'), gym: t('Gym'), recovery: t('Recovery'), cheer: 'Cheer' })
+const SLOT_LABEL = (): Record<SlotKind, string> => ({ game: t('Game day'), football: t('Football'), gym: t('Gym'), recovery: t('Recovery'), cheer: 'Cheer' }) // i18n-ignore: old cheer mode
 const dateKey = () => new Date().toISOString().slice(0, 10)
 
 // ---------- hero ----------
@@ -92,7 +92,7 @@ export function Hero({ today, onKickOff, onOpen, onSettings, onCustomise, streak
         <h1 className={`m-0 mt-3 mb-2 font-display uppercase leading-[.95] text-white ${desktop ? 'text-[38px]' : 'text-[32px]'}`}>{s.title}</h1>
         {status && <p className="m-0 mb-3 text-sm text-white/75">{status}</p>}
         <div className="mt-3 flex gap-2.5">
-          <Button onClick={() => onKickOff(s)}>{t('Kick off')} →</Button>
+          <Button onClick={() => onKickOff(s)}>{t('Kick off')}{'\u00a0'}→</Button>
           <Button variant="glass" className="font-sans normal-case tracking-normal text-[15px] font-semibold" onClick={() => onOpen(s)}>
             {t('{n} min', { n: sessionMinutes(s) })} · {t('{n} drills', { n: s.blocks.length })}
           </Button>
@@ -169,7 +169,7 @@ export function DrillCard({ name, meta, cue, category, onOpen, fluid = false }: 
 // ---------- week strip ----------
 export function WeekStrip({ today, kindFor }: { today: Today; kindFor?: (day: number) => string | null | undefined }) {
   return (
-    <div className="grid grid-cols-7 gap-1.5">
+    <div className="grid grid-cols-[repeat(7,minmax(0,1fr))] gap-1.5">
       {DAY_SHORT.map((d, day) => {
         const slots = today.plan.slots.filter((s) => s.day === day)
         const planned = slots.find((s) => s.kind === 'game') ?? slots[0]
@@ -179,10 +179,10 @@ export function WeekStrip({ today, kindFor }: { today: Today; kindFor?: (day: nu
         const isToday = day === today.day
         const base = 'mt-1.5 grid h-12 place-items-center rounded-[14px] font-display text-[11px] uppercase'
         let cell
-        if (!main) cell = <div className={`${base} border-[1.5px] border-dashed border-white/15 text-muted`}>{t('Rest')}</div>
-        else if (main.kind === 'game') cell = <div className={`${base} bg-red text-white`}>{t('Game')}</div>
+        if (!main) cell = <div className={`${base} border-[1.5px] border-dashed border-white/15 text-muted`}>{t('Rest|strip')}</div>
+        else if (main.kind === 'game') cell = <div className={`${base} bg-red text-white`}>{t('Game|strip')}</div>
         else if (main.kind === 'football') cell = <div className={`${base} bg-surface-2`}><BallIcon className="h-7 w-7" /></div>
-        else cell = <div className={`${base} bg-surface-2 text-muted`}>{main.kind === 'recovery' ? t('Rec') : main.kind === 'cheer' ? 'Chr' : main.kind === 'gym' ? t('Gym') : main.kind}</div>
+        else cell = <div className={`${base} bg-surface-2 text-muted`}>{main.kind === 'recovery' ? t('Rec') : main.kind === 'cheer' ? 'Chr' : main.kind === 'gym' ? t('Gym|strip') : main.kind}</div> // i18n-ignore: old cheer mode
         return (
           <div key={day} className="text-center">
             <div className="font-display text-[11px] text-muted">{d}</div>

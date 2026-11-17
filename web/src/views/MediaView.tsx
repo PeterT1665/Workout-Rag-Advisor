@@ -28,12 +28,12 @@ function PhotoTile({ id, label, hint }: { id: Slot; label: string; hint: string 
           <span className="block text-sm font-semibold">{label}</span>
           <span className="block text-xs text-muted">{hint}</span>
         </div>
-        <input type="file" accept="image/*" className="sr-only" aria-label={`${own ? 'Replace' : 'Add'} ${label} photo`}
+        <input type="file" accept="image/*" className="sr-only" aria-label={`${own ? t('Replace') : t('Add')} ${label} photo`}
           onChange={(e) => { const f = e.target.files?.[0]; if (f) { if (id === 'card') setCropping(f); else void setPhoto(id, f) } e.target.value = '' }} />
       </label>
       {cropping && <CropSheet file={cropping} title={t('Your card photo')} onCancel={() => setCropping(null)} onDone={(b) => { setCropping(null); void setPhoto(id, b) }} />}
       {own && (
-        <button onClick={() => void removePhoto(id)} aria-label={`Remove ${label} photo`}
+        <button onClick={() => void removePhoto(id)} aria-label={t('Remove {what} photo', { what: label })}
           className="absolute top-2 right-2 grid h-9 w-9 place-items-center rounded-full bg-black/60 text-white">✕</button>
       )}
     </div>

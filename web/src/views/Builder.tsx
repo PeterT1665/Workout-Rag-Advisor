@@ -118,14 +118,14 @@ function BuilderRow({ item: it, index: i, intoNext, canPair, grip, onPair, onUpd
             </button>
           )}
         </div>
-        <IconBtn label={`Remove ${e.name}`} onClick={onRemove}>✕</IconBtn>
+        <IconBtn label={t('Remove {name}', { name: e.name })} onClick={onRemove}>✕</IconBtn>
       </div>
       <div className="mt-3 grid grid-cols-3 gap-2">
-        <Stepper label={e.reps ? 'Sets' : 'Rounds'} value={rounds} text={`${rounds}`} onChange={(v) => onUpdate({ rounds: Math.max(1, Math.min(20, v)) })} step={1} />
-        <Stepper label={e.reps ? t('Set time') : 'Work'} value={work} text={fmtSec(work)} onChange={(v) => onUpdate({ work: Math.max(5, Math.min(1200, v)) })} step={work >= 120 ? 30 : 5} />
+        <Stepper label={e.reps ? t('Sets') : t('Rounds')} value={rounds} text={`${rounds}`} onChange={(v) => onUpdate({ rounds: Math.max(1, Math.min(20, v)) })} step={1} />
+        <Stepper label={e.reps ? t('Set time') : t('Work')} value={work} text={fmtSec(work)} onChange={(v) => onUpdate({ work: Math.max(5, Math.min(1200, v)) })} step={work >= 120 ? 30 : 5} />
         {intoNext
           ? <div className="grid place-items-center rounded-xl bg-surface-2 px-2 py-1.5 text-center text-[11px] uppercase leading-tight tracking-wide text-muted">{t('Straight into the next')}</div>
-          : <Stepper label={it.superset ? t('Rest after pair') : 'Rest'} value={rest} text={fmtSec(rest)} onChange={(v) => onUpdate({ rest: Math.max(0, Math.min(600, v)) })} step={rest >= 120 ? 30 : 15} />}
+          : <Stepper label={it.superset ? t('Rest after pair') : t('Rest')} value={rest} text={fmtSec(rest)} onChange={(v) => onUpdate({ rest: Math.max(0, Math.min(600, v)) })} step={rest >= 120 ? 30 : 15} />}
       </div>
     </div>
   )
@@ -147,9 +147,9 @@ function Stepper({ label, value, text, step, onChange }: { label: string; value:
     <div className="rounded-xl bg-surface-2 px-2 py-1.5 text-center">
       <span className="block text-[11px] uppercase tracking-wide text-muted">{label}</span>
       <div className="flex items-center justify-between">
-        <button aria-label={`Less ${label}`} onClick={() => onChange(value - step)} className="h-8 w-8 rounded-full text-lg active:bg-surface">−</button>
+        <button aria-label={t('Less {what}', { what: label })} onClick={() => onChange(value - step)} className="h-8 w-8 rounded-full text-lg active:bg-surface">−</button>
         <span className="font-display text-sm tabular-nums">{text}</span>
-        <button aria-label={`More ${label}`} onClick={() => onChange(value + step)} className="h-8 w-8 rounded-full text-lg active:bg-surface">+</button>
+        <button aria-label={t('More {what}', { what: label })} onClick={() => onChange(value + step)} className="h-8 w-8 rounded-full text-lg active:bg-surface">+</button>
       </div>
     </div>
   )
@@ -179,7 +179,7 @@ export function Picker({ items, onAdd, onRemove, onDone }: { items: Item[]; onAd
         {['all', ...cats].map((c) => (
           <button key={c} onClick={() => setCat(c)} aria-pressed={cat === c}
             className={`min-h-9 shrink-0 rounded-full px-4 text-sm font-semibold ${cat === c ? 'bg-ink text-bg' : 'bg-surface text-muted'}`}>
-            {c === 'all' ? 'All' : CATEGORY_LABELS[c] ?? c}
+            {c === 'all' ? t('All') : CATEGORY_LABELS[c] ?? c}
           </button>
         ))}
       </div>
@@ -204,10 +204,10 @@ function AddRemove({ name, n, onAdd, onRemove, big = false }: { name: string; n:
   return (
     <div className="flex shrink-0 items-center gap-1">
       {n > 0 && <>
-        <button aria-label={`Remove ${name}`} onClick={onRemove} className={`pop grid place-items-center rounded-full text-ink ${big ? 'bg-surface-2' : 'bg-surface'} transition-transform duration-150 ease-snap active:scale-90 ${size}`}>−</button>
-        <span className="w-6 text-center font-display text-sm tabular-nums" aria-label={`${n} added`}>{n}</span>
+        <button aria-label={t('Remove {name}', { name })} onClick={onRemove} className={`pop grid place-items-center rounded-full text-ink ${big ? 'bg-surface-2' : 'bg-surface'} transition-transform duration-150 ease-snap active:scale-90 ${size}`}>−</button>
+        <span className="w-6 text-center font-display text-sm tabular-nums" aria-label={t('{n} added', { n })}>{n}</span>
       </>}
-      <button aria-label={`Add ${name}`} onClick={onAdd}
+      <button aria-label={t('Add {name}', { name })} onClick={onAdd}
         className={`grid place-items-center rounded-full transition-transform duration-150 ease-snap active:scale-90 ${n || big ? 'bg-red text-on-red' : 'bg-surface-2 text-ink'} ${size}`}>+</button>
     </div>
   )

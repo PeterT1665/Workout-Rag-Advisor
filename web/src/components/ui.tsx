@@ -31,7 +31,8 @@ export function Screen({ children, className = '' }: { children: ReactNode; clas
 }
 
 export function TopBar({ left, right }: { left?: ReactNode; right?: ReactNode }) {
-  return <div className="mb-5 flex min-h-10 items-center justify-between gap-3">{left}{right}</div>
+  // the title gives way (wraps) before the button does: long words in some languages
+  return <div className="mb-5 flex min-h-10 items-center justify-between gap-3"><div className="min-w-0">{left}</div>{right && <div className="shrink-0">{right}</div>}</div>
 }
 
 export function Pill({ children, tone = 'muted', className = '' }: { children: ReactNode; tone?: 'red' | 'muted' | 'glass'; className?: string }) {

@@ -101,14 +101,14 @@ export function WeekView({ today, games, sessions, library, changes, onChange, o
       <div className={wide ? 'mt-2 grid grid-cols-[minmax(0,1fr)_minmax(0,1.2fr)] gap-10' : ''}>
       <div>
       <p className="mt-2 text-muted">{t('Tap the days you play.')}</p>
-      <div className="mt-4 grid grid-cols-7 gap-1.5">
+      <div className="mt-4 grid grid-cols-[repeat(7,minmax(0,1fr))] gap-1.5">
         {DAY_SHORT.map((d, day) => {
           const k = kindOn(day)
           return (
             <button key={day} onClick={() => cycle(day)} aria-label={`${DAYS[day]}: ${k === 'none' ? t('no game') : k === 'casual' ? t('casual game') : t('competitive game')}`}
               className={`grid h-16 place-items-center rounded-[14px] font-display text-[9px] uppercase transition-transform duration-150 ease-snap active:scale-95 ${k === 'none' ? 'bg-surface text-muted' : 'bg-red text-white'}`}>
               <span className="text-sm">{d}</span>
-              <span>{k === 'none' ? '—' : k === 'casual' ? t('Casual') : t('Comp')}</span>
+              <span>{k === 'none' ? '—' : k === 'casual' ? t('Casual|strip') : t('Comp')}</span>
             </button>
           )
         })}

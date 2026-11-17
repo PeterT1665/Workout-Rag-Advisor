@@ -17,7 +17,7 @@ const REFERENCES = () => [
   { n: 2, who: t('"Train like a Premier League player"'), what: t('Team training + legs + speed on MD-4, a light MD-3. Taught us to stack the hard day and keep the next day easy.') },
 ]
 
-const KIND_LABEL = (): Record<string, string> => ({ game: t('Game'), football: t('Football'), recovery: t('Recovery'), cheer: 'Cheer' })
+const KIND_LABEL = (): Record<string, string> => ({ game: t('Game'), football: t('Football'), recovery: t('Recovery'), cheer: 'Cheer' }) // i18n-ignore: old cheer mode
 
 export function WeekGuide({ plan, games }: { plan: WeekPlan; games: Game[] }) {
   const [open, setOpen] = useState(false)

@@ -7,14 +7,14 @@ export type Tab = 'home' | 'week' | 'player' | 'team'
 export function TabBar({ tab, onTab, onKickOff }: { tab: Tab; onTab: (t: Tab) => void; onKickOff: () => void }) {
   const item = (t: Tab, label: string) => (
     <button onClick={() => onTab(t)} aria-current={tab === t ? 'page' : undefined}
-      className={`relative min-h-12 font-display text-[11px] uppercase tracking-wider transition-colors duration-150 ${tab === t ? 'text-white' : 'text-white/50'}`}>
+      className={`relative min-h-12 min-w-0 whitespace-nowrap font-display uppercase ${label.length > 8 ? 'text-[9px] tracking-tight' : label.length > 7 ? 'text-[9px] tracking-normal' : 'text-[10px] tracking-wide'} transition-colors duration-150 ${tab === t ? 'text-white' : 'text-white/50'}`}>
       {label}
       {tab === t && <motion.span layoutId="tab-dot" className="absolute bottom-1 left-1/2 h-1 w-5 -translate-x-1/2 rounded-full bg-red"
         transition={{ type: 'spring', duration: 0.35, bounce: 0.2 }} />}
     </button>
   )
   return (
-    <nav className="fixed inset-x-3 bottom-[max(12px,env(safe-area-inset-bottom))] z-40 mx-auto grid h-[70px] max-w-[540px] grid-cols-[1fr_1fr_84px_1fr_1fr] items-center rounded-[26px] bg-[#161817]/90 shadow-[0_10px_30px_rgba(0,0,0,.4)] backdrop-blur-xl">
+    <nav className="fixed inset-x-3 bottom-[max(12px,env(safe-area-inset-bottom))] z-40 mx-auto grid h-[70px] max-w-[540px] grid-cols-[minmax(0,1fr)_minmax(0,1fr)_84px_minmax(0,1fr)_minmax(0,1fr)] items-center rounded-[26px] bg-[#161817]/90 shadow-[0_10px_30px_rgba(0,0,0,.4)] backdrop-blur-xl">
       {item('home', t('Home'))}
       {item('week', t('Week'))}
       <button onClick={onKickOff} aria-label={t("Kick off today's session")}

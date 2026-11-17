@@ -20,7 +20,7 @@ const byId = new Map(EXERCISES.map((e) => [e.id, e]))
 export const exercise = (id: string) => byId.get(id)
 
 export const SPORTS: { id: Sport; label: string }[] = [
-  { id: 'football', label: t('Football') }, { id: 'gym', label: t('Gym') }, { id: 'home', label: t('Home') }, { id: 'mobility', label: t('Mobility') },
+  { id: 'football', label: t('Football') }, { id: 'gym', label: t('Gym') }, { id: 'home', label: t('At home') }, { id: 'mobility', label: t('Mobility') },
 ]
 export const CATEGORY_LABELS: Record<string, string> = {
   warmup: t('Warm-up'), cooldown: t('Cool-down'), 'ball-mastery': t('Dribbling'), 'first-touch': t('First touch'), passing: t('Passing'),

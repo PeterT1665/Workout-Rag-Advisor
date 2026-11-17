@@ -71,7 +71,7 @@ export function Onboarding({ initial, initialGames = [], welcome = false, onDone
     <Screen className="flex flex-col">
       <div className="mb-5 flex items-center gap-3">
         {(step > 0 || welcome || onCancel) && <Button variant="ghost" size="sm" onClick={back}>{t('Back')}</Button>}
-        <div className="flex flex-1 gap-1" aria-label={`Step ${step + 1} of ${STEPS.length}`}>
+        <div className="flex flex-1 gap-1" aria-label={t('Step {n} of {total}', { n: step + 1, total: STEPS.length })}>
           {STEPS.map((_, i) => <div key={i} className={`h-1.5 flex-1 rounded-full transition-colors duration-300 ${i <= step ? 'bg-red' : 'bg-surface-2'}`} />)}
         </div>
       </div>
@@ -121,15 +121,15 @@ export function Onboarding({ initial, initialGames = [], welcome = false, onDone
             <section className="rounded-[22px] bg-surface p-4">
               <h2 className="m-0 font-display text-lg uppercase">{t('Match days')}</h2>
               <p className="m-0 mt-1 mb-3 text-sm text-muted">{t('Tap the days you play games.')}</p>
-              <div className="grid grid-cols-7 gap-1.5">
+              <div className="grid grid-cols-[repeat(7,minmax(0,1fr))] gap-1.5">
                 {DAYS.map((d, day) => {
                   const on = games.some((g) => g.day === day)
                   return (
-                    <button key={d} aria-pressed={on} aria-label={`${d}${on ? ', match' : ''}`}
+                    <button key={d} aria-pressed={on} aria-label={on ? t('{day}, match', { day: d }) : d}
                       onClick={() => setGames(on ? games.filter((g) => g.day !== day) : [...games, { day, kind: 'competitive' as const }].sort((a, b) => a.day - b.day))}
                       className={`flex min-h-16 flex-col items-center justify-center rounded-2xl transition-[transform,background-color] duration-150 ease-snap active:scale-95 ${on ? 'bg-red text-on-red' : 'bg-surface-2 text-ink'}`}>
                       <span className="font-display text-sm">{d.slice(0, 2)}</span>
-                      <span className={`text-[10px] font-semibold uppercase ${on ? '' : 'text-muted'}`}>{on ? 'Match' : '·'}</span>
+                      <span className={`text-[10px] font-semibold uppercase ${on ? '' : 'text-muted'}`}>{on ? t('Match') : '·'}</span>
                     </button>
                   )
                 })}
@@ -169,7 +169,7 @@ export function Onboarding({ initial, initialGames = [], welcome = false, onDone
         )}
       </div>
 
-      <Button block className="mt-6" disabled={!valid} onClick={next}>{step === STEPS.length - 1 ? "Done · let's train" : 'Next'}</Button>
+      <Button block className="mt-6" disabled={!valid} onClick={next}>{step === STEPS.length - 1 ? "Done · let's train" : t('Next')}</Button>
     </Screen>
   )
 }
