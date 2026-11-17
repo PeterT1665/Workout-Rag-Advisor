@@ -117,3 +117,16 @@ Problems Peter hits while planning and training, and what was done about each.
     - Settings → Notifications has **Send a test**. send-push logs why a send failed. *(staging)*
 38. **Tap Up next during a rest to see the next exercise.**
     - Now: it opens the next exercise's sets, how-to and video. *(staging)*
+
+## 18/11 (overnight build, on staging)
+
+39. **Team said "create an account" to a signed-in player.**
+    - Now: the Team tab also offers **Sign in**, and a weak signal while the app starts no longer drops a signed-in player to guest mode (the saved login is kept and retried).
+40. **Languages: English, Tiếng Việt, Español, Português, Français, Bahasa Indonesia.**
+    - Every screen, the exercise library (instructions, equipment, session titles), the voice and the notifications. Exercise names stay English.
+    - Follows the phone's language on first open; change it in Settings → Language or on the welcome screen.
+    - Safety net: `src/i18n/i18n.test.ts` fails if any line is missing in any language or a screen shows text that skips translation. New lines: `node scripts/i18n-catalog.mjs` lists them.
+    - Checked on a virtual iPhone (375 and 390 wide) in every language: no screen scrolls sideways, long words wrap properly.
+41. **Add friends by QR.**
+    - Team → **Show my QR**. A friend scans it: "Peter #7 invited you to be friends" → create an account or sign in → you're friends straight away (no request to accept).
+    - Needs migration 0008 (run it before testing).
