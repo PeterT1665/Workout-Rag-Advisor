@@ -25,3 +25,13 @@ select count(*) as first_claim from public.claim_due_pushes();                  
 select count(*) as second_claim from public.claim_due_pushes();                        -- 0
 select public.queue_weekly_pushes() >= 0 as weekly_runs;                               -- t
 select public.prune_pushes();
+
+-- 0007: a rest call-back names its device; someone else's device is ignored
+set role authenticated;
+set request.jwt.claim.sub = '11111111-1111-1111-1111-111111111111';
+select public.schedule_rest_push(60, 'Rest is over', 'Go', 'https://push.example/a');
+select endpoint from public.scheduled_pushes where kind = 'rest' and sent_at is null;          -- https://push.example/a
+select public.schedule_rest_push(60, 'Rest is over', 'Go', 'https://push.example/not-mine');
+select count(*) as pending, max(endpoint) as endpoint from public.scheduled_pushes where kind = 'rest' and sent_at is null; -- 1 | (null)
+select public.schedule_rest_push(60, 'Rest is over', 'Go');                                    -- old 3-argument call still works
+reset role;

@@ -3,10 +3,16 @@
 self.addEventListener('push', (event) => {
   let d = {}
   try { d = event.data ? event.data.json() : {} } catch { d = { body: event.data && event.data.text() } }
-  event.waitUntil(self.registration.showNotification(d.title || 'Football Personal Coach', {
-    body: d.body || '', tag: d.tag || 'fpc', renotify: true,
-    icon: '/icon-192.png', badge: '/icon-192.png', data: { url: d.url || '/' },
-  }))
+  // Each notification gets its own tag: on iPhone, reusing a tag can swap the old one out silently, with no banner.
+  // Older ones of the same kind are cleared first so Notification Centre doesn't fill up with rests.
+  const kind = d.kind || 'other'
+  event.waitUntil(self.registration.getNotifications()
+    .then((old) => old.forEach((n) => { if (n.data && n.data.kind === kind) n.close() }))
+    .catch(() => {})
+    .then(() => self.registration.showNotification(d.title || 'Football Personal Coach', {
+      body: d.body || '', tag: d.tag || `fpc-${Date.now()}`,
+      icon: '/icon-192.png', badge: '/icon-192.png', data: { url: d.url || '/', kind },
+    })))
 })
 
 self.addEventListener('notificationclick', (event) => {

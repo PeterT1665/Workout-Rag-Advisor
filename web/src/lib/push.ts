@@ -7,6 +7,18 @@ import { currentUser, syncEnabled } from './sync'
 
 const KEY = import.meta.env.VITE_VAPID_PUBLIC_KEY as string | undefined
 const FLAG = 'push:on' // this device subscribed (device-only, not synced)
+const ENDPOINT = 'push:endpoint' // this device's address, so a rest call-back reaches only the phone in the session
+const saved = () => { try { return localStorage.getItem(ENDPOINT) } catch { return null } }
+// Devices that turned notifications on before this was saved look it up once.
+async function myEndpoint(): Promise<string | null> {
+  const e = saved()
+  if (e) return e
+  try {
+    const sub = await (await swReady())?.pushManager.getSubscription()
+    if (sub) try { localStorage.setItem(ENDPOINT, sub.endpoint) } catch { /* ignore */ }
+    return sub?.endpoint ?? null
+  } catch { return null }
+}
 
 const isIOS = () => typeof navigator !== 'undefined' && /iPad|iPhone|iPod/.test(navigator.userAgent)
 const standalone = () => typeof matchMedia === 'function' && (matchMedia('(display-mode: standalone)').matches || (navigator as unknown as { standalone?: boolean }).standalone === true)
@@ -50,12 +62,14 @@ export async function enablePush(prefs: Prefs = { rest_alerts: true, weekly: tru
     })
     if (error) return 'unsupported'
     setFlag(true)
+    try { localStorage.setItem(ENDPOINT, j.endpoint) } catch { /* ignore */ }
     return 'on'
   } catch { return 'unsupported' }
 }
 
 export async function disablePush() {
   setFlag(false)
+  try { localStorage.removeItem(ENDPOINT) } catch { /* ignore */ }
   try {
     const reg = await swReady()
     const sub = await reg?.pushManager.getSubscription()
@@ -107,7 +121,7 @@ export function scheduleRest(seconds: number, next?: string) {
   return queue(async () => {
     try {
       const sb = await supabase()
-      await sb.rpc('schedule_rest_push', { p_seconds: Math.round(seconds), p_title: next ? `Rest is over · ${next}`.slice(0, 80) : 'Rest is over', p_body: line })
+      await sb.rpc('schedule_rest_push', { p_seconds: Math.round(seconds), p_title: next ? `Rest is over · ${next}`.slice(0, 80) : 'Rest is over', p_body: line, p_endpoint: await myEndpoint() })
     } catch { /* offline: no reminder this time */ }
   })
 }
@@ -126,7 +140,7 @@ export async function sendTest(): Promise<boolean> {
   if (!pushOn()) return false
   try {
     const sb = await supabase()
-    const { error } = await sb.rpc('schedule_rest_push', { p_seconds: 8, p_title: 'Test notification', p_body: 'Notifications work. Lock in, let\'s go.' })
+    const { error } = await sb.rpc('schedule_rest_push', { p_seconds: 8, p_title: 'Test notification', p_body: 'Notifications work. Lock in, let\'s go.', p_endpoint: await myEndpoint() })
     return !error
   } catch { return false }
 }

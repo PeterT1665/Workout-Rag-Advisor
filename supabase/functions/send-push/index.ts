@@ -9,8 +9,8 @@ const env = (k: string) => Deno.env.get(k) ?? ''
 
 webpush.setVapidDetails('https://football-personal-coach.ducphu1665.workers.dev', env('VAPID_PUBLIC_KEY'), env('VAPID_PRIVATE_KEY'))
 
-type Due = { id: number; user_id: string; title: string; body: string; url: string; kind: string }
-type Sub = { endpoint: string; p256dh: string; auth: string; rest_alerts: boolean; weekly: boolean }
+type Due = { id: number; user_id: string; title: string; body: string; url: string; kind: string; endpoint: string | null }
+type Sub = { endpoint: string; p256dh: string; auth: string; rest_alerts: boolean; weekly: boolean; created_at: string }
 
 Deno.serve(async (req) => {
   if (!env('CRON_SECRET') || req.headers.get('x-cron-secret') !== env('CRON_SECRET')) return new Response('no', { status: 401 })
@@ -22,7 +22,7 @@ Deno.serve(async (req) => {
   if (!list.length) return Response.json({ sent: 0 })
 
   const users = [...new Set(list.map((d) => d.user_id))]
-  const { data: subs } = await sb.from('push_subscriptions').select('endpoint, p256dh, auth, rest_alerts, weekly, user_id').in('user_id', users)
+  const { data: subs } = await sb.from('push_subscriptions').select('endpoint, p256dh, auth, rest_alerts, weekly, user_id, created_at').in('user_id', users)
   const byUser = new Map<string, Sub[]>()
   for (const s of (subs ?? []) as (Sub & { user_id: string })[]) byUser.set(s.user_id, [...(byUser.get(s.user_id) ?? []), s])
 
@@ -30,13 +30,21 @@ Deno.serve(async (req) => {
   const gone: string[] = []
   const failed: string[] = []
   const noDevice = list.filter((d) => !byUser.get(d.user_id)?.length).length
-  await Promise.all(list.flatMap((d) => (byUser.get(d.user_id) ?? [])
-    .filter((s) => (d.kind === 'rest' ? s.rest_alerts : s.weekly))
+  // A rest goes to the device whose session it is (all devices if it didn't say); "plan next week" to the newest one.
+  const targets = (d: Due) => {
+    const mine = byUser.get(d.user_id) ?? []
+    if (d.kind === 'rest') {
+      const one = d.endpoint ? mine.filter((s) => s.endpoint === d.endpoint) : []
+      return (one.length ? one : mine).filter((s) => s.rest_alerts)
+    }
+    return mine.filter((s) => s.weekly).sort((a, b) => b.created_at.localeCompare(a.created_at)).slice(0, 1)
+  }
+  await Promise.all(list.flatMap((d) => targets(d)
     .map(async (s) => {
       try {
         await webpush.sendNotification(
           { endpoint: s.endpoint, keys: { p256dh: s.p256dh, auth: s.auth } },
-          JSON.stringify({ title: d.title, body: d.body, url: d.url, tag: d.kind }),
+          JSON.stringify({ title: d.title, body: d.body, url: d.url, kind: d.kind, tag: `${d.kind}-${d.id}` }),
           { TTL: d.kind === 'rest' ? 120 : 6 * 3600, urgency: d.kind === 'rest' ? 'high' : 'normal' },
         )
         sent++

@@ -30,7 +30,7 @@ export function PlayerView({ session, player, settings, onExit }: { session: Ses
   useEffect(() => { player.start(); return () => player.stop() }, [player])
   useWakeLock(!st.finished)
   const [plan, setPlan] = useState(false)
-  const [video, setVideo] = useState<string | null>(null) // exercise whose video is open
+  const [info, setInfo] = useState<number | null>(null) // step whose how-to + video is open
 
   const step = st.steps[st.i]
   // a new card per rest step, not per tick
@@ -86,10 +86,10 @@ export function PlayerView({ session, player, settings, onExit }: { session: Ses
         {isRest ? (restQuote ? <QuoteCard text={restQuote} /> : <p className="m-0">Breathe. Walk it off. Sip water.</p>) : <p className="m-0">{step.how}</p>}
       </div>
       {isRest && next
-        ? <div className="mt-3 mb-4 flex items-center justify-between gap-3 rounded-[20px] bg-surface-2 px-4 py-3">
+        ? <button aria-haspopup="dialog" onClick={() => setInfo(st.i + 1)} className="mt-3 mb-4 flex w-full items-center justify-between gap-3 rounded-[20px] bg-surface-2 px-4 py-3 text-left transition-transform duration-150 active:scale-[0.98]">
             <span className="shrink-0 whitespace-nowrap text-sm text-muted">Up next</span>
-            <span className="text-right font-display text-sm uppercase">{next.name.replace(/\s*\([^)]*\)/g, '')}{next.rounds > 1 ? ` · ${next.round}/${next.rounds}` : ''}</span>
-          </div>
+            <span className="flex items-center gap-2 text-right font-display text-sm uppercase">{next.name.replace(/\s*\([^)]*\)/g, '')}{next.rounds > 1 ? ` · ${next.round}/${next.rounds}` : ''}<span aria-hidden className="text-muted">›</span></span>
+          </button>
         : <p className="mt-3 mb-4 text-sm text-muted">Up next: {next ? (next.type === 'rest' ? 'Rest' : next.name) : 'Last one.'}</p>}
 
       <div className="flex h-2 gap-[3px]" aria-label={`Part ${blocks.findIndex((b) => st.i >= b.from && st.i <= b.to) + 1} of ${blocks.length}`}>
@@ -109,18 +109,23 @@ export function PlayerView({ session, player, settings, onExit }: { session: Ses
         <Button variant="ghost" onClick={player.skip}>Skip</Button>
       </div>
       <div className="mt-3 flex justify-center gap-2">
-        <Button variant="ghost" size="sm" aria-haspopup="dialog" onClick={() => setVideo(isRest ? (next?.name ?? step.name) : step.name)}>Video</Button>
+        <Button variant="ghost" size="sm" aria-haspopup="dialog" onClick={() => setInfo(isRest && next ? st.i + 1 : st.i)}>Video</Button>
         <Button variant="ghost" size="sm" aria-haspopup="dialog" onClick={() => setPlan(true)}>Plan</Button>
         <Button variant="ghost" size="sm" onClick={() => { if (!confirm('End the session now?')) return; if (player.getState().elapsed >= 60) player.endEarly(); else onExit() }}>End session</Button>
       </div>
       {plan && <PlanSheet player={player} onClose={() => setPlan(false)} />}
-      {video && (
-        <Sheet label={`${video} video`} onClose={() => setVideo(null)}>
-            <h2 className="m-0 font-display text-xl uppercase leading-tight">{video.replace(/\s*\([^)]*\)/g, '')}</h2>
-            <VideoBox name={video} />
-            <Button block className="mt-4" onClick={() => setVideo(null)}>Back to the session</Button>
-        </Sheet>
-      )}
+      {info !== null && st.steps[info] && (() => {
+        const x = st.steps[info]
+        return (
+          <Sheet label={`${x.name} how-to`} onClose={() => setInfo(null)}>
+            <h2 className="m-0 font-display text-xl uppercase leading-tight">{x.name.replace(/\s*\([^)]*\)/g, '')}</h2>
+            {x.reps && <p className="m-0 mt-1 font-display text-base uppercase text-[var(--red-ink)]">{fmtReps(x.reps)}{x.rounds > 1 ? ` · set ${x.round}/${x.rounds}` : ''}</p>}
+            {x.how && <p className="m-0 mt-3">{x.how}</p>}
+            <VideoBox name={x.name} />
+            <Button block className="mt-4" onClick={() => setInfo(null)}>Back to the session</Button>
+          </Sheet>
+        )
+      })()}
 
       {/* Full-screen cue: readable from a few metres away, phone on the ground */}
       <div aria-hidden={!st.cue} data-testid="cue"

@@ -103,3 +103,17 @@ Problems Peter hits while planning and training, and what was done about each.
     - Ask: a one-time **Turn on** card on Home; Settings → Notifications has a toggle for each.
     - Needs an account and the app on the Home Screen.
     - Setup steps: docs/push-setup.md. *(staging, waiting on Peter's Supabase setup)*
+
+## 17/11 session
+
+35. **Card photo still square after cropping.**
+    - Now: the card shows the photo as a circle with a thin ring, like the crop. *(staging)*
+36. **Two installs on the same account both buzzed at the end of a rest.**
+    - Cause: a rest call-back went to every device on the account.
+    - Now: it goes only to the device whose session it is; "Plan next week" goes to the newest device. Migration 0007. *(staging)*
+37. **Notifications only worked sometimes, then stopped.**
+    - Cause 1: the call-back was booked as you left the app, and iPhone suspends the app before that request gets out. Now it's booked when the rest starts and dropped if you stay to the end.
+    - Cause 2 (likely): every rest notification had the same tag, and iPhone can swap a same-tag notification in silently. Now each has its own tag; old rest notifications are cleared.
+    - Settings → Notifications has **Send a test**. send-push logs why a send failed. *(staging)*
+38. **Tap Up next during a rest to see the next exercise.**
+    - Now: it opens the next exercise's sets, how-to and video. *(staging)*
