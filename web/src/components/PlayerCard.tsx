@@ -32,9 +32,9 @@ export function PlayerCard({ p, stats, photo, className = '' }: { p: Profile; st
           <div className="absolute inset-0 bg-[repeating-linear-gradient(-55deg,rgba(255,255,255,.22)_0_2px,transparent_2px_16px)] [mask-image:linear-gradient(225deg,#000_0%,transparent_45%)]" />
 
           {/* photo, or a big outlined number when there is none */}
-          <div className="absolute top-[9%] right-[4%] h-[44%] w-[60%]">
+          <div className={photo ? 'absolute top-[11%] right-[7%] aspect-square w-[54%]' : 'absolute top-[9%] right-[4%] h-[44%] w-[60%]'}>
             {photo
-              ? <img src={photo} alt="" data-fade className="h-full w-full object-cover object-top [mask-image:linear-gradient(to_bottom,#000_70%,transparent)]" />
+              ? <img src={photo} alt="" data-fade className="h-full w-full rounded-full object-cover" style={{ boxShadow: `0 0 0 1cqw ${f.line}, 0 2cqw 5cqw rgba(0,0,0,.25)` }} />
               : <span className="absolute right-0 bottom-0 font-display text-[44cqw] leading-[.8] text-transparent" style={{ WebkitTextStroke: `0.5cqw ${f.line.replace(/[\d.]+\)$/, '.45)')}` }}>{p.number || ''}</span>}
           </div>
 
