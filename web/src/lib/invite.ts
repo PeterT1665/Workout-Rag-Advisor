@@ -3,19 +3,23 @@
 import { supabase } from './supabase'
 
 const KEY = 'invite:friend' // code waiting to be accepted (kept through sign-up and email confirmation)
-const DONE = 'invite:done' // name of the friend just added, for a one-time "you're friends" note
+const DONE = 'invite:done'
+const SEEN = 'invite:seen' // the invite screen was shown; the code waits until they have an account // name of the friend just added, for a one-time "you're friends" note
 
 // Run once at start: keep the code from the link and tidy the address bar.
 export function captureInvite() {
   try {
     const url = new URL(location.href)
     const code = url.searchParams.get('friend')?.toLowerCase()
-    if (code && /^[a-z0-9]{10}$/.test(code)) localStorage.setItem(KEY, code)
+    if (code && /^[a-z0-9]{10}$/.test(code)) { localStorage.setItem(KEY, code); localStorage.removeItem(SEEN) } // a new scan shows the invite again
     if (url.searchParams.has('friend')) { url.searchParams.delete('friend'); history.replaceState(null, '', url.pathname + url.search + url.hash) }
   } catch { /* ignore */ }
 }
 export const pendingInvite = () => { try { return localStorage.getItem(KEY) } catch { return null } }
-export const dropInvite = () => { try { localStorage.removeItem(KEY) } catch { /* ignore */ } }
+export const dropInvite = () => { try { localStorage.removeItem(KEY); localStorage.removeItem(SEEN) } catch { /* ignore */ } }
+// "Not now": try the app first. The invite is kept and accepted whenever they make an account or sign in.
+export const laterInvite = () => { try { localStorage.setItem(SEEN, '1') } catch { /* ignore */ } }
+export const inviteSeen = () => { try { return localStorage.getItem(SEEN) === '1' } catch { return false } }
 
 export type Inviter = { name: string; number: number | null }
 export async function inviteInfo(code: string): Promise<Inviter | null> {

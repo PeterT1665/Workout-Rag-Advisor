@@ -10,7 +10,7 @@ import { accountsEnabled, arrivedToSetPassword } from './lib/supabase'
 import { seedDemo, startOwnDemo } from './lib/demo'
 import { SAMPLE_PROFILE, applyAccent, getProfile, hasProfile, reloadProfile, setProfile } from './lib/profile'
 import { saveGames } from './lib/today'
-import { acceptPendingInvite, pendingInvite } from './lib/invite'
+import { acceptPendingInvite, inviteSeen, pendingInvite } from './lib/invite'
 import { FriendInvite } from './views/FriendInvite'
 
 applyAccent(getProfile().accent)
@@ -29,7 +29,7 @@ function Main() {
   const [mode, setMode] = useState<Mode>(accountsEnabled ? 'checking' : 'guest')
   const [profiled, setProfiled] = useState(hasProfile)
   const [authStart, setAuthStart] = useState<'signin' | 'signup'>('signin')
-  const [invite, setInvite] = useState(() => !!pendingInvite())
+  const [invite, setInvite] = useState(() => !!pendingInvite() && !inviteSeen())
 
   async function enterAccount(next: Mode = 'account') {
     // A guest's sample player or leftovers must not end up in the account. A guest's own player is kept and uploaded.

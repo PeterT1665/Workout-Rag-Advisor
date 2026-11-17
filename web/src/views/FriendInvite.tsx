@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Button, Screen } from '../components/ui'
-import { dropInvite, inviteInfo, pendingInvite, type Inviter } from '../lib/invite'
+import { dropInvite, inviteInfo, laterInvite, pendingInvite, type Inviter } from '../lib/invite'
 import { t } from '../i18n'
 import { tr } from '../i18n/rich'
 
@@ -8,7 +8,8 @@ import { tr } from '../i18n/rich'
 export function FriendInvite({ onSignUp, onSignIn, onSkip }: { onSignUp: () => void; onSignIn: () => void; onSkip: () => void }) {
   const [who, setWho] = useState<Inviter | null | undefined>(undefined) // undefined: loading
   useEffect(() => { const c = pendingInvite(); if (c) void inviteInfo(c).then(setWho); else setWho(null) }, [])
-  const skip = () => { dropInvite(); onSkip() }
+  const skip = () => { dropInvite(); onSkip() } // invite not found: nothing to keep
+  const later = () => { laterInvite(); onSkip() } // keep it: accepted once they have an account
 
   if (who === undefined) return <div className="fixed inset-0 bg-bg" aria-busy="true" />
   if (!who) {
@@ -31,7 +32,7 @@ export function FriendInvite({ onSignUp, onSignIn, onSkip }: { onSignUp: () => v
       <div className="mt-auto flex flex-col gap-2 pb-2">
         <Button block onClick={onSignUp}>{t('Create account')}</Button>
         <Button block variant="ghost" className="bg-surface-2" onClick={onSignIn}>{t('I have an account')}</Button>
-        <button onClick={skip} className="min-h-11 text-sm font-semibold text-muted">{t('Not now')}</button>
+        <button onClick={later} className="min-h-11 text-sm font-semibold text-muted">{t('Try the app first')}</button>
       </div>
     </Screen>
   )
