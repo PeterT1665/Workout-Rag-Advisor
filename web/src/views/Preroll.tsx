@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react'
 import { usePersonalImage } from '../lib/personal'
 import type { Session } from '../lib/types'
+import { t } from '../i18n'
+import { tr } from '../i18n/rich'
 
 // Kick-off moment: a short "KICK OFF" intro (rare event, so it gets the delight budget),
 // then the session title and a quote card. Always dark and cinematic, whatever the system theme.
@@ -28,7 +30,7 @@ export function Preroll({ session, quote, onGo }: { session: Session; quote: str
       {phase !== 'card' && (
         <div className={`absolute inset-0 grid place-items-center ${phase === 'leaving' ? 'ko-out' : ''}`}>
           <div className="text-center">
-            <div className="ko-word font-display text-[clamp(4rem,24vw,8rem)] uppercase leading-[.85]">Kick<br /><span className="text-[var(--red-ink)]">off</span></div>
+            <div className="ko-word font-display text-[clamp(4rem,24vw,8rem)] uppercase leading-[.85]">{tr('Kick <r>off</r>', { r: (x) => <><br /><span className="text-[var(--red-ink)]">{x}</span></> })}</div>
             <div className="ko-sweep mx-auto mt-5 h-1.5 w-40 rounded-full bg-[var(--red)]" />
           </div>
         </div>
@@ -46,7 +48,7 @@ export function Preroll({ session, quote, onGo }: { session: Session; quote: str
           )}
           <button style={{ '--i': 4 } as React.CSSProperties} onClick={onGo}
             className="min-h-14 w-full rounded-full bg-[var(--red)] font-display text-sm uppercase tracking-wide text-white shadow-[0_6px_16px_-6px_rgba(0,0,0,.6)] transition-transform duration-150 ease-snap active:scale-[0.97]">
-            Let's go
+            {t("Let's go")}
           </button>
         </div>
       )}

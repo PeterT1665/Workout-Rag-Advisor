@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
 import { qrPath } from '../lib/qr'
+import { t } from '../i18n'
 
 // Laptop and desktop: the app is a phone app, so the website shows the real app running inside a phone frame
 // (an iframe of the same site), next to a QR code to open it on a phone. One layout to design, test and ship.
@@ -40,18 +41,18 @@ export function PhoneFrame() {
         {phone('home', 'Football Personal Coach', location.hash)}
 
         <section className="flex w-[280px] shrink-0 flex-col items-center text-center">
-          <p className="m-0 mb-6 font-display text-lg uppercase leading-tight">Football<br /><span className="text-red-ink">Personal Coach</span></p>
+          <p className="m-0 mb-6 font-display text-lg uppercase leading-tight">Football<br /><span className="text-red-ink">Personal Coach</span></p> {/* i18n-ignore: app name */}
           <div className="w-48 rounded-[24px] bg-white p-3">
-            <svg viewBox={`-1 -1 ${qr.n + 2} ${qr.n + 2}`} className="block w-full" role="img" aria-label="QR code to open the app on your phone">
+            <svg viewBox={`-1 -1 ${qr.n + 2} ${qr.n + 2}`} className="block w-full" role="img" aria-label={t('QR code to open the app on your phone')}>
               <path d={qr.d} fill="#0b0b0c" shapeRendering="crispEdges" />
             </svg>
           </div>
-          <p className="m-0 mt-4 font-display text-base uppercase">Get it on your phone</p>
-          <p className="m-0 mt-1 text-sm text-muted">Scan with your camera, then Add to Home Screen.</p>
+          <p className="m-0 mt-4 font-display text-base uppercase">{t('Get it on your phone')}</p>
+          <p className="m-0 mt-1 text-sm text-muted">{t('Scan with your camera, then Add to Home Screen.')}</p>
           <div className="mt-8 flex w-full flex-col gap-2.5">
             {['App Store', 'Google Play'].map((store) => (
               <div key={store} aria-disabled="true" className="flex min-h-12 items-center justify-between rounded-full border border-white/15 px-5 text-sm text-muted">
-                <span className="font-semibold text-ink">{store}</span><span>Coming soon</span>
+                <span className="font-semibold text-ink">{store}</span><span>{t('Coming soon')}</span>
               </div>
             ))}
           </div>

@@ -1,5 +1,6 @@
 // Pure session logic: no DOM, unit-tested.
 import type { Direction, Session, Step } from './types'
+import { t } from '../i18n'
 
 export type Rng = () => number
 
@@ -56,7 +57,7 @@ export function editableFrom(steps: Step[], i: number): number {
 }
 
 // 45 -> "45s", 300 -> "5 min", 90 -> "1:30"
-export const fmtDuration = (sec: number) => (sec < 60 ? `${sec}s` : sec % 60 === 0 ? `${sec / 60} min` : `${Math.floor(sec / 60)}:${String(sec % 60).padStart(2, '0')}`)
+export const fmtDuration = (sec: number) => (sec < 60 ? `${sec}s` : sec % 60 === 0 ? t('{n} min', { n: sec / 60 }) : `${Math.floor(sec / 60)}:${String(sec % 60).padStart(2, '0')}`)
 // How much of an exercise: "3 × 6 reps", "4 × 45s", or just "5 min" for a single timed block
 export const fmtDose = (b: { rounds?: number; reps?: string; work: number }) =>
   (b.rounds ?? 1) > 1 || b.reps ? `${b.rounds ?? 1} × ${b.reps ? fmtReps(b.reps) : fmtDuration(b.work)}` : fmtDuration(b.work)
@@ -130,8 +131,8 @@ export function fmtTime(sec: number) {
   return `${pad(Math.floor(sec / 60))}:${pad(sec % 60)}`
 }
 
-// "8" -> "8 reps"; descriptive values like "8 each leg" or "45 s" stay as written.
-export const fmtReps = (r: string) => (/^\d+(-\d+)?$/.test(r) ? `${r} reps` : r)
+// "8" -> "8 reps"; descriptive values like "8 each leg" or "45 s" stay as written (translated with the library).
+export const fmtReps = (r: string, unit = true) => (/^\d+(-\d+)?$/.test(r) && unit ? t('{n} reps', { n: r }) : r)
 
 // Sets with reps run at the player's own pace: no countdown, the set ends when they tap Set done.
 export const selfPaced = (s: Step | undefined) => !!s && s.type === 'work' && !!s.reps
@@ -140,9 +141,10 @@ export const selfPaced = (s: Step | undefined) => !!s && s.type === 'work' && !!
 export function tempoFor(category?: string): string {
   switch (category) {
     case 'olympic': case 'explosive': case 'plyometrics': case 'sprints': case 'speed':
-      return 'Max intent: explode up, reset between reps'
-    case 'isometrics': return 'Hold it steady and breathe'
-    case 'core': return 'Slow and controlled'
-    default: return '3 seconds down, drive up fast'
+      return t('Max intent: explode up, reset between reps')
+    case 'isometrics': return t('Hold it steady and breathe')
+    case 'core': return t('Slow and controlled')
+    default: return t('3 seconds down, drive up fast')
+
   }
 }

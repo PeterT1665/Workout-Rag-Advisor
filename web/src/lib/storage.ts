@@ -1,5 +1,6 @@
 // localStorage helpers. Every access is guarded: private mode or blocked storage must not break the app.
 import type { Settings } from './types'
+import { mark } from '../i18n'
 
 export function load<T>(key: string, fallback: T): T {
   try {
@@ -31,10 +32,10 @@ export const loadSettings = (): Settings => ({ ...DEFAULT_SETTINGS, ...load<Part
 
 // Commonly attributed to Ronaldo. Editable in Clips & quotes.
 export const DEFAULT_QUOTES = [
-  'Talent without working hard is nothing.',
-  'Your love makes me strong. Your hate makes me unstoppable.',
-  "Dreams are not what you see in your sleep. Dreams are the things that don't let you sleep.",
-  "I don't have to show anything to anyone. There is nothing to prove.",
+  mark('Talent without working hard is nothing.'),
+  mark('Your love makes me strong. Your hate makes me unstoppable.'),
+  mark("Dreams are not what you see in your sleep. Dreams are the things that don't let you sleep."),
+  mark("I don't have to show anything to anyone. There is nothing to prove."),
 ]
 export const loadQuotes = () => load<string[]>('quotes', DEFAULT_QUOTES)
 

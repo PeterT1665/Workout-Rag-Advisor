@@ -2,11 +2,12 @@
 // signed-in users also get a private copy in Supabase Storage (photos/<user id>/<slot>.jpg) so other devices see them.
 import { useSyncExternalStore } from 'react'
 import { supabase } from './supabase'
+import { t } from '../i18n'
 
 export const PHOTO_SLOTS = [
-  { id: 'hero', label: 'Home hero', hint: 'Big photo on the home screen' },
-  { id: 'card', label: 'Player card', hint: 'Behind your player card' },
-  { id: 'preroll', label: 'Kick-off', hint: 'Shown before each session' },
+  { id: 'hero', label: t('Home hero'), hint: t('Big photo on the home screen') },
+  { id: 'card', label: t('Player card'), hint: t('Behind your player card') },
+  { id: 'preroll', label: t('Kick-off'), hint: t('Shown before each session') },
 ] as const
 export type Slot = (typeof PHOTO_SLOTS)[number]['id']
 type Photo = { slot: Slot; blob: Blob; updated: number }

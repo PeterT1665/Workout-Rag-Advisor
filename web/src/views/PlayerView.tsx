@@ -9,6 +9,7 @@ import { FullTime } from './FullTime'
 import { AnimateDigits } from '../components/AnimateDigits'
 import type { Player } from '../lib/player'
 import type { Session, Settings } from '../lib/types'
+import { t } from '../i18n'
 
 const R = 100
 const C = 2 * Math.PI * R
@@ -56,16 +57,16 @@ export function PlayerView({ session, player, settings, onExit }: { session: Ses
     at += x.seconds
   })
   const prevPair = isRest ? st.steps[st.i - 1]?.pair : undefined
-  const phase = isRest ? 'Rest' : step.kind === 'warmup' ? 'Warm-up' : step.kind === 'cooldown' ? 'Cool-down' : step.pair ? `Superset ${step.pair}` : 'Work'
+  const phase = isRest ? t('Rest') : step.kind === 'warmup' ? t('Warm-up') : step.kind === 'cooldown' ? t('Cool-down') : step.pair ? t('Superset {x}', { x: step.pair }) : t('Work')
 
   return (
     <Screen className="flex flex-col">
       <div className="flex items-center justify-between">
-        <span className="font-display text-sm font-bold uppercase tracking-[0.2em]" style={{ color: accent }}>{isRest ? (prevPair ? `Superset ${prevPair[0]} round ${step.round} done` : `Round ${step.round} of ${step.rounds} done`) : phase}</span>
-        <span className="font-display text-sm font-bold tabular-nums text-muted">{fmtTime(st.total - st.elapsed)} left</span>
+        <span className="font-display text-sm font-bold uppercase tracking-[0.2em]" style={{ color: accent }}>{isRest ? (prevPair ? t('Superset {x} round {n} done', { x: prevPair[0], n: step.round }) : t('Round {n} of {total} done', { n: step.round, total: step.rounds })) : phase}</span>
+        <span className="font-display text-sm font-bold tabular-nums text-muted">{t('{time} left', { time: fmtTime(st.total - st.elapsed) })}</span>
       </div>
       <h1 key={st.i} className="slam m-0 mt-1 font-display text-3xl uppercase leading-none" data-testid="step-name">
-        {isRest ? 'Rest' : step.name}
+        {isRest ? t('Rest') : step.name}
         {!isRest && step.rounds > 1 && <span className="text-muted"> {step.round}/{step.rounds}</span>}
       </h1>
       {!isRest && step.reps && <p className="m-0 mt-2 font-display text-lg uppercase text-[var(--red-ink)]">{fmtReps(step.reps)}</p>}
@@ -83,16 +84,16 @@ export function PlayerView({ session, player, settings, onExit }: { session: Ses
       </div>
 
       <div className="min-h-24 rounded-[20px] bg-surface p-4">
-        {isRest ? (restQuote ? <QuoteCard text={restQuote} /> : <p className="m-0">Breathe. Walk it off. Sip water.</p>) : <p className="m-0">{step.how}</p>}
+        {isRest ? (restQuote ? <QuoteCard text={restQuote} /> : <p className="m-0">{t('Breathe. Walk it off. Sip water.')}</p>) : <p className="m-0">{step.how}</p>}
       </div>
       {isRest && next
         ? <button aria-haspopup="dialog" onClick={() => setInfo(st.i + 1)} className="mt-3 mb-4 flex w-full items-center justify-between gap-3 rounded-[20px] bg-surface-2 px-4 py-3 text-left transition-transform duration-150 active:scale-[0.98]">
-            <span className="shrink-0 whitespace-nowrap text-sm text-muted">Up next</span>
+            <span className="shrink-0 whitespace-nowrap text-sm text-muted">{t('Up next')}</span>
             <span className="flex items-center gap-2 text-right font-display text-sm uppercase">{next.name.replace(/\s*\([^)]*\)/g, '')}{next.rounds > 1 ? ` · ${next.round}/${next.rounds}` : ''}<span aria-hidden className="text-muted">›</span></span>
           </button>
-        : <p className="mt-3 mb-4 text-sm text-muted">Up next: {next ? (next.type === 'rest' ? 'Rest' : next.name) : 'Last one.'}</p>}
+        : <p className="mt-3 mb-4 text-sm text-muted">{t('Up next')}: {next ? (next.type === 'rest' ? t('Rest') : next.name) : t('Last one.')}</p>}
 
-      <div className="flex h-2 gap-[3px]" aria-label={`Part ${blocks.findIndex((b) => st.i >= b.from && st.i <= b.to) + 1} of ${blocks.length}`}>
+      <div className="flex h-2 gap-[3px]" aria-label={t('Part {n} of {total}', { n: blocks.findIndex((b) => st.i >= b.from && st.i <= b.to) + 1, total: blocks.length })}>
         {blocks.map((b, bi) => {
           const fill = Math.max(0, Math.min(1, (st.elapsed - b.start) / b.len))
           return (
@@ -104,25 +105,25 @@ export function PlayerView({ session, player, settings, onExit }: { session: Ses
       </div>
 
       <div className="mt-auto grid grid-cols-[1fr_2fr_1fr] gap-3 pt-6">
-        <Button variant="ghost" onClick={player.back}>Back</Button>
-        <Button onClick={player.press}>{paced && st.running ? 'Set done' : st.running ? 'Pause' : 'Resume'}</Button>
-        <Button variant="ghost" onClick={player.skip}>Skip</Button>
+        <Button variant="ghost" onClick={player.back}>{t('Back')}</Button>
+        <Button onClick={player.press}>{paced && st.running ? t('Set done') : st.running ? t('Pause') : t('Resume')}</Button>
+        <Button variant="ghost" onClick={player.skip}>{t('Skip')}</Button>
       </div>
       <div className="mt-3 flex justify-center gap-2">
-        <Button variant="ghost" size="sm" aria-haspopup="dialog" onClick={() => setInfo(isRest && next ? st.i + 1 : st.i)}>Video</Button>
-        <Button variant="ghost" size="sm" aria-haspopup="dialog" onClick={() => setPlan(true)}>Plan</Button>
-        <Button variant="ghost" size="sm" onClick={() => { if (!confirm('End the session now?')) return; if (player.getState().elapsed >= 60) player.endEarly(); else onExit() }}>End session</Button>
+        <Button variant="ghost" size="sm" aria-haspopup="dialog" onClick={() => setInfo(isRest && next ? st.i + 1 : st.i)}>{t('Video')}</Button>
+        <Button variant="ghost" size="sm" aria-haspopup="dialog" onClick={() => setPlan(true)}>{t('Plan')}</Button>
+        <Button variant="ghost" size="sm" onClick={() => { if (!confirm(t('End the session now?'))) return; if (player.getState().elapsed >= 60) player.endEarly(); else onExit() }}>{t('End session')}</Button>
       </div>
       {plan && <PlanSheet player={player} onClose={() => setPlan(false)} />}
       {info !== null && st.steps[info] && (() => {
         const x = st.steps[info]
         return (
-          <Sheet label={`${x.name} how-to`} onClose={() => setInfo(null)}>
+          <Sheet label={t('{name} how-to', { name: x.name })} onClose={() => setInfo(null)}>
             <h2 className="m-0 font-display text-xl uppercase leading-tight">{x.name.replace(/\s*\([^)]*\)/g, '')}</h2>
-            {x.reps && <p className="m-0 mt-1 font-display text-base uppercase text-[var(--red-ink)]">{fmtReps(x.reps)}{x.rounds > 1 ? ` · set ${x.round}/${x.rounds}` : ''}</p>}
+            {x.reps && <p className="m-0 mt-1 font-display text-base uppercase text-[var(--red-ink)]">{fmtReps(x.reps)}{x.rounds > 1 ? ` · ${t('set {n}/{total}', { n: x.round, total: x.rounds })}` : ''}</p>}
             {x.how && <p className="m-0 mt-3">{x.how}</p>}
             <VideoBox name={x.name} />
-            <Button block className="mt-4" onClick={() => setInfo(null)}>Back to the session</Button>
+            <Button block className="mt-4" onClick={() => setInfo(null)}>{t('Back to the session')}</Button>
           </Sheet>
         )
       })()}
@@ -140,8 +141,8 @@ export function PlayerView({ session, player, settings, onExit }: { session: Ses
               style={{ transform: st.cue === 'right' ? 'scaleX(-1)' : undefined }}>
               <path d="M20 12H5M11 5l-7 7 7 7" />
             </svg>
-            <div className="font-display text-[clamp(3.5rem,21vw,7rem)] uppercase leading-[.8]">{st.cue}</div>
-            <div className="mt-6 font-display text-sm uppercase tracking-wider opacity-90">Defender commits {st.cue} · go {st.cue === 'left' ? 'right' : 'left'}</div>
+            <div className="font-display text-[clamp(3.5rem,21vw,7rem)] uppercase leading-[.8]">{st.cue === 'left' ? t('left') : t('right')}</div>
+            <div className="mt-6 font-display text-sm uppercase tracking-wider opacity-90">{st.cue === 'left' ? t('Defender commits left · go right') : t('Defender commits right · go left')}</div>
           </div>
         )}
       </div>

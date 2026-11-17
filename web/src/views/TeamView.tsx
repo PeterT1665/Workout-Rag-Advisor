@@ -7,48 +7,52 @@ import { PlayerCard, overall } from '../components/PlayerCard'
 import { cardStatsFor } from '../lib/cardStats'
 import { useProfile, type Accent, type Foot, type Position, type Profile } from '../lib/profile'
 import { syncEnabled } from '../lib/sync'
+import { takeNewFriend } from '../lib/invite'
 import {
   USERNAME, acceptFriend, activity, askFriend, avatarUrls, claimUsername, cleanUsername, findPlayer, friendRequests,
   leaderboard, myTeamProfile, removeFriend, setAvatar, type FoundPlayer, type FriendRequest, type TeamProfile,
 } from '../lib/team'
 import type { Streak } from '../lib/streak'
+import { t } from '../i18n'
 
 // Team: add friends by username + shirt number, accept requests, and a friends leaderboard (streak, then rating).
 // Signed-in players only; guests see themselves and an invitation to make an account.
-export function TeamView({ streak, onSignUp }: { streak: Streak; onSignUp?: () => void }) {
-  return syncEnabled() ? <TeamSignedIn streak={streak} /> : <TeamGuest streak={streak} onSignUp={onSignUp} />
+export function TeamView({ streak, onSignUp, onSignIn, onInvite }: { streak: Streak; onSignUp?: () => void; onSignIn?: () => void; onInvite?: () => void }) {
+  return syncEnabled() ? <TeamSignedIn streak={streak} onInvite={onInvite} /> : <TeamGuest streak={streak} onSignUp={onSignUp} onSignIn={onSignIn} />
 }
 
 function Shell({ children }: { children: React.ReactNode }) {
   return (
     <main className="mx-auto max-w-xl px-4 pt-[max(20px,var(--sat))] pb-32">
-      <Title>Team</Title>
+      <Title>{t('Team')}</Title>
       {children}
     </main>
   )
 }
 
-function TeamGuest({ streak, onSignUp }: { streak: Streak; onSignUp?: () => void }) {
+function TeamGuest({ streak, onSignUp, onSignIn }: { streak: Streak; onSignUp?: () => void; onSignIn?: () => void }) {
   const me = useProfile()
   const stats = cardStatsFor(me)
   return (
     <Shell>
-      <p className="m-0 mt-2 text-muted">Add your friends, see who's training, and compete on streaks and ratings.</p>
-      <section className="mt-6 rounded-[24px] bg-surface p-4" aria-label="Leaderboard">
-        <h2 className="m-0 mb-3 font-display text-base uppercase">Leaderboard</h2>
+      <p className="m-0 mt-2 text-muted">{t("Add your friends, see who's training, and compete on streaks and ratings.")}</p>
+      <section className="mt-6 rounded-[24px] bg-surface p-4" aria-label={t('Leaderboard')}>
+        <h2 className="m-0 mb-3 font-display text-base uppercase">{t('Leaderboard')}</h2>
         <Row rank={1} name={me.name || 'You'} number={me.number} sub="You" streak={streak.days} lit={streak.today} rating={stats ? overall(stats) : null} />
       </section>
       <section className="mt-4 rounded-[24px] bg-surface p-4">
-        <h2 className="m-0 font-display text-base uppercase">Play with friends</h2>
-        <p className="m-0 mt-1 text-sm text-muted">Team needs an account: pick a username, then find friends by username and shirt number.</p>
-        {onSignUp && <Button block className="mt-3" onClick={onSignUp}>Create an account</Button>}
+        <h2 className="m-0 font-display text-base uppercase">{t('Play with friends')}</h2>
+        <p className="m-0 mt-1 text-sm text-muted">{t('Team needs an account: pick a username, then find friends by username and shirt number.')}</p>
+        {onSignIn && <Button block className="mt-3" onClick={onSignIn}>{t('Sign in')}</Button>}
+        {onSignUp && <button onClick={onSignUp} className="mt-2 min-h-11 w-full text-sm font-semibold text-muted">{t('New here? Create an account')}</button>}
       </section>
     </Shell>
   )
 }
 
-function TeamSignedIn({ streak }: { streak: Streak }) {
+function TeamSignedIn({ streak, onInvite }: { streak: Streak; onInvite?: () => void }) {
   const me = useProfile()
+  const [newFriend, setNewFriend] = useState<string | null>(() => takeNewFriend()) // just added through a QR
   const [mine, setMine] = useState<TeamProfile | null | undefined>(undefined) // undefined: loading
   const [board, setBoard] = useState<TeamProfile[]>([])
   const [requests, setRequests] = useState<FriendRequest[]>([])
@@ -73,8 +77,8 @@ function TeamSignedIn({ streak }: { streak: Streak }) {
     return () => clearInterval(t)
   }, [refresh])
 
-  if (mine === undefined) return <Shell><p className="mt-4 text-muted" aria-busy="true">Loading your team…</p></Shell>
-  if (offline && !mine) return <Shell><p className="mt-4 text-muted">You're offline. Team needs a connection.</p></Shell>
+  if (mine === undefined) return <Shell><p className="mt-4 text-muted" aria-busy="true">{t('Loading your team…')}</p></Shell>
+  if (offline && !mine) return <Shell><p className="mt-4 text-muted">{t("You're offline. Team needs a connection.")}</p></Shell>
   if (!mine || renaming) {
     return (
       <Shell>
@@ -91,57 +95,74 @@ function TeamSignedIn({ streak }: { streak: Streak }) {
         <AvatarPicker url={mine.avatar_path ? urls[mine.avatar_path] : undefined} name={mine.display_name || mine.username} onChanged={refresh} />
         <div className="min-w-0 flex-1">
           <p className="m-0 truncate font-semibold">@{mine.username} <span className="text-muted">#{mine.number}</span></p>
-          <p className="m-0 text-sm text-muted">Friends find you with your username and shirt number.</p>
+          <p className="m-0 text-sm text-muted">{t('Friends find you with your username and shirt number.')}</p>
         </div>
-        <button onClick={() => setRenaming(true)} className="min-h-10 shrink-0 rounded-full bg-surface-2 px-3 text-xs font-semibold">Edit</button>
+        <button onClick={() => setRenaming(true)} className="min-h-10 shrink-0 rounded-full bg-surface-2 px-3 text-xs font-semibold">{t('Edit')}</button>
       </div>
 
+      {newFriend !== null && (
+        <section className="rise mt-6 flex items-center gap-3 rounded-[24px] border border-red/50 bg-surface p-4" aria-live="polite">
+          <p className="m-0 min-w-0 flex-1 font-semibold">{t('You and {name} are friends now.', { name: newFriend || t('your friend') })}</p>
+          <button onClick={() => setNewFriend(null)} className="min-h-10 shrink-0 px-2 text-sm font-semibold text-muted">{t('OK')}</button>
+        </section>
+      )}
+
       {incoming.length > 0 && (
-        <section className="rise mt-6 rounded-[24px] border border-red/50 bg-surface p-4" aria-label="Friend requests">
-          <h2 className="m-0 mb-3 font-display text-base uppercase">Friend requests</h2>
+        <section className="rise mt-6 rounded-[24px] border border-red/50 bg-surface p-4" aria-label={t('Friend requests')}>
+          <h2 className="m-0 mb-3 font-display text-base uppercase">{t('Friend requests')}</h2>
           <ul className="m-0 flex list-none flex-col gap-2 p-0">
             {incoming.map((r) => (
               <li key={r.user_id} className="flex items-center gap-3">
                 <Avatar url={r.avatar_path ? urls[r.avatar_path] : undefined} name={r.display_name || r.username} />
                 <span className="min-w-0 flex-1 truncate"><strong>{r.display_name || r.username}</strong> <span className="text-muted">@{r.username} #{r.number}</span></span>
-                <button onClick={async () => { await removeFriend(r.user_id); void refresh() }} className="min-h-10 px-2 text-sm font-semibold text-muted">Decline</button>
-                <Button size="sm" onClick={async () => { await acceptFriend(r.user_id); void refresh() }}>Accept</Button>
+                <button onClick={async () => { await removeFriend(r.user_id); void refresh() }} className="min-h-10 px-2 text-sm font-semibold text-muted">{t('Decline')}</button>
+                <Button size="sm" onClick={async () => { await acceptFriend(r.user_id); void refresh() }}>{t('Accept')}</Button>
               </li>
             ))}
           </ul>
         </section>
       )}
 
-      <section className="mt-6 rounded-[24px] bg-surface p-4" aria-label="Leaderboard">
-        <h2 className="m-0 mb-3 font-display text-base uppercase">Leaderboard</h2>
+      <section className="mt-6 rounded-[24px] bg-surface p-4" aria-label={t('Leaderboard')}>
+        <h2 className="m-0 mb-3 font-display text-base uppercase">{t('Leaderboard')}</h2>
         <ol className="m-0 flex list-none flex-col gap-2 p-0">
           {board.map((p, i) => {
             const you = p.user_id === mine.user_id
             const a = activity(p.last_active)
             return (
               <li key={p.user_id}>
-                <Row rank={i + 1} name={you ? `${p.display_name || p.username} (you)` : p.display_name || p.username} number={p.number}
-                  sub={you ? 'You' : a.label} online={!you && a.online} avatar={p.avatar_path ? urls[p.avatar_path] : undefined}
+                <Row rank={i + 1} name={you ? t('{name} (you)', { name: p.display_name || p.username }) : p.display_name || p.username} number={p.number}
+                  sub={you ? t('You') : a.label} online={!you && a.online} avatar={p.avatar_path ? urls[p.avatar_path] : undefined}
                   streak={you ? streak.days : p.streak} lit={you ? streak.today : p.trained_today} rating={p.rating}
                   onOpen={() => setOpen(p)} highlight={you} />
               </li>
             )
           })}
         </ol>
-        {board.length <= 1 && <p className="m-0 mt-3 text-sm text-muted">Add friends below: they show up here, ranked by streak, then rating.</p>}
+        {board.length <= 1 && <p className="m-0 mt-3 text-sm text-muted">{t('Add friends below: they show up here, ranked by streak, then rating.')}</p>}
       </section>
+
+      {onInvite && (
+        <button onClick={onInvite} className="mt-4 flex min-h-14 w-full items-center gap-3 rounded-[24px] bg-red px-4 text-left text-on-red transition-transform duration-150 ease-snap active:scale-[0.98]">
+          <QrGlyph />
+          <span className="min-w-0 flex-1">
+            <span className="block font-display text-sm uppercase">{t('Show my QR')}</span>
+            <span className="block text-sm opacity-85">{t('A friend scans it and you’re friends straight away.')}</span>
+          </span>
+        </button>
+      )}
 
       <AddFriend onChanged={refresh} />
 
       {outgoing.length > 0 && (
-        <section className="mt-4" aria-label="Sent requests">
-          <h3 className="m-0 mb-2 font-display text-sm uppercase text-muted">Waiting for them to accept</h3>
+        <section className="mt-4" aria-label={t('Sent requests')}>
+          <h3 className="m-0 mb-2 font-display text-sm uppercase text-muted">{t('Waiting for them to accept')}</h3>
           <ul className="m-0 flex list-none flex-col gap-2 p-0">
             {outgoing.map((r) => (
               <li key={r.user_id} className="flex items-center gap-3 rounded-2xl bg-surface px-3 py-2">
                 <Avatar url={r.avatar_path ? urls[r.avatar_path] : undefined} name={r.display_name || r.username} />
                 <span className="min-w-0 flex-1 truncate">@{r.username} <span className="text-muted">#{r.number}</span></span>
-                <button onClick={async () => { await removeFriend(r.user_id); void refresh() }} className="min-h-10 px-2 text-sm font-semibold text-muted">Cancel</button>
+                <button onClick={async () => { await removeFriend(r.user_id); void refresh() }} className="min-h-10 px-2 text-sm font-semibold text-muted">{t('Cancel')}</button>
               </li>
             ))}
           </ul>
@@ -149,7 +170,7 @@ function TeamSignedIn({ streak }: { streak: Streak }) {
       )}
 
       {open && <FriendSheet p={open} photo={open.avatar_path ? urls[open.avatar_path] : undefined} you={open.user_id === mine.user_id}
-        onClose={() => setOpen(null)} onRemove={async () => { if (!confirm(`Remove ${open.display_name || open.username} from your friends?`)) return; await removeFriend(open.user_id); setOpen(null); void refresh() }} />}
+        onClose={() => setOpen(null)} onRemove={async () => { if (!confirm(t('Remove {name} from your friends?', { name: open.display_name || open.username }))) return; await removeFriend(open.user_id); setOpen(null); void refresh() }} />}
     </Shell>
   )
 }
@@ -163,7 +184,7 @@ function Row({ rank, name, number, sub, streak, lit, rating, avatar, online, onO
       <span className="w-5 shrink-0 text-center font-display text-lg text-muted">{rank}</span>
       <span className="relative shrink-0">
         <Avatar url={avatar} name={name} />
-        {online && <span className="absolute -right-0.5 -bottom-0.5 h-3.5 w-3.5 rounded-full border-2 border-surface-2 bg-[#2fbf71]" aria-label="Online" />}
+        {online && <span className="absolute -right-0.5 -bottom-0.5 h-3.5 w-3.5 rounded-full border-2 border-surface-2 bg-[#2fbf71]" aria-label={t('Online')} />}
       </span>
       <span className="min-w-0 flex-1 text-left">
         <span className="block truncate font-semibold">{name} <span className="text-muted">#{number}</span></span>
@@ -193,11 +214,11 @@ function AvatarPicker({ url, name, onChanged }: { url?: string; name: string; on
     setBusy(true)
     const ok = await setAvatar(f)
     setBusy(false)
-    if (ok) onChanged(); else alert("Couldn't upload the photo. Check your connection and try again.")
+    if (ok) onChanged(); else alert(t("Couldn't upload the photo. Check your connection and try again."))
   }
   return (<>
-    {cropping && <CropSheet file={cropping} title="Profile picture" size={512} onCancel={() => setCropping(null)} onDone={(b) => { setCropping(null); void upload(b) }} />}
-    <label className="relative shrink-0 cursor-pointer" aria-label="Change your profile picture">
+    {cropping && <CropSheet file={cropping} title={t('Profile picture')} size={512} onCancel={() => setCropping(null)} onDone={(b) => { setCropping(null); void upload(b) }} />}
+    <label className="relative shrink-0 cursor-pointer" aria-label={t('Change your profile picture')}>
       <Avatar url={url} name={name} big />
       <span className="absolute -right-1 -bottom-1 grid h-6 w-6 place-items-center rounded-full bg-red text-xs text-on-red">{busy ? '…' : '+'}</span>
       <input type="file" accept="image/*" className="sr-only" onChange={async (e) => {
@@ -222,19 +243,19 @@ function UsernameForm({ current, profile, onDone, onCancel }: { current?: string
       const r = await claimUsername(name, profile)
       setBusy(false)
       if (r === 'ok') onDone()
-      else setMsg(r === 'taken' ? 'That username is taken.' : r === 'too-soon' ? 'You can change your username once every 30 days.' : r === 'invalid' ? '3–20 letters, numbers, dots or underscores.' : "Couldn't save. Check your connection.")
+      else setMsg(r === 'taken' ? t('That username is taken.') : r === 'too-soon' ? t('You can change your username once every 30 days.') : r === 'invalid' ? t('3–20 letters, numbers, dots or underscores.') : t("Couldn't save. Check your connection."))
     }}>
-      <h2 className="m-0 font-display text-base uppercase">{current ? 'Change your username' : 'Pick your username'}</h2>
-      <p className="m-0 mt-1 text-sm text-muted">Friends find you with your username and shirt number (#{profile.number}).{current ? '' : ' You can change it later.'}</p>
-      <label htmlFor="team-username" className="mt-4 block text-sm text-muted">Username</label>
+      <h2 className="m-0 font-display text-base uppercase">{current ? t('Change your username') : t('Pick your username')}</h2>
+      <p className="m-0 mt-1 text-sm text-muted">{t('Friends find you with your username and shirt number (#{n}).', { n: profile.number })}{current ? '' : ' ' + t('You can change it later.')}</p>
+      <label htmlFor="team-username" className="mt-4 block text-sm text-muted">{t('Username')}</label>
       <div className="mt-1 flex items-center rounded-2xl bg-surface-2 px-3">
         <span className="text-muted">@</span>
         <input id="team-username" value={name} onChange={(e) => { setName(e.target.value); setMsg(null) }} autoCapitalize="none" autoCorrect="off" spellCheck={false}
-          placeholder="e.g. peter.7" className="min-h-12 min-w-0 flex-1 bg-transparent px-1 text-[16px] text-ink placeholder:text-muted" />
+          placeholder={t('e.g. peter.7')} className="min-h-12 min-w-0 flex-1 bg-transparent px-1 text-[16px] text-ink placeholder:text-muted" />
       </div>
-      <p className={`m-0 mt-1 text-sm ${msg ? 'text-red-ink' : 'text-muted'}`}>{msg ?? '3–20 letters, numbers, dots or underscores.'}</p>
+      <p className={`m-0 mt-1 text-sm ${msg ? 'text-red-ink' : 'text-muted'}`}>{msg ?? t('3–20 letters, numbers, dots or underscores.')}</p>
       <div className="mt-4 flex gap-2">
-        {onCancel && <Button type="button" variant="ghost" className="flex-1 bg-surface-2" onClick={onCancel}>Cancel</Button>}
+        {onCancel && <Button type="button" variant="ghost" className="flex-1 bg-surface-2" onClick={onCancel}>{t('Cancel')}</Button>}
         <Button type="submit" className="flex-1" disabled={!valid || busy}>{busy ? 'Saving…' : 'Save'}</Button>
       </div>
     </form>
@@ -258,17 +279,17 @@ function AddFriend({ onChanged }: { onChanged: () => void }) {
   }
   const field = 'min-h-12 min-w-0 rounded-2xl bg-surface-2 px-3 text-[16px] text-ink placeholder:text-muted'
   return (
-    <section className="mt-4 rounded-[24px] bg-surface p-4" aria-label="Add a friend">
-      <h2 className="m-0 font-display text-base uppercase">Add a friend</h2>
-      <p className="m-0 mt-1 text-sm text-muted">Their username and shirt number, both exact.</p>
+    <section className="mt-4 rounded-[24px] bg-surface p-4" aria-label={t('Add a friend')}>
+      <h2 className="m-0 font-display text-base uppercase">{t('Add a friend')}</h2>
+      <p className="m-0 mt-1 text-sm text-muted">{t('Their username and shirt number, both exact.')}</p>
       <form className="mt-3 flex gap-2" onSubmit={(e) => { e.preventDefault(); if (name && num) void search() }}>
-        <input aria-label="Friend's username" value={name} onChange={(e) => { setName(e.target.value); setFound(undefined) }} placeholder="@username"
+        <input aria-label={t("Friend's username")} value={name} onChange={(e) => { setName(e.target.value); setFound(undefined) }} placeholder={t('@username')}
           autoCapitalize="none" autoCorrect="off" spellCheck={false} className={`${field} flex-1`} />
-        <input aria-label="Friend's shirt number" value={num} onChange={(e) => { setNum(e.target.value.replace(/\D/g, '').slice(0, 2)); setFound(undefined) }}
+        <input aria-label={t("Friend's shirt number")} value={num} onChange={(e) => { setNum(e.target.value.replace(/\D/g, '').slice(0, 2)); setFound(undefined) }}
           placeholder="#" inputMode="numeric" className={`${field} w-16 text-center`} />
-        <Button type="submit" size="sm" disabled={!name || !num || busy}>Find</Button>
+        <Button type="submit" size="sm" disabled={!name || !num || busy}>{t('Find')}</Button>
       </form>
-      {found === null && <p className="m-0 mt-3 text-sm text-muted">No player with that username and number.</p>}
+      {found === null && <p className="m-0 mt-3 text-sm text-muted">{t('No player with that username and number.')}</p>}
       {found && (
         <div className="rise mt-3 flex items-center gap-3 rounded-2xl bg-surface-2 p-3">
           <Avatar url={url} name={found.display_name || found.username} big />
@@ -276,11 +297,11 @@ function AddFriend({ onChanged }: { onChanged: () => void }) {
             <strong className="block truncate">{found.display_name || found.username}</strong>
             <span className="text-sm text-muted">@{found.username} · #{found.number}</span>
           </span>
-          {found.friendship === 'friends' ? <span className="text-sm text-muted">Friends ✓</span>
-            : found.friendship === 'requested' ? <span className="text-sm text-muted">Requested</span>
+          {found.friendship === 'friends' ? <span className="text-sm text-muted">{t('Friends ✓')}</span>
+            : found.friendship === 'requested' ? <span className="text-sm text-muted">{t('Requested')}</span>
               : found.friendship === 'asked-you'
-                ? <Button size="sm" onClick={async () => { await acceptFriend(found.user_id); setFound({ ...found, friendship: 'friends' }); onChanged() }}>Accept</Button>
-                : <Button size="sm" onClick={async () => { if (await askFriend(found.user_id)) { setFound({ ...found, friendship: 'requested' }); onChanged() } }}>Add</Button>}
+                ? <Button size="sm" onClick={async () => { await acceptFriend(found.user_id); setFound({ ...found, friendship: 'friends' }); onChanged() }}>{t('Accept')}</Button>
+                : <Button size="sm" onClick={async () => { if (await askFriend(found.user_id)) { setFound({ ...found, friendship: 'requested' }); onChanged() } }}>{t('Add')}</Button>}
         </div>
       )}
     </section>
@@ -298,14 +319,14 @@ function FriendSheet({ p, photo, you, onClose, onRemove }: { p: TeamProfile; pho
     <Sheet label={`${profile.name}'s card`} onClose={onClose}>
         <div className="mx-auto w-full max-w-[260px]"><PlayerCard p={profile} stats={p.card} photo={photo} /></div>
         <div className="mt-4 grid grid-cols-3 gap-2 text-center">
-          <Stat label="Streak" value={`${p.streak}`} />
-          <Stat label="Best" value={`${p.best_streak}`} />
+          <Stat label={t('Streak')} value={`${p.streak}`} />
+          <Stat label={t('Best')} value={`${p.best_streak}`} />
           <Stat label={you ? 'You' : a.online ? 'Online' : 'Seen'} value={you ? '—' : a.online ? '●' : a.label} />
         </div>
-        {!p.card && <p className="m-0 mt-3 text-center text-sm text-muted">Not rated yet.</p>}
+        {!p.card && <p className="m-0 mt-3 text-center text-sm text-muted">{t('Not rated yet.')}</p>}
         <div className="mt-5 flex gap-3">
-          {!you && <Button variant="ghost" className="flex-1 bg-surface-2" onClick={onRemove}>Remove friend</Button>}
-          <Button className="flex-1" onClick={onClose}>Close</Button>
+          {!you && <Button variant="ghost" className="flex-1 bg-surface-2" onClick={onRemove}>{t('Remove friend')}</Button>}
+          <Button className="flex-1" onClick={onClose}>{t('Close')}</Button>
         </div>
     </Sheet>
   )
@@ -319,3 +340,10 @@ function Stat({ label, value }: { label: string; value: string }) {
     </div>
   )
 }
+
+const QrGlyph = () => (
+  <svg viewBox="0 0 24 24" className="h-7 w-7 shrink-0" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+    <rect x="3" y="3" width="7" height="7" rx="1" /><rect x="14" y="3" width="7" height="7" rx="1" /><rect x="3" y="14" width="7" height="7" rx="1" />
+    <path d="M14 14h3v3h-3zM20 14v.01M14 20h.01M17 20h4v-3" />
+  </svg>
+)

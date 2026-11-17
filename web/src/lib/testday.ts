@@ -2,6 +2,7 @@
 // Scores interpolate between anchor points (result -> rating), clamped to 30-99. Anchors are rough amateur
 // benchmarks so a fit club player lands around silver/gold; they can be tuned without touching the UI.
 import { CARD_STATS, type CardStats } from '../components/PlayerCard'
+import { t } from '../i18n'
 
 export type Stat = (typeof CARD_STATS)[number]
 export type Timer = 'stopwatch' | 'countdown' | 'none'
@@ -20,38 +21,38 @@ export type Test = {
 
 export const TESTS: Test[] = [
   {
-    stat: 'PAC', name: '20 m sprint', setup: 'Two markers 20 m apart (about 26 big steps).',
-    how: 'Start still, one foot forward. Sprint flat out past the second marker. A friend times it, or tap Start as you go and Stop as you pass. Take the best of two.',
+    stat: 'PAC', name: t('20 m sprint'), setup: t('Two markers 20 m apart (about 26 big steps).'),
+    how: t('Start still, one foot forward. Sprint flat out past the second marker. A friend times it, or tap Start as you go and Stop as you pass. Take the best of two.'),
     unit: 's', timer: 'stopwatch', step: 0.01,
     anchors: [[2.9, 97], [3.1, 90], [3.3, 82], [3.5, 74], [3.8, 64], [4.2, 52], [4.8, 40]],
   },
   {
-    stat: 'DRI', name: 'Cone weave', setup: '6 markers in a line, 1 m apart.',
-    how: 'Dribble through all of them and back, touching the ball between every marker. Time from first touch to crossing the start line. Best of two.',
+    stat: 'DRI', name: t('Cone weave'), setup: t('6 markers in a line, 1 m apart.'),
+    how: t('Dribble through all of them and back, touching the ball between every marker. Time from first touch to crossing the start line. Best of two.'),
     unit: 's', timer: 'stopwatch', step: 0.1,
     anchors: [[9, 96], [10.5, 88], [12, 80], [13.5, 72], [15, 64], [18, 50], [22, 38]],
   },
   {
-    stat: 'SHO', name: 'Shots on target', setup: 'A goal or a target on a wall, about 16 m away.',
-    how: 'Ten shots with your stronger foot, ball stopped. Count how many hit the target.',
+    stat: 'SHO', name: t('Shots on target'), setup: t('A goal or a target on a wall, about 16 m away.'),
+    how: t('Ten shots with your stronger foot, ball stopped. Count how many hit the target.'),
     unit: '/ 10', timer: 'none', step: 1,
     anchors: [[0, 35], [3, 52], [5, 64], [7, 76], [8, 83], [9, 90], [10, 96]],
   },
   {
-    stat: 'PAS', name: 'Wall passes', setup: 'A wall, stand 3 m back.',
-    how: 'Pass against the wall for 30 seconds, two touches, alternating feet. Count clean passes back to the wall.',
+    stat: 'PAS', name: t('Wall passes'), setup: t('A wall, stand 3 m back.'),
+    how: t('Pass against the wall for 30 seconds, two touches, alternating feet. Count clean passes back to the wall.'),
     unit: 'passes', timer: 'countdown', seconds: 30, step: 1,
     anchors: [[8, 45], [12, 58], [16, 68], [20, 77], [24, 85], [28, 92], [32, 97]],
   },
   {
-    stat: 'DEF', name: '5-10-5 shuffle', setup: 'Three markers in a line, 5 m apart.',
-    how: 'Start at the middle marker. Sprint 5 m to one side, touch the line, 10 m to the other side, touch, then 5 m back through the middle. Defending footwork and turns. Best of two.',
+    stat: 'DEF', name: t('5-10-5 shuffle'), setup: t('Three markers in a line, 5 m apart.'),
+    how: t('Start at the middle marker. Sprint 5 m to one side, touch the line, 10 m to the other side, touch, then 5 m back through the middle. Defending footwork and turns. Best of two.'),
     unit: 's', timer: 'stopwatch', step: 0.01,
     anchors: [[4.3, 96], [4.6, 88], [4.9, 80], [5.2, 72], [5.6, 63], [6.2, 50], [7, 38]],
   },
   {
-    stat: 'PHY', name: 'Broad jump', setup: 'A flat line to jump from and something to measure with.',
-    how: 'Both feet behind the line, swing the arms, jump as far as you can and stick the landing. Measure to the back of the heel. Best of three.',
+    stat: 'PHY', name: t('Broad jump'), setup: t('A flat line to jump from and something to measure with.'),
+    how: t('Both feet behind the line, swing the arms, jump as far as you can and stick the landing. Measure to the back of the heel. Best of three.'),
     unit: 'cm', timer: 'none', step: 1,
     anchors: [[160, 45], [190, 58], [215, 68], [235, 76], [255, 84], [275, 91], [295, 97]],
   },

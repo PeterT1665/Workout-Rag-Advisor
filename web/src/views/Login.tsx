@@ -1,18 +1,20 @@
 import { useState } from 'react'
 import { Button, Screen } from '../components/ui'
 import { sendPasswordReset, setNewPassword, signIn, signUp, type SignInResult, type SignUpResult } from '../lib/sync'
+import { t } from '../i18n'
+import { tr } from '../i18n/rich'
 
 const MESSAGES: Record<Exclude<SignInResult, 'ok'>, string> = {
-  wrong: 'Email or password is wrong. Try again.',
-  throttled: 'Too many tries. Wait a few minutes.',
-  offline: "Can't reach the server. Check your connection.",
+  wrong: t('Email or password is wrong. Try again.'),
+  throttled: t('Too many tries. Wait a few minutes.'),
+  offline: t("Can't reach the server. Check your connection."),
 }
 const SIGNUP_MESSAGES: Record<Exclude<SignUpResult, 'signed-in' | 'confirm-email'>, string> = {
-  exists: 'That email already has an account. Sign in instead.',
-  closed: "Sign-up isn't open yet. Ask for an invite.",
-  weak: 'Use a stronger password (8+ characters).',
-  throttled: 'Too many tries. Wait a few minutes.',
-  offline: "Can't reach the server. Check your connection.",
+  exists: t('That email already has an account. Sign in instead.'),
+  closed: t("Sign-up isn't open yet. Ask for an invite."),
+  weak: t('Use a stronger password (8+ characters).'),
+  throttled: t('Too many tries. Wait a few minutes.'),
+  offline: t("Can't reach the server. Check your connection."),
 }
 
 const field = 'mt-1 block min-h-14 w-full rounded-2xl bg-surface px-4 text-ink outline-none focus:ring-2 focus:ring-[var(--red-ink)]'
@@ -32,7 +34,7 @@ export function Login({ onDone, onBack, start = 'signin' }: { onDone: () => void
     e.preventDefault()
     if (busy) return
     if (mode === 'signup') {
-      if (pw.length < 8) { setErr('Use at least 8 characters.'); return }
+      if (pw.length < 8) { setErr(t('Use at least 8 characters.')); return }
       if (pw !== pw2) { setErr("Passwords don't match."); return }
     }
     setBusy(true); setErr(null)
@@ -55,42 +57,42 @@ export function Login({ onDone, onBack, start = 'signin' }: { onDone: () => void
     if (r === 'ok') onDone(); else setErr(MESSAGES[r])
   }
 
-  const title = mode === 'signin' ? <>Sign <span className="text-red-ink">in</span></>
-    : mode === 'signup' ? <>Create <span className="text-red-ink">account</span></>
-    : mode === 'confirm' ? <>Check your <span className="text-red-ink">email</span></>
-    : <>Reset <span className="text-red-ink">password</span></>
+  const title = mode === 'signin' ? tr('Sign <r>in</r>')
+    : mode === 'signup' ? tr('Create <r>account</r>')
+    : mode === 'confirm' ? tr('Check your <r>email</r>')
+    : tr('Reset <r>password</r>')
 
   return (
     <Screen className="flex flex-col justify-center">
       <form onSubmit={submit} className="rise w-full">
         <img src="/icon-192.png" alt="" className="h-14 w-14 rounded-2xl" />
         <h1 className="m-0 mt-6 font-display text-4xl uppercase leading-[.9]">{title}</h1>
-        {mode === 'sent' && <p className="mt-6 text-muted">Check your email for a reset link.</p>}
-        {mode === 'confirm' && <p className="mt-6 text-muted">Tap the link we sent to {email.trim()}, then you're in.</p>}
+        {mode === 'sent' && <p className="mt-6 text-muted">{t('Check your email for a reset link.')}</p>}
+        {mode === 'confirm' && <p className="mt-6 text-muted">{t("Tap the link we sent to {email}, then you're in.", { email: email.trim() })}</p>}
         {(mode === 'signin' || mode === 'signup' || mode === 'forgot') && <>
-          <label htmlFor="email" className="mt-8 block text-sm text-muted">Email</label>
+          <label htmlFor="email" className="mt-8 block text-sm text-muted">{t('Email')}</label>
           <input id="email" type="email" autoComplete="email" inputMode="email" required value={email} onChange={(e) => setEmail(e.target.value)} className={field} />
           {mode !== 'forgot' && <>
-            <label htmlFor="pw" className="mt-4 block text-sm text-muted">Password{mode === 'signup' ? ' (8+ characters)' : ''}</label>
+            <label htmlFor="pw" className="mt-4 block text-sm text-muted">{mode === 'signup' ? t('Password (8+ characters)') : t('Password')}</label>
             <input id="pw" type="password" autoComplete={mode === 'signup' ? 'new-password' : 'current-password'} required value={pw} onChange={(e) => setPw(e.target.value)}
               aria-invalid={!!err} aria-describedby={err ? 'login-err' : undefined} className={field} />
           </>}
           {mode === 'signup' && <>
-            <label htmlFor="pw2" className="mt-4 block text-sm text-muted">Repeat password</label>
+            <label htmlFor="pw2" className="mt-4 block text-sm text-muted">{t('Repeat password')}</label>
             <input id="pw2" type="password" autoComplete="new-password" required value={pw2} onChange={(e) => setPw2(e.target.value)} className={field} />
           </>}
           {err && <p id="login-err" role="alert" className="m-0 mt-3 text-sm text-red-ink">{err}</p>}
           <Button block type="submit" className="mt-6" disabled={busy || !email || (mode !== 'forgot' && !pw) || (mode === 'signup' && !pw2)}>
-            {busy ? 'One moment…' : mode === 'signin' ? "Let's go" : mode === 'signup' ? 'Create account' : 'Send reset link'}
+            {busy ? t('One moment…') : mode === 'signin' ? "Let's go" : mode === 'signup' ? t('Create account') : t('Send reset link')}
           </Button>
         </>}
         <div className="mt-4 flex justify-between text-sm">
-          {onBack ? <button type="button" onClick={onBack} className="min-h-11 text-muted">← Back</button> : <span />}
-          {mode === 'signin' && <button type="button" onClick={() => go('forgot')} className="min-h-11 text-muted">Forgot password?</button>}
-          {mode !== 'signin' && <button type="button" onClick={() => go('signin')} className="min-h-11 text-muted">Back to sign in</button>}
+          {onBack ? <button type="button" onClick={onBack} className="min-h-11 text-muted">{t('← Back')}</button> : <span />}
+          {mode === 'signin' && <button type="button" onClick={() => go('forgot')} className="min-h-11 text-muted">{t('Forgot password?')}</button>}
+          {mode !== 'signin' && <button type="button" onClick={() => go('signin')} className="min-h-11 text-muted">{t('Back to sign in')}</button>}
         </div>
-        {mode === 'signin' && <button type="button" onClick={() => go('signup')} className="mt-4 min-h-11 w-full text-center text-sm font-semibold">New here? <span className="text-red-ink">Create an account</span></button>}
-        {mode === 'signup' && <p className="m-0 mt-4 text-center text-xs text-muted">Your training data stays private to your account.</p>}
+        {mode === 'signin' && <button type="button" onClick={() => go('signup')} className="mt-4 min-h-11 w-full text-center text-sm font-semibold">{tr('New here? <r>Create an account</r>')}</button>}
+        {mode === 'signup' && <p className="m-0 mt-4 text-center text-xs text-muted">{t('Your training data stays private to your account.')}</p>}
       </form>
     </Screen>
   )
@@ -103,7 +105,7 @@ export function SetPassword({ onDone }: { onDone: () => void }) {
   const [err, setErr] = useState<string | null>(null)
   const submit = async (e: React.FormEvent) => {
     e.preventDefault()
-    if (pw.length < 8) { setErr('Use at least 8 characters.'); return }
+    if (pw.length < 8) { setErr(t('Use at least 8 characters.')); return }
     setBusy(true); setErr(null)
     const r = await setNewPassword(pw)
     setBusy(false)
@@ -112,12 +114,12 @@ export function SetPassword({ onDone }: { onDone: () => void }) {
   return (
     <Screen className="flex flex-col justify-center">
       <form onSubmit={submit} className="rise w-full">
-        <h1 className="m-0 font-display text-4xl uppercase leading-[.9]">Choose a <span className="text-red-ink">password</span></h1>
-        <label htmlFor="new-pw" className="mt-8 block text-sm text-muted">New password (8+ characters)</label>
+        <h1 className="m-0 font-display text-4xl uppercase leading-[.9]">{tr('Choose a <r>password</r>')}</h1>
+        <label htmlFor="new-pw" className="mt-8 block text-sm text-muted">{t('New password (8+ characters)')}</label>
         <input id="new-pw" type="password" autoComplete="new-password" value={pw} onChange={(e) => setPw(e.target.value)}
           aria-invalid={!!err} aria-describedby={err ? 'pw-err' : undefined} className={field} />
         {err && <p id="pw-err" role="alert" className="m-0 mt-3 text-sm text-red-ink">{err}</p>}
-        <Button block type="submit" className="mt-6" disabled={busy || !pw}>{busy ? 'Saving…' : 'Save and continue'}</Button>
+        <Button block type="submit" className="mt-6" disabled={busy || !pw}>{busy ? 'Saving…' : t('Save and continue')}</Button>
       </form>
     </Screen>
   )

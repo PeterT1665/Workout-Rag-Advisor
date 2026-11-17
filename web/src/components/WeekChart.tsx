@@ -2,14 +2,15 @@ import { useState } from 'react'
 import { DAYS, DAY_SHORT, todayIndex } from '../lib/weekplan'
 import { allSessions } from '../lib/library'
 import type { HistoryEntry } from '../lib/storage'
+import { t } from '../i18n'
 
 // Minutes trained per day this week, stacked by kind of session. Colours: validated categorical palette
 // (dataviz default, dark steps, checked against the app's surface #161618). Fixed order, never cycled.
 export const KINDS = [
-  { id: 'football', label: 'Football', color: '#3987e5' },
-  { id: 'gym', label: 'Gym', color: '#d95926' },
-  { id: 'recovery', label: 'Recovery & mobility', color: '#199e70' },
-  { id: 'home', label: 'Home', color: '#c98500' },
+  { id: 'football', label: t('Football'), color: '#3987e5' },
+  { id: 'gym', label: t('Gym'), color: '#d95926' },
+  { id: 'recovery', label: t('Recovery & mobility'), color: '#199e70' },
+  { id: 'home', label: t('Home'), color: '#c98500' },
 ] as const
 type Kind = (typeof KINDS)[number]['id']
 
@@ -46,7 +47,7 @@ export function WeekChart({ history }: { history: HistoryEntry[] }) {
   return (
     <figure className="m-0 rounded-[20px] bg-surface p-4">
       <figcaption className="flex items-baseline justify-between">
-        <span className="font-semibold">Minutes trained this week</span>
+        <span className="font-semibold">{t('Minutes trained this week')}</span>
         <span className="font-display text-xl tabular-nums">{week}</span>
       </figcaption>
 
@@ -80,7 +81,7 @@ export function WeekChart({ history }: { history: HistoryEntry[] }) {
                 <span className="mb-1 block font-semibold">{DAYS[i]}</span>
                 {KINDS.filter((k) => d[k.id]).map((k) => (
                   <span key={k.id} className="flex items-center gap-1.5 text-muted">
-                    <span className="h-2 w-2 rounded-[2px]" style={{ background: k.color }} />{k.label} <span className="tabular-nums text-ink">{d[k.id]} min</span>
+                    <span className="h-2 w-2 rounded-[2px]" style={{ background: k.color }} />{k.label} <span className="tabular-nums text-ink">{t('{n} min', { n: d[k.id] })}</span>
                   </span>
                 ))}
               </span>
@@ -91,7 +92,7 @@ export function WeekChart({ history }: { history: HistoryEntry[] }) {
       <div className="mt-2 grid grid-cols-7 gap-2 text-center font-display text-[11px] text-muted">
         {DAY_SHORT.map((s, i) => <span key={i} className={i === today ? 'text-ink' : ''}>{s}</span>)}
       </div>
-      {week === 0 && <p className="m-0 mt-3 text-sm text-muted">Finish a session and it shows up here, coloured by kind.</p>}
+      {week === 0 && <p className="m-0 mt-3 text-sm text-muted">{t('Finish a session and it shows up here, coloured by kind.')}</p>}
     </figure>
   )
 }

@@ -1,16 +1,17 @@
 // Kit check: what to pack for a session, derived from its "needs". One tap per item, no logging.
 import { load, save } from './storage'
 import type { Session } from './types'
+import { t } from '../i18n'
 
 export type KitItem = { id: string; label: string; photo?: string }
 
 export function kitFor(s: Session): KitItem[] {
   const needs = [...s.needs, ...s.blocks.flatMap((b) => b.needs ?? [])].join(' ').toLowerCase()
-  if (s.type === 'recovery') return [{ id: 'mat', label: 'Mat' }, { id: 'roller', label: 'Roller' }, { id: 'water', label: 'Water', photo: 'kit-water.jpg' }]
-  const items: KitItem[] = s.type === 'home' ? [{ id: 'mat', label: 'Mat' }] : [{ id: 'boots', label: 'Boots', photo: 'kit-boots.jpg' }]
-  if (needs.includes('ball')) items.push({ id: 'ball', label: 'Ball', photo: 'kit-ball.jpg' })
-  if (/marker|cone/.test(needs)) items.push({ id: 'discs', label: 'Discs', photo: 'kit-discs.jpg' })
-  items.push({ id: 'water', label: 'Water', photo: 'kit-water.jpg' })
+  if (s.type === 'recovery') return [{ id: 'mat', label: t('Mat') }, { id: 'roller', label: t('Roller') }, { id: 'water', label: t('Water'), photo: 'kit-water.jpg' }]
+  const items: KitItem[] = s.type === 'home' ? [{ id: 'mat', label: t('Mat') }] : [{ id: 'boots', label: t('Boots'), photo: 'kit-boots.jpg' }]
+  if (needs.includes('ball')) items.push({ id: 'ball', label: t('Ball'), photo: 'kit-ball.jpg' })
+  if (/marker|cone/.test(needs)) items.push({ id: 'discs', label: t('Discs'), photo: 'kit-discs.jpg' })
+  items.push({ id: 'water', label: t('Water'), photo: 'kit-water.jpg' })
   return items.slice(0, 4)
 }
 

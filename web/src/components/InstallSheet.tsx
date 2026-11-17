@@ -1,21 +1,23 @@
 import { Button } from './ui'
 import { isIOS } from '../lib/install'
+import { t } from '../i18n'
+import { tr } from '../i18n/rich'
 
 // Bottom sheet with the Add to Home Screen steps.
 export function InstallSheet({ onClose }: { onClose: () => void }) {
   const ios = isIOS()
   const steps = ios
-    ? [<>Tap <ShareGlyph /> <b>Share</b> in Safari. No button? Tap <b>•••</b> next to the address, then Share.</>,
-       <>Scroll down, tap <b>Add to Home Screen</b>. Not there? Tap <b>More</b>.</>,
-       <>Tap <b>Add</b>, then open the app from your Home Screen.</>]
-    : [<>Tap the <b>⋮</b> menu in your browser.</>, <>Tap <b>Add to Home screen</b> or <b>Install app</b>.</>, <>Open the app from your Home screen.</>]
+    ? [tr('Tap {icon} <b>Share</b> in Safari. No button? Tap <b>•••</b> next to the address, then Share.', { icon: <ShareGlyph /> }),
+       tr('Scroll down, tap <b>Add to Home Screen</b>. Not there? Tap <b>More</b>.'),
+       tr('Tap <b>Add</b>, then open the app from your Home Screen.')]
+    : [tr('Tap the <b>⋮</b> menu in your browser.'), tr('Tap <b>Add to Home screen</b> or <b>Install app</b>.'), tr('Open the app from your Home screen.')]
   return (
-    <div className="fixed inset-0 z-50 flex items-end justify-center" role="dialog" aria-modal="true" aria-label="Install the app">
-      <button aria-label="Close" className="absolute inset-0 bg-black/60" onClick={onClose} />
+    <div className="fixed inset-0 z-50 flex items-end justify-center" role="dialog" aria-modal="true" aria-label={t('Install the app')}>
+      <button aria-label={t('Close')} className="absolute inset-0 bg-black/60" onClick={onClose} />
       <div className="rise relative w-full max-w-xl rounded-t-[28px] bg-surface px-5 pt-3 pb-[max(20px,env(safe-area-inset-bottom))]">
         <div className="mx-auto mb-4 h-1.5 w-10 rounded-full bg-surface-2" aria-hidden="true" />
-        <h2 className="m-0 font-display text-2xl uppercase leading-none">Add to <span className="text-red-ink">Home Screen</span></h2>
-        <p className="m-0 mt-2 text-sm text-muted">Full screen, works offline at the field.</p>
+        <h2 className="m-0 font-display text-2xl uppercase leading-none">{t('Add to Home Screen')}</h2>
+        <p className="m-0 mt-2 text-sm text-muted">{t('Full screen, works offline at the field.')}</p>
         <ol className="m-0 mt-5 flex list-none flex-col gap-4 p-0">
           {steps.map((s, i) => (
             <li key={i} className="flex gap-3">
@@ -24,7 +26,8 @@ export function InstallSheet({ onClose }: { onClose: () => void }) {
             </li>
           ))}
         </ol>
-        <Button block variant="ghost" className="mt-6 bg-surface-2" onClick={onClose}>Got it</Button>
+        <Button block variant="ghost" className="mt-6 bg-surface-2" onClick={onClose}>{t('Got it')}</Button>
+
       </div>
     </div>
   )

@@ -1,8 +1,15 @@
 // Week skeleton: which kind of session goes on which day, built around the week's games.
 // Started as a port of ../../../weekplan.py; v3 adds the gym rules below (the Python file keeps v2).
 
-export const DAYS = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
-export const DAY_SHORT = ['M', 'T', 'W', 'T', 'F', 'S', 'S']
+import { locale, t } from '../i18n'
+
+// Day names in the app's language (1 Jan 2024 was a Monday).
+const dayNames = (weekday: 'long' | 'short' | 'narrow') =>
+  Array.from({ length: 7 }, (_, i) => new Date(2024, 0, 1 + i).toLocaleDateString(locale(), { weekday }))
+const cap = (s: string) => s.charAt(0).toUpperCase() + s.slice(1)
+export const DAYS = dayNames('long').map(cap)
+export const DAY_SHORT = dayNames('narrow').map(cap)
+export const DAY_ABBR = dayNames('short').map((d) => cap(d.replace(/\.$/, '')))
 
 // Football rule (Peter, 2026-10-23): 1 game -> 2 football sessions, 2 games -> 1, 3 games -> 0.
 // v3 (2026-11-09, D33): footballers also lift 3-4 times a week. v4 (2026-11-16): gym days get a job by matchday
@@ -19,16 +26,18 @@ export type SlotKind = 'game' | 'football' | 'gym' | 'recovery' | 'cheer'
 export type GymFocus = 'strength' | 'upper-power' | 'core' | 'activation'
 export type Slot = { day: number; kind: SlotKind; note?: string; focus?: GymFocus }
 export type WeekPlan = { slots: Slot[]; reasons: string[] }
+export const kindLabel = (k: SlotKind | string) =>
+  ({ game: t('Game'), football: t('Football'), gym: t('Gym'), recovery: t('Recovery'), home: t('Home') } as Record<string, string>)[k] ?? k
 
 export const FOCUS_LABEL: Record<GymFocus, string> = {
-  strength: 'Strength & contrast: legs', 'upper-power': 'Upper body power', core: 'Core & injury prevention', activation: 'Match-eve activation',
+  strength: t('Strength & contrast: legs'), 'upper-power': t('Upper body power'), core: t('Core & injury prevention'), activation: t('Match-eve activation'),
 }
-export const FOCUS_SHORT: Record<GymFocus, string> = { strength: 'Legs', 'upper-power': 'Upper', core: 'Core', activation: 'Activation' }
+export const FOCUS_SHORT: Record<GymFocus, string> = { strength: t('Legs'), 'upper-power': t('Upper'), core: t('Core'), activation: t('Activation') }
 const FOCUS_NOTE: Record<GymFocus, string> = {
-  strength: 'heavy legs and contrast lifts, far enough from the game',
-  'upper-power': 'submax upper body and power, legs stay fresh',
-  core: 'core and injury prevention (hamstrings, groin, trunk)',
-  activation: 'short isometrics and a few fast reps: wakes the legs up without tiring them',
+  strength: t('heavy legs and contrast lifts, far enough from the game'),
+  'upper-power': t('submax upper body and power, legs stay fresh'),
+  core: t('core and injury prevention (hamstrings, groin, trunk)'),
+  activation: t('short isometrics and a few fast reps: wakes the legs up without tiring them'),
 }
 
 // Days to the next game and since the last one. Games repeat every week, so it wraps (Wednesday's game makes
@@ -61,16 +70,16 @@ export function buildWeek(games: Game[], opts: { gym?: number } = {}): WeekPlan 
   const free = (d: number) => !slots.some((s) => s.day === d)
   const week = DAYS.map((_, d) => d)
 
-  for (const g of games) slots.push({ day: g.day, kind: 'game', note: g.kind })
+  for (const g of games) slots.push({ day: g.day, kind: 'game', note: g.kind === 'casual' ? t('casual game') : t('competitive game') })
 
   // Recovery first: the day after a game (MD+1) is kept for it; back-to-back games put it on the game day.
   for (let i = 0; i < RECOVERY_BY_GAMES[n]; i++) {
     const after = [...gameDays].sort((a, b) => a - b).map((g) => (g + 1) % 7).find((d) => free(d))
-    if (after !== undefined) { slots.push({ day: after, kind: 'recovery', note: 'hips, hamstrings, quads, light mobility' }); continue }
+    if (after !== undefined) { slots.push({ day: after, kind: 'recovery', note: t('hips, hamstrings, quads, light mobility') }); continue }
     const gameDay = [...gameDays].sort((a, b) => a - b).find((d) => !on(d, 'recovery'))
     const d = gameDay ?? week.find(free)
     if (d === undefined) continue
-    slots.push({ day: d, kind: 'recovery', note: gameDays.has(d) ? 'after the game: 15 min mobility and stretching' : 'light mobility' })
+    slots.push({ day: d, kind: 'recovery', note: gameDays.has(d) ? t('after the game: 15 min mobility and stretching') : t('light mobility') })
   }
 
   // Gym: the most useful jobs first (legs far from the game, upper power at MD-2, core at MD-3, activation at MD-1),
@@ -78,7 +87,7 @@ export function buildWeek(games: Game[], opts: { gym?: number } = {}): WeekPlan 
   const gymDays: number[] = []
   for (let i = 0; i < gymCount; i++) {
     const cands = week.filter((d) => !gameDays.has(d) && !gymDays.includes(d))
-    if (!cands.length) { reasons.push('No day left for another gym session this week.'); continue }
+    if (!cands.length) { reasons.push(t('No day left for another gym session this week.')); continue }
     const cost = (d: number) => (n ? gymFor(d, games).score : 0) + (on(d, 'recovery') ? 5 : 0)
       + (gymDays.includes(d - 1) || gymDays.includes(d + 1) ? (n ? 0.5 : 2) : 0) + d * 0.01
     gymDays.push(cands.reduce((a, b) => (cost(b) < cost(a) ? b : a)))
@@ -101,21 +110,22 @@ export function buildWeek(games: Game[], opts: { gym?: number } = {}): WeekPlan 
   let doubled = 0
   for (let i = 0; i < footballCount; i++) {
     const cands = week.filter((d) => !gameDays.has(d) && !on(d, 'football'))
-    if (!cands.length) { reasons.push('No free day for a football session; skipped to protect recovery.'); continue }
+    if (!cands.length) { reasons.push(t('No free day for a football session; skipped to protect recovery.')); continue }
     const best = cands.reduce((a, b) => (footballCost(b) < footballCost(a) ? b : a))
-    if (footballCost(best) >= 6) reasons.push(`Football on ${DAYS[best]} is close to a game: no cleaner day was free.`)
+    if (footballCost(best) >= 6) reasons.push(t('Football on {day} is close to a game: no cleaner day was free.', { day: DAYS[best] }))
     if (on(best, 'gym')) doubled++
     const { ahead } = matchDistance(best, games)
-    const note = ahead === 4 ? 'high intensity: 1v1, finishing, sprints (then legs in the gym)' : ahead === 3 ? 'high intensity: 1v1, finishing' : ahead === 2 ? 'sharp: passing and first touch' : 'technique and touches'
+    const note = ahead === 4 ? t('high intensity: 1v1, finishing, sprints (then legs in the gym)') : ahead === 3 ? t('high intensity: 1v1, finishing') : ahead === 2 ? t('sharp: passing and first touch') : t('technique and touches')
     slots.push({ day: best, kind: 'football', note: n ? note : undefined })
   }
 
   slots.sort((a, b) => a.day - b.day || order(a.kind) - order(b.kind))
-  const label = n < 3 ? `${n} game${n === 1 ? '' : 's'}` : '3+ games'
-  let why = `${label} this week: ${footballCount} football, ${gymCount} gym, ${RECOVERY_BY_GAMES[n]} recovery.`
-  if (n) why += ' Each gym day has a job set by how far it is from the game: legs early in the week, then core, upper body, and a short activation the day before. Hard days are hard (football, legs and speed together at MD-4), easy days are easy.'
-  if (n >= 3) why += ' Games carry the football load, so the focus is gym and recovery.'
-  if (doubled) why += ` ${doubled} football session${doubled > 1 ? 's share' : ' shares'} a day with the gym: ball work first, gym after.`
+  const label = n === 1 ? t('1 game') : n < 3 ? t('{n} games', { n }) : t('3+ games')
+  let why = t('{games} this week: {football} football, {gym} gym, {recovery} recovery.', { games: label, football: footballCount, gym: gymCount, recovery: RECOVERY_BY_GAMES[n] })
+  if (n) why += ' ' + t('Each gym day has a job set by how far it is from the game: legs early in the week, then core, upper body, and a short activation the day before. Hard days are hard (football, legs and speed together at MD-4), easy days are easy.')
+  if (n >= 3) why += ' ' + t('Games carry the football load, so the focus is gym and recovery.')
+  if (doubled) why += ' ' + (doubled > 1 ? t('{n} football sessions share a day with the gym: ball work first, gym after.', { n: doubled }) : t('1 football session shares a day with the gym: ball work first, gym after.'))
+
   reasons.unshift(why)
   return { slots, reasons }
 }

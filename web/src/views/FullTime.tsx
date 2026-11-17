@@ -3,9 +3,11 @@ import { loadHistory, reflectLast, weekLoads, type Legs } from '../lib/storage'
 import type { PlayerState } from '../lib/player'
 import type { Session } from '../lib/types'
 import { AnimateDigits } from '../components/AnimateDigits'
+import { mark, t } from '../i18n'
+import { tr } from '../i18n/rich'
 
-const SORE = ['Hips', 'Knee', 'Hamstring', 'Quad', 'Ankle', 'Other']
-const EFFORT_WORDS = ['', 'Very easy', 'Easy', 'Easy', 'Moderate', 'Moderate', 'Hard', 'Hard', 'Very hard', 'Very hard', 'Max']
+const SORE = [mark('Hips'), mark('Knee'), mark('Hamstring'), mark('Quad'), mark('Ankle'), mark('Other')]
+const EFFORT_WORDS = () => ['', t('Very easy'), t('Easy'), t('Easy'), t('Moderate'), t('Moderate'), t('Hard'), t('Hard'), t('Very hard'), t('Very hard'), t('Max')]
 
 // Count up once, on the rare full-time moment (delight tier): a few scoreboard steps the digits roll through.
 // Lands on the real number immediately when motion is reduced.
@@ -50,12 +52,12 @@ export function FullTime({ session, st, onExit }: { session: Session; st: Player
     <div className="fixed inset-0 overflow-y-auto bg-[#0a0c0b] text-white">
       <div className="mx-auto flex min-h-full max-w-xl flex-col px-5 pt-[max(28px,var(--sat))] pb-[max(28px,env(safe-area-inset-bottom))]">
         <h1 className="slam m-0 font-display text-[clamp(3.5rem,19vw,6rem)] uppercase leading-[.85]">
-          Full<br /><span className="text-[var(--red-ink)]">time</span>
+          {tr('Full <r>time</r>', { r: (x) => <><br /><span className="text-[var(--red-ink)]">{x}</span></> })}
         </h1>
         <p className="m-0 mt-3 text-white/70">{session.title}</p>
 
         <dl className="m-0 mt-6 grid grid-cols-3 divide-x divide-white/10 rounded-[22px] bg-white/[.06] py-4">
-          {[['Minutes', minutes], ['Drills', st.drillsDone], ['Cues called', st.cuesCalled]].map(([k, v]) => (
+          {[[t('Minutes'), minutes], [t('Drills'), st.drillsDone], [t('Cues called'), st.cuesCalled]].map(([k, v]) => (
             <div key={k as string} className="px-4">
               <dd className="m-0 font-display text-3xl">{v}</dd>
               <dt className="mt-1 text-sm text-white/60">{k}</dt>
@@ -65,52 +67,52 @@ export function FullTime({ session, st, onExit }: { session: Session; st: Player
 
         {!saved ? (
           <section className="mt-8 flex flex-1 flex-col">
-            <h2 className="m-0 font-display text-xl uppercase">20-second check-in</h2>
-            <p className="m-0 mt-1 text-sm text-white/60">Tap, don't type.</p>
+            <h2 className="m-0 font-display text-xl uppercase">{t('20-second check-in')}</h2>
+            <p className="m-0 mt-1 text-sm text-white/60">{t("Tap, don't type.")}</p>
 
-            <h3 className="m-0 mt-6 mb-2 font-semibold">How hard was it?{rpe ? <span className="ml-2 font-normal text-white/60">{EFFORT_WORDS[rpe]}</span> : null}</h3>
+            <h3 className="m-0 mt-6 mb-2 font-semibold">{t('How hard was it?')}{rpe ? <span className="ml-2 font-normal text-white/60">{EFFORT_WORDS()[rpe]}</span> : null}</h3>
             <div className="grid grid-cols-5 gap-2">
               {Array.from({ length: 10 }, (_, i) => i + 1).map((n) => (
-                <button key={n} onClick={() => setRpe(n)} aria-pressed={rpe === n} aria-label={`Effort ${n}`}
+                <button key={n} onClick={() => setRpe(n)} aria-pressed={rpe === n} aria-label={t('Effort {n}', { n })}
                   className={`h-12 rounded-2xl font-display text-lg tabular-nums transition-[transform,background-color] duration-150 ease-snap active:scale-[0.94] ${rpe === n ? 'bg-[var(--red)] text-white' : 'bg-white/10'}`}>
                   {n}
                 </button>
               ))}
             </div>
 
-            <h3 className="m-0 mt-6 mb-2 font-semibold">Legs?</h3>
+            <h3 className="m-0 mt-6 mb-2 font-semibold">{t('Legs?')}</h3>
             <div className="grid grid-cols-3 gap-2">
               {(['fresh', 'ok', 'heavy'] as Legs[]).map((l) => (
-                <Choice key={l} on={legs === l} onClick={() => setLegs(l)} className="capitalize">{l === 'ok' ? 'OK' : l}</Choice>
+                <Choice key={l} on={legs === l} onClick={() => setLegs(l)} className="capitalize">{l === 'ok' ? t('OK') : l === 'fresh' ? t('fresh') : t('heavy')}</Choice>
               ))}
             </div>
 
-            <h3 className="m-0 mt-6 mb-2 font-semibold">Anything sore?</h3>
+            <h3 className="m-0 mt-6 mb-2 font-semibold">{t('Anything sore?')}</h3>
             <div className="flex flex-wrap gap-2">
-              {SORE.map((s) => <Choice key={s} on={sore.includes(s)} onClick={() => toggleSore(s)} className="px-5">{s}</Choice>)}
+              {SORE.map((s) => <Choice key={s} on={sore.includes(s)} onClick={() => toggleSore(s)} className="px-5">{t(s)}</Choice>)}
             </div>
 
             <div className="mt-auto flex flex-col gap-2 pt-8">
               <button onClick={save} disabled={!rpe || !legs}
                 className="min-h-14 rounded-full bg-[var(--red)] font-display text-sm uppercase tracking-wide text-white transition-[transform,opacity] duration-150 ease-snap active:scale-[0.97] disabled:opacity-40">
-                Save check-in
+                {t('Save check-in')}
               </button>
-              <button onClick={onExit} className="min-h-11 text-sm font-semibold text-white/60">Skip for now</button>
+              <button onClick={onExit} className="min-h-11 text-sm font-semibold text-white/60">{t('Skip for now')}</button>
             </div>
           </section>
         ) : (
           <section className="rise mt-10 flex flex-1 flex-col">
-            <p className="m-0 font-semibold text-white/70">Session load</p>
+            <p className="m-0 font-semibold text-white/70">{t('Session load')}</p>
             <p className="m-0 font-display text-[clamp(4rem,24vw,7rem)] leading-none"><AnimateDigits value={String(shown)} /></p>
-            <p className="m-0 mt-2 text-white/70">{minutes} min × effort {rpe}. This week so far: <b className="text-white">{saved.week}</b>.</p>
+            <p className="m-0 mt-2 text-white/70">{tr('{minutes} min × effort {rpe}. This week so far: <b>{week}</b>.', {}, { minutes, rpe: rpe ?? 0, week: saved.week })}</p>
             {sore.length > 0 && (
               <p className="m-0 mt-4 rounded-[18px] bg-white/[.06] p-4 text-sm">
-                Noted: {sore.join(', ').toLowerCase()}. Your plan keeps an eye on it{sore.includes('Hips') || sore.includes('Knee') ? ', and and recovery days stay in.' : '.'}
+                {t('Noted: {list}. Your plan keeps an eye on it.', { list: sore.map((x) => t(x)).join(', ').toLowerCase() })}
               </p>
             )}
             <button onClick={onExit}
               className="mt-auto min-h-14 rounded-full bg-[var(--red)] font-display text-sm uppercase tracking-wide text-white transition-transform duration-150 ease-snap active:scale-[0.97]">
-              Back home
+              {t('Back home')}
             </button>
           </section>
         )}

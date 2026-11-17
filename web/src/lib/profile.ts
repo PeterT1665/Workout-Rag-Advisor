@@ -1,4 +1,5 @@
 // The player profile: everything that used to be hard-coded for Peter. Saved locally (synced once accounts exist).
+import { t } from '../i18n'
 import { useSyncExternalStore } from 'react'
 import { load, save } from './storage'
 import type { Ratings } from './testday'
@@ -21,14 +22,14 @@ export type Profile = {
 }
 
 export const POSITIONS: { id: Position; label: string; short: string }[] = [
-  { id: 'winger', label: 'Winger', short: 'W' }, { id: 'striker', label: 'Striker', short: 'ST' },
-  { id: 'midfielder', label: 'Midfielder', short: 'CM' }, { id: 'defender', label: 'Defender', short: 'DEF' },
+  { id: 'winger', label: t('Winger'), short: 'W' }, { id: 'striker', label: t('Striker'), short: 'ST' },
+  { id: 'midfielder', label: t('Midfielder'), short: 'CM' }, { id: 'defender', label: t('Defender'), short: 'DEF' },
 ]
 // Swatch colours match the dark-mode fills in index.css.
 export const ACCENTS: { id: Accent; label: string; hex: string }[] = [
-  { id: 'red', label: 'Red', hex: '#e01b35' }, { id: 'blue', label: 'Blue', hex: '#1f5fe0' }, { id: 'sky', label: 'Sky', hex: '#1c9be6' },
-  { id: 'green', label: 'Green', hex: '#12854a' }, { id: 'teal', label: 'Teal', hex: '#0b7470' }, { id: 'gold', label: 'Gold', hex: '#f5b70a' },
-  { id: 'orange', label: 'Orange', hex: '#ff6a13' }, { id: 'purple', label: 'Purple', hex: '#7c3aed' }, { id: 'pink', label: 'Pink', hex: '#d61f80' },
+  { id: 'red', label: t('Red'), hex: '#e01b35' }, { id: 'blue', label: t('Blue'), hex: '#1f5fe0' }, { id: 'sky', label: t('Sky'), hex: '#1c9be6' },
+  { id: 'green', label: t('Green'), hex: '#12854a' }, { id: 'teal', label: t('Teal'), hex: '#0b7470' }, { id: 'gold', label: t('Gold'), hex: '#f5b70a' },
+  { id: 'orange', label: t('Orange'), hex: '#ff6a13' }, { id: 'purple', label: t('Purple'), hex: '#7c3aed' }, { id: 'pink', label: t('Pink'), hex: '#d61f80' },
 ]
 
 export const SAMPLE_PROFILE: Profile = { name: 'Sam', number: 11, positions: ['winger', 'striker'], foot: 'right', accent: 'red', idol: '', sample: true }

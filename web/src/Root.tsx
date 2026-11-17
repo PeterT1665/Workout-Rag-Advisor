@@ -10,6 +10,8 @@ import { accountsEnabled, arrivedToSetPassword } from './lib/supabase'
 import { seedDemo, startOwnDemo } from './lib/demo'
 import { SAMPLE_PROFILE, applyAccent, getProfile, hasProfile, reloadProfile, setProfile } from './lib/profile'
 import { saveGames } from './lib/today'
+import { acceptPendingInvite, pendingInvite } from './lib/invite'
+import { FriendInvite } from './views/FriendInvite'
 
 applyAccent(getProfile().accent)
 
@@ -27,6 +29,7 @@ function Main() {
   const [mode, setMode] = useState<Mode>(accountsEnabled ? 'checking' : 'guest')
   const [profiled, setProfiled] = useState(hasProfile)
   const [authStart, setAuthStart] = useState<'signin' | 'signup'>('signin')
+  const [invite, setInvite] = useState(() => !!pendingInvite())
 
   async function enterAccount(next: Mode = 'account') {
     // A guest's sample player or leftovers must not end up in the account. A guest's own player is kept and uploaded.
@@ -39,6 +42,7 @@ function Main() {
     if (me) void syncPhotos(me.id) // photos can arrive after the app is showing
     setProfiled(hasProfile())
     setMode(next)
+    void acceptPendingInvite() // came from a friend's QR: you're friends now
   }
 
   useEffect(() => {
@@ -53,6 +57,8 @@ function Main() {
   if (mode === 'signin') return <Login start={authStart} onDone={() => void enterAccount()} onBack={() => setMode('guest')} />
   if (mode === 'setpw') return <SetPassword onDone={() => setMode('account')} />
   const auth = (start: 'signin' | 'signup') => () => { setAuthStart(start); setMode('signin') }
+  // a friend's QR, not signed in yet: who invited you, then sign up or sign in
+  if (mode === 'guest' && invite && accountsEnabled) return <FriendInvite onSignUp={auth('signup')} onSignIn={auth('signin')} onSkip={() => setInvite(false)} />
   if (mode === 'guest') return <Guest onSignIn={accountsEnabled ? auth('signin') : undefined} onSignUp={accountsEnabled ? auth('signup') : undefined} />
   if (!profiled) return <Onboarding onDone={(p, games) => { saveGames(games); setProfile(p); setProfiled(true) }} />
   return <App />
@@ -75,7 +81,7 @@ function Guest({ onSignIn, onSignUp }: { onSignIn?: () => void; onSignUp?: () =>
   }
   if (next) return <NextSteps name={getProfile().name} onSignUp={onSignUp} onDone={() => setNext(false)} />
   if (getProfile().sample) seedDemo()
-  return <App onSignUp={onSignUp} />
+  return <App onSignUp={onSignUp} onSignIn={onSignIn} />
 }
 
 // Laptop preview of the welcome screen, whatever is saved. Choosing a player turns this phone into the real app.

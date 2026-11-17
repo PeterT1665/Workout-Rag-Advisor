@@ -8,6 +8,7 @@ import {
   CATEGORY_LABELS, EXERCISES, SPORTS, categories, exercise, inferType, isMine, newSessionId, toSession,
   type Exercise, type Item, type MySession, type Sport, type Template,
 } from '../lib/library'
+import { t } from '../i18n'
 
 // Phone-first session builder: pick exercises from the library, tune rounds/time/rest, reorder, save.
 // Editing a recommended session saves a copy; the original stays untouched.
@@ -23,8 +24,8 @@ export function Builder({ from, onSave, onCancel, onDelete }: {
   const [picking, setPicking] = useState(!from)
 
   const draft: Template = {
-    id: editing?.id ?? newSessionId(), title: title.trim() || 'My session', type: inferType(items),
-    summary: from?.summary && editing ? from.summary : 'My session, built from the library.', needs: [], items,
+    id: editing?.id ?? newSessionId(), title: title.trim() || t('My session'), type: inferType(items),
+    summary: from?.summary && editing ? from.summary : t('My session, built from the library.'), needs: [], items,
   }
   const minutes = items.length ? sessionMinutes(toSession(draft)) : 0
 
@@ -40,13 +41,13 @@ export function Builder({ from, onSave, onCancel, onDelete }: {
   return (
     <Screen>
       <TopBar
-        left={<Button variant="ghost" size="sm" onClick={onCancel}>Cancel</Button>}
-        right={<Button size="sm" disabled={!items.length} onClick={() => onSave({ ...draft, mine: true, updated: '' })}>Save</Button>}
+        left={<Button variant="ghost" size="sm" onClick={onCancel}>{t('Cancel')}</Button>}
+        right={<Button size="sm" disabled={!items.length} onClick={() => onSave({ ...draft, mine: true, updated: '' })}>{t('Save')}</Button>}
       />
-      <label htmlFor="session-title" className="text-sm text-muted">Session name</label>
-      <input id="session-title" value={title} onChange={(e) => setTitle(e.target.value)} placeholder="e.g. Dribbling + weak foot"
+      <label htmlFor="session-title" className="text-sm text-muted">{t('Session name')}</label>
+      <input id="session-title" value={title} onChange={(e) => setTitle(e.target.value)} placeholder={t('e.g. Dribbling + weak foot')}
         className="mt-1 mb-2 block min-h-12 w-full rounded-2xl bg-surface px-4 font-display text-lg uppercase text-ink placeholder:text-muted placeholder:normal-case" />
-      <p className="mb-5 font-display text-sm tabular-nums text-muted">{items.length} exercises · about {minutes} min</p>
+      <p className="mb-5 font-display text-sm tabular-nums text-muted">{t('{n} exercises · about {m} min', { n: items.length, m: minutes })}</p>
 
       {/* a superset is one unit: it drags as a whole */}
       <DragList units={unitsOf(items)} keyOf={(u) => keyOf(u.items[0])} onMove={(from, to) => setItems((xs) => moveUnit(xs, from, to))}
@@ -64,9 +65,9 @@ export function Builder({ from, onSave, onCancel, onDelete }: {
           </div>
         )} />
 
-      <Button variant="ghost" block className="mt-4" onClick={() => setPicking(true)}>+ Add exercises</Button>
+      <Button variant="ghost" block className="mt-4" onClick={() => setPicking(true)}>{t('+ Add exercises')}</Button>
       {editing && onDelete && (
-        <button onClick={() => onDelete(editing.id)} className="mt-8 min-h-11 w-full text-sm font-semibold text-red-ink">Delete this session</button>
+        <button onClick={() => onDelete(editing.id)} className="mt-8 min-h-11 w-full text-sm font-semibold text-red-ink">{t('Delete this session')}</button>
       )}
     </Screen>
   )
@@ -101,7 +102,7 @@ function BuilderRow({ item: it, index: i, intoNext, canPair, grip, onPair, onUpd
     <div
       className={`relative bg-surface p-3 ${it.superset && i > 0 ? 'mt-0.5 rounded-b-[18px] border-l-4 border-red' : 'rounded-t-[18px]'} ${intoNext ? 'rounded-t-[18px] border-l-4 border-red' : 'rounded-b-[18px]'}`}>
       <div className="flex items-start gap-2">
-        <button aria-label={`Reorder ${e.name}${it.superset || intoNext ? ' (moves with its superset)' : ''}: drag, or use the arrow keys`} {...grip}
+        <button aria-label={it.superset || intoNext ? t('Reorder {name} (moves with its superset): drag, or use the arrow keys', { name: e.name }) : t('Reorder {name}: drag, or use the arrow keys', { name: e.name })} {...grip}
           className="-my-1 -ml-1 grid h-11 w-9 shrink-0 touch-none select-none place-items-center rounded-xl text-muted active:cursor-grabbing active:bg-surface-2">
           <svg viewBox="0 0 12 20" className="h-5 w-3" fill="currentColor" aria-hidden="true">
             {[3, 10, 17].map((y) => <g key={y}><circle cx="3" cy={y} r="1.6" /><circle cx="9" cy={y} r="1.6" /></g>)}
@@ -113,7 +114,7 @@ function BuilderRow({ item: it, index: i, intoNext, canPair, grip, onPair, onUpd
           {canPair && (
             <button aria-pressed={!!it.superset} onClick={onPair}
               className={`mt-1.5 block min-h-8 rounded-full px-3 font-display text-[11px] uppercase ${it.superset ? 'bg-red text-on-red' : 'bg-surface-2 text-muted'}`}>
-              {it.superset ? 'Superset with above ✓' : '+ Superset with above'}
+              {it.superset ? t('Superset with above ✓') : t('+ Superset with above')}
             </button>
           )}
         </div>
@@ -121,10 +122,10 @@ function BuilderRow({ item: it, index: i, intoNext, canPair, grip, onPair, onUpd
       </div>
       <div className="mt-3 grid grid-cols-3 gap-2">
         <Stepper label={e.reps ? 'Sets' : 'Rounds'} value={rounds} text={`${rounds}`} onChange={(v) => onUpdate({ rounds: Math.max(1, Math.min(20, v)) })} step={1} />
-        <Stepper label={e.reps ? 'Set time' : 'Work'} value={work} text={fmtSec(work)} onChange={(v) => onUpdate({ work: Math.max(5, Math.min(1200, v)) })} step={work >= 120 ? 30 : 5} />
+        <Stepper label={e.reps ? t('Set time') : 'Work'} value={work} text={fmtSec(work)} onChange={(v) => onUpdate({ work: Math.max(5, Math.min(1200, v)) })} step={work >= 120 ? 30 : 5} />
         {intoNext
-          ? <div className="grid place-items-center rounded-xl bg-surface-2 px-2 py-1.5 text-center text-[11px] uppercase leading-tight tracking-wide text-muted">Straight into the next</div>
-          : <Stepper label={it.superset ? 'Rest after pair' : 'Rest'} value={rest} text={fmtSec(rest)} onChange={(v) => onUpdate({ rest: Math.max(0, Math.min(600, v)) })} step={rest >= 120 ? 30 : 15} />}
+          ? <div className="grid place-items-center rounded-xl bg-surface-2 px-2 py-1.5 text-center text-[11px] uppercase leading-tight tracking-wide text-muted">{t('Straight into the next')}</div>
+          : <Stepper label={it.superset ? t('Rest after pair') : 'Rest'} value={rest} text={fmtSec(rest)} onChange={(v) => onUpdate({ rest: Math.max(0, Math.min(600, v)) })} step={rest >= 120 ? 30 : 15} />}
       </div>
     </div>
   )
@@ -165,7 +166,7 @@ export function Picker({ items, onAdd, onRemove, onDone }: { items: Item[]; onAd
 
   return (
     <Screen>
-      <TopBar left={<Title>Library</Title>} right={<Button size="sm" onClick={onDone}>Done · {items.length}</Button>} />
+      <TopBar left={<Title>{t('Library')}</Title>} right={<Button size="sm" onClick={onDone}>{t('Done')} · {items.length}</Button>} />
       <div role="tablist" className="mb-3 grid grid-cols-4 gap-1 rounded-full bg-surface p-1">
         {SPORTS.map((s) => (
           <button key={s.id} role="tab" aria-selected={sport === s.id} onClick={() => { setSport(s.id); setCat('all') }}
@@ -217,7 +218,7 @@ function ExerciseSheet({ e, n, onAdd, onRemove, onClose }: { e: Exercise; n: num
   return (
     <div className="fixed inset-0 z-40 flex items-end justify-center" role="dialog" aria-modal="true" aria-label={e.name}
       onKeyDown={(ev) => ev.key === 'Escape' && onClose()}>
-      <button aria-label="Close details" className="absolute inset-0 bg-black/55" onClick={onClose} />
+      <button aria-label={t('Close details')} className="absolute inset-0 bg-black/55" onClick={onClose} />
       <div className="rise relative max-h-[88dvh] w-full max-w-xl overflow-y-auto rounded-t-[28px] bg-surface px-5 pt-3 pb-[max(20px,env(safe-area-inset-bottom))]">
         <div className="mx-auto mb-4 h-1.5 w-10 rounded-full bg-surface-2" aria-hidden="true" />
         <h2 className="m-0 font-display text-xl uppercase leading-tight">{e.name}</h2>
@@ -228,13 +229,13 @@ function ExerciseSheet({ e, n, onAdd, onRemove, onClose }: { e: Exercise; n: num
         <VideoBox name={e.name} />
         {(e.cue || e.positions?.length || e.needs?.length) && (
           <div className="mt-3 flex flex-wrap gap-1.5">
-            {e.cue && <Pill tone="red">Voice cues</Pill>}
+            {e.cue && <Pill tone="red">{t('Voice cues')}</Pill>}
             {e.positions?.map((p) => <Pill key={p}>{p}</Pill>)}
-            {e.needs?.map((x) => <Pill key={x}>{x}</Pill>)}
+            {e.needs?.map((x) => <Pill key={x}>{t(x)}</Pill>)}
           </div>
         )}
         <div className="mt-5 flex items-center justify-between gap-3">
-          <Button variant="ghost" size="sm" className="bg-surface-2" onClick={onClose}>Close</Button>
+          <Button variant="ghost" size="sm" className="bg-surface-2" onClick={onClose}>{t('Close')}</Button>
           <AddRemove big name={e.name} n={n} onAdd={onAdd} onRemove={onRemove} />
         </div>
       </div>

@@ -3,6 +3,7 @@ import { isMine } from '../lib/library'
 import { sessionMinutes } from '../lib/logic'
 import { loadHistory } from '../lib/storage'
 import type { Session } from '../lib/types'
+import { t } from '../i18n'
 
 export function Library({ sessions, onOpen, onNew, onBack, wide = false }: {
   sessions: Session[]; onOpen: (s: Session) => void; onNew: () => void; onBack: () => void; wide?: boolean
@@ -23,30 +24,30 @@ export function Library({ sessions, onOpen, onNew, onBack, wide = false }: {
           <Tag accent={s.type === 'football'}>{s.type}</Tag>
         </div>
         <p className="my-2 text-muted">{s.summary}</p>
-        <p className="m-0 font-display text-lg font-bold tabular-nums">{sessionMinutes(s)} min</p>
+        <p className="m-0 font-display text-lg font-bold tabular-nums">{t('{n} min', { n: sessionMinutes(s) })}</p>
       </button>
     </li>
   )
   return (
     <Screen className={wide ? 'max-w-none px-10 pt-10' : ''}>
       <TopBar
-        left={<Title>Sessions</Title>}
-        right={wide ? null : <Button variant="ghost" size="sm" onClick={onBack}>Back</Button>}
+        left={<Title>{t('Sessions')}</Title>}
+        right={wide ? null : <Button variant="ghost" size="sm" onClick={onBack}>{t('Back')}</Button>}
       />
-      <p className="mb-4 text-muted">{last ? `Last session: ${last.title}, ${last.date}` : 'Pick a session, or build your own.'}</p>
-      <Button block={!wide} onClick={onNew}>+ Build a session</Button>
+      <p className="mb-4 text-muted">{last ? t('Last session: {title}, {date}', { title: t(last.title), date: last.date }) : t('Pick a session, or build your own.')}</p>
+      <Button block={!wide} onClick={onNew}>{t('+ Build a session')}</Button>
 
-      <SectionHead title="My sessions" right={mine.length ? `${mine.length}` : undefined} />
+      <SectionHead title={t('My sessions')} right={mine.length ? `${mine.length}` : undefined} />
       {mine.length
         ? <ul className={grid}>{mine.map(card)}</ul>
-        : <p className="m-0 text-sm text-muted">Nothing yet. Build one, or Customise a recommended session.</p>}
+        : <p className="m-0 text-sm text-muted">{t('Nothing yet. Build one, or Customise a recommended session.')}</p>}
 
-      <SectionHead title="Recommended" />
+      <SectionHead title={t('Recommended')} />
       <ul className={grid}>{recommended.map(card)}</ul>
 
       {!!home.length && <>
-        <SectionHead title="Home workouts" />
-        <p className="m-0 mb-3 text-sm text-muted">No gym needed: bodyweight, a sofa, a table, a towel and a wall.</p>
+        <SectionHead title={t('Home workouts')} />
+        <p className="m-0 mb-3 text-sm text-muted">{t('No gym needed: bodyweight, a sofa, a table, a towel and a wall.')}</p>
         <ul className={grid}>{home.map(card)}</ul>
       </>}
     </Screen>

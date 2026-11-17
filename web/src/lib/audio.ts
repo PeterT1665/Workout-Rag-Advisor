@@ -1,6 +1,7 @@
 // Speech and beeps. iOS only allows audio after a tap, so unlockAudio()
 // must be called from a click handler before anything plays.
 import type { Settings } from './types'
+import { voiceLang } from '../i18n'
 
 let ctx: AudioContext | null = null
 
@@ -34,11 +35,21 @@ export function say(s: Settings, text: string, force = false) {
   try {
     speechSynthesis.cancel()
     const u = new SpeechSynthesisUtterance(text)
-    u.lang = 'en-GB'
+    u.lang = voiceLang() // the app's language; iPhone picks its voice for it
+    const v = pickVoice(u.lang)
+    if (v) u.voice = v
     u.rate = 1.05
     u.volume = s.volume
     speechSynthesis.speak(u)
   } catch { /* ignore */ }
+}
+
+// Best installed voice for the language (an exact match like vi-VN first, then any voice of that language).
+function pickVoice(lang: string): SpeechSynthesisVoice | undefined {
+  try {
+    const all = speechSynthesis.getVoices()
+    return all.find((v) => v.lang.replace('_', '-') === lang) ?? all.find((v) => v.lang.slice(0, 2) === lang.slice(0, 2))
+  } catch { return undefined }
 }
 
 export type AudioDeps = {

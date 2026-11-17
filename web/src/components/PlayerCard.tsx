@@ -1,5 +1,6 @@
 import type { CSSProperties } from 'react'
 import { POSITIONS, type Profile } from '../lib/profile'
+import { t } from '../i18n'
 
 // Our own game-style player card (inspired by football game cards, not a copy: no club badges or game branding).
 // Finish follows the overall rating: gold 75+, silver 65-74, bronze below; unrated players get their team colour.
@@ -21,7 +22,7 @@ export function PlayerCard({ p, stats, photo, className = '' }: { p: Profile; st
   const ovr = stats ? overall(stats) : null
   const f = FINISH[ovr === null ? 'team' : ovr >= 75 ? 'gold' : ovr >= 65 ? 'silver' : 'bronze']
   const pos = POSITIONS.find((x) => x.id === p.positions[0])?.short ?? ''
-  const foot = p.foot === 'both' ? 'Both feet' : `${p.foot[0].toUpperCase()}${p.foot.slice(1)} foot`
+  const foot = p.foot === 'both' ? t('Both feet') : p.foot === 'left' ? t('Left foot') : t('Right foot')
   return (
     <div className={`@container relative aspect-[0.72] w-full select-none ${className}`} role="img"
       aria-label={`${p.name || 'Player'} card${ovr !== null ? `, overall ${ovr}` : ', unrated'}`}>
@@ -47,7 +48,7 @@ export function PlayerCard({ p, stats, photo, className = '' }: { p: Profile; st
 
           {/* name band */}
           <div className="absolute inset-x-[6%] top-[53%] border-y py-[1.4cqw] text-center" style={{ borderColor: f.line }}>
-            <span className="block truncate font-display text-[9cqw] uppercase leading-none">{p.name || 'Your name'}</span>
+            <span className="block truncate font-display text-[9cqw] uppercase leading-none">{p.name || t('Your name')}</span>
           </div>
 
           {/* stats */}

@@ -3,15 +3,16 @@
 import { DEFAULT_SETTINGS, save, type HistoryEntry } from './storage'
 import { DEFAULT_GYM, buildWeek, type Game } from './weekplan'
 import { BUILTIN_SESSIONS as sessions } from './library'
+import { mark } from '../i18n'
 
 export const DEMO = import.meta.env.VITE_DEMO === '1'
 export const IMAGE_DIR = DEMO ? 'demo-img' : 'personal'
 
 export const DEMO_QUOTES = [
-  'Show up. Do the reps. Repeat.',
-  'Fast feet, calm head.',
-  'The ball only goes where you tell it. Tell it with both feet.',
-  'Rest is part of the plan, not a break from it.',
+  mark('Show up. Do the reps. Repeat.'),
+  mark('Fast feet, calm head.'),
+  mark('The ball only goes where you tell it. Tell it with both feet.'),
+  mark('Rest is part of the plan, not a break from it.'),
 ]
 
 const title = (id: string) => sessions.find((s) => s.id === id)?.title ?? id

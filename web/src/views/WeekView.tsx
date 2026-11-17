@@ -1,5 +1,6 @@
 import { Pill, SectionHead, Title } from '../components/ui'
-import { DAYS, DAY_SHORT, DEFAULT_GYM, FOCUS_SHORT, matchdayLabel, todayIndex, type Game } from '../lib/weekplan'
+import { DAY_ABBR, DAYS, DAY_SHORT, DEFAULT_GYM, FOCUS_SHORT, kindLabel, matchdayLabel, todayIndex, type Game } from '../lib/weekplan'
+import { locale, t } from '../i18n'
 import { changeFor, changedSession, type DayChange, type WeekChanges } from '../lib/weekChanges'
 import { DayPicker } from '../components/DayPicker'
 import { WeekGuide } from '../components/WeekGuide'
@@ -23,7 +24,7 @@ export function WeekView({ today, games, sessions, library, changes, onChange, o
   const [picking, setPicking] = useState<string | null>(null) // `${week}-${day}`
   // Sunday: next week's plan shows under this week's, ready to plan
   const showNext = todayIndex() === 6
-  const nextMonday = new Date(Date.now() + 864e5).toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short' })
+  const nextMonday = new Date(Date.now() + 864e5).toLocaleDateString(locale(), { weekday: 'short', day: 'numeric', month: 'short' })
   const [editing, setEditing] = useState(false) // Edit: tap any day to change it
   const me = useProfile()
   const gym = me.gym ?? DEFAULT_GYM
@@ -45,19 +46,19 @@ export function WeekView({ today, games, sessions, library, changes, onChange, o
             const change = changeFor(day, changes, when)
             const changed = changedSession(change, library)
             const gameSlots = slots.filter((s) => s.kind === 'game')
-            const planned = slots.map((s) => (s.kind === 'game' ? `${s.note} game` : sessionForSlot(s, today.plan, sessions)?.title ?? s.kind)).join(' + ') || 'Rest'
+            const planned = slots.map((s) => (s.kind === 'game' ? s.note : sessionForSlot(s, today.plan, sessions)?.title ?? kindLabel(s.kind))).join(' + ') || t('Rest')
             // links: session titles open the session (outside Edit, where the whole row changes the day)
             const title = (session: Session, links: boolean) => links
               ? <button onClick={() => onOpen(session)} className="text-left font-semibold underline decoration-red decoration-2 underline-offset-4">{session.title}</button>
               : <span className="font-semibold">{session.title}</span>
             const row = (links: boolean) => change
               ? <>
-                  {gameSlots.map((g, i) => <Pill key={i} tone="red">{`${g.note} game`}</Pill>)}
-                  {changed ? title(changed, links) : <span className="text-muted">Rest</span>}
-                  <Pill>Changed</Pill>
+                  {gameSlots.map((g, i) => <Pill key={i} tone="red">{g.note}</Pill>)}
+                  {changed ? title(changed, links) : <span className="text-muted">{t('Rest')}</span>}
+                  <Pill>{t('Changed')}</Pill>
                 </>
               : <>
-                  {slots.length === 0 && <span className="text-muted">Rest</span>}
+                  {slots.length === 0 && <span className="text-muted">{t('Rest')}</span>}
                   {slots.map((s, i) => {
                     const session = sessionForSlot(s, today.plan, sessions)
                     return session
@@ -65,20 +66,20 @@ export function WeekView({ today, games, sessions, library, changes, onChange, o
                           {title(session, links)}
                           {s.focus && <span title={s.note}><Pill>{FOCUS_SHORT[s.focus]}</Pill></span>}
                         </span>
-                      : <Pill key={i} tone={s.kind === 'game' ? 'red' : 'muted'}>{s.kind === 'game' ? `${s.note} game` : s.kind}</Pill>
+                      : <Pill key={i} tone={s.kind === 'game' ? 'red' : 'muted'}>{s.kind === 'game' ? s.note : kindLabel(s.kind)}</Pill>
                   })}
                 </>
             return (
               <li key={day} className={`relative rounded-[16px] ${week === 0 && day === today.day ? 'bg-surface-2' : 'bg-surface'} ${editing ? 'ring-1 ring-red/50' : ''}`}>
                 {editing
-                  ? <button onClick={() => setPicking(`${week}-${day}`)} aria-label={week ? `Change next ${name}` : `Change ${name}`}
+                  ? <button onClick={() => setPicking(`${week}-${day}`)} aria-label={week ? t('Change next {day}', { day: name }) : t('Change {day}', { day: name })}
                       className="flex min-h-14 w-full items-center gap-3 rounded-[16px] py-2 pr-3 pl-4 text-left transition-transform duration-150 ease-snap active:scale-[0.98]">
-                      <span className="w-12 shrink-0 font-display text-xs uppercase text-muted">{name.slice(0, 3)}{md(day) && <span className={`block text-[10px] ${md(day) === 'MD' ? 'text-red-ink' : ''}`}>{md(day)}</span>}</span>
+                      <span className="w-12 shrink-0 font-display text-xs uppercase text-muted">{DAY_ABBR[day]}{md(day) && <span className={`block text-[10px] ${md(day) === 'MD' ? 'text-red-ink' : ''}`}>{md(day)}</span>}</span>
                       <span className="flex flex-1 flex-wrap items-center gap-2">{row(false)}</span>
                       <PencilIcon />
                     </button>
                   : <div className="flex min-h-14 items-center gap-3 py-2 pr-2 pl-4">
-                      <span className="w-12 shrink-0 font-display text-xs uppercase text-muted">{name.slice(0, 3)}{md(day) && <span className={`block text-[10px] ${md(day) === 'MD' ? 'text-red-ink' : ''}`}>{md(day)}</span>}</span>
+                      <span className="w-12 shrink-0 font-display text-xs uppercase text-muted">{DAY_ABBR[day]}{md(day) && <span className={`block text-[10px] ${md(day) === 'MD' ? 'text-red-ink' : ''}`}>{md(day)}</span>}</span>
                       <span className="flex flex-1 flex-wrap items-center gap-2">{row(true)}</span>
                     </div>}
                 {picking === `${week}-${day}` && (
@@ -94,31 +95,31 @@ export function WeekView({ today, games, sessions, library, changes, onChange, o
   return (
     <main className={wide ? 'px-10 pt-10 pb-12' : 'mx-auto max-w-xl px-4 pt-[max(20px,var(--sat))] pb-32'}>
       <div className="flex items-center justify-between gap-3">
-        <Title>This week</Title>
-        {onCoach && <button onClick={onCoach} className="min-h-10 shrink-0 rounded-full bg-surface-2 px-4 font-display text-xs uppercase text-ink active:scale-95">AI Coach</button>}
+        <Title>{t('This week')}</Title>
+        {onCoach && <button onClick={onCoach} className="min-h-10 shrink-0 rounded-full bg-surface-2 px-4 font-display text-xs uppercase text-ink active:scale-95">{t('AI Coach')}</button>}
       </div>
       <div className={wide ? 'mt-2 grid grid-cols-[minmax(0,1fr)_minmax(0,1.2fr)] gap-10' : ''}>
       <div>
-      <p className="mt-2 text-muted">Tap the days you play.</p>
+      <p className="mt-2 text-muted">{t('Tap the days you play.')}</p>
       <div className="mt-4 grid grid-cols-7 gap-1.5">
         {DAY_SHORT.map((d, day) => {
           const k = kindOn(day)
           return (
-            <button key={day} onClick={() => cycle(day)} aria-label={`${DAYS[day]}: ${k === 'none' ? 'no game' : k + ' game'}`}
+            <button key={day} onClick={() => cycle(day)} aria-label={`${DAYS[day]}: ${k === 'none' ? t('no game') : k === 'casual' ? t('casual game') : t('competitive game')}`}
               className={`grid h-16 place-items-center rounded-[14px] font-display text-[9px] uppercase transition-transform duration-150 ease-snap active:scale-95 ${k === 'none' ? 'bg-surface text-muted' : 'bg-red text-white'}`}>
               <span className="text-sm">{d}</span>
-              <span>{k === 'none' ? '—' : k === 'casual' ? 'Casual' : 'Comp'}</span>
+              <span>{k === 'none' ? '—' : k === 'casual' ? t('Casual') : t('Comp')}</span>
             </button>
           )
         })}
       </div>
 
       <div className="mt-4 flex items-center justify-between rounded-[16px] bg-surface px-4 py-2">
-        <span className="font-semibold">Gym sessions a week</span>
+        <span className="font-semibold">{t('Gym sessions a week')}</span>
         <span className="flex items-center gap-1">
-          <button aria-label="Fewer gym sessions" onClick={() => setGym(gym - 1)} disabled={gym <= 0} className="h-10 w-10 rounded-full bg-surface-2 text-lg disabled:opacity-30">−</button>
+          <button aria-label={t('Fewer gym sessions')} onClick={() => setGym(gym - 1)} disabled={gym <= 0} className="h-10 w-10 rounded-full bg-surface-2 text-lg disabled:opacity-30">−</button>
           <span className="w-8 text-center font-display text-lg tabular-nums" aria-live="polite">{gym}</span>
-          <button aria-label="More gym sessions" onClick={() => setGym(gym + 1)} disabled={gym >= 5} className="h-10 w-10 rounded-full bg-surface-2 text-lg disabled:opacity-30">+</button>
+          <button aria-label={t('More gym sessions')} onClick={() => setGym(gym + 1)} disabled={gym >= 5} className="h-10 w-10 rounded-full bg-surface-2 text-lg disabled:opacity-30">+</button>
         </span>
       </div>
 
@@ -126,15 +127,15 @@ export function WeekView({ today, games, sessions, library, changes, onChange, o
 
       </div>
       <div>
-      <SectionHead title="The plan" right={
+      <SectionHead title={t('The plan')} right={
         <button onClick={() => { setEditing(!editing); setPicking(null) }} aria-pressed={editing}
-          className={`min-h-9 rounded-full px-4 text-sm font-semibold ${editing ? 'bg-red text-on-red' : 'bg-surface-2 text-ink'}`}>{editing ? 'Done' : 'Edit'}</button>} />
-      {editing && <p className="m-0 mb-3 text-sm text-muted">Tap a day to change it.</p>}
+          className={`min-h-9 rounded-full px-4 text-sm font-semibold ${editing ? 'bg-red text-on-red' : 'bg-surface-2 text-ink'}`}>{editing ? t('Done') : t('Edit')}</button>} />
+      {editing && <p className="m-0 mb-3 text-sm text-muted">{t('Tap a day to change it.')}</p>}
       {planList(0)}
       {showNext && (
-        <section aria-label="Next week">
-          <SectionHead title="Next week" right={<span className="text-sm text-muted">from {nextMonday}</span>} />
-          <p className="m-0 mb-3 text-sm text-muted">Plan it tonight: tap Edit to change any day.</p>
+        <section aria-label={t('Next week')}>
+          <SectionHead title={t('Next week')} right={<span className="text-sm text-muted">{t('from {date}', { date: nextMonday })}</span>} />
+          <p className="m-0 mb-3 text-sm text-muted">{t('Plan it tonight: tap Edit to change any day.')}</p>
           {planList(1)}
         </section>
       )}

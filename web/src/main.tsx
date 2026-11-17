@@ -1,21 +1,4 @@
-import { StrictMode } from 'react'
-import { createRoot } from 'react-dom/client'
-import '@fontsource/barlow/400.css'
-import '@fontsource/barlow/600.css'
-import '@fontsource-variable/archivo/wdth.css'
-import './index.css'
-import Root from './Root'
-import { PhoneFrame, showPhoneFrame } from './views/PhoneFrame'
-import { fixTopSafeArea } from './lib/safeArea'
-import { startUpdates } from './lib/updates'
-import { fadeImagesIn } from './lib/fadeImages'
+// Load the language first, then the app: every screen's text is ready before anything renders.
+import { initLang } from './i18n'
 
-fixTopSafeArea()
-startUpdates()
-fadeImagesIn()
-
-createRoot(document.getElementById('root')!).render(
-  <StrictMode>
-    {showPhoneFrame() ? <PhoneFrame /> : <Root />}
-  </StrictMode>,
-)
+void initLang().then(() => import('./boot'))

@@ -1,5 +1,6 @@
 // Session player engine: timing, cues and clips, no React. Views subscribe to its state.
 import { flattenSession, pickCue, planCues, selfPaced, totalSeconds, type Rng } from './logic'
+import { t } from '../i18n'
 import type { AudioDeps } from './audio'
 import { editableFrom } from './logic'
 import type { Block, Direction, Session, Settings, Step } from './types'
@@ -81,7 +82,7 @@ export function createPlayer(session: Session, opts: PlayerOptions) {
     cueHistory.push(dir)
     const key = state.cueKey + 1
     set({ cue: dir, cueKey: key, cuesCalled: state.cuesCalled + 1 })
-    audio.say(dir)
+    audio.say(dir === 'left' ? t('left') : t('right'))
     setTimeout(() => { if (state.cueKey === key) set({ cue: null }) }, CUE_SHOW_MS)
   }
 
@@ -92,9 +93,9 @@ export function createPlayer(session: Session, opts: PlayerOptions) {
     const s = steps[i]
     if (s.type === 'rest') {
       const nxt = steps[i + 1]
-      audio.say('Rest.' + (nxt ? ' Next: ' + spoken(nxt.name) : ''))
+      audio.say(nxt ? t('Rest. Next: {name}', { name: spoken(nxt.name) }) : t('Rest.'))
     } else {
-      audio.say(spoken(s.name) + (s.rounds > 1 ? `. Round ${s.round} of ${s.rounds}` : ''))
+      audio.say(spoken(s.name) + (s.rounds > 1 ? '. ' + t('Round {n} of {total}', { n: s.round, total: s.rounds }) : ''))
     }
   }
 
@@ -152,7 +153,7 @@ export function createPlayer(session: Session, opts: PlayerOptions) {
   function finish(early = false) {
     if (tick) clearInterval(tick)
     clearTimers()
-    audio.say('Session complete. Nice work.')
+    audio.say(t('Session complete. Nice work.'))
     set({ finished: true, running: false, cue: null, elapsed: early ? state.elapsed : state.total, remainingMs: 0, drillsDone: drillsSeen.size })
     onFinish?.(state)
   }

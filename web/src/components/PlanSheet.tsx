@@ -9,6 +9,7 @@ import { editableFrom, fmtDose } from '../lib/logic'
 import { Picker } from '../views/Builder'
 import type { Player } from '../lib/player'
 import type { Block } from '../lib/types'
+import { t } from '../i18n'
 
 const short = (name: string) => name.replace(/\s*\([^)]*\)/g, '')
 
@@ -74,12 +75,12 @@ export function PlanSheet({ player, onClose }: { player: Player; onClose: () => 
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-end justify-center" role="dialog" aria-modal="true" aria-label="Session plan">
-      <button aria-label="Close" className="absolute inset-0 bg-black/60" onClick={onClose} />
+    <div className="fixed inset-0 z-50 flex items-end justify-center" role="dialog" aria-modal="true" aria-label={t('Session plan')}>
+      <button aria-label={t('Close')} className="absolute inset-0 bg-black/60" onClick={onClose} />
       <div className="rise relative flex max-h-[90dvh] w-full max-w-xl flex-col rounded-t-[28px] bg-surface pb-[max(16px,env(safe-area-inset-bottom))]">
         <div className="px-5 pt-5">
-          <h2 className="m-0 font-display text-xl uppercase">Session plan</h2>
-          <p className="m-0 mt-1 text-sm text-muted">Hold ⋮⋮ to move an exercise. Pair two into a superset, swap one if the kit is taken, or add more.</p>
+          <h2 className="m-0 font-display text-xl uppercase">{t('Session plan')}</h2>
+          <p className="m-0 mt-1 text-sm text-muted">{t('Hold ⋮⋮ to move an exercise. Pair two into a superset, swap one if the kit is taken, or add more.')}</p>
         </div>
         <div ref={scroller} className="mt-4 flex-1 overflow-y-auto overscroll-contain px-5 pb-2">
           <ol className="m-0 flex list-none flex-col gap-1.5 p-0">
@@ -99,8 +100,8 @@ export function PlanSheet({ player, onClose }: { player: Player; onClose: () => 
             })}
           </ol>
 
-          <h3 className="m-0 mt-5 mb-2 font-display text-sm uppercase text-muted">Still to come</h3>
-          {!rows.length && <p className="m-0 mb-2 text-sm text-muted">Nothing after this one.</p>}
+          <h3 className="m-0 mt-5 mb-2 font-display text-sm uppercase text-muted">{t('Still to come')}</h3>
+          {!rows.length && <p className="m-0 mb-2 text-sm text-muted">{t('Nothing after this one.')}</p>}
           <DragList units={units} keyOf={(u) => u.items[0].key} scroller={scroller} className="flex flex-col gap-1.5"
             onMove={(a, b) => apply(moveUnit(units.flatMap((u) => u.items), a, b).map(({ key, block }) => ({ key, block })))}
             render={(u, _ui, grip) => (
@@ -128,7 +129,7 @@ export function PlanSheet({ player, onClose }: { player: Player; onClose: () => 
           </button>
         </div>
         <div className="px-5 pt-3">
-          <Button block onClick={onClose}>Back to the session</Button>
+          <Button block onClick={onClose}>{t('Back to the session')}</Button>
         </div>
       </div>
     </div>
@@ -144,7 +145,7 @@ function PlanRow({ row: { block: b }, pair, grip, joined, inSet, canPair, swappi
   return (
     <div className={`relative bg-surface-2 p-2 pl-1 ${inSet ? (joined ? 'mt-0.5 rounded-r-2xl rounded-bl-2xl' : 'rounded-r-2xl rounded-tl-2xl') : 'rounded-2xl'}`}>
       <div className="flex items-center gap-1">
-        <button aria-label={`Move ${name}${inSet ? ' (moves with its superset)' : ''}: hold and drag, or use the arrow keys`} {...grip}
+        <button aria-label={inSet ? t('Move {name} (moves with its superset): hold and drag, or use the arrow keys', { name }) : t('Move {name}: hold and drag, or use the arrow keys', { name })} {...grip}
           className="grid h-11 w-9 shrink-0 select-none place-items-center rounded-xl text-muted active:bg-surface">
           <svg viewBox="0 0 12 20" className="h-5 w-3" fill="currentColor" aria-hidden="true">
             {[3, 10, 17].map((y) => <g key={y}><circle cx="3" cy={y} r="1.6" /><circle cx="9" cy={y} r="1.6" /></g>)}
@@ -156,7 +157,7 @@ function PlanRow({ row: { block: b }, pair, grip, joined, inSet, canPair, swappi
         </div>
         {b.kind === 'drill' && (
           <button onClick={onSwapToggle} aria-expanded={swapping}
-            className={`min-h-9 shrink-0 rounded-full px-3 font-display text-[11px] uppercase transition-colors duration-150 ${swapping ? 'bg-red text-on-red' : 'bg-surface text-ink'}`}>Swap</button>
+            className={`min-h-9 shrink-0 rounded-full px-3 font-display text-[11px] uppercase transition-colors duration-150 ${swapping ? 'bg-red text-on-red' : 'bg-surface text-ink'}`}>{t('Swap')}</button>
         )}
         <button aria-label={`Remove ${name}`} onClick={onRemove}
           className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-surface text-sm active:scale-90">✕</button>
@@ -164,7 +165,7 @@ function PlanRow({ row: { block: b }, pair, grip, joined, inSet, canPair, swappi
       {canPair && (
         <button aria-pressed={!!b.superset} onClick={onPair}
           className={`mt-1.5 ml-10 min-h-8 rounded-full px-3 font-display text-[11px] uppercase ${b.superset ? 'bg-red text-on-red' : 'bg-surface text-muted'}`}>
-          {b.superset ? 'Superset with above ✓' : '+ Superset with above'}
+          {b.superset ? t('Superset with above ✓') : t('+ Superset with above')}
         </button>
       )}
       <AnimatePresence initial={false}>
@@ -172,7 +173,7 @@ function PlanRow({ row: { block: b }, pair, grip, joined, inSet, canPair, swappi
           <motion.div key="alts" initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }}
             transition={{ duration: 0.2, ease: [0.2, 0.8, 0.2, 1] }} className="overflow-hidden">
             <div className="mt-2 flex flex-col gap-1 pl-9">
-              {!alts.length && <p className="m-0 py-2 text-sm text-muted">No other exercises in this category yet.</p>}
+              {!alts.length && <p className="m-0 py-2 text-sm text-muted">{t('No other exercises in this category yet.')}</p>}
               {alts.map((e) => (
                 <button key={e.id} onClick={() => onSwap(e.id)}
                   className="flex min-h-11 items-center justify-between gap-2 rounded-xl bg-surface px-3 text-left text-sm active:bg-bg">

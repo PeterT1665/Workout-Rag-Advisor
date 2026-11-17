@@ -13,7 +13,8 @@ import { DrillSheet } from '../components/DrillSheet'
 import { canInstall } from '../lib/install'
 import { CATEGORY_LABELS, drillPhoto } from '../lib/library'
 import { load, save } from '../lib/storage'
-import { DAYS, DAY_SHORT, FOCUS_LABEL, type SlotKind } from '../lib/weekplan'
+import { DAY_ABBR, DAY_SHORT, FOCUS_LABEL, type SlotKind } from '../lib/weekplan'
+import { locale, t } from '../i18n'
 import type { Today } from '../lib/today'
 import type { Block, Session } from '../lib/types'
 
@@ -32,7 +33,7 @@ type Props = {
   makeup?: { missed: string; by: string; picks: Session[] } | null // a missed day that can still be made up
 }
 
-const SLOT_LABEL: Record<SlotKind, string> = { game: 'Game day', football: 'Football', gym: 'Gym', recovery: 'Recovery', cheer: 'Cheer' }
+const SLOT_LABEL = (): Record<SlotKind, string> => ({ game: t('Game day'), football: t('Football'), gym: t('Gym'), recovery: t('Recovery'), cheer: 'Cheer' })
 const dateKey = () => new Date().toISOString().slice(0, 10)
 
 // ---------- hero ----------
@@ -44,13 +45,13 @@ export function Hero({ today, onKickOff, onOpen, onSettings, onCustomise, streak
   const [entrance] = useState(() => { const first = !heroIntroDone; heroIntroDone = true; return first })
   const s = today.session
   const drills = s.blocks.filter((b) => b.kind === 'drill').length
-  const when = today.scheduled ? 'Today' : today.nextDay !== null ? `Next · ${DAYS[today.nextDay].slice(0, 3)}` : 'Anytime'
+  const when = today.scheduled ? t('Today') : today.nextDay !== null ? `${t('Next')} · ${DAY_ABBR[today.nextDay]}` : t('Anytime')
   const status = !today.scheduled && today.slot
-    ? today.slot.kind === 'game' ? 'Game day. Keep the legs fresh.'
-      : today.slot.kind === 'cheer' ? 'Cheer practice this morning.'
+    ? today.slot.kind === 'game' ? t('Game day. Keep the legs fresh.')
+      : today.slot.kind === 'cheer' ? t('Cheer practice this morning.')
         : null
-    : !today.scheduled ? 'Rest day.' : null
-  const date = new Date().toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short' })
+    : !today.scheduled ? t('Rest day.') : null
+  const date = new Date().toLocaleDateString(locale(), { weekday: 'short', day: 'numeric', month: 'short' })
   const me = useProfile()
   const sample = DEMO && me.sample
 
@@ -66,37 +67,37 @@ export function Hero({ today, onKickOff, onOpen, onSettings, onCustomise, streak
         : 'absolute inset-0 bg-[linear-gradient(to_bottom,rgba(10,12,11,.6)_0%,rgba(10,12,11,0)_22%,rgba(10,12,11,0)_55%,rgba(10,12,11,.96)_86%)]'} />
       {!desktop && <div className="absolute inset-x-4 top-[max(16px,var(--sat))] flex items-center justify-between">
         {streak ? (
-          <button onClick={onStreak} aria-label={`Plan streak: ${streak.days} ${streak.days === 1 ? 'day' : 'days'}${streak.today ? '' : ', train today to keep it going'}. Open your training log`}
+          <button onClick={onStreak} aria-label={`${streak.days === 1 ? t('Plan streak: 1 day') : t('Plan streak: {n} days', { n: streak.days })}${streak.today ? '' : `, ${t('train today to keep it going')}`}. ${t('Open your training log')}`}
             className="flex h-10 items-center gap-1.5 rounded-full bg-white/15 pr-3.5 pl-2.5 text-white backdrop-blur-md active:scale-95">
             <FlameIcon lit={streak.days > 0} className={`h-6 w-6 ${streak.today ? 'drop-shadow-[0_0_6px_rgba(255,90,31,.7)]' : ''}`} />
             <span className={`font-display text-lg tabular-nums leading-none ${streak.days > 0 ? 'text-[#ff9a1f]' : 'text-white/80'}`}>{streak.days}</span>
           </button>
         ) : <span />}
         <span className="flex items-center gap-2">
-          {canInstall() ? <InstallButton /> : <Pill tone="glass">{sample ? 'Sample data' : date}</Pill>}
-          {onCustomise && <button onClick={onCustomise} aria-label="Make it yours" className="grid h-10 w-10 place-items-center rounded-full bg-white/15 text-white backdrop-blur-md active:scale-95">
+          {canInstall() ? <InstallButton /> : <Pill tone="glass">{sample ? t('Sample data') : date}</Pill>}
+          {onCustomise && <button onClick={onCustomise} aria-label={t('Make it yours')} className="grid h-10 w-10 place-items-center rounded-full bg-white/15 text-white backdrop-blur-md active:scale-95">
             <BrushIcon />
           </button>}
-          <button onClick={onSettings} aria-label="Settings" className="grid h-10 w-10 place-items-center rounded-full bg-white/15 text-white backdrop-blur-md active:scale-95">
+          <button onClick={onSettings} aria-label={t('Settings')} className="grid h-10 w-10 place-items-center rounded-full bg-white/15 text-white backdrop-blur-md active:scale-95">
             <GearIcon />
           </button>
         </span>
       </div>}
       <div className={`${desktop ? 'absolute bottom-8 left-8 max-w-[64%]' : 'absolute inset-x-4 bottom-5'} ${entrance ? 'rise' : ''}`}>
         <div className="flex flex-wrap gap-2">
-          {desktop && <Pill tone="glass">{sample ? 'Sample data' : date}</Pill>}
+          {desktop && <Pill tone="glass">{sample ? t('Sample data') : date}</Pill>}
           {today.md && <Pill tone="red">{today.md}</Pill>}
-          <Pill tone="glass">{when}{today.scheduled && today.slot ? ` · ${today.slot.focus ? FOCUS_LABEL[today.slot.focus] : SLOT_LABEL[today.slot.kind]}` : ''}</Pill>
+          <Pill tone="glass">{when}{today.scheduled && today.slot ? ` · ${today.slot.focus ? FOCUS_LABEL[today.slot.focus] : SLOT_LABEL()[today.slot.kind]}` : ''}</Pill>
         </div>
         <h1 className={`m-0 mt-3 mb-2 font-display uppercase leading-[.95] text-white ${desktop ? 'text-[38px]' : 'text-[32px]'}`}>{s.title}</h1>
         {status && <p className="m-0 mb-3 text-sm text-white/75">{status}</p>}
         <div className="mt-3 flex gap-2.5">
-          <Button onClick={() => onKickOff(s)}>Kick off →</Button>
+          <Button onClick={() => onKickOff(s)}>{t('Kick off')} →</Button>
           <Button variant="glass" className="font-sans normal-case tracking-normal text-[15px] font-semibold" onClick={() => onOpen(s)}>
-            {sessionMinutes(s)} min · {s.blocks.length} drills
+            {t('{n} min', { n: sessionMinutes(s) })} · {t('{n} drills', { n: s.blocks.length })}
           </Button>
         </div>
-        <span className="sr-only">{drills} drills</span>
+        <span className="sr-only">{t('{n} drills', { n: drills })}</span>
       </div>
     </section>
   )
@@ -138,7 +139,7 @@ export function KitCheck({ session }: { session: Session }) {
   const [packed, setPacked] = useState(() => loadPacked(dateKey()))
   return (
     <>
-      <SectionHead title="Kit check" right={`${items.filter((i) => packed.has(i.id)).length} of ${items.length} packed`} />
+      <SectionHead title={t('Kit check')} right={t('{n} of {total} packed', { n: items.filter((i) => packed.has(i.id)).length, total: items.length })} />
       <div className="grid grid-cols-4 gap-2">
         {items.map((it) => <KitTile key={it.id} item={it} packed={packed.has(it.id)} onToggle={() => setPacked(new Set(togglePacked(dateKey(), it.id)))} />)}
       </div>
@@ -155,7 +156,7 @@ export function DrillCard({ name, meta, cue, category, onOpen, fluid = false }: 
       <div className="absolute inset-0 bg-[linear-gradient(to_bottom,rgba(0,0,0,.35)_0%,rgba(0,0,0,0)_30%,rgba(0,0,0,.15)_50%,rgba(0,0,0,.9)_100%)]" />
       <div className="absolute top-2.5 left-2.5 flex flex-wrap gap-1.5">
         {label && <Pill tone="glass">{label}</Pill>}
-        {cue && <Pill tone="red">Voice cues</Pill>}
+        {cue && <Pill tone="red">{t('Voice cues')}</Pill>}
       </div>
       <div className="absolute inset-x-3.5 bottom-3.5 text-white">
         <h3 className="m-0 mb-1 font-display text-sm uppercase leading-tight">{name}</h3>
@@ -178,10 +179,10 @@ export function WeekStrip({ today, kindFor }: { today: Today; kindFor?: (day: nu
         const isToday = day === today.day
         const base = 'mt-1.5 grid h-12 place-items-center rounded-[14px] font-display text-[11px] uppercase'
         let cell
-        if (!main) cell = <div className={`${base} border-[1.5px] border-dashed border-white/15 text-muted`}>Rest</div>
-        else if (main.kind === 'game') cell = <div className={`${base} bg-red text-white`}>Game</div>
+        if (!main) cell = <div className={`${base} border-[1.5px] border-dashed border-white/15 text-muted`}>{t('Rest')}</div>
+        else if (main.kind === 'game') cell = <div className={`${base} bg-red text-white`}>{t('Game')}</div>
         else if (main.kind === 'football') cell = <div className={`${base} bg-surface-2`}><BallIcon className="h-7 w-7" /></div>
-        else cell = <div className={`${base} bg-surface-2 text-muted`}>{main.kind === 'recovery' ? 'Rec' : main.kind === 'cheer' ? 'Chr' : main.kind}</div>
+        else cell = <div className={`${base} bg-surface-2 text-muted`}>{main.kind === 'recovery' ? t('Rec') : main.kind === 'cheer' ? 'Chr' : main.kind === 'gym' ? t('Gym') : main.kind}</div>
         return (
           <div key={day} className="text-center">
             <div className="font-display text-[11px] text-muted">{d}</div>
@@ -204,28 +205,28 @@ export function Home(p: Props) {
     <main className="mx-auto max-w-xl px-4 pb-32">
       <Hero today={p.today} onKickOff={p.onKickOff} onOpen={p.onOpen} onSettings={p.onSettings} onCustomise={p.onAddClips} streak={p.streak} onStreak={p.onPlayer} />
       {p.active && (
-        <section aria-label="Unfinished session" className="rise mt-6 flex items-center gap-3 rounded-[22px] border border-red/50 bg-surface p-4">
+        <section aria-label={t('Unfinished session')} className="rise mt-6 flex items-center gap-3 rounded-[22px] border border-red/50 bg-surface p-4">
           <div className="min-w-0 flex-1">
-            <p className="m-0 font-display text-xs uppercase text-red-ink">Unfinished session</p>
+            <p className="m-0 font-display text-xs uppercase text-red-ink">{t('Unfinished session')}</p>
             <p className="m-0 mt-1 truncate font-semibold">{p.active.title}</p>
           </div>
-          <button onClick={p.active.onDiscard} className="min-h-11 shrink-0 px-2 text-sm font-semibold text-muted">Discard</button>
-          <Button size="sm" onClick={p.active.onResume}>Resume</Button>
+          <button onClick={p.active.onDiscard} className="min-h-11 shrink-0 px-2 text-sm font-semibold text-muted">{t('Discard')}</button>
+          <Button size="sm" onClick={p.active.onResume}>{t('Resume')}</Button>
         </section>
       )}
       {p.makeup && p.streak && (
-        <section aria-label="Make up a missed session" className="rise mt-6 rounded-[22px] border border-[#ff7a1f]/50 bg-surface p-4">
+        <section aria-label={t('Make up a missed session')} className="rise mt-6 rounded-[22px] border border-[#ff7a1f]/50 bg-surface p-4">
           <div className="flex items-center gap-2">
             <FlameIcon className="h-5 w-5" />
-            <p className="m-0 font-display text-xs uppercase text-[#ff9a1f]">Make up for {p.makeup.missed}</p>
+            <p className="m-0 font-display text-xs uppercase text-[#ff9a1f]">{t('Make up for {day}', { day: p.makeup.missed })}</p>
           </div>
-          <p className="m-0 mt-1.5 font-semibold">An extra session (20+ min) by {p.makeup.by} keeps your {p.streak.days}-day streak.</p>
+          <p className="m-0 mt-1.5 font-semibold">{t('An extra session (20+ min) by {day} keeps your {n}-day streak.', { day: p.makeup.by, n: p.streak.days })}</p>
           <div className="mt-3 flex flex-col gap-2">
             {p.makeup.picks.map((s) => (
               <button key={s.id} onClick={() => p.onOpen(s)}
                 className="flex min-h-12 items-center justify-between gap-3 rounded-2xl bg-surface-2 px-4 text-left transition-transform duration-150 ease-snap active:scale-[0.98]">
                 <span className="font-semibold">{s.title}</span>
-                <span className="shrink-0 font-display text-xs tabular-nums text-muted">{sessionMinutes(s)} min</span>
+                <span className="shrink-0 font-display text-xs tabular-nums text-muted">{t('{n} min', { n: sessionMinutes(s) })}</span>
               </button>
             ))}
           </div>
@@ -234,15 +235,15 @@ export function Home(p: Props) {
       <NotifyPrompt />
       <HowItWorks onWeek={p.onWeek} />
 
-      <SectionHead title="Today's drills" right={<button onClick={p.onAllSessions} className="text-sm font-semibold text-muted">All sessions</button>} />
+      <SectionHead title={t("Today's drills")} right={<button onClick={p.onAllSessions} className="text-sm font-semibold text-muted">{t('All sessions')}</button>} />
       <div className="no-scrollbar -mx-4 flex snap-x scroll-px-4 gap-3 overflow-x-auto px-4">
         {drills.slice(0, 5).map((b, i) => (
           <DrillCard key={b.name} i={i} category={b.category} name={b.name.replace(/\s*\([^)]*\)/g, '')} cue={!!b.cue}
-            meta={`${fmtDose(b)}${b.rest ? ` · rest ${fmtDuration(b.rest)}` : ''}`} football={s.type === 'football'} onOpen={() => setDrill(b)} />
+            meta={`${fmtDose(b)}${b.rest ? ` · ${t('rest {time}', { time: fmtDuration(b.rest) })}` : ''}`} football={s.type === 'football'} onOpen={() => setDrill(b)} />
         ))}
       </div>
 
-      <SectionHead title="This week" right={`${games} game${games === 1 ? '' : 's'} week`} />
+      <SectionHead title={t('This week')} right={games === 1 ? t('1 game week') : t('{n} game week', { n: games })} />
       <WeekStrip today={p.today} kindFor={p.dayKind} />
       {drill && <DrillSheet block={drill} onClose={() => setDrill(null)} onSession={() => { setDrill(null); p.onOpen(s) }} />}
     </main>
@@ -255,15 +256,15 @@ function HowItWorks({ onWeek }: { onWeek?: () => void }) {
   if (seen) return null
   const close = () => { save('intro:seen', true); setSeen(true) }
   const steps: [string, string][] = [
-    ['Set your week', 'Tap your game days.'],
-    ['Kick off', 'Volume up: drills are called out loud.'],
-    ['Check in', 'Tap how hard it was.'],
+    [t('Set your week'), t('Tap your game days.')],
+    [t('Kick off'), t('Volume up: drills are called out loud.')],
+    [t('Check in'), t('Tap how hard it was.')],
   ]
   return (
-    <section aria-label="How it works" className="rise mt-6 rounded-[22px] bg-surface p-4">
+    <section aria-label={t('How it works')} className="rise mt-6 rounded-[22px] bg-surface p-4">
       <div className="flex items-baseline justify-between">
-        <h2 className="m-0 font-display text-base uppercase">How it works</h2>
-        <button onClick={close} className="min-h-10 px-1 text-sm font-semibold text-muted">Got it</button>
+        <h2 className="m-0 font-display text-base uppercase">{t('How it works')}</h2>
+        <button onClick={close} className="min-h-10 px-1 text-sm font-semibold text-muted">{t('Got it')}</button>
       </div>
       <ol className="m-0 mt-2 flex list-none flex-col gap-3 p-0">
         {steps.map(([title, text], i) => (
@@ -273,7 +274,7 @@ function HowItWorks({ onWeek }: { onWeek?: () => void }) {
           </li>
         ))}
       </ol>
-      {onWeek && <button onClick={() => { close(); onWeek() }} className="mt-4 min-h-12 w-full rounded-full bg-surface-2 font-display text-sm uppercase">Set my week</button>}
+      {onWeek && <button onClick={() => { close(); onWeek() }} className="mt-4 min-h-12 w-full rounded-full bg-surface-2 font-display text-sm uppercase">{t('Set my week')}</button>}
     </section>
   )
 }

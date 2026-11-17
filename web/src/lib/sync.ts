@@ -4,6 +4,7 @@
 import { setSaveHook } from './storage'
 import { supabase } from './supabase'
 import { PHOTO_SLOTS, clearPhotos } from './photos'
+import { t } from '../i18n'
 
 export const SYNC_KEYS = ['history', 'games', 'settings', 'quotes', 'mySessions', 'profile', 'weekPlan', 'videos'] as const
 type Key = (typeof SYNC_KEYS)[number]
@@ -93,13 +94,23 @@ export function clearLocalData() {
 }
 
 // ---- auth (email + password; invite-only, so there is no sign-up form) ----
+// The login saved on this phone. Used when the login can't be refreshed right now (weak signal): you stay
+// signed in, and the app retries when the connection is back, instead of dropping you to guest mode.
+function savedUser(): { id: string; email?: string } | null {
+  try {
+    const k = Object.keys(localStorage).find((x) => /^sb-.*-auth-token$/.test(x))
+    const u = k ? (JSON.parse(localStorage.getItem(k) || 'null') as { user?: { id: string; email?: string } } | null)?.user : null
+    return u?.id ? u : null
+  } catch { return null }
+}
+
 export async function currentUser(): Promise<{ id: string; email: string } | null> {
   try {
     const sb = await supabase()
-    const { data } = await sb.auth.getSession()
-    const u = data.session?.user
+    const { data, error } = await sb.auth.getSession()
+    const u = data.session?.user ?? (error ? savedUser() : null)
     return u ? { id: u.id, email: u.email ?? '' } : null
-  } catch { return null }
+  } catch { const u = savedUser(); return u ? { id: u.id, email: u.email ?? '' } : null }
 }
 
 export type SignInResult = 'ok' | 'wrong' | 'throttled' | 'offline'
@@ -145,7 +156,7 @@ export async function setNewPassword(password: string): Promise<string | null> {
     const sb = await supabase()
     const { error } = await sb.auth.updateUser({ password })
     return error ? error.message : null
-  } catch { return "Can't reach the server. Check your connection." }
+  } catch { return t("Can't reach the server. Check your connection.") }
 }
 
 // Privacy: removes the account, its synced data (database cascade) and its photos.

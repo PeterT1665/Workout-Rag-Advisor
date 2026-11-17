@@ -6,6 +6,7 @@ import { usePersonalImage } from '../lib/personal'
 import { CropSheet } from '../components/CropSheet'
 import { syncEnabled } from '../lib/sync'
 import { ACCENTS, setProfile, useProfile } from '../lib/profile'
+import { t } from '../i18n'
 
 // One tile per image slot: shows the photo in use now (the app's default until replaced); tap to change.
 function PhotoSlots() {
@@ -21,7 +22,7 @@ function PhotoTile({ id, label, hint }: { id: Slot; label: string; hint: string 
       <label className="block cursor-pointer">
         <div className="relative aspect-[4/3] w-full">
           {shown ? <img src={shown} alt="" data-fade className={`h-full w-full object-cover ${own ? '' : 'opacity-60'}`} /> : <div className="grid h-full place-items-center text-3xl text-muted" aria-hidden="true">+</div>}
-          {!own && shown && <span className="absolute bottom-2 left-2 rounded-full bg-black/60 px-2 py-0.5 text-[11px] text-white">Default · tap to change</span>}
+          {!own && shown && <span className="absolute bottom-2 left-2 rounded-full bg-black/60 px-2 py-0.5 text-[11px] text-white">{t('Default · tap to change')}</span>}
         </div>
         <div className="px-3 py-2">
           <span className="block text-sm font-semibold">{label}</span>
@@ -30,7 +31,7 @@ function PhotoTile({ id, label, hint }: { id: Slot; label: string; hint: string 
         <input type="file" accept="image/*" className="sr-only" aria-label={`${own ? 'Replace' : 'Add'} ${label} photo`}
           onChange={(e) => { const f = e.target.files?.[0]; if (f) { if (id === 'card') setCropping(f); else void setPhoto(id, f) } e.target.value = '' }} />
       </label>
-      {cropping && <CropSheet file={cropping} title="Your card photo" onCancel={() => setCropping(null)} onDone={(b) => { setCropping(null); void setPhoto(id, b) }} />}
+      {cropping && <CropSheet file={cropping} title={t('Your card photo')} onCancel={() => setCropping(null)} onDone={(b) => { setCropping(null); void setPhoto(id, b) }} />}
       {own && (
         <button onClick={() => void removePhoto(id)} aria-label={`Remove ${label} photo`}
           className="absolute top-2 right-2 grid h-9 w-9 place-items-center rounded-full bg-black/60 text-white">✕</button>
@@ -45,10 +46,10 @@ export function MediaView({ onDone }: { onDone: () => void }) {
   const field = 'mt-1 block w-full rounded-2xl bg-surface-2 p-3 text-ink'
   return (
     <Screen>
-      <TopBar left={<Title>Make it yours</Title>} right={<Button variant="ghost" size="sm" onClick={onDone}>Done</Button>} />
+      <TopBar left={<Title>{t('Make it yours')}</Title>} right={<Button variant="ghost" size="sm" onClick={onDone}>{t('Done')}</Button>} />
       <div className="mb-4" />
 
-      <Section title="Team colour">
+      <Section title={t('Team colour')}>
         <div className="grid grid-cols-9 gap-1.5">
           {ACCENTS.map((a) => (
             <button key={a.id} aria-pressed={me.accent === a.id} aria-label={a.label} onClick={() => setProfile({ ...me, accent: a.id })}
@@ -58,18 +59,18 @@ export function MediaView({ onDone }: { onDone: () => void }) {
         </div>
       </Section>
 
-      <Section title="Photos" hint={syncEnabled() ? 'Private to your account.' : 'Saved in this browser.'}>
+      <Section title={t('Photos')} hint={syncEnabled() ? t('Private to your account.') : t('Saved in this browser.')}>
         <PhotoSlots />
       </Section>
 
-      <Section title="Role model & quotes" hint="Shown before sessions and in rests.">
-        <label htmlFor="idol" className="text-sm text-muted">Role model</label>
-        <input id="idol" value={me.idol} placeholder="Your favourite player" onChange={(e) => setProfile({ ...me, idol: e.target.value.slice(0, 40) })} className={field} />
-        <label htmlFor="quotes" className="mt-4 block text-sm text-muted">Quotes, one per line</label>
+      <Section title={t('Role model & quotes')} hint={t('Shown before sessions and in rests.')}>
+        <label htmlFor="idol" className="text-sm text-muted">{t('Role model')}</label>
+        <input id="idol" value={me.idol} placeholder={t('Your favourite player')} onChange={(e) => setProfile({ ...me, idol: e.target.value.slice(0, 40) })} className={field} />
+        <label htmlFor="quotes" className="mt-4 block text-sm text-muted">{t('Quotes, one per line')}</label>
         <textarea id="quotes" rows={6} value={quotes} onChange={(e) => setQuotes(e.target.value)} className={field} />
         <div className="mt-3 flex gap-2">
-          <Button size="sm" onClick={() => save('quotes', quotes.split('\n').map((q) => q.trim()).filter(Boolean))}>Save quotes</Button>
-          <Button variant="ghost" size="sm" className="bg-surface-2" onClick={() => { save('quotes', DEFAULT_QUOTES); setQuotes(DEFAULT_QUOTES.join('\n')) }}>Reset</Button>
+          <Button size="sm" onClick={() => save('quotes', quotes.split('\n').map((q) => q.trim()).filter(Boolean))}>{t('Save quotes')}</Button>
+          <Button variant="ghost" size="sm" className="bg-surface-2" onClick={() => { save('quotes', DEFAULT_QUOTES); setQuotes(DEFAULT_QUOTES.join('\n')) }}>{t('Reset')}</Button>
         </div>
       </Section>
 

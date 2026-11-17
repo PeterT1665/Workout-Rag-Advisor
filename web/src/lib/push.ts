@@ -4,6 +4,7 @@
 // Needs an account, and on iPhone the app added to the Home Screen (iOS 16.4+).
 import { supabase } from './supabase'
 import { currentUser, syncEnabled } from './sync'
+import { currentLang, t } from '../i18n'
 
 const KEY = import.meta.env.VITE_VAPID_PUBLIC_KEY as string | undefined
 const FLAG = 'push:on' // this device subscribed (device-only, not synced)
@@ -56,10 +57,12 @@ export async function enablePush(prefs: Prefs = { rest_alerts: true, weekly: tru
     const me = await currentUser()
     if (!me || !j.endpoint || !j.keys) return 'unsupported'
     const sb = await supabase()
-    const { error } = await sb.from('push_subscriptions').upsert({
+    const row = {
       endpoint: j.endpoint, user_id: me.id, p256dh: j.keys.p256dh, auth: j.keys.auth,
       tz: Intl.DateTimeFormat().resolvedOptions().timeZone || 'UTC', ...prefs,
-    })
+    }
+    let { error } = await sb.from('push_subscriptions').upsert({ ...row, lang: currentLang() })
+    if (error && /lang/.test(error.message)) ({ error } = await sb.from('push_subscriptions').upsert(row)) // before migration 0008
     if (error) return 'unsupported'
     setFlag(true)
     try { localStorage.setItem(ENDPOINT, j.endpoint) } catch { /* ignore */ }
@@ -101,12 +104,24 @@ export async function setPrefs(p: Partial<Prefs>) {
   } catch { /* ignore */ }
 }
 
+// The Sunday reminder is written by the server: keep this device's language there (changing it reloads the app).
+export async function syncPushLang() {
+  if (!pushOn()) return
+  try {
+    const reg = await swReady()
+    const sub = await reg?.pushManager.getSubscription()
+    if (!sub) return
+    const sb = await supabase()
+    await sb.from('push_subscriptions').update({ lang: currentLang() }).eq('endpoint', sub.endpoint)
+  } catch { /* ignore */ }
+}
+
 // What "rest is over" says. One at random each time.
 export const REST_LINES = [
-  "Come back to training. Lock in, let's go.",
-  "No more doom scroll. Let's roll.",
-  'Phone down. Your next set is waiting.',
-  "Timer's done. The set won't do itself.",
+  t("Come back to training. Lock in, let's go."),
+  t("No more doom scroll. Let's roll."),
+  t('Phone down. Your next set is waiting.'),
+  t("Timer's done. The set won't do itself."),
 ]
 
 // Calls run one after another, so a cancel can't overtake the booking it is meant to undo.
@@ -121,7 +136,7 @@ export function scheduleRest(seconds: number, next?: string) {
   return queue(async () => {
     try {
       const sb = await supabase()
-      await sb.rpc('schedule_rest_push', { p_seconds: Math.round(seconds), p_title: next ? `Rest is over · ${next}`.slice(0, 80) : 'Rest is over', p_body: line, p_endpoint: await myEndpoint() })
+      await sb.rpc('schedule_rest_push', { p_seconds: Math.round(seconds), p_title: next ? `${t('Rest is over')} · ${next}`.slice(0, 80) : t('Rest is over'), p_body: line, p_endpoint: await myEndpoint() })
     } catch { /* offline: no reminder this time */ }
   })
 }
@@ -140,7 +155,7 @@ export async function sendTest(): Promise<boolean> {
   if (!pushOn()) return false
   try {
     const sb = await supabase()
-    const { error } = await sb.rpc('schedule_rest_push', { p_seconds: 8, p_title: 'Test notification', p_body: 'Notifications work. Lock in, let\'s go.', p_endpoint: await myEndpoint() })
+    const { error } = await sb.rpc('schedule_rest_push', { p_seconds: 8, p_title: t('Test notification'), p_body: t("Notifications work. Lock in, let's go."), p_endpoint: await myEndpoint() })
     return !error
   } catch { return false }
 }

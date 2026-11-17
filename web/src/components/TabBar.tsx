@@ -1,5 +1,6 @@
 import { motion } from 'motion/react'
 import { BallIcon } from './icons'
+import { t } from '../i18n'
 
 export type Tab = 'home' | 'week' | 'player' | 'team'
 
@@ -14,14 +15,15 @@ export function TabBar({ tab, onTab, onKickOff }: { tab: Tab; onTab: (t: Tab) =>
   )
   return (
     <nav className="fixed inset-x-3 bottom-[max(12px,env(safe-area-inset-bottom))] z-40 mx-auto grid h-[70px] max-w-[540px] grid-cols-[1fr_1fr_84px_1fr_1fr] items-center rounded-[26px] bg-[#161817]/90 shadow-[0_10px_30px_rgba(0,0,0,.4)] backdrop-blur-xl">
-      {item('home', 'Home')}
-      {item('week', 'Week')}
-      <button onClick={onKickOff} aria-label="Kick off today's session"
+      {item('home', t('Home'))}
+      {item('week', t('Week'))}
+      <button onClick={onKickOff} aria-label={t("Kick off today's session")}
         className="-mt-9 grid h-[70px] w-[70px] place-items-center justify-self-center rounded-full border-4 border-bg bg-red shadow-[0_8px_20px_-6px_rgba(0,0,0,.6)] transition-transform duration-150 ease-snap active:scale-95">
         <BallIcon className="h-11 w-11" />
       </button>
-      {item('player', 'Player')}
-      {item('team', 'Team')}
+      {item('player', t('Player'))}
+      {item('team', t('Team'))}
+
     </nav>
   )
 }

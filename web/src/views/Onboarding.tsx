@@ -1,9 +1,12 @@
 import { useState, type ReactNode } from 'react'
+import { LanguagePicker } from '../components/LanguagePicker'
 import { Button, Screen } from '../components/ui'
 import { ACCENTS, POSITIONS, applyAccent, positionTag, type Foot, type Profile } from '../lib/profile'
 import { DAYS, type Game } from '../lib/weekplan'
 import { usePersonalImage } from '../lib/personal'
 import { InstallButton } from '../components/InstallButton'
+import { t } from '../i18n'
+import { tr } from '../i18n/rich'
 
 // Make your player: four quick screens with a live player card on top. Used by guests ("Try it"),
 // by new accounts, and by Edit player. `welcome` adds the first screen with the sample-player shortcut.
@@ -31,15 +34,16 @@ export function Onboarding({ initial, initialGames = [], welcome = false, onDone
           <img src={hero} alt="" data-fade className="drift fixed inset-0 z-0 h-full w-full object-cover object-[50%_25%]" />
           <div className="fixed inset-0 z-0 bg-[linear-gradient(to_bottom,rgba(11,11,12,.1)_0%,rgba(11,11,12,.55)_30%,rgba(11,11,12,.85)_42%,var(--bg)_60%)]" />
         </>}
+        <div className="absolute top-[max(16px,var(--sat))] left-4 z-20"><LanguagePicker compact /></div>
         <InstallButton className="absolute top-[max(16px,var(--sat))] right-4 z-20" />
         <div className="stagger relative z-10">
-          <p style={{ '--i': 0 } as React.CSSProperties} className="m-0 font-display text-sm uppercase text-red-ink">Football Personal Coach</p>
-          <h1 style={{ '--i': 1 } as React.CSSProperties} className="m-0 mt-2 font-display text-[clamp(2.6rem,12vw,3.8rem)] uppercase leading-[.88]">Train like<br />a pro.</h1>
+          <p style={{ '--i': 0 } as React.CSSProperties} className="m-0 font-display text-sm uppercase text-red-ink">{t('Football Personal Coach')}</p>
+          <h1 style={{ '--i': 1 } as React.CSSProperties} className="m-0 mt-2 font-display text-[clamp(2.6rem,12vw,3.8rem)] uppercase leading-[.88]">{tr('Train like{br}a pro.', { br: <br /> })}</h1>
           <ul style={{ '--i': 2 } as React.CSSProperties} className="m-0 mt-6 mb-8 flex list-none flex-col gap-3 p-0">
             {[
-              ['🗓', 'A week planned around your games'],
-              ['🔊', 'Drills coached out loud, LEFT / RIGHT cues'],
-              ['🏋️', 'Gym sessions for speed and power'],
+              ['🗓', t('A week planned around your games')],
+              ['🔊', t('Drills coached out loud, LEFT / RIGHT cues')],
+              ['🏋️', t('Gym sessions for speed and power')],
             ].map(([icon, text]) => (
               <li key={text} className="flex items-center gap-3">
                 <span aria-hidden="true" className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-white/10 text-lg backdrop-blur-md">{icon}</span>
@@ -48,10 +52,10 @@ export function Onboarding({ initial, initialGames = [], welcome = false, onDone
             ))}
           </ul>
           <div style={{ '--i': 3 } as React.CSSProperties}>
-            <Button block onClick={() => setStep(0)}>Get started</Button>
-            <Button block variant="ghost" className="mt-3" onClick={onSample}>Try a sample player</Button>
-            <p className="m-0 mt-4 text-center text-xs text-muted">30 seconds. No account needed.</p>
-            {onSignIn && <button onClick={onSignIn} className="mt-1 min-h-11 w-full text-center text-sm">Already have an account? <span className="font-semibold text-red-ink">Sign in</span></button>}
+            <Button block onClick={() => setStep(0)}>{t('Get started')}</Button>
+            <Button block variant="ghost" className="mt-3" onClick={onSample}>{t('Try a sample player')}</Button>
+            <p className="m-0 mt-4 text-center text-xs text-muted">{t('30 seconds. No account needed.')}</p>
+            {onSignIn && <button onClick={onSignIn} className="mt-1 min-h-11 w-full text-center text-sm">{t('Already have an account?')} <span className="font-semibold text-red-ink">{t('Sign in')}</span></button>}
           </div>
         </div>
       </Screen>
@@ -66,7 +70,7 @@ export function Onboarding({ initial, initialGames = [], welcome = false, onDone
   return (
     <Screen className="flex flex-col">
       <div className="mb-5 flex items-center gap-3">
-        {(step > 0 || welcome || onCancel) && <Button variant="ghost" size="sm" onClick={back}>Back</Button>}
+        {(step > 0 || welcome || onCancel) && <Button variant="ghost" size="sm" onClick={back}>{t('Back')}</Button>}
         <div className="flex flex-1 gap-1" aria-label={`Step ${step + 1} of ${STEPS.length}`}>
           {STEPS.map((_, i) => <div key={i} className={`h-1.5 flex-1 rounded-full transition-colors duration-300 ${i <= step ? 'bg-red' : 'bg-surface-2'}`} />)}
         </div>
@@ -76,15 +80,15 @@ export function Onboarding({ initial, initialGames = [], welcome = false, onDone
 
       <div key={id} className="rise mt-6 flex-1">
         {id === 'player' && (
-          <Step title="Your player">
+          <Step title={t('Your player')}>
             <div className="flex gap-3">
               <div className="min-w-0 flex-1">
-                <label htmlFor="ob-name" className="text-sm text-muted">Name</label>
+                <label htmlFor="ob-name" className="text-sm text-muted">{t('Name')}</label>
                 <input id="ob-name" value={p.name} onChange={(e) => set({ name: e.target.value.slice(0, 20) })} autoComplete="given-name" autoFocus
                   className="mt-1 block min-h-14 w-full rounded-2xl bg-surface px-4 font-display text-xl uppercase text-ink" />
               </div>
               <div className="w-24">
-                <label htmlFor="ob-number" className="text-sm text-muted">Number</label>
+                <label htmlFor="ob-number" className="text-sm text-muted">{t('Number')}</label>
                 <input id="ob-number" inputMode="numeric" value={p.number || ''} onChange={(e) => set({ number: Math.min(99, Number(e.target.value.replace(/\D/g, '')) || 0) })}
                   className="mt-1 block min-h-14 w-full rounded-2xl bg-surface px-4 text-center font-display text-2xl text-ink" />
               </div>
@@ -92,7 +96,7 @@ export function Onboarding({ initial, initialGames = [], welcome = false, onDone
           </Step>
         )}
         {id === 'play' && (
-          <Step title="How you play" hint="Pick every position you play.">
+          <Step title={t('How you play')} hint={t('Pick every position you play.')}>
             <div className="grid grid-cols-2 gap-2.5">
               {POSITIONS.map((x) => {
                 const on = p.positions.includes(x.id)
@@ -104,19 +108,19 @@ export function Onboarding({ initial, initialGames = [], welcome = false, onDone
                 )
               })}
             </div>
-            <h2 className="mt-6 mb-2.5 font-display text-base uppercase">Stronger foot</h2>
+            <h2 className="mt-6 mb-2.5 font-display text-base uppercase">{t('Stronger foot')}</h2>
             <div className="grid grid-cols-3 gap-2.5">
               {(['left', 'right', 'both'] as Foot[]).map((f) => (
-                <Choice key={f} on={p.foot === f} onClick={() => set({ foot: f })}><span className="font-display text-base uppercase">{f}</span></Choice>
+                <Choice key={f} on={p.foot === f} onClick={() => set({ foot: f })}><span className="font-display text-base uppercase">{f === 'left' ? t('Left') : f === 'right' ? t('Right') : t('Both')}</span></Choice>
               ))}
             </div>
           </Step>
         )}
         {id === 'week' && (
-          <Step title="Your week">
+          <Step title={t('Your week')}>
             <section className="rounded-[22px] bg-surface p-4">
-              <h2 className="m-0 font-display text-lg uppercase">Match days</h2>
-              <p className="m-0 mt-1 mb-3 text-sm text-muted">Tap the days you play games.</p>
+              <h2 className="m-0 font-display text-lg uppercase">{t('Match days')}</h2>
+              <p className="m-0 mt-1 mb-3 text-sm text-muted">{t('Tap the days you play games.')}</p>
               <div className="grid grid-cols-7 gap-1.5">
                 {DAYS.map((d, day) => {
                   const on = games.some((g) => g.day === day)
@@ -130,14 +134,14 @@ export function Onboarding({ initial, initialGames = [], welcome = false, onDone
                   )
                 })}
               </div>
-              <p className="m-0 mt-3 text-sm font-semibold">{games.length ? `${games.length} match${games.length > 1 ? 'es' : ''} a week` : 'No matches: more training instead'}</p>
+              <p className="m-0 mt-3 text-sm font-semibold">{games.length ? `${games.length} match${games.length > 1 ? 'es' : ''} a week` : t('No matches: more training instead')}</p>
             </section>
             <section className="mt-4 rounded-[22px] bg-surface p-4">
-              <h2 className="m-0 font-display text-lg uppercase">Gym sessions a week</h2>
-              <p className="m-0 mt-1 mb-3 text-sm text-muted">Planned on days without a match.</p>
+              <h2 className="m-0 font-display text-lg uppercase">{t('Gym sessions a week')}</h2>
+              <p className="m-0 mt-1 mb-3 text-sm text-muted">{t('Planned on days without a match.')}</p>
               <div className="grid grid-cols-6 gap-1.5">
                 {[0, 1, 2, 3, 4, 5].map((n) => (
-                  <Choice key={n} on={(p.gym ?? 3) === n} label={`${n} gym sessions`} onClick={() => set({ gym: n })}>
+                  <Choice key={n} on={(p.gym ?? 3) === n} label={t('{n} gym sessions', { n })} onClick={() => set({ gym: n })}>
                     <span className="font-display text-lg">{n}</span>
                   </Choice>
                 ))}
@@ -146,7 +150,7 @@ export function Onboarding({ initial, initialGames = [], welcome = false, onDone
           </Step>
         )}
         {id === 'style' && (
-          <Step title="Your colours">
+          <Step title={t('Your colours')}>
             <div className="grid grid-cols-9 gap-1.5">
               {ACCENTS.map((a) => (
                 <button key={a.id} aria-pressed={p.accent === a.id} aria-label={a.label}
@@ -157,10 +161,10 @@ export function Onboarding({ initial, initialGames = [], welcome = false, onDone
                 </button>
               ))}
             </div>
-            <label htmlFor="ob-idol" className="mt-6 block text-sm text-muted">Role model (optional)</label>
-            <input id="ob-idol" value={p.idol} onChange={(e) => set({ idol: e.target.value.slice(0, 40) })} placeholder="Your favourite player"
+            <label htmlFor="ob-idol" className="mt-6 block text-sm text-muted">{t('Role model (optional)')}</label>
+            <input id="ob-idol" value={p.idol} onChange={(e) => set({ idol: e.target.value.slice(0, 40) })} placeholder={t('Your favourite player')}
               className="mt-1 block min-h-14 w-full rounded-2xl bg-surface px-4 text-lg text-ink placeholder:text-muted" />
-            <p className="m-0 mt-2 text-sm text-muted">Signs your motivation quotes.</p>
+            <p className="m-0 mt-2 text-sm text-muted">{t('Signs your motivation quotes.')}</p>
           </Step>
         )}
       </div>
@@ -177,10 +181,10 @@ function CardPreview({ p }: { p: Profile }) {
     <div aria-hidden="true" className="relative h-28 overflow-hidden rounded-[22px] bg-[linear-gradient(120deg,color-mix(in_srgb,var(--red)_55%,#000)_0%,#111113_70%)] transition-[background] duration-300">
       <span className="absolute -top-3 right-3 select-none font-display text-[120px] leading-none text-transparent [-webkit-text-stroke:2px_rgba(255,255,255,.22)]">{p.number || ''}</span>
       <div className="absolute inset-y-0 left-4 flex flex-col justify-center">
-        <span className="font-display text-2xl uppercase leading-none text-white">{p.name.trim() || 'Your name'}</span>
+        <span className="font-display text-2xl uppercase leading-none text-white">{p.name.trim() || t('Your name')}</span>
         <span className="mt-2 flex flex-wrap gap-1.5">
           {tag && <span className="rounded-full bg-white/15 px-2.5 py-0.5 font-display text-[11px] uppercase text-white">{tag}</span>}
-          <span className="rounded-full bg-white/15 px-2.5 py-0.5 font-display text-[11px] uppercase text-white">{p.foot === 'both' ? 'Both feet' : `${p.foot} foot`}</span>
+          <span className="rounded-full bg-white/15 px-2.5 py-0.5 font-display text-[11px] uppercase text-white">{p.foot === 'both' ? t('Both feet') : p.foot === 'left' ? t('Left foot') : t('Right foot')}</span>
         </span>
       </div>
     </div>

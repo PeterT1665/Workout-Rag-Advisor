@@ -5,6 +5,7 @@ import { supabase } from './supabase'
 import { currentUser } from './sync'
 import type { CardStats } from '../components/PlayerCard'
 import type { Profile } from './profile'
+import { t } from '../i18n'
 
 export type TeamProfile = {
   user_id: string; username: string; display_name: string; number: number
@@ -138,11 +139,11 @@ export async function avatarUrls(paths: (string | null)[]): Promise<Record<strin
 
 // Online: active in the last 5 minutes; otherwise "today" / "2 days ago".
 export function activity(lastActive: string | null, now = Date.now()): { online: boolean; label: string } {
-  if (!lastActive) return { online: false, label: 'Not seen yet' }
+  if (!lastActive) return { online: false, label: t('Not seen yet') }
   const mins = (now - Date.parse(lastActive)) / 60000
-  if (mins < 5) return { online: true, label: 'Online' }
-  if (mins < 60) return { online: false, label: `${Math.round(mins)} min ago` }
+  if (mins < 5) return { online: true, label: t('Online') }
+  if (mins < 60) return { online: false, label: t('{n} min ago', { n: Math.round(mins) }) }
   if (mins < 60 * 24) return { online: false, label: `${Math.round(mins / 60)} h ago` }
   const days = Math.round(mins / 1440)
-  return { online: false, label: days === 1 ? 'Yesterday' : `${days} days ago` }
+  return { online: false, label: days === 1 ? t('Yesterday') : t('{n} days ago', { n: days }) }
 }

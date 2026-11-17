@@ -1,32 +1,33 @@
 import { Button, Title, TopBar } from '../components/ui'
+import { t } from '../i18n'
 
 const ASKS = [
-  'Two games this week, Monday and Wednesday. Plan it.',
-  'What does a winger do most in 5-a-side?',
-  'My hips feel tight after Sunday. Adjust tomorrow.',
-  'Build me a 45-minute weak-foot session for the wall.',
+  t('Two games this week, Monday and Wednesday. Plan it.'),
+  t('What does a winger do most in 5-a-side?'),
+  t('My hips feel tight after Sunday. Adjust tomorrow.'),
+  t('Build me a 45-minute weak-foot session for the wall.'),
 ]
 
 // Placeholder until the agent backend exists. Shows what it will do; nothing pretends to work.
 export function CoachView({ onBack }: { onBack: () => void }) {
   return (
     <main className="mx-auto max-w-xl px-4 pt-[max(20px,var(--sat))] pb-12">
-      <TopBar left={<Button variant="ghost" size="sm" onClick={onBack}>Back</Button>} />
-      <Title>AI Coach</Title>
+      <TopBar left={<Button variant="ghost" size="sm" onClick={onBack}>{t('Back')}</Button>} />
+      <Title>{t('AI Coach')}</Title>
       <p className="m-0 mt-3 max-w-[60ch] text-muted">
-        Coming soon: an AI coach that knows your week.
+        {t('Coming soon: an AI coach that knows your week.')}
       </p>
 
       <section className="mt-8 rounded-[24px] bg-surface p-5">
-        <h2 className="m-0 font-display text-base uppercase">Things you'll ask</h2>
+        <h2 className="m-0 font-display text-base uppercase">{t("Things you'll ask")}</h2>
         <ul className="m-0 mt-4 flex list-none flex-col gap-2 p-0">
           {ASKS.map((a) => (
             <li key={a} className="rounded-2xl bg-surface-2 px-4 py-3 text-[15px]">{a}</li>
           ))}
         </ul>
         <div className="mt-5 flex items-center gap-3 rounded-full bg-bg px-5 py-3 text-muted" aria-disabled="true">
-          <span className="flex-1">Message your coach…</span>
-          <span className="rounded-full bg-surface-2 px-3 py-1 font-display text-[11px] uppercase">Soon</span>
+          <span className="flex-1">{t('Message your coach…')}</span>
+          <span className="rounded-full bg-surface-2 px-3 py-1 font-display text-[11px] uppercase">{t('Soon')}</span>
         </div>
       </section>
 

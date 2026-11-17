@@ -3,6 +3,7 @@
 import data from '../data/library.json'
 import { load, save } from './storage'
 import type { Block, Session } from './types'
+import { mark, t } from '../i18n'
 
 export type Sport = 'football' | 'gym' | 'home' | 'mobility'
 export type Exercise = Block & { id: string; sport: Sport; category: string; positions?: string[] }
@@ -10,20 +11,23 @@ export type Item = { ex: string; work?: number; rest?: number; rounds?: number; 
 export type Template = { id: string; title: string; type: string; summary: string; needs: string[]; items: Item[] }
 export type MySession = Template & { mine: true; updated: string }
 
-export const EXERCISES = data.exercises as Exercise[]
+// Instructions and descriptive reps ("8 each leg") in the app's language; names stay English, and "needs"
+// stay English data (the kit check reads them) and are translated where they're shown.
+const tReps = (r?: string) => (r && !/^\d+(-\d+)?$/.test(r) ? t(r) : r)
+export const EXERCISES = (data.exercises as Exercise[]).map((e) => ({ ...e, how: e.how && t(e.how), reps: tReps(e.reps) }))
 export const TEMPLATES = data.templates as Template[]
 const byId = new Map(EXERCISES.map((e) => [e.id, e]))
 export const exercise = (id: string) => byId.get(id)
 
 export const SPORTS: { id: Sport; label: string }[] = [
-  { id: 'football', label: 'Football' }, { id: 'gym', label: 'Gym' }, { id: 'home', label: 'Home' }, { id: 'mobility', label: 'Mobility' },
+  { id: 'football', label: t('Football') }, { id: 'gym', label: t('Gym') }, { id: 'home', label: t('Home') }, { id: 'mobility', label: t('Mobility') },
 ]
 export const CATEGORY_LABELS: Record<string, string> = {
-  warmup: 'Warm-up', cooldown: 'Cool-down', 'ball-mastery': 'Dribbling', 'first-touch': 'First touch', passing: 'Passing',
-  finishing: 'Finishing', '1v1': '1v1', speed: 'Speed & agility', conditioning: 'Conditioning',
-  olympic: 'Olympic lifts', explosive: 'Explosive', plyometrics: 'Plyo & jumps', sprints: 'Sprints',
-  'lower-strength': 'Lower body', 'upper-strength': 'Upper body', 'single-limb': 'Single leg / arm', isometrics: 'Isometrics',
-  core: 'Core', 'gym-conditioning': 'Conditioning', mobility: 'Mobility',
+  warmup: t('Warm-up'), cooldown: t('Cool-down'), 'ball-mastery': t('Dribbling'), 'first-touch': t('First touch'), passing: t('Passing'),
+  finishing: t('Finishing'), '1v1': '1v1', speed: t('Speed & agility'), conditioning: t('Conditioning'),
+  olympic: t('Olympic lifts'), explosive: t('Explosive'), plyometrics: t('Plyo & jumps'), sprints: t('Sprints'),
+  'lower-strength': t('Lower body'), 'upper-strength': t('Upper body'), 'single-limb': t('Single leg / arm'), isometrics: t('Isometrics'),
+  core: t('Core'), 'gym-conditioning': t('Conditioning'), mobility: t('Mobility'),
 }
 // Categories in display order for one sport, only those that have exercises.
 export function categories(sport: Sport) {
@@ -34,20 +38,22 @@ export function categories(sport: Sport) {
   return seen.sort((a, b) => rank(a) - rank(b))
 }
 
-const NEED_LABELS: Record<string, string> = { markers: '4-6 markers (bottles/shoes/bags)' }
+const NEED_LABELS: Record<string, string> = { markers: mark('4-6 markers (bottles/shoes/bags)') }
 
-export function toSession(t: Template): Session {
+export function toSession(tpl: Template): Session {
   const blocks: Block[] = []
-  for (const it of t.items) {
+  for (const it of tpl.items) {
     const e = byId.get(it.ex)
     if (!e) continue // exercise removed from the library: skip rather than break the session
     const { id: _id, sport: _s, positions: _p, ...block } = e
     const { ex: _ex, ...overrides } = it
-    blocks.push({ ...block, ...stripUndefined(overrides) })
+    blocks.push({ ...block, ...stripUndefined({ ...overrides, how: overrides.how && t(overrides.how) }) })
   }
-  const needs = t.needs.length ? t.needs : [...new Set(blocks.flatMap((b) => b.needs || []))].map((n) => NEED_LABELS[n] || n)
-  return { id: t.id, title: t.title, type: t.type, summary: t.summary, needs, blocks }
+  const needs = tpl.needs.length ? tpl.needs : [...new Set(blocks.flatMap((b) => b.needs || []))].map((n) => NEED_LABELS[n] || n)
+  // your own sessions keep the title you gave them (t() leaves text it doesn't know as it is)
+  return { id: tpl.id, title: t(tpl.title), type: tpl.type, summary: t(tpl.summary), needs, blocks }
 }
+
 const stripUndefined = (o: object) => Object.fromEntries(Object.entries(o).filter(([, v]) => v !== undefined))
 
 // Session type follows its content: any football drill makes it football, then gym, else recovery.

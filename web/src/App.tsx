@@ -17,7 +17,7 @@ import { Invite } from './views/Invite'
 import { CoachView } from './views/CoachView'
 import { TeamView } from './views/TeamView'
 import { publishStats } from './lib/team'
-import { cancelRest, scheduleRest } from './lib/push'
+import { cancelRest, scheduleRest, syncPushLang } from './lib/push'
 import { syncEnabled } from './lib/sync'
 import { cardStatsFor } from './lib/cardStats'
 import { overall } from './components/PlayerCard'
@@ -37,6 +37,7 @@ import { DEFAULT_GYM } from './lib/weekplan'
 import { changeFor, changedSession, loadWeekChanges, saveWeekChange, type DayChange } from './lib/weekChanges'
 import type { Game } from './lib/weekplan'
 import type { Session, Settings } from './lib/types'
+import { locale, t } from './i18n'
 
 const sessions = BUILTIN_SESSIONS // the week planner picks from the recommended sessions
 
@@ -60,10 +61,10 @@ const MAKEUP_PICKS: Record<string, string[]> = {
   recovery: ['recovery-hips', 'home-full-body'], session: ['home-full-body', 'recovery-hips'],
 }
 const ymd = (d: Date) => d.toLocaleDateString('en-CA')
-const dayName = (date: string) => new Date(`${date}T12:00:00`).toLocaleDateString('en-GB', { weekday: 'long' })
+const dayName = (date: string) => { const d = new Date(`${date}T12:00:00`).toLocaleDateString(locale(), { weekday: 'long' }); return d.charAt(0).toUpperCase() + d.slice(1) }
 
 // onSignUp: guests can start making an account from inside the app (Team needs one)
-export default function App({ onSignUp }: { onSignUp?: () => void } = {}) {
+export default function App({ onSignUp, onSignIn }: { onSignUp?: () => void; onSignIn?: () => void } = {}) {
   // a notification can open a tab directly ("plan next week" opens the week)
   const [tab, setTab] = useState<Tab>(() => (typeof location !== 'undefined' && new URLSearchParams(location.search).get('tab') === 'week' ? 'week' : 'home'))
   const [overlay, setOverlay] = useState<Overlay | null>(null)
@@ -94,6 +95,7 @@ export default function App({ onSignUp }: { onSignUp?: () => void } = {}) {
   // reset scroll before the new screen paints, so there is no visible jump
   useLayoutEffect(() => { window.scrollTo(0, 0) }, [tab, overlay?.name])
   // an app update may reload the page: hold it while a session, rating test or edit is open
+  useEffect(() => { void syncPushLang() }, []) // notifications in the app's language
   useEffect(() => { setBusy(['preroll', 'player', 'testday', 'builder', 'profile', 'media'].includes(overlay?.name ?? '')) }, [overlay?.name])
 
   const updateSettings = (p: Partial<Settings>) => {
@@ -187,12 +189,12 @@ export default function App({ onSignUp }: { onSignUp?: () => void } = {}) {
       void publishStats(me, { card, rating: card ? overall(card) : null, streak: streak.days, trainedToday: streak.today })
     }
     publish()
-    const t = setInterval(() => { if (document.visibilityState === 'visible') publish() }, 180000)
-    return () => clearInterval(t)
+    const every = setInterval(() => { if (document.visibilityState === 'visible') publish() }, 180000)
+    return () => clearInterval(every)
   }, [me, streak.days, streak.today])
   const makeup = streak.makeup ? {
     missed: dayName(streak.makeup.date),
-    by: streak.makeup.by === ymd(new Date()) ? 'tonight' : streak.makeup.by === ymd(new Date(Date.now() + 864e5)) ? 'tomorrow' : dayName(streak.makeup.by),
+    by: streak.makeup.by === ymd(new Date()) ? t('tonight') : streak.makeup.by === ymd(new Date(Date.now() + 864e5)) ? t('tomorrow') : dayName(streak.makeup.by),
     picks: (MAKEUP_PICKS[streak.makeup.kind] ?? MAKEUP_PICKS.session).map((id) => library.find((s) => s.id === id)).filter((s): s is Session => !!s),
   } : null
 
@@ -260,7 +262,7 @@ export default function App({ onSignUp }: { onSignUp?: () => void } = {}) {
       )}
       {tab === 'week' && <WeekView today={today} games={games} sessions={sessions} library={library} changes={changes} onChange={changeDay} onGames={updateGames} onOpen={open} onCoach={() => setOverlay({ name: 'coach' })} />}
       {tab === 'player' && <PlayerTab onTestDay={() => setOverlay({ name: 'testday' })} />}
-      {tab === 'team' && <TeamView streak={streak} onSignUp={onSignUp} />}
+      {tab === 'team' && <TeamView streak={streak} onSignUp={onSignUp} onSignIn={onSignIn} onInvite={() => setOverlay({ name: 'invite' })} />}
       </div>
       <TabBar tab={tab} onTab={setTab} onKickOff={() => onStart(today.session)} />
     </>
