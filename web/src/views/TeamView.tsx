@@ -143,7 +143,7 @@ function TeamSignedIn({ streak, onInvite }: { streak: Streak; onInvite?: () => v
       </section>
 
       {onInvite && (
-        <button onClick={onInvite} className="mt-4 flex min-h-14 w-full items-center gap-3 rounded-[24px] bg-red px-4 text-left text-on-red transition-transform duration-150 ease-snap active:scale-[0.98]">
+        <button onClick={onInvite} className="mt-4 flex min-h-14 w-full items-center gap-3 rounded-[24px] bg-red px-4 py-3 text-left text-on-red transition-transform duration-150 ease-snap active:scale-[0.98]">
           <QrGlyph />
           <span className="min-w-0 flex-1">
             <span className="block font-display text-sm uppercase">{t('Show my QR')}</span>
