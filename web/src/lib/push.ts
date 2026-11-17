@@ -95,20 +95,38 @@ export const REST_LINES = [
   "Timer's done. The set won't do itself.",
 ]
 
-// The app went to the background mid-rest: remind at the end of the rest. Replaces any earlier one.
-export async function scheduleRest(seconds: number, next?: string) {
-  if (!pushOn() || seconds < 5) return
+// Calls run one after another, so a cancel can't overtake the booking it is meant to undo.
+let chain: Promise<unknown> = Promise.resolve()
+const queue = (f: () => Promise<unknown>) => (chain = chain.then(f, f))
+
+// A rest started: book the call-back for its end, while the app is still open (iPhone suspends the app the
+// moment you leave it, too fast for a request sent then). Replaces any earlier one.
+export function scheduleRest(seconds: number, next?: string) {
+  if (!pushOn() || seconds < 5) return chain
   const line = REST_LINES[Math.floor(Math.random() * REST_LINES.length)]
-  try {
-    const sb = await supabase()
-    await sb.rpc('schedule_rest_push', { p_seconds: Math.round(seconds), p_title: next ? `Rest is over · ${next}`.slice(0, 80) : 'Rest is over', p_body: line })
-  } catch { /* offline: no reminder this time */ }
+  return queue(async () => {
+    try {
+      const sb = await supabase()
+      await sb.rpc('schedule_rest_push', { p_seconds: Math.round(seconds), p_title: next ? `Rest is over · ${next}`.slice(0, 80) : 'Rest is over', p_body: line })
+    } catch { /* offline: no reminder this time */ }
+  })
 }
-// Back in the app (or the session ended): no reminder needed.
-export async function cancelRest() {
-  if (!pushOn()) return
+// Still in the app at the end of the rest, paused, skipped or ended: no reminder needed.
+export function cancelRest() {
+  if (!pushOn()) return chain
+  return queue(async () => {
+    try {
+      const sb = await supabase()
+      await sb.from('scheduled_pushes').delete().eq('kind', 'rest').is('sent_at', null)
+    } catch { /* ignore */ }
+  })
+}
+// Settings: a test notification in a few seconds, so you can lock the phone and see it arrive.
+export async function sendTest(): Promise<boolean> {
+  if (!pushOn()) return false
   try {
     const sb = await supabase()
-    await sb.from('scheduled_pushes').delete().eq('kind', 'rest').is('sent_at', null)
-  } catch { /* ignore */ }
+    const { error } = await sb.rpc('schedule_rest_push', { p_seconds: 8, p_title: 'Test notification', p_body: 'Notifications work. Lock in, let\'s go.' })
+    return !error
+  } catch { return false }
 }

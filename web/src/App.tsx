@@ -124,15 +124,32 @@ export default function App({ onSignUp }: { onSignUp?: () => void } = {}) {
     // keep the session safe if the app is closed or reloaded mid-way
     let lastSave = 0
     const persist = () => { if (!player.getState().finished) saveActive(player.getSession(), player.snapshot()) } // keeps mid-session edits
-    player.subscribe(() => { if (Date.now() - lastSave > 1500) { lastSave = Date.now(); persist() } })
+    // Rest call-back: booked on the server when a rest starts (the app may be gone by the time it ends),
+    // dropped when the rest is paused, skipped, or ends with you still in the app.
+    let booked = '' // which rest is booked
+    let dropped = false // ...and already dropped because you stayed
+    const nextName = (s: ReturnType<typeof player.getState>) => s.steps[s.i + 1]?.name.replace(/\s*\([^)]*\)/g, '')
+    const syncRest = () => {
+      const s = player.getState()
+      const key = !s.finished && s.running && s.steps[s.i]?.type === 'rest' ? `${s.startedAt}-${s.i}` : ''
+      if (key !== booked) {
+        if (key) void scheduleRest(s.remainingMs / 1000, nextName(s)) // replaces the old one on the server
+        else if (booked && !dropped) void cancelRest()
+        booked = key
+        dropped = false
+      } else if (key && !dropped && document.visibilityState === 'visible' && s.remainingMs < 3000) {
+        dropped = true
+        void cancelRest()
+      }
+    }
+    player.subscribe(() => { syncRest(); if (Date.now() - lastSave > 1500) { lastSave = Date.now(); persist() } })
     const onHide = () => {
       const s = player.getState()
       if (document.visibilityState === 'hidden') {
         persist()
-        // left the app mid-rest (TikTok...): the server calls you back when the rest is over
-        const step = s.steps[s.i]
-        if (!s.finished && s.running && step?.type === 'rest') void scheduleRest(s.remainingMs / 1000, s.steps[s.i + 1]?.name.replace(/\s*\([^)]*\)/g, ''))
-      } else void cancelRest()
+        // re-book with the exact time left, in case the first booking didn't get through
+        if (booked) { dropped = false; void scheduleRest(s.remainingMs / 1000, nextName(s)) }
+      }
     }
     document.addEventListener('visibilitychange', onHide)
     stopPersist.current = () => document.removeEventListener('visibilitychange', onHide)

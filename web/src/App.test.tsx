@@ -117,7 +117,7 @@ describe('app', () => {
     expect(getProfile().gym).toBe(4)
   })
 
-  test('leaving the app mid-rest schedules a call-back; coming back cancels it', () => {
+  test('a rest books the call-back when it starts, again when you leave, and drops it if you stay to the end', () => {
     render(<App />)
     click(/All sessions/)
     click(/Close control & 1v1/)
@@ -127,14 +127,17 @@ describe('app', () => {
     click(/Let's go/)
     let guard = 0
     while (stepName() !== 'Rest' && guard++ < 50) click(/^Skip$/)
-    const hide = (state: string) => { Object.defineProperty(document, 'visibilityState', { value: state, configurable: true }); act(() => { document.dispatchEvent(new Event('visibilitychange')) }) }
-    hide('hidden')
-    expect(push.scheduleRest).toHaveBeenCalledTimes(1)
+    expect(push.scheduleRest).toHaveBeenCalledTimes(1) // booked at the start of the rest
     const [secs, next] = vi.mocked(push.scheduleRest).mock.calls[0]
     expect(secs).toBeGreaterThan(5)
     expect(typeof next).toBe('string')
+    const hide = (state: string) => { Object.defineProperty(document, 'visibilityState', { value: state, configurable: true }); act(() => { document.dispatchEvent(new Event('visibilitychange')) }) }
+    hide('hidden')
+    expect(push.scheduleRest).toHaveBeenCalledTimes(2) // re-booked with the exact time left
     hide('visible')
-    expect(push.cancelRest).toHaveBeenCalled()
+    expect(push.cancelRest).not.toHaveBeenCalled()
+    act(() => { vi.advanceTimersByTime(secs * 1000 - 2000) }) // still here near the end: no notification needed
+    expect(push.cancelRest).toHaveBeenCalledTimes(1)
   })
 
   test('player: the cue fills the screen', () => {

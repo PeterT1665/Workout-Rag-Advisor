@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Button, Panel, Toggle } from './ui'
-import { disablePush, enablePush, getPrefs, pushState, setPrefs, type Prefs, type PushState } from '../lib/push'
+import { disablePush, enablePush, getPrefs, pushState, sendTest, setPrefs, type Prefs, type PushState } from '../lib/push'
 
 const WHY: Partial<Record<PushState, string>> = {
   'need-account': 'Notifications need an account (they come from our server).',
@@ -37,8 +37,19 @@ export function NotificationSettings() {
             <Toggle id="n-rest" label="Rest is over: call me back if I leave the app" checked={state === 'on' && prefs.rest_alerts} onChange={(v) => void change({ rest_alerts: v })} />
             <Toggle id="n-week" label="Sunday evening: plan next week" checked={state === 'on' && prefs.weekly} onChange={(v) => void change({ weekly: v })} />
             {busy && <p className="m-0 text-sm text-muted">Asking your phone…</p>}
+            {state === 'on' && <TestButton />}
           </>}
     </Panel>
+  )
+}
+
+function TestButton() {
+  const [msg, setMsg] = useState('')
+  return (
+    <div className="flex items-center gap-3">
+      <Button size="sm" variant="ghost" onClick={async () => setMsg((await sendTest()) ? 'Sent. Lock your phone: it arrives in about 10 seconds.' : "Couldn't reach the server. Check your connection.")}>Send a test</Button>
+      {msg && <p className="m-0 text-sm text-muted">{msg}</p>}
+    </div>
   )
 }
 

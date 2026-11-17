@@ -28,6 +28,8 @@ Deno.serve(async (req) => {
 
   let sent = 0
   const gone: string[] = []
+  const failed: string[] = []
+  const noDevice = list.filter((d) => !byUser.get(d.user_id)?.length).length
   await Promise.all(list.flatMap((d) => (byUser.get(d.user_id) ?? [])
     .filter((s) => (d.kind === 'rest' ? s.rest_alerts : s.weekly))
     .map(async (s) => {
@@ -39,10 +41,15 @@ Deno.serve(async (req) => {
         )
         sent++
       } catch (e) {
-        const code = (e as { statusCode?: number }).statusCode
-        if (code === 404 || code === 410) gone.push(s.endpoint) // the device unsubscribed
+        const err = e as { statusCode?: number; body?: string; message?: string }
+        if (err.statusCode === 404 || err.statusCode === 410) gone.push(s.endpoint) // the device unsubscribed
+        const why = `${new URL(s.endpoint).host} ${err.statusCode ?? ''} ${String(err.body ?? err.message ?? e).slice(0, 200)}`
+        failed.push(why)
+        console.error('push failed:', why)
       }
     })))
   if (gone.length) await sb.from('push_subscriptions').delete().in('endpoint', gone)
-  return Response.json({ sent, gone: gone.length })
+  const result = { due: list.length, sent, gone: gone.length, noDevice, failed }
+  console.log('send-push', JSON.stringify(result))
+  return Response.json(result)
 })
