@@ -22,6 +22,7 @@ import { syncEnabled } from './lib/sync'
 import { cardStatsFor } from './lib/cardStats'
 import { overall } from './components/PlayerCard'
 import { TabBar, type Tab } from './components/TabBar'
+import { Tour, homeTour, tourDue } from './components/Tour'
 import { removeOldClips } from './lib/clips'
 import { openPhotos } from './lib/photos'
 import { setBusy } from './lib/updates'
@@ -68,6 +69,12 @@ export default function App({ onSignUp, onSignIn }: { onSignUp?: () => void; onS
   // a notification can open a tab directly ("plan next week" opens the week)
   const [tab, setTab] = useState<Tab>(() => (typeof location !== 'undefined' && new URLSearchParams(location.search).get('tab') === 'week' ? 'week' : 'home'))
   const [overlay, setOverlay] = useState<Overlay | null>(null)
+  const [tour, setTour] = useState(false) // first-run tour of the buttons
+  useEffect(() => {
+    if (!tourDue()) return
+    const go = setTimeout(() => setTour(true), 900) // after Home has come in
+    return () => clearTimeout(go)
+  }, [])
   const [settings, setSettings] = useState<Settings>(loadSettings)
   const [games, setGames] = useState<Game[]>(loadGames)
   const settingsRef = useRef(settings)
@@ -222,7 +229,7 @@ export default function App({ onSignUp, onSignIn }: { onSignUp?: () => void; onS
       case 'player':
         return <PlayerView key={overlay.player.getState().startedAt} session={overlay.session} player={overlay.player} settings={settings} onExit={() => { endRemote(); stopPersist.current(); void cancelRest(); clearActive(); setActive(null); close() }} />
       case 'settings':
-        return <SettingsView settings={settings} onChange={updateSettings} onMedia={() => setOverlay({ name: 'media', from: 'settings' })} onProfile={() => setOverlay({ name: 'profile' })} onInvite={() => setOverlay({ name: 'invite', back: { name: 'settings' } })} onDone={close} />
+        return <SettingsView settings={settings} onChange={updateSettings} onMedia={() => setOverlay({ name: 'media', from: 'settings' })} onProfile={() => setOverlay({ name: 'profile' })} onInvite={() => setOverlay({ name: 'invite', back: { name: 'settings' } })} onTour={() => { close(); setTab('home'); setTour(true) }} onDone={close} />
       case 'invite':
         return <Invite partner={overlay.partner} onDone={() => (overlay.back ? setOverlay(overlay.back) : close())} />
       case 'testday':
@@ -250,7 +257,6 @@ export default function App({ onSignUp, onSignIn }: { onSignUp?: () => void; onS
           onPlayer={() => setTab('player')}
           streak={streak}
           makeup={makeup}
-          onWeek={() => setTab('week')}
           active={active ? { title: active.session.title, onResume: () => { unlockAudio(); if (settingsRef.current.earbudControls) beginRemote(active.session.title); started.current = false; beginSession(active.session, active.snap) }, onDiscard: () => { clearActive(); setActive(null) } } : null}
           dayKind={(day) => {
             const c = changeFor(day, changes)
@@ -265,6 +271,7 @@ export default function App({ onSignUp, onSignIn }: { onSignUp?: () => void; onS
       {tab === 'team' && <TeamView streak={streak} onSignUp={onSignUp} onSignIn={onSignIn} onInvite={() => setOverlay({ name: 'invite' })} />}
       </div>
       <TabBar tab={tab} onTab={setTab} onKickOff={() => onStart(today.session)} />
+      {tour && tab === 'home' && <Tour steps={homeTour()} onDone={() => setTour(false)} />}
     </>
   )
 }

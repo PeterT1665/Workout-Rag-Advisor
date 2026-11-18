@@ -14,6 +14,7 @@ beforeEach(() => {
   spoken.length = 0
   played.length = 0
   localStorage.clear()
+  localStorage.setItem('tour:seen', 'true') // the first-run tour has its own test
   reloadProfile()
   vi.stubGlobal('speechSynthesis', { speak: (u: { text: string }) => spoken.push(u.text), cancel() {}, resume() {} })
   vi.stubGlobal('SpeechSynthesisUtterance', function (this: { text: string }, t: string) { this.text = t })
@@ -240,14 +241,31 @@ describe('app', () => {
     await waitFor(() => expect(screen.getByLabelText('Add Home hero photo')).toBeTruthy())
   })
 
-  test('home: the how-it-works card shows once, Set my week opens the week', () => {
+  test('first run: the tour walks through the buttons once, skip ends it, Settings replays it', async () => {
+    localStorage.removeItem('tour:seen')
+    vi.spyOn(HTMLElement.prototype, 'getBoundingClientRect').mockReturnValue({ left: 20, top: 20, right: 60, bottom: 60, width: 40, height: 40, x: 20, y: 20, toJSON() {} } as DOMRect)
+    const box = () => within(screen.getByRole('dialog'))
+    const showing = (title: string) => waitFor(() => expect(box().getByRole('heading').textContent).toBe(title))
     const { unmount } = render(<App />)
-    expect(screen.getByRole('region', { name: 'How it works' })).toBeTruthy()
-    click(/Set my week/)
-    expect(screen.getByText(/Tap the days you play/)).toBeTruthy()
+    await screen.findByRole('dialog', {}, { timeout: 2000 })
+    await showing('Your streak')
+    fireEvent.click(box().getByRole('button', { name: 'Next' }))
+    await showing('Your player card')
+    fireEvent.click(box().getByRole('button', { name: 'Skip tour' }))
+    expect(screen.queryByRole('dialog')).toBeNull()
     unmount()
     render(<App />)
-    expect(screen.queryByRole('region', { name: 'How it works' })).toBeNull()
+    await new Promise((r) => setTimeout(r, 1100))
+    expect(screen.queryByRole('dialog')).toBeNull() // seen: not again
+    click(/^Settings$/)
+    click(/Show the app tour/)
+    for (const title of ['Your streak', 'Your player card', 'Your week', 'Kick off', 'Team']) {
+      await showing(title)
+      fireEvent.click(box().getByRole('button', { name: 'Next' }))
+    }
+    await showing('Settings')
+    fireEvent.click(box().getByRole('button', { name: "Let's go" }))
+    expect(screen.queryByRole('dialog')).toBeNull()
   })
 
   test('rating session: three tests rate the player, the card is revealed and kept', () => {

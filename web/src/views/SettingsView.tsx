@@ -10,8 +10,8 @@ import { positionTag, useProfile } from '../lib/profile'
 import credits from '../data/credits.json'
 import { t } from '../i18n'
 
-export function SettingsView({ settings: s, onChange, onMedia, onProfile, onInvite, onDone }: {
-  settings: Settings; onChange: (p: Partial<Settings>) => void; onMedia: () => void; onProfile: () => void; onInvite: () => void; onDone: () => void
+export function SettingsView({ settings: s, onChange, onMedia, onProfile, onInvite, onTour, onDone }: {
+  settings: Settings; onChange: (p: Partial<Settings>) => void; onMedia: () => void; onProfile: () => void; onInvite: () => void; onTour?: () => void; onDone: () => void
 }) {
   const me = useProfile()
   return (
@@ -44,6 +44,7 @@ export function SettingsView({ settings: s, onChange, onMedia, onProfile, onInvi
       <Panel className="flex flex-col gap-4">
         <Toggle id="cd" label={t('Quote cards before sessions and in rests')} checked={s.cards} onChange={(v) => onChange({ cards: v })} />
         <Button variant="ghost" className="bg-surface-2" onClick={onMedia}>{t('Make it yours: photos, colour, quotes')}</Button>
+        {onTour && <Button variant="ghost" className="bg-surface-2" onClick={onTour}>{t('Show the app tour')}</Button>}
       </Panel>
       {!syncEnabled() && (
           <Panel className="mt-8 flex items-center justify-between gap-4">

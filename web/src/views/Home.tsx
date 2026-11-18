@@ -12,7 +12,6 @@ import { InstallButton } from '../components/InstallButton'
 import { DrillSheet } from '../components/DrillSheet'
 import { canInstall } from '../lib/install'
 import { CATEGORY_LABELS, drillPhoto } from '../lib/library'
-import { load, save } from '../lib/storage'
 import { DAY_ABBR, DAY_SHORT, FOCUS_LABEL, type SlotKind } from '../lib/weekplan'
 import { locale, t } from '../i18n'
 import type { Today } from '../lib/today'
@@ -26,7 +25,6 @@ type Props = {
   onAllSessions: () => void
   onAddClips: () => void
   onPlayer: () => void
-  onWeek?: () => void
   active?: { title: string; onResume: () => void; onDiscard: () => void } | null // unfinished session
   dayKind?: (day: number) => string | null | undefined // hand-changed day: session type, null = rest, undefined = unchanged
   streak?: Streak
@@ -67,7 +65,7 @@ export function Hero({ today, onKickOff, onOpen, onSettings, onCustomise, streak
         : 'absolute inset-0 bg-[linear-gradient(to_bottom,rgba(10,12,11,.6)_0%,rgba(10,12,11,0)_22%,rgba(10,12,11,0)_55%,rgba(10,12,11,.96)_86%)]'} />
       {!desktop && <div className="absolute inset-x-4 top-[max(16px,var(--sat))] flex items-center justify-between">
         {streak ? (
-          <button onClick={onStreak} aria-label={`${streak.days === 1 ? t('Plan streak: 1 day') : t('Plan streak: {n} days', { n: streak.days })}${streak.today ? '' : `, ${t('train today to keep it going')}`}. ${t('Open your training log')}`}
+          <button onClick={onStreak} data-tour="streak" aria-label={`${streak.days === 1 ? t('Plan streak: 1 day') : t('Plan streak: {n} days', { n: streak.days })}${streak.today ? '' : `, ${t('train today to keep it going')}`}. ${t('Open your training log')}`}
             className="flex h-10 items-center gap-1.5 rounded-full bg-white/15 pr-3.5 pl-2.5 text-white backdrop-blur-md active:scale-95">
             <FlameIcon lit={streak.days > 0} className={`h-6 w-6 ${streak.today ? 'drop-shadow-[0_0_6px_rgba(255,90,31,.7)]' : ''}`} />
             <span className={`font-display text-lg tabular-nums leading-none ${streak.days > 0 ? 'text-[#ff9a1f]' : 'text-white/80'}`}>{streak.days}</span>
@@ -78,7 +76,7 @@ export function Hero({ today, onKickOff, onOpen, onSettings, onCustomise, streak
           {onCustomise && <button onClick={onCustomise} aria-label={t('Make it yours')} className="grid h-10 w-10 place-items-center rounded-full bg-white/15 text-white backdrop-blur-md active:scale-95">
             <BrushIcon />
           </button>}
-          <button onClick={onSettings} aria-label={t('Settings')} className="grid h-10 w-10 place-items-center rounded-full bg-white/15 text-white backdrop-blur-md active:scale-95">
+          <button onClick={onSettings} data-tour="settings" aria-label={t('Settings')} className="grid h-10 w-10 place-items-center rounded-full bg-white/15 text-white backdrop-blur-md active:scale-95">
             <GearIcon />
           </button>
         </span>
@@ -233,7 +231,6 @@ export function Home(p: Props) {
         </section>
       )}
       <NotifyPrompt />
-      <HowItWorks onWeek={p.onWeek} />
 
       <SectionHead title={t("Today's drills")} right={<button onClick={p.onAllSessions} className="text-sm font-semibold text-muted">{t('All sessions')}</button>} />
       <div className="no-scrollbar -mx-4 flex snap-x scroll-px-4 gap-3 overflow-x-auto px-4">
@@ -247,34 +244,5 @@ export function Home(p: Props) {
       <WeekStrip today={p.today} kindFor={p.dayKind} />
       {drill && <DrillSheet block={drill} onClose={() => setDrill(null)} onSession={() => { setDrill(null); p.onOpen(s) }} />}
     </main>
-  )
-}
-
-// First visit only: three steps that explain the app, then it gets out of the way.
-function HowItWorks({ onWeek }: { onWeek?: () => void }) {
-  const [seen, setSeen] = useState(() => load<boolean>('intro:seen', false))
-  if (seen) return null
-  const close = () => { save('intro:seen', true); setSeen(true) }
-  const steps: [string, string][] = [
-    [t('Set your week'), t('Tap your game days.')],
-    [t('Kick off'), t('Volume up: drills are called out loud.')],
-    [t('Check in'), t('Tap how hard it was.')],
-  ]
-  return (
-    <section aria-label={t('How it works')} className="rise mt-6 rounded-[22px] bg-surface p-4">
-      <div className="flex items-baseline justify-between">
-        <h2 className="m-0 font-display text-base uppercase">{t('How it works')}</h2>
-        <button onClick={close} className="min-h-10 px-1 text-sm font-semibold text-muted">{t('Got it')}</button>
-      </div>
-      <ol className="m-0 mt-2 flex list-none flex-col gap-3 p-0">
-        {steps.map(([title, text], i) => (
-          <li key={title} className="flex gap-3">
-            <span className="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-red font-display text-sm text-on-red">{i + 1}</span>
-            <span><strong className="block">{title}</strong><span className="text-sm text-muted">{text}</span></span>
-          </li>
-        ))}
-      </ol>
-      {onWeek && <button onClick={() => { close(); onWeek() }} className="mt-4 min-h-12 w-full rounded-full bg-surface-2 font-display text-sm uppercase">{t('Set my week')}</button>}
-    </section>
   )
 }
