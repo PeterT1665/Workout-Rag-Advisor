@@ -21,6 +21,14 @@ describe('match rating', () => {
     expect(matchRating({ ...base, goals: 9, assists: 9, us: 18, them: 0 })).toBe(10)
     expect(matchRating({ ...base, us: 0, them: 9, firstTouch: 1, position: 'defender' })).toBeGreaterThanOrEqual(3)
   })
+  test('a full futsal game is a full game: 40 of 40 rates like 90 of 90, 40 of 90 is boosted', () => {
+    const g = { ...base, us: 6, them: 4, goals: 3, keyPasses: 5, dribbles: 3, duels: 3, firstTouch: 8 }
+    expect(matchRating({ ...g, minutes: 40, length: 40 })).toBe(matchRating({ ...g, minutes: 90, length: 90 }))
+    expect(matchRating({ ...g, minutes: 40 })).toBeGreaterThan(matchRating({ ...g, minutes: 40, length: 40 }))
+    const r = matchRating({ ...g, minutes: 40, length: 40 })
+    expect(r).toBeGreaterThan(9)
+    expect(r).toBeLessThan(10)
+  })
 })
 
 describe('results streaks', () => {

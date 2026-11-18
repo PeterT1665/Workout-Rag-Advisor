@@ -1,8 +1,8 @@
-import { useState, type ReactNode } from 'react'
+import { useLayoutEffect, useRef, useState, type ReactNode } from 'react'
 import { Button, Panel, Screen, Title, TopBar } from '../components/ui'
 import { FlameIcon } from '../components/icons'
 import { POSITIONS, useProfile, type Position } from '../lib/profile'
-import { BAND_COLOR, loadMatches, matchRating, ratingBand, resultOf, resultStreaks, saveMatch, type MatchReview as Review } from '../lib/match'
+import { BAND_COLOR, gameLength, lastLength, loadMatches, matchRating, ratingBand, resultOf, resultStreaks, saveMatch, type MatchReview as Review } from '../lib/match'
 import { locale, t } from '../i18n'
 
 const fmtDay = (iso: string) => {
@@ -11,14 +11,16 @@ const fmtDay = (iso: string) => {
 }
 
 // − 2 + : big tap targets, no typing
-function Counter({ label, value, onChange, step = 1, max = 99 }: { label: string; value: number; onChange: (v: number) => void; step?: number; max?: number }) {
+function Counter({ label, value, onChange, step = 1, min = 0, max = 99, of }: { label: string; value: number; onChange: (v: number) => void; step?: number; min?: number; max?: number; of?: number }) {
   return (
     <div className="flex items-center justify-between gap-3 py-1.5">
       <span className="min-w-0 font-semibold">{label}</span>
       <span className="flex shrink-0 items-center gap-1">
-        <button type="button" aria-label={t('Less {what}', { what: label })} onClick={() => onChange(Math.max(0, value - step))}
+        <button type="button" aria-label={t('Less {what}', { what: label })} onClick={() => onChange(Math.max(min, value - step))}
           className="grid h-11 w-11 place-items-center rounded-full bg-surface-2 text-xl active:scale-95">−</button>
-        <span className="w-10 text-center font-display text-xl tabular-nums" aria-live="polite">{value}</span>
+        <span className={`${of ? 'min-w-16' : 'w-10'} text-center font-display text-xl tabular-nums`} aria-live="polite">
+          {value}{of !== undefined && <span className="text-base text-muted">/{of}</span>}
+        </span>
         <button type="button" aria-label={t('More {what}', { what: label })} onClick={() => onChange(Math.min(max, value + step))}
           className="grid h-11 w-11 place-items-center rounded-full bg-surface-2 text-xl active:scale-95">+</button>
       </span>
@@ -48,11 +50,23 @@ export function MatchReview({ date, onDone }: { date: string; onDone: () => void
   const me = useProfile()
   const old = loadMatches().find((m) => m.date === date)
   const [m, setM] = useState<Omit<Review, 'rating' | 'savedAt'>>(() => old ?? {
-    date, us: 0, them: 0, minutes: 90, position: me.positions[0] ?? 'midfielder',
+    date, us: 0, them: 0, minutes: lastLength(), length: lastLength(), position: me.positions[0] ?? 'midfielder',
     goals: 0, assists: 0, dribbles: 0, keyPasses: 0, duels: 0, firstTouch: 6, tiring: 6, self: 6, moments: '',
   })
   const [saved, setSaved] = useState<Review | null>(null)
   const set = (p: Partial<Review>) => setM((x) => ({ ...x, ...p }))
+  const length = gameLength(m)
+  // the game got longer or shorter: if you played all of it, you still did; never more than the game
+  const setLength = (v: number) => set({ length: v, minutes: m.minutes >= length ? v : Math.min(m.minutes, v) })
+  // the notes box grows with what you write, and the save bar steps aside while you type
+  const notes = useRef<HTMLTextAreaElement>(null)
+  const [typing, setTyping] = useState(false)
+  useLayoutEffect(() => {
+    const el = notes.current
+    if (!el) return
+    el.style.height = 'auto'
+    el.style.height = `${el.scrollHeight + 2}px`
+  }, [m.moments, saved])
 
   if (saved) return <MatchReport m={saved} onDone={onDone} fresh />
 
@@ -63,7 +77,7 @@ export function MatchReview({ date, onDone }: { date: string; onDone: () => void
   }
   const res = resultOf(m)
   return (
-    <Screen className="pb-32">
+    <Screen>
       <TopBar left={<Title>{t('Match review')}</Title>} right={<Button variant="ghost" size="sm" onClick={onDone}>{t('Later')}</Button>} />
       <p className="m-0 text-sm text-muted">{fmtDay(date)}</p>
 
@@ -74,7 +88,8 @@ export function MatchReview({ date, onDone }: { date: string; onDone: () => void
       </Section>
 
       <Section title={t('Your game')}>
-        <Counter label={t('Minutes played')} value={m.minutes} step={5} max={120} onChange={(v) => set({ minutes: v })} />
+        <Counter label={t('Game length (minutes)')} value={length} step={5} min={10} max={120} onChange={setLength} />
+        <Counter label={t('Minutes played')} value={Math.min(m.minutes, length)} of={length} step={5} max={length} onChange={(v) => set({ minutes: v })} />
         <div className="flex flex-wrap gap-2 py-1.5" role="radiogroup" aria-label={t('Position played')}>
           {POSITIONS.map((p) => (
             <button key={p.id} type="button" role="radio" aria-checked={m.position === p.id} onClick={() => set({ position: p.id as Position })}
@@ -98,11 +113,14 @@ export function MatchReview({ date, onDone }: { date: string; onDone: () => void
       </Section>
 
       <h2 className="mt-7 mb-2 font-display text-base uppercase">{t('Key moments')}</h2>
-      <textarea value={m.moments} onChange={(e) => set({ moments: e.target.value.slice(0, 1000) })} rows={4}
+      <textarea ref={notes} value={m.moments} onFocus={() => setTyping(true)} onBlur={() => setTimeout(() => setTyping(false), 200)} onChange={(e) => set({ moments: e.target.value.slice(0, 1000) })} rows={4}
         placeholder={t('The goal, the chance you missed, what to work on…')} aria-label={t('Key moments')}
-        className="w-full rounded-[20px] bg-surface p-4 text-base text-ink placeholder:text-muted" />
+        className="block min-h-32 w-full resize-none overflow-hidden rounded-[20px] bg-surface p-4 text-base text-ink placeholder:text-muted" />
 
-      <div className="fixed inset-x-0 bottom-0 z-30 bg-gradient-to-t from-bg via-bg to-transparent px-4 pt-6 pb-[max(16px,env(safe-area-inset-bottom))]">
+      {typing && <Button block className="mt-4" onClick={save}>{old ? t('Save changes') : t('Save and rate my match')}</Button>}
+      {/* room to scroll the notes clear of the save bar (Screen's own bottom padding wins over a pb- class) */}
+      <div aria-hidden="true" className="h-28" />
+      <div hidden={typing} className="fixed inset-x-0 bottom-0 z-30 bg-gradient-to-t from-bg via-bg to-transparent px-4 pt-6 pb-[max(16px,env(safe-area-inset-bottom))]">
         <Button block className="mx-auto max-w-xl" onClick={save}>{old ? t('Save changes') : t('Save and rate my match')}</Button>
       </div>
     </Screen>
@@ -111,8 +129,8 @@ export function MatchReview({ date, onDone }: { date: string; onDone: () => void
 
 export function RatingBadge({ value, size = 'lg' }: { value: number; size?: 'lg' | 'sm' }) {
   return (
-    <span className={`inline-grid place-items-center rounded-[14px] font-display tabular-nums text-white ${size === 'lg' ? 'h-24 w-28 text-5xl' : 'h-9 w-12 text-lg rounded-[10px]'}`}
-      style={{ background: BAND_COLOR[ratingBand(value)] }}>{value.toFixed(1)}</span>
+    <span className={`inline-grid shrink-0 place-items-center font-display tabular-nums ${size === 'lg' ? 'h-24 w-28 rounded-[14px] text-[44px]' : 'h-9 w-12 rounded-[10px] text-lg'}`}
+      style={{ background: BAND_COLOR[ratingBand(value)].bg, color: BAND_COLOR[ratingBand(value)].fg }}>{value >= 10 ? '10' : value.toFixed(1)}</span>
   )
 }
 
@@ -120,7 +138,7 @@ export function RatingBadge({ value, size = 'lg' }: { value: number; size?: 'lg'
 export function MatchReport({ m, onDone, onEdit, fresh = false }: { m: Review; onDone: () => void; onEdit?: () => void; fresh?: boolean }) {
   const res = resultOf(m)
   const streaks = resultStreaks(loadMatches())
-  const stats: [string, number][] = [[t('Goals'), m.goals], [t('Assists'), m.assists], [t('Dribbles'), m.dribbles], [t('Key passes'), m.keyPasses], [t('1v1s won'), m.duels], [t('Minutes'), m.minutes]]
+  const stats: [string, number | string][] = [[t('Goals'), m.goals], [t('Assists'), m.assists], [t('Dribbles'), m.dribbles], [t('Key passes'), m.keyPasses], [t('1v1s won'), m.duels], [t('Minutes played'), `${m.minutes}/${gameLength(m)}`]]
   return (
     <Screen className="pb-10">
       <TopBar left={<Title>{t('Match report')}</Title>} right={<Button variant="ghost" size="sm" onClick={onDone}>{t('Done')}</Button>} />
