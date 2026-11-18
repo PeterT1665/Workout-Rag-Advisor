@@ -145,3 +145,17 @@ Problems Peter hits while planning and training, and what was done about each.
 46. **A 6-minute session went in the log like a real one.**
     - Now: a session under 20 minutes never counts toward the streak, not even added to another short one. It stays in the log, greyed with "Under 20 min: doesn't count", and the full-time screen says so.
     - Skipping through a session no longer logs the skipped time: the log saves time actually trained (pauses and skipped drills don't count).
+
+## 18/11 (evening, on staging)
+
+47. **Match day: review every game, and the app rates it.**
+    - Game day, 9 am: a notification and a Home box ask **when you play** (kick-off and full time, prefilled from your last game).
+    - 15 minutes after full time (9 pm if no times): a notification, a **Match review** box on Home, and the centre ball turns into the review button. It stays open until the end of the next day.
+    - The review: score, minutes, position, goals, assists, dribbles completed, key passes, 1v1s won, first touch /10, how tiring /10, your own rating /10, key moments.
+    - The app's **match rating** (3.0-10.0, coloured like sports apps): starts at 6.0, goes up with what you did for your position, short games count more per minute, the result and first touch move it a little. A goal and an assist in a win ≈ 7.7; a busy game around them ≈ 8.7.
+    - Your last 5 games nudge the card's SHO, PAS, DRI, DEF and PHY by up to 3 points (pace stays from the rating session).
+    - **Winning streak** (a draw ends it) and **unbeaten** streak (a draw keeps it).
+    - Settings → Notifications has its own **Game days** switch.
+    - Needs migration 0009 and send-push redeployed.
+48. **Player tab → Performance.** A Player / Matches switch at the top: Player is the card, this week and the training log; Matches has the streaks, average rating and every match report.
+    - Tab labels now shrink to fit their space, so long words ("Performance", "Rendimiento", "Trang chủ") fit on every current iPhone in every language.

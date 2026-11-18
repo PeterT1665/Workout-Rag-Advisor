@@ -22,6 +22,8 @@ import { syncEnabled } from './lib/sync'
 import { cardStatsFor } from './lib/cardStats'
 import { overall } from './components/PlayerCard'
 import { TabBar, type Tab } from './components/TabBar'
+import { MatchReport, MatchReview } from './views/MatchReview'
+import { loadMatches, loadTimes, matchDay } from './lib/match'
 import { Tour, homeTour, tourDue } from './components/Tour'
 import { removeOldClips } from './lib/clips'
 import { openPhotos } from './lib/photos'
@@ -55,6 +57,8 @@ type Overlay =
   | { name: 'testday' }
   | { name: 'coach' }
   | { name: 'invite'; partner?: boolean; back?: Overlay }
+  | { name: 'match'; date: string; back?: Overlay }
+  | { name: 'matchReport'; date: string }
 
 // Make-up sessions for a missed day, by what the plan had: about 30 min at home, or recovery.
 const MAKEUP_PICKS: Record<string, string[]> = {
@@ -111,7 +115,7 @@ export default function App({ onSignUp, onSignIn }: { onSignUp?: () => void; onS
   useLayoutEffect(() => { window.scrollTo(0, 0) }, [tab, overlay?.name])
   // an app update may reload the page: hold it while a session, rating test or edit is open
   useEffect(() => { void refreshPush() }, []) // this phone still registered for notifications, in the app's language
-  useEffect(() => { setBusy(tour || ['preroll', 'player', 'testday', 'builder', 'profile', 'media'].includes(overlay?.name ?? '')) }, [overlay?.name, tour]) // the tour isn't cut off by an update either
+  useEffect(() => { setBusy(tour || ['preroll', 'player', 'testday', 'builder', 'profile', 'media', 'match'].includes(overlay?.name ?? '')) }, [overlay?.name, tour]) // the tour isn't cut off by an update either
 
   const updateSettings = (p: Partial<Settings>) => {
     const next = { ...settingsRef.current, ...p }
@@ -207,6 +211,24 @@ export default function App({ onSignUp, onSignIn }: { onSignUp?: () => void; onS
     const every = setInterval(() => { if (document.visibilityState === 'visible') publish() }, 180000)
     return () => clearInterval(every)
   }, [me, streak.days, streak.today])
+  // match day: the clock decides when the review opens, so look again every 30 s while the app is open
+  const [now, setNow] = useState(() => new Date())
+  useEffect(() => {
+    const every = setInterval(() => { if (document.visibilityState === 'visible') setNow(new Date()) }, 30000)
+    const back = () => { if (document.visibilityState === 'visible') setNow(new Date()) }
+    document.addEventListener('visibilitychange', back)
+    return () => { clearInterval(every); document.removeEventListener('visibilitychange', back) }
+  }, [])
+  const md = matchDay(now, games, loadTimes(), loadMatches())
+  const openReview = (date: string) => setOverlay({ name: 'match', date })
+  // a match-day notification opens the review (or Home, to set the times)
+  useEffect(() => {
+    const q = new URLSearchParams(location.search)
+    if (!q.has('match')) return
+    if (q.get('match') === 'review' && md?.state === 'review') openReview(md.date)
+    q.delete('match')
+    history.replaceState(null, '', `${location.pathname}${q.size ? `?${q}` : ''}${location.hash}`)
+  }, []) // eslint-disable-line react-hooks/exhaustive-deps
   const makeup = streak.makeup ? {
     missed: dayName(streak.makeup.date),
     by: streak.makeup.by === ymd(new Date()) ? t('tonight') : streak.makeup.by === ymd(new Date(Date.now() + 864e5)) ? t('tomorrow') : dayName(streak.makeup.by),
@@ -241,6 +263,13 @@ export default function App({ onSignUp, onSignIn }: { onSignUp?: () => void; onS
         return <SettingsView settings={settings} onChange={updateSettings} onMedia={() => setOverlay({ name: 'media', from: 'settings' })} onProfile={() => setOverlay({ name: 'profile' })} onInvite={() => setOverlay({ name: 'invite', back: { name: 'settings' } })} onTour={() => { close(); setTab('home'); setTour(true) }} onDone={close} />
       case 'invite':
         return <Invite partner={overlay.partner} onDone={() => (overlay.back ? setOverlay(overlay.back) : close())} />
+      case 'match':
+        return <MatchReview key={overlay.date} date={overlay.date} onDone={() => { setNow(new Date()); overlay.back ? setOverlay(overlay.back) : close() }} />
+      case 'matchReport': {
+        const m = loadMatches().find((x) => x.date === overlay.date)
+        if (!m) return null
+        return <MatchReport m={m} onDone={() => { close(); setTab('player') }} onEdit={() => setOverlay({ name: 'match', date: m.date, back: { name: 'matchReport', date: m.date } })} />
+      }
       case 'testday':
         return <TestDay onDone={close} />
       case 'profile':
@@ -266,6 +295,7 @@ export default function App({ onSignUp, onSignIn }: { onSignUp?: () => void; onS
           onPlayer={() => setTab('player')}
           streak={streak}
           makeup={makeup}
+          match={md ? { day: md, onReview: () => openReview(md.date), onChanged: () => setNow(new Date()) } : null}
           active={active ? { title: active.session.title, onResume: () => { unlockAudio(); if (settingsRef.current.earbudControls) beginRemote(active.session.title); started.current = false; beginSession(active.session, active.snap) }, onDiscard: () => { clearActive(); setActive(null) } } : null}
           dayKind={(day) => {
             const c = changeFor(day, changes)
@@ -276,10 +306,10 @@ export default function App({ onSignUp, onSignIn }: { onSignUp?: () => void; onS
         />
       )}
       {tab === 'week' && <WeekView today={today} games={games} sessions={sessions} library={library} changes={changes} onChange={changeDay} onGames={updateGames} onOpen={open} onCoach={() => setOverlay({ name: 'coach' })} />}
-      {tab === 'player' && <PlayerTab onTestDay={() => setOverlay({ name: 'testday' })} />}
+      {tab === 'player' && <PlayerTab onTestDay={() => setOverlay({ name: 'testday' })} onMatch={(date) => setOverlay({ name: 'matchReport', date })} />}
       {tab === 'team' && <TeamView streak={streak} onSignUp={onSignUp} onSignIn={onSignIn} onInvite={() => setOverlay({ name: 'invite' })} />}
       </div>
-      <TabBar tab={tab} onTab={setTab} onKickOff={() => onStart(today.session)} />
+      <TabBar tab={tab} onTab={setTab} review={md?.state === 'review'} onKickOff={() => (md?.state === 'review' ? openReview(md.date) : onStart(today.session))} />
       {tour && tab === 'home' && <Tour steps={homeTour()} onDone={() => setTour(false)} />}
     </>
   )

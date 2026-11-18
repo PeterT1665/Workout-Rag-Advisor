@@ -10,13 +10,86 @@ import { deleteHistory, loadHistory, type HistoryEntry } from '../lib/storage'
 import { STREAK_MIN } from '../lib/streak'
 import { KINDS, WeekChart, kindOf } from '../components/WeekChart'
 import { locale, t } from '../i18n'
+import { load, save } from '../lib/storage'
+import { loadMatches, resultOf, resultStreaks, type MatchReview } from '../lib/match'
+import { RatingBadge } from './MatchReview'
+import { FlameIcon } from '../components/icons'
 
 const fmtDate = (iso: string) => {
   const [y, m, d] = iso.split('-').map(Number)
   return new Date(y, m - 1, d).toLocaleDateString(locale(), { weekday: 'short', day: 'numeric', month: 'short' })
 }
 
-export function PlayerTab({ wide = false, onTestDay }: { wide?: boolean; onTestDay?: () => void }) {
+type Side = 'player' | 'matches'
+
+// Performance: your player (card, week, training log) and your matches (reviews, ratings, results streaks).
+export function PlayerTab({ wide = false, onTestDay, onMatch }: { wide?: boolean; onTestDay?: () => void; onMatch?: (date: string) => void }) {
+  const [side, setSideState] = useState<Side>(() => load<Side>('performance:side', 'player'))
+  const setSide = (v: Side) => { setSideState(v); save('performance:side', v) }
+  return (
+    <main className={wide ? 'px-10 pt-10 pb-12' : 'mx-auto max-w-xl px-4 pt-[max(20px,var(--sat))] pb-32'}>
+      <Title>{t('Performance')}</Title>
+      <div role="tablist" aria-label={t('Performance')} className="mt-3 grid grid-cols-2 rounded-full bg-surface p-1">
+        {([['player', t('Player')], ['matches', t('Matches')]] as const).map(([id, label]) => (
+          <button key={id} role="tab" aria-selected={side === id} onClick={() => setSide(id)}
+            className={`min-h-10 rounded-full font-display text-sm uppercase transition-colors duration-150 ${side === id ? 'bg-red text-on-red' : 'text-muted'}`}>{label}</button>
+        ))}
+      </div>
+      {side === 'player' ? <PlayerSide wide={wide} onTestDay={onTestDay} /> : <MatchesSide onMatch={onMatch} />}
+    </main>
+  )
+}
+
+function MatchesSide({ onMatch }: { onMatch?: (date: string) => void }) {
+  const matches = loadMatches().slice().reverse()
+  const streaks = resultStreaks(matches)
+  const avg = matches.length ? matches.reduce((a, m) => a + m.rating, 0) / matches.length : 0
+  const tally = (r: string) => matches.filter((m) => resultOf(m) === r).length
+  if (!matches.length) {
+    return <Panel className="mt-6"><p className="m-0 font-semibold">{t('No matches yet.')}</p><p className="m-0 mt-1 text-sm text-muted">{t('On a game day, Home asks when you play. After full time you review the match here, and the app rates it.')}</p></Panel>
+  }
+  return (
+    <>
+      <div className="mt-5 grid grid-cols-3 gap-2">
+        <div className="rounded-[16px] bg-surface p-3">
+          <p className="m-0 flex items-center gap-1 font-display text-2xl tabular-nums"><FlameIcon lit={streaks.wins > 0} className="h-5 w-5" />{streaks.wins}</p>
+          <p className="m-0 text-xs text-muted">{t('Winning streak')}</p>
+        </div>
+        <div className="rounded-[16px] bg-surface p-3">
+          <p className="m-0 font-display text-2xl tabular-nums">{streaks.unbeaten}</p>
+          <p className="m-0 text-xs text-muted">{t('Unbeaten')}</p>
+        </div>
+        <div className="rounded-[16px] bg-surface p-3">
+          <p className="m-0 font-display text-2xl tabular-nums">{avg.toFixed(1)}</p>
+          <p className="m-0 text-xs text-muted">{t('Average rating')}</p>
+        </div>
+      </div>
+      <p className="mt-2 text-sm text-muted">{matches.length === 1 ? t('1 game · {w} W · {d} D · {l} L', { w: tally('W'), d: tally('D'), l: tally('L') }) : t('{n} games · {w} W · {d} D · {l} L', { n: matches.length, w: tally('W'), d: tally('D'), l: tally('L') })}</p>
+      <SectionHead title={t('Matches')} />
+      <ul className="m-0 flex list-none flex-col gap-2 p-0">
+        {matches.map((m: MatchReview) => {
+          const r = resultOf(m)
+          return (
+            <li key={m.date}>
+              <button onClick={() => onMatch?.(m.date)} className="flex w-full items-center gap-3 rounded-[16px] bg-surface py-3 pr-3 pl-4 text-left active:scale-[0.99]">
+                <span className={`grid h-8 w-8 shrink-0 place-items-center rounded-full font-display text-sm ${r === 'W' ? 'bg-[#12a150] text-white' : r === 'L' ? 'bg-[#e2452b] text-white' : 'bg-surface-2'}`}>
+                  {r === 'W' ? t('W|win') : r === 'L' ? t('L|loss') : t('D|draw')}
+                </span>
+                <span className="min-w-0 flex-1">
+                  <span className="block font-semibold tabular-nums">{m.us}–{m.them}</span>
+                  <span className="text-sm text-muted">{fmtDate(m.date)}{m.goals || m.assists ? ` · ${t('{g} G, {a} A', { g: m.goals, a: m.assists })}` : ''}</span>
+                </span>
+                <RatingBadge value={m.rating} size="sm" />
+              </button>
+            </li>
+          )
+        })}
+      </ul>
+    </>
+  )
+}
+
+function PlayerSide({ wide, onTestDay }: { wide: boolean; onTestDay?: () => void }) {
   const bg = usePersonalImage('card.jpg')
   const me = useProfile()
   const stats = cardStatsFor(me)
@@ -30,8 +103,7 @@ export function PlayerTab({ wide = false, onTestDay }: { wide?: boolean; onTestD
     setVersion((v) => v + 1)
   }
   return (
-    <main className={wide ? 'px-10 pt-10 pb-12' : 'mx-auto max-w-xl px-4 pt-[max(20px,var(--sat))] pb-32'}>
-      <Title>{t('Player')}</Title>
+    <>
       <div className={wide ? 'grid grid-cols-[minmax(0,1.1fr)_minmax(0,1fr)] items-start gap-10' : ''}>
       <div>
       <div className="mx-auto mt-4 w-full max-w-[300px]">
@@ -73,6 +145,6 @@ export function PlayerTab({ wide = false, onTestDay }: { wide?: boolean; onTestD
           </ul>}
       </div>
       </div>
-    </main>
+    </>
   )
 }

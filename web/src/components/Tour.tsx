@@ -17,7 +17,7 @@ export const tourReset = () => { try { localStorage.removeItem(SEEN); localStora
 
 export const homeTour = (): TourStep[] => [
   { target: 'streak', title: t('Your streak'), text: t('Train on your plan days to keep the flame going. Tap it to open your training log.') },
-  { target: 'player', title: t('Your player card'), text: t('Your rating, stats and training log. Take the rating test to get your score.') },
+  { target: 'player', title: t('Performance'), text: t('Your player card, rating and training log. Switch to Matches for your match reviews and results streaks.') },
   { target: 'week', title: t('Your week'), text: t('Tap your game days and the week plans itself around them. Change any day you like.') },
   { target: 'kickoff', title: t('Kick off'), text: t("Starts today's session. Turn the volume up: every drill is called out loud.") },
   { target: 'team', title: t('Team'), text: t("Add friends with your QR code and see who's training.") },

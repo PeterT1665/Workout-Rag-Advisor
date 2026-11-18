@@ -13,15 +13,15 @@ const WHY: Partial<Record<PushState, string>> = {
 // Settings: rest-over call-backs and the Sunday reminder.
 export function NotificationSettings() {
   const [state, setState] = useState<PushState>(pushState)
-  const [prefs, setP] = useState<Prefs>({ rest_alerts: true, weekly: true })
+  const [prefs, setP] = useState<Prefs>({ rest_alerts: true, weekly: true, matches: true })
   const [busy, setBusy] = useState(false)
-  useEffect(() => { if (state === 'on') void getPrefs().then((p) => p && setP(p)) }, [state])
+  useEffect(() => { if (state === 'on') void getPrefs().then((p) => p && setP({ ...p, matches: p.matches ?? true })) }, [state])
 
   const change = async (p: Partial<Prefs>) => {
     const next = { ...prefs, ...p }
     setP(next)
     if (state === 'on') {
-      if (!next.rest_alerts && !next.weekly) { await disablePush(); setState(pushState()) }
+      if (!next.rest_alerts && !next.weekly && next.matches === false) { await disablePush(); setState(pushState()) }
       else await setPrefs(p)
       return
     }
@@ -37,6 +37,7 @@ export function NotificationSettings() {
         : <>
             <Toggle id="n-rest" label={t('Rest is over: call me back if I leave the app')} checked={state === 'on' && prefs.rest_alerts} onChange={(v) => void change({ rest_alerts: v })} />
             <Toggle id="n-week" label={t('Sunday evening: plan next week')} checked={state === 'on' && prefs.weekly} onChange={(v) => void change({ weekly: v })} />
+            <Toggle id="n-match" label={t('Game days: when do you play, then rate your match')} checked={state === 'on' && prefs.matches !== false} onChange={(v) => void change({ matches: v })} />
             {busy && <p className="m-0 text-sm text-muted">{t('Asking your phone…')}</p>}
             {state === 'on' && __TEST_TOOLS__ && <TestButton />}
           </>}

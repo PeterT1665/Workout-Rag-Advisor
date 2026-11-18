@@ -41,10 +41,10 @@ const b64 = (s: string) => {
 }
 const swReady = () => Promise.race([navigator.serviceWorker.ready, new Promise<null>((r) => setTimeout(() => r(null), 6000))])
 
-export type Prefs = { rest_alerts: boolean; weekly: boolean }
+export type Prefs = { rest_alerts: boolean; weekly: boolean; matches?: boolean }
 
 // Ask permission (must run inside a tap), subscribe this device, and save it to the account.
-export async function enablePush(prefs: Prefs = { rest_alerts: true, weekly: true }): Promise<PushState> {
+export async function enablePush(prefs: Prefs = { rest_alerts: true, weekly: true, matches: true }): Promise<PushState> {
   const state = pushState()
   if (state !== 'off' && state !== 'on') return state
   try {
@@ -61,7 +61,7 @@ export async function enablePush(prefs: Prefs = { rest_alerts: true, weekly: tru
       tz: Intl.DateTimeFormat().resolvedOptions().timeZone || 'UTC', ...prefs,
     }
     let { error } = await sb.from('push_subscriptions').upsert({ ...row, lang: currentLang() })
-    if (error && /lang/.test(error.message)) ({ error } = await sb.from('push_subscriptions').upsert(row)) // before migration 0008
+    if (error && /lang|matches/.test(error.message)) { const { matches: _m, ...older } = row; void _m; ({ error } = await sb.from('push_subscriptions').upsert(older)) } // before migration 0009
     if (error) return 'unsupported'
     setFlag(true)
     try { localStorage.setItem(ENDPOINT, j.endpoint) } catch { /* ignore */ }
@@ -89,7 +89,7 @@ export async function getPrefs(): Promise<Prefs | null> {
     const sub = await reg?.pushManager.getSubscription()
     if (!sub) return null
     const sb = await supabase()
-    const { data } = await sb.from('push_subscriptions').select('rest_alerts, weekly').eq('endpoint', sub.endpoint).maybeSingle()
+    const { data } = await sb.from('push_subscriptions').select('*').eq('endpoint', sub.endpoint).maybeSingle()
     return (data as Prefs | null) ?? null
   } catch { return null }
 }
@@ -160,6 +160,15 @@ export function cancelRest() {
     } catch { /* ignore */ }
   })
 }
+// Match day: "rate your match" 15 minutes after full time, while it's fresh. Booked when you enter your times.
+export async function scheduleMatch(date: string, at: number) {
+  if (!pushOn()) return
+  try {
+    const sb = await supabase()
+    await sb.rpc('schedule_match_push', { p_at: new Date(at).toISOString(), p_day: date, p_title: t('Full time. Rate your match'), p_body: t('Goals, assists, key moments: two minutes while it\'s fresh, and the app rates your match.') })
+  } catch { /* offline: the 9 pm reminder still comes */ }
+}
+
 // Settings: a test notification in a few seconds, so you can lock the phone and see it arrive.
 export async function sendTest(): Promise<boolean> {
   if (!pushOn()) return false

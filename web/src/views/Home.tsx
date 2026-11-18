@@ -15,6 +15,8 @@ import { CATEGORY_LABELS, drillPhoto } from '../lib/library'
 import { DAY_ABBR, DAY_SHORT, FOCUS_LABEL, type SlotKind } from '../lib/weekplan'
 import { locale, t } from '../i18n'
 import type { Today } from '../lib/today'
+import type { MatchDay } from '../lib/match'
+import { MatchDayBox } from '../components/MatchDayBox'
 import type { Block, Session } from '../lib/types'
 
 type Props = {
@@ -29,6 +31,7 @@ type Props = {
   dayKind?: (day: number) => string | null | undefined // hand-changed day: session type, null = rest, undefined = unchanged
   streak?: Streak
   makeup?: { missed: string; by: string; picks: Session[] } | null // a missed day that can still be made up
+  match?: { day: MatchDay; onReview: () => void; onChanged: () => void } | null // game day: times, then the review
 }
 
 const SLOT_LABEL = (): Record<SlotKind, string> => ({ game: t('Game day'), football: t('Football'), gym: t('Gym'), recovery: t('Recovery'), cheer: 'Cheer' }) // i18n-ignore: old cheer mode
@@ -202,6 +205,7 @@ export function Home(p: Props) {
   return (
     <main className="mx-auto max-w-xl px-4 pb-32">
       <Hero today={p.today} onKickOff={p.onKickOff} onOpen={p.onOpen} onSettings={p.onSettings} onCustomise={p.onAddClips} streak={p.streak} onStreak={p.onPlayer} />
+      {p.match && <MatchDayBox key={`${p.match.day.date}-${p.match.day.state}`} day={p.match.day} onReview={p.match.onReview} onChanged={p.match.onChanged} />}
       {p.active && (
         <section aria-label={t('Unfinished session')} className="rise mt-6 flex items-center gap-3 rounded-[22px] border border-red/50 bg-surface p-4">
           <div className="min-w-0 flex-1">

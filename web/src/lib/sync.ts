@@ -6,7 +6,7 @@ import { supabase } from './supabase'
 import { PHOTO_SLOTS, clearPhotos } from './photos'
 import { t } from '../i18n'
 
-export const SYNC_KEYS = ['history', 'games', 'settings', 'quotes', 'mySessions', 'profile', 'weekPlan', 'videos'] as const
+export const SYNC_KEYS = ['history', 'games', 'settings', 'quotes', 'mySessions', 'profile', 'weekPlan', 'videos', 'matches', 'matchTimes'] as const
 type Key = (typeof SYNC_KEYS)[number]
 type Row = { key: string; value: unknown; updated_at: number }
 
