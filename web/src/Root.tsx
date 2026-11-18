@@ -12,6 +12,7 @@ import { SAMPLE_PROFILE, applyAccent, getProfile, hasProfile, reloadProfile, set
 import { saveGames } from './lib/today'
 import { acceptPendingInvite, inviteSeen, pendingInvite } from './lib/invite'
 import { FriendInvite } from './views/FriendInvite'
+import { tourReset } from './components/Tour'
 
 applyAccent(getProfile().accent)
 
@@ -60,7 +61,7 @@ function Main() {
   // a friend's QR, not signed in yet: who invited you, then sign up or sign in
   if (mode === 'guest' && invite && accountsEnabled) return <FriendInvite onSignUp={auth('signup')} onSignIn={auth('signin')} onSkip={() => setInvite(false)} />
   if (mode === 'guest') return <Guest onSignIn={accountsEnabled ? auth('signin') : undefined} onSignUp={accountsEnabled ? auth('signup') : undefined} />
-  if (!profiled) return <Onboarding onDone={(p, games) => { saveGames(games); setProfile(p); setProfiled(true) }} />
+  if (!profiled) return <Onboarding onDone={(p, games) => { tourReset(); saveGames(games); setProfile(p); setProfiled(true) }} />
   return <App />
 }
 
@@ -75,8 +76,8 @@ function Guest({ onSignIn, onSignUp }: { onSignIn?: () => void; onSignUp?: () =>
   if (!ready) {
     return (
       <Onboarding welcome onSignIn={onSignIn}
-        onSample={() => { setProfile(SAMPLE_PROFILE); seedDemo(new Date(), true); setReady(true) }}
-        onDone={(p, games) => { startOwnDemo(games); setProfile(p); setNext(!!onSignUp || canInstall()); setReady(true) }} />
+        onSample={() => { tourReset(); setProfile(SAMPLE_PROFILE); seedDemo(new Date(), true); setReady(true) }}
+        onDone={(p, games) => { tourReset(); startOwnDemo(games); setProfile(p); setNext(!!onSignUp || canInstall()); setReady(true) }} />
     )
   }
   if (next) return <NextSteps name={getProfile().name} onSignUp={onSignUp} onDone={() => setNext(false)} />
@@ -89,7 +90,7 @@ function WelcomePreview() {
   const enter = () => { location.href = '/?app=1' }
   return (
     <Onboarding welcome onSignIn={accountsEnabled ? enter : undefined}
-      onSample={() => { setProfile(SAMPLE_PROFILE); seedDemo(new Date(), true); enter() }}
-      onDone={(p, games) => { startOwnDemo(games); setProfile(p); enter() }} />
+      onSample={() => { tourReset(); setProfile(SAMPLE_PROFILE); seedDemo(new Date(), true); enter() }}
+      onDone={(p, games) => { tourReset(); startOwnDemo(games); setProfile(p); enter() }} />
   )
 }

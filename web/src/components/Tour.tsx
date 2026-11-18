@@ -12,6 +12,8 @@ const SEEN = 'tour:seen'
 // New players only: anyone who already closed the old "How it works" card has found their way around.
 export const tourDue = () => !load<boolean>(SEEN, false) && !load<boolean>('intro:seen', false)
 export const tourDone = () => save(SEEN, true)
+// A new player (sample or your own) gets the tour again, even on a phone that has used the app before.
+export const tourReset = () => { try { localStorage.removeItem(SEEN); localStorage.removeItem('intro:seen') } catch { /* ignore */ } }
 
 export const homeTour = (): TourStep[] => [
   { target: 'streak', title: t('Your streak'), text: t('Train on your plan days to keep the flame going. Tap it to open your training log.') },
@@ -54,7 +56,7 @@ export function Tour({ steps, onDone }: { steps: TourStep[]; onDone: () => void 
     if (!step) return
     const el = document.querySelector<HTMLElement>(`[data-tour="${step.target}"]`)
     const b = el?.getBoundingClientRect()
-    if (el && b && (b.top < 0 || b.bottom > window.innerHeight - 90)) el.scrollIntoView({ block: 'center' })
+    if (el && b && !el.closest('nav') && (b.top < 0 || b.bottom > window.innerHeight - 90)) el.scrollIntoView({ block: 'center' })
     const m = measure(step.target)
     if (m) setBox(m)
     else advance()
