@@ -10,7 +10,11 @@ const SITE = process.env.WORKERS_CI_BRANCH === 'staging'
   ? 'https://staging-football-personal-coach.ducphu1665.workers.dev'
   : 'https://football-personal-coach.ducphu1665.workers.dev'
 
+// Testing tools (the "Send a test" notification) only outside production: production builds from main.
+const PRODUCTION = process.env.WORKERS_CI_BRANCH === 'main'
+
 export default defineConfig({
+  define: { __TEST_TOOLS__: JSON.stringify(!PRODUCTION) },
   plugins: [
     { name: 'site-url', transformIndexHtml: (html) => html.replaceAll('%SITE%', SITE) },
     react(),

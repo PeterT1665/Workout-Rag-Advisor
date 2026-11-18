@@ -38,7 +38,7 @@ export function NotificationSettings() {
             <Toggle id="n-rest" label={t('Rest is over: call me back if I leave the app')} checked={state === 'on' && prefs.rest_alerts} onChange={(v) => void change({ rest_alerts: v })} />
             <Toggle id="n-week" label={t('Sunday evening: plan next week')} checked={state === 'on' && prefs.weekly} onChange={(v) => void change({ weekly: v })} />
             {busy && <p className="m-0 text-sm text-muted">{t('Asking your phone…')}</p>}
-            {state === 'on' && <TestButton />}
+            {state === 'on' && __TEST_TOOLS__ && <TestButton />}
           </>}
     </Panel>
   )
