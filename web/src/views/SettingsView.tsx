@@ -26,7 +26,7 @@ export function SettingsView({ settings: s, onChange, onMedia, onProfile, onInvi
       </Panel>
       <Button block className="mb-6" onClick={onInvite}>{t('Invite a friend')}</Button>
       <h2 className="mb-3 font-display text-lg uppercase">{t('Language')}</h2>
-      <div className="mb-6"><LanguagePicker /></div>
+      <div className="mb-6"><LanguagePicker back="settings" /></div>
       <Panel className="flex flex-col gap-4">
         <Toggle id="voice" label={t('Spoken announcements and cues')} checked={s.voice} onChange={(v) => onChange({ voice: v })} />
         <Toggle id="earbuds" label={t('AirPods control the session (press to pause, double-press to skip). Stops your music.')} checked={s.earbudControls} onChange={(v) => onChange({ earbudControls: v })} />

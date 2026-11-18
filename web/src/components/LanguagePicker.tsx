@@ -8,7 +8,7 @@ const Globe = () => (
 )
 
 // The app's language: the phone's own picker (a native list), then the app reloads in that language.
-export function LanguagePicker({ compact = false }: { compact?: boolean }) {
+export function LanguagePicker({ compact = false, back }: { compact?: boolean; back?: string }) {
   const now = currentLang()
   const name = LANGS.find((l) => l.id === now)!.name
   return (
@@ -18,7 +18,7 @@ export function LanguagePicker({ compact = false }: { compact?: boolean }) {
       <Globe />
       <span className={compact ? '' : 'flex-1'}>{compact ? now.toUpperCase() : name}</span>
       {!compact && <span className="text-sm text-muted">{t('Change')}</span>}
-      <select aria-label={t('Language')} value={now} onChange={(e) => setLang(e.target.value as Lang)}
+      <select aria-label={t('Language')} value={now} onChange={(e) => setLang(e.target.value as Lang, back)}
         className="absolute inset-0 h-full w-full cursor-pointer opacity-0">
         {LANGS.map((l) => <option key={l.id} value={l.id}>{l.name}</option>)}
       </select>

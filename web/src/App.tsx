@@ -38,7 +38,7 @@ import { DEFAULT_GYM } from './lib/weekplan'
 import { changeFor, changedSession, loadWeekChanges, saveWeekChange, type DayChange } from './lib/weekChanges'
 import type { Game } from './lib/weekplan'
 import type { Session, Settings } from './lib/types'
-import { locale, t } from './i18n'
+import { langBack, locale, t } from './i18n'
 
 const sessions = BUILTIN_SESSIONS // the week planner picks from the recommended sessions
 
@@ -68,10 +68,18 @@ const dayName = (date: string) => { const d = new Date(`${date}T12:00:00`).toLoc
 export default function App({ onSignUp, onSignIn }: { onSignUp?: () => void; onSignIn?: () => void } = {}) {
   // a notification can open a tab directly ("plan next week" opens the week)
   const [tab, setTab] = useState<Tab>(() => (typeof location !== 'undefined' && new URLSearchParams(location.search).get('tab') === 'week' ? 'week' : 'home'))
-  const [overlay, setOverlay] = useState<Overlay | null>(null)
+  // just switched language: reopen Settings where you were, fading in from the switch
+  const [back] = useState(langBack)
+  const [overlay, setOverlay] = useState<Overlay | null>(() => (back?.screen === 'settings' ? { name: 'settings' } : null))
+  const [cover, setCover] = useState(!!back)
+  const restored = useRef(overlay) // that Settings screen comes in under the fade, without its slide
+  useEffect(() => {
+    if (!back) return
+    requestAnimationFrame(() => { window.scrollTo(0, back.y); requestAnimationFrame(() => setCover(false)) })
+  }, [back])
   const [tour, setTour] = useState(false) // first-run tour of the buttons
   useEffect(() => {
-    if (!tourDue()) return
+    if (!tourDue() || new URLSearchParams(location.search).has('preview')) return // not in the laptop page's showcase phones
     const go = setTimeout(() => setTour(true), 900) // after Home has come in
     return () => clearTimeout(go)
   }, [])
@@ -205,10 +213,11 @@ export default function App({ onSignUp, onSignIn }: { onSignUp?: () => void; onS
     picks: (MAKEUP_PICKS[streak.makeup.kind] ?? MAKEUP_PICKS.session).map((id) => library.find((s) => s.id === id)).filter((s): s is Session => !!s),
   } : null
 
+  const fade = back && <div aria-hidden="true" className={`pointer-events-none fixed inset-0 z-[100] bg-bg transition-opacity duration-200 ease-out ${cover ? 'opacity-100' : 'opacity-0'}`} />
   if (overlay) {
     // full-screen moments (kick-off, player) bring their own entrance
     if (overlay.name === 'preroll' || overlay.name === 'player') return renderOverlay(overlay)
-    return <div key={overlay.name} className="screen-in">{renderOverlay(overlay)}</div>
+    return <div key={overlay.name} className={overlay === restored.current ? '' : 'screen-in'}>{renderOverlay(overlay)}{fade}</div>
   }
 
   function renderOverlay(overlay: Overlay) {

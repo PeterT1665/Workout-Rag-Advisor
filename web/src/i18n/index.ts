@@ -46,9 +46,25 @@ export async function initLang(l: Lang = chosenLang()) {
 export const currentLang = () => lang
 
 // Switch language: save it and reload, so every screen, the library and the voice come back in it.
-export function setLang(l: Lang) {
+// Switching reloads the app in the new language. A quick fade covers the reload and the app comes back
+// where you were (back = the screen to reopen, e.g. 'settings', at the same scroll).
+export const LANG_BACK = 'lang:back'
+export function setLang(l: Lang, back?: string) {
   try { localStorage.setItem(KEY, l) } catch { /* ignore */ }
-  location.reload()
+  try { if (back) sessionStorage.setItem(LANG_BACK, JSON.stringify({ screen: back, y: Math.round(window.scrollY) })) } catch { /* ignore */ }
+  const cover = document.createElement('div')
+  cover.style.cssText = 'position:fixed;inset:0;z-index:100;background:var(--bg);opacity:0;transition:opacity 160ms ease-out'
+  document.body.append(cover)
+  requestAnimationFrame(() => { cover.style.opacity = '1' })
+  setTimeout(() => location.reload(), 180)
+}
+// Where to come back to after a language switch (read once).
+export function langBack(): { screen: string; y: number } | null {
+  try {
+    const v = sessionStorage.getItem(LANG_BACK)
+    sessionStorage.removeItem(LANG_BACK)
+    return v ? JSON.parse(v) : null
+  } catch { return null }
 }
 export const voiceLang = () => LANGS.find((l) => l.id === lang)!.voice
 // For dates and numbers shown to the player (storage keys keep their fixed formats).
