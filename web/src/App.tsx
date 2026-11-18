@@ -29,7 +29,7 @@ import { setBusy } from './lib/updates'
 import { attachRemote, beginRemote, endRemote } from './lib/remote'
 import { clearActive, loadActive, saveActive } from './lib/activeSession'
 import { beep, realAudio, unlockAudio } from './lib/audio'
-import { createPlayer, type Player, type Snapshot } from './lib/player'
+import { createPlayer, trainedMinutes, type Player, type Snapshot } from './lib/player'
 import { nextQuote } from './lib/quotes'
 import { addHistory, loadHistory, loadSettings, save } from './lib/storage'
 import { loadGames, planToday, saveGames, withChange } from './lib/today'
@@ -130,10 +130,10 @@ export default function App({ onSignUp, onSignIn }: { onSignUp?: () => void; onS
       onFinish: (st) => {
         clearActive()
         setActive(null)
-        // training time actually covered (pauses and breaks don't count)
+        // training time actually done (pauses and skipped drills don't count)
         addHistory({
           id: session.id, title: session.title, type: session.type, date: new Date().toLocaleDateString('en-CA'),
-          minutes: Math.max(1, Math.round(st.elapsed / 60)),
+          minutes: trainedMinutes(st),
           drills: st.drillsDone, cues: st.cuesCalled,
         })
       },

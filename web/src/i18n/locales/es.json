@@ -705,6 +705,8 @@
  "Turn on": "Activar",
  "Two games this week, Monday and Wednesday. Plan it.": "Dos partidos esta semana, lunes y miércoles. Planifícala.",
  "Two markers 20 m apart (about 26 big steps).": "Dos marcas a 20 m (unos 26 pasos largos).",
+ "Under {n} min: doesn't count": "Menos de {n} min: no cuenta",
+ "Under {n} min: it's in your log, but it doesn't count toward your streak.": "Menos de {n} min: queda en tu registro, pero no cuenta para tu racha.",
  "Unfinished session": "Sesión sin terminar",
  "Up next": "A continuación",
  "Upper": "Superior",

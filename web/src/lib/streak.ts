@@ -1,6 +1,6 @@
 // Plan streak (like Duolingo's): days in a row you kept to the week plan.
 // - A planned training day is kept by STREAK_MIN+ minutes of any training that day (no pitch? gym. No gym? home.
-//   Nothing proper? recovery). A 5-minute session doesn't keep it.
+//   Nothing proper? recovery). A shorter session never counts, not even two of them together.
 // - Rest days, game days and days changed to rest keep it too.
 // - A missed training day can be made up: an extra session (STREAK_MIN+ minutes) within the next MAKEUP_DAYS days,
 //   on top of that day's own plan (or on a rest day). Each extra session makes up one missed day.
@@ -44,13 +44,12 @@ export function planStreak(history: HistoryEntry[], games: Game[], gym: number, 
     const key = ymd(d)
     const done = byDate.get(key) ?? []
     const plan = planned(d)
-    // a training day needs STREAK_MIN minutes (longest sessions first); any other session of STREAK_MIN+ minutes is extra
-    const ordered = [...done].sort((a, b) => b.minutes - a.minutes)
-    let need = plan ? STREAK_MIN : 0
-    let used = 0
-    while (need > 0 && used < ordered.length) need -= ordered[used++].minutes
-    const enough = need <= 0
-    const extra = ordered.slice(used).filter((h) => h.minutes >= STREAK_MIN)
+    // only sessions of STREAK_MIN+ minutes count (short ones never do, not even added together):
+    // one keeps a training day, any other is extra
+    const real = done.filter((h) => h.minutes >= STREAK_MIN)
+    const used = plan && real.length ? 1 : 0
+    const enough = !plan || used === 1
+    const extra = real.slice(used)
     extra.forEach(() => {
       // each extra session makes up the oldest missed day still inside its window
       const open = missed.find((m) => !madeUp.has(m) && key <= ymd(addDays(new Date(`${m}T12:00:00`), MAKEUP_DAYS)))

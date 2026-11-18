@@ -7,6 +7,7 @@ import { CropSheet } from '../components/CropSheet'
 import { useProfile } from '../lib/profile'
 import { useState } from 'react'
 import { deleteHistory, loadHistory, type HistoryEntry } from '../lib/storage'
+import { STREAK_MIN } from '../lib/streak'
 import { KINDS, WeekChart, kindOf } from '../components/WeekChart'
 import { locale, t } from '../i18n'
 
@@ -57,11 +58,12 @@ export function PlayerTab({ wide = false, onTestDay }: { wide?: boolean; onTestD
         ? <Panel><p className="m-0 text-muted">{t('No sessions yet.')}</p></Panel>
         : <ul className="m-0 flex list-none flex-col gap-2 p-0">
             {history.slice(0, 20).map((h, i) => (
-              <li key={`${h.date}-${h.id}-${i}`} className="flex items-center justify-between gap-3 rounded-[16px] bg-surface py-3 pr-2 pl-4">
+              <li key={`${h.date}-${h.id}-${i}`} className={`flex items-center justify-between gap-3 rounded-[16px] bg-surface py-3 pr-2 pl-4 ${h.minutes < STREAK_MIN ? 'opacity-60' : ''}`}>
                 <span className="h-8 w-1 shrink-0 rounded-full" style={{ background: KINDS.find((k) => k.id === kindOf(h))!.color }} aria-hidden="true" />
                 <span className="min-w-0 flex-1">
                   <span className="block truncate font-semibold">{t(h.title)}</span>
                   <span className="text-sm text-muted">{fmtDate(h.date)} · {t('{n} min', { n: h.minutes })}{h.rpe ? ` · ${t('effort {n}', { n: h.rpe })}` : ''}{h.sore?.length ? ` · ${t('sore: {list}', { list: h.sore.map((x) => t(x)).join(', ').toLowerCase() })}` : ''}</span>
+                  {h.minutes < STREAK_MIN && <span className="mt-1 inline-block rounded-full bg-surface-2 px-2 py-0.5 text-xs font-semibold text-muted">{t("Under {n} min: doesn't count", { n: STREAK_MIN })}</span>}
                 </span>
                 {h.load ? <span className="shrink-0 text-right"><span className="block font-display text-lg leading-none">{h.load}</span><span className="text-xs text-muted">{t('load')}</span></span> : null}
                 <button onClick={() => remove(h)} aria-label={t('Delete {title} on {date}', { title: t(h.title), date: fmtDate(h.date) })}

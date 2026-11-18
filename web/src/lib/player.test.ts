@@ -29,6 +29,21 @@ beforeEach(() => { vi.useFakeTimers() })
 afterEach(() => { vi.useRealTimers() })
 
 describe('player engine', () => {
+  test('the log gets time actually trained: pauses and skipped drills do not count', () => {
+    const { deps } = fakeAudio()
+    let t0 = 0
+    const p = createPlayer(session, { audio: deps, getSettings: settings(), now: () => t0 })
+    p.start()
+    t0 += 2000; p.togglePause() // 2 s trained, then paused
+    t0 += 60000; p.togglePause() // a minute paused: not training
+    t0 += 1000
+    p.skip(); p.skip(); p.skip(); p.skip(); p.skip(); p.skip() // skip straight through to the end
+    const st = p.getState()
+    expect(st.finished).toBe(true)
+    expect(st.elapsed).toBe(st.total) // the plan counts as covered...
+    expect(st.trained).toBe(3) // ...but only 3 seconds were trained
+  })
+
   test('runs the steps in order and finishes', () => {
     const { deps, log } = fakeAudio()
     const onFinish = vi.fn()

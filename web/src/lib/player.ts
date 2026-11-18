@@ -10,7 +10,8 @@ export type PlayerState = {
   i: number
   running: boolean
   remainingMs: number
-  elapsed: number // seconds of planned time already covered
+  elapsed: number // seconds of planned time already covered (skipped steps included)
+  trained: number // seconds the session actually ran (not paused): what the log saves, so skipping through isn't training
   total: number
   cue: Direction | null
   cueKey: number
@@ -31,9 +32,12 @@ export type PlayerOptions = {
 }
 
 // Enough to pick a session up again after a reload (see lib/activeSession.ts).
-export type Snapshot = { i: number; remainingMs: number; startedAt: number; cuesCalled: number; drills: number[] }
+export type Snapshot = { i: number; remainingMs: number; startedAt: number; cuesCalled: number; drills: number[]; trainedMs?: number }
 
 export type Player = ReturnType<typeof createPlayer>
+
+// Minutes for the log and the full-time screen: time actually trained, never the time skipped past.
+export const trainedMinutes = (st: PlayerState) => Math.max(1, Math.round(st.trained / 60))
 
 const TICK_MS = 150
 const CUE_SHOW_MS = 1100
@@ -45,7 +49,7 @@ export function createPlayer(session: Session, opts: PlayerOptions) {
   let steps = flattenSession(session)
 
   let state: PlayerState = {
-    steps, i: -1, running: false, remainingMs: 0, elapsed: 0, total: totalSeconds(steps),
+    steps, i: -1, running: false, remainingMs: 0, elapsed: 0, trained: 0, total: totalSeconds(steps),
     cue: null, cueKey: 0, finished: false, startedAt: opts.resume?.startedAt ?? now(), cuesCalled: opts.resume?.cuesCalled ?? 0, drillsDone: 0, setMs: 0,
   }
   let endAt = 0
@@ -56,6 +60,12 @@ export function createPlayer(session: Session, opts: PlayerOptions) {
   let timers: ReturnType<typeof setTimeout>[] = []
   const cueHistory: Direction[] = []
   const drillsSeen = new Set<number>(opts.resume?.drills ?? [])
+  // real training time: counts while running, stops on pause
+  let trainedMs = opts.resume?.trainedMs ?? 0
+  let runFrom: number | null = null
+  const clockOn = () => { if (runFrom === null) runFrom = now() }
+  const clockOff = () => { if (runFrom !== null) { trainedMs += now() - runFrom; runFrom = null } }
+  const trainedNow = () => trainedMs + (runFrom === null ? 0 : now() - runFrom)
   const listeners = new Set<() => void>()
 
   const set = (patch: Partial<PlayerState>) => {
@@ -110,6 +120,7 @@ export function createPlayer(session: Session, opts: PlayerOptions) {
     endAt = now() + remainingMs
     setStart = now(); setDone = 0
     lastBeepSec = null
+    clockOn()
     set({ i, running: true, remainingMs, elapsed: elapsedAt(i, remainingMs), cue: null, setMs: 0 })
     announce(i)
     if (s.type === 'work' && s.cue) scheduleCues(s.seconds, 3)
@@ -139,10 +150,12 @@ export function createPlayer(session: Session, opts: PlayerOptions) {
       clearTimers()
       const paced = selfPaced(steps[state.i])
       if (paced) setDone += now() - setStart
+      clockOff()
       set({ running: false, remainingMs: paced ? state.remainingMs : endAt - now(), cue: null })
     } else {
       endAt = now() + state.remainingMs
       setStart = now()
+      clockOn()
       set({ running: true })
       const s = steps[state.i]
       if (s.type === 'work' && s.cue) scheduleCues(state.remainingMs / 1000, 2)
@@ -153,8 +166,9 @@ export function createPlayer(session: Session, opts: PlayerOptions) {
   function finish(early = false) {
     if (tick) clearInterval(tick)
     clearTimers()
+    clockOff()
     audio.say(t('Session complete. Nice work.'))
-    set({ finished: true, running: false, cue: null, elapsed: early ? state.elapsed : state.total, remainingMs: 0, drillsDone: drillsSeen.size })
+    set({ finished: true, running: false, cue: null, elapsed: early ? state.elapsed : state.total, trained: Math.round(trainedMs / 1000), remainingMs: 0, drillsDone: drillsSeen.size })
     onFinish?.(state)
   }
 
@@ -174,7 +188,7 @@ export function createPlayer(session: Session, opts: PlayerOptions) {
     },
     snapshot: (): Snapshot => ({
       i: state.i, remainingMs: state.running ? Math.max(0, endAt - now()) : state.remainingMs,
-      startedAt: state.startedAt, cuesCalled: state.cuesCalled, drills: [...drillsSeen],
+      startedAt: state.startedAt, cuesCalled: state.cuesCalled, drills: [...drillsSeen], trainedMs: trainedNow(),
     }),
     endEarly: () => finish(true),
     getSession: () => session,

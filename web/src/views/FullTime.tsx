@@ -1,8 +1,9 @@
 import { useEffect, useState } from 'react'
 import { loadHistory, reflectLast, weekLoads, type Legs } from '../lib/storage'
-import type { PlayerState } from '../lib/player'
+import { trainedMinutes, type PlayerState } from '../lib/player'
 import type { Session } from '../lib/types'
 import { AnimateDigits } from '../components/AnimateDigits'
+import { STREAK_MIN } from '../lib/streak'
 import { mark, t } from '../i18n'
 import { tr } from '../i18n/rich'
 
@@ -33,7 +34,7 @@ function Choice({ on, onClick, children, className = '' }: { on: boolean; onClic
 }
 
 export function FullTime({ session, st, onExit }: { session: Session; st: PlayerState; onExit: () => void }) {
-  const minutes = Math.max(1, Math.round((Date.now() - st.startedAt) / 60000))
+  const minutes = trainedMinutes(st) // as the log saves it: pauses and skipped drills don't count
   const [rpe, setRpe] = useState<number | null>(null)
   const [legs, setLegs] = useState<Legs | null>(null)
   const [sore, setSore] = useState<string[]>([])
@@ -64,6 +65,7 @@ export function FullTime({ session, st, onExit }: { session: Session; st: Player
             </div>
           ))}
         </dl>
+        {minutes < STREAK_MIN && <p className="m-0 mt-3 text-sm text-white/60">{t("Under {n} min: it's in your log, but it doesn't count toward your streak.", { n: STREAK_MIN })}</p>}
 
         {!saved ? (
           <section className="mt-8 flex flex-1 flex-col">

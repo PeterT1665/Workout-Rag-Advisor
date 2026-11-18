@@ -130,3 +130,18 @@ Problems Peter hits while planning and training, and what was done about each.
 41. **Add friends by QR.**
     - Team → **Show my QR**. A friend scans it: "Peter #7 invited you to be friends" → create an account or sign in → you're friends straight away (no request to accept).
     - Needs migration 0008 (run it before testing).
+
+## 18/11 (day, on staging)
+
+42. **New players open a brand-new app with no instructions.**
+    - Now: a first-run tour. The screen dims, one button at a time is lit, and a small box with an arrow says what it does: streak, Player, Week, Kick off, Team, Settings. Next / Skip tour, in every language.
+    - Shows for every new or sample player (even on a phone that used the app before). Replay: Settings → **Show the app tour**. It replaces the old "How it works" card.
+43. **Changing the language jumped to Home like a glitch.**
+    - Now: a quick fade, and the app comes back on Settings, at the same spot, in the new language.
+44. **Link previews were empty.**
+    - Now: sharing the link shows the laptop page (two phones and the QR) with the app name and a one-line description. Staging links use staging's own image.
+45. **Notifications still not arriving.**
+    - Now: every app open checks this phone is still registered for notifications at its current address and re-registers it if not (phones renew the address, and the server drops one Apple or Google says is gone). A rest reminder goes to the phone's live address, not an old saved one.
+46. **A 6-minute session went in the log like a real one.**
+    - Now: a session under 20 minutes never counts toward the streak, not even added to another short one. It stays in the log, greyed with "Under 20 min: doesn't count", and the full-time screen says so.
+    - Skipping through a session no longer logs the skipped time: the log saves time actually trained (pauses and skipped drills don't count).
