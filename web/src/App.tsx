@@ -17,7 +17,7 @@ import { Invite } from './views/Invite'
 import { CoachView } from './views/CoachView'
 import { TeamView } from './views/TeamView'
 import { publishStats } from './lib/team'
-import { cancelRest, scheduleRest, syncPushLang } from './lib/push'
+import { cancelRest, refreshPush, scheduleRest } from './lib/push'
 import { syncEnabled } from './lib/sync'
 import { cardStatsFor } from './lib/cardStats'
 import { overall } from './components/PlayerCard'
@@ -110,7 +110,7 @@ export default function App({ onSignUp, onSignIn }: { onSignUp?: () => void; onS
   // reset scroll before the new screen paints, so there is no visible jump
   useLayoutEffect(() => { window.scrollTo(0, 0) }, [tab, overlay?.name])
   // an app update may reload the page: hold it while a session, rating test or edit is open
-  useEffect(() => { void syncPushLang() }, []) // notifications in the app's language
+  useEffect(() => { void refreshPush() }, []) // this phone still registered for notifications, in the app's language
   useEffect(() => { setBusy(tour || ['preroll', 'player', 'testday', 'builder', 'profile', 'media'].includes(overlay?.name ?? '')) }, [overlay?.name, tour]) // the tour isn't cut off by an update either
 
   const updateSettings = (p: Partial<Settings>) => {

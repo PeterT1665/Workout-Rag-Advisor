@@ -10,15 +10,14 @@ const KEY = import.meta.env.VITE_VAPID_PUBLIC_KEY as string | undefined
 const FLAG = 'push:on' // this device subscribed (device-only, not synced)
 const ENDPOINT = 'push:endpoint' // this device's address, so a rest call-back reaches only the phone in the session
 const saved = () => { try { return localStorage.getItem(ENDPOINT) } catch { return null } }
-// Devices that turned notifications on before this was saved look it up once.
+// The phone's live subscription first: the saved one can be out of date (the phone renewed it, or notifications
+// were turned off and on), and a call-back sent to an old address never arrives.
 async function myEndpoint(): Promise<string | null> {
-  const e = saved()
-  if (e) return e
   try {
     const sub = await (await swReady())?.pushManager.getSubscription()
-    if (sub) try { localStorage.setItem(ENDPOINT, sub.endpoint) } catch { /* ignore */ }
-    return sub?.endpoint ?? null
-  } catch { return null }
+    if (sub) { try { localStorage.setItem(ENDPOINT, sub.endpoint) } catch { /* ignore */ } return sub.endpoint }
+  } catch { /* fall back to the saved one */ }
+  return saved()
 }
 
 const isIOS = () => typeof navigator !== 'undefined' && /iPad|iPhone|iPod/.test(navigator.userAgent)
@@ -104,16 +103,27 @@ export async function setPrefs(p: Partial<Prefs>) {
   } catch { /* ignore */ }
 }
 
-// The Sunday reminder is written by the server: keep this device's language there (changing it reloads the app).
-export async function syncPushLang() {
-  if (!pushOn()) return
+// Every app open: make sure the server still has this phone, at its current address and in the app's language.
+// Phones renew their push address now and then, and the server drops one Apple or Google says is gone; either way
+// rest call-backs silently stopped arriving. This puts the phone back (keeping its rest/weekly choices).
+export async function refreshPush() {
+  if (!pushOn() || !KEY || !syncEnabled()) return
   try {
+    if (Notification.permission !== 'granted') { if (Notification.permission === 'denied') setFlag(false); return }
     const reg = await swReady()
-    const sub = await reg?.pushManager.getSubscription()
-    if (!sub) return
+    if (!reg) return
+    const sub = (await reg.pushManager.getSubscription()) ?? (await reg.pushManager.subscribe({ userVisibleOnly: true, applicationServerKey: b64(KEY) }))
+    const j = sub.toJSON()
+    const me = await currentUser()
+    if (!me || !j.endpoint || !j.keys) return
     const sb = await supabase()
-    await sb.from('push_subscriptions').update({ lang: currentLang() }).eq('endpoint', sub.endpoint)
-  } catch { /* ignore */ }
+    const row = { endpoint: j.endpoint, user_id: me.id, p256dh: j.keys.p256dh, auth: j.keys.auth, tz: Intl.DateTimeFormat().resolvedOptions().timeZone || 'UTC' }
+    let { error } = await sb.from('push_subscriptions').upsert({ ...row, lang: currentLang() })
+    if (error && /lang/.test(error.message)) ({ error } = await sb.from('push_subscriptions').upsert(row))
+    const old = saved()
+    try { localStorage.setItem(ENDPOINT, j.endpoint) } catch { /* ignore */ }
+    if (!error && old && old !== j.endpoint) await sb.from('push_subscriptions').delete().eq('endpoint', old) // the old address is dead
+  } catch { /* offline: next open */ }
 }
 
 // What "rest is over" says. One at random each time.
