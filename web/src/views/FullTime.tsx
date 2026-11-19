@@ -3,7 +3,7 @@ import { loadHistory, reflectLast, weekLoads, type Legs } from '../lib/storage'
 import { trainedMinutes, type PlayerState } from '../lib/player'
 import type { Session } from '../lib/types'
 import { AnimateDigits } from '../components/AnimateDigits'
-import { STREAK_MIN } from '../lib/streak'
+import { minFor } from '../lib/streak'
 import { mark, t } from '../i18n'
 import { tr } from '../i18n/rich'
 
@@ -65,7 +65,7 @@ export function FullTime({ session, st, onExit }: { session: Session; st: Player
             </div>
           ))}
         </dl>
-        {minutes < STREAK_MIN && <p className="m-0 mt-3 text-sm text-white/60">{t("Under {n} min: it's in your log, but it doesn't count toward your streak.", { n: STREAK_MIN })}</p>}
+        {minutes < minFor(session.type) && <p className="m-0 mt-3 text-sm text-white/60">{t("Under {n} min: it's in your log, but it doesn't count toward your streak.", { n: minFor(session.type) })}</p>}
 
         {!saved ? (
           <section className="mt-8 flex flex-1 flex-col">

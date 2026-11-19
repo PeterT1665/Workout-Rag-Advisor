@@ -1,5 +1,5 @@
 // Plan streak (like Duolingo's): days in a row you kept to the week plan.
-// - A planned training day is kept by STREAK_MIN+ minutes of any training that day (no pitch? gym. No gym? home.
+// - A planned training day is kept by STREAK_MIN+ minutes (RECOVERY_MIN+ for a recovery session) of any training that day (no pitch? gym. No gym? home.
 //   Nothing proper? recovery). A shorter session never counts, not even two of them together.
 // - Rest days, game days and days changed to rest keep it too.
 // - A missed training day can be made up: an extra session (STREAK_MIN+ minutes) within the next MAKEUP_DAYS days,
@@ -11,6 +11,10 @@ import type { HistoryEntry } from './storage'
 import type { WeekChanges } from './weekChanges'
 
 export const STREAK_MIN = 20
+export const RECOVERY_MIN = 15 // a recovery session is shorter by design (and rests get skipped)
+// how long a session must be to count toward the streak
+export const minFor = (type?: string) => (type === 'recovery' ? RECOVERY_MIN : STREAK_MIN)
+export const counts = (h: Pick<HistoryEntry, 'minutes' | 'type'>) => h.minutes >= minFor(h.type)
 export const MAKEUP_DAYS = 2
 
 const ymd = (d: Date) => d.toLocaleDateString('en-CA')
@@ -44,9 +48,9 @@ export function planStreak(history: HistoryEntry[], games: Game[], gym: number, 
     const key = ymd(d)
     const done = byDate.get(key) ?? []
     const plan = planned(d)
-    // only sessions of STREAK_MIN+ minutes count (short ones never do, not even added together):
+    // only sessions of STREAK_MIN+ minutes (RECOVERY_MIN+ for recovery) count (short ones never do, not even added together):
     // one keeps a training day, any other is extra
-    const real = done.filter((h) => h.minutes >= STREAK_MIN)
+    const real = done.filter(counts)
     const used = plan && real.length ? 1 : 0
     const enough = !plan || used === 1
     const extra = real.slice(used)

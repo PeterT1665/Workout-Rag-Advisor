@@ -45,6 +45,9 @@ export function PlayerView({ session, player, settings, onExit }: { session: Ses
   const accent = isRest ? 'var(--muted)' : 'var(--red)'
   const frac = paced ? 1 : Math.max(0, Math.min(1, st.remainingMs / (step.seconds * 1000)))
   const next = st.steps[st.i + 1]
+  // the next exercise (past any rest): previewed during work too, not only during rests
+  const upIdx = st.steps.findIndex((x, k) => k > st.i && x.type !== 'rest')
+  const up = upIdx >= 0 ? st.steps[upIdx] : undefined
   // progress segments in the order they're done: one per exercise, one per superset (its exercises alternate)
   const blocks: { start: number; len: number; from: number; to: number }[] = []
   let at = 0
@@ -86,12 +89,12 @@ export function PlayerView({ session, player, settings, onExit }: { session: Ses
       <div className="min-h-24 rounded-[20px] bg-surface p-4">
         {isRest ? (restQuote ? <QuoteCard text={restQuote} /> : <p className="m-0">{t('Breathe. Walk it off. Sip water.')}</p>) : <p className="m-0">{step.how}</p>}
       </div>
-      {isRest && next
-        ? <button aria-haspopup="dialog" onClick={() => setInfo(st.i + 1)} className="mt-3 mb-4 flex w-full items-center justify-between gap-3 rounded-[20px] bg-surface-2 px-4 py-3 text-left transition-transform duration-150 active:scale-[0.98]">
+      {up
+        ? <button aria-haspopup="dialog" onClick={() => setInfo(upIdx)} className="mt-3 mb-4 flex w-full items-center justify-between gap-3 rounded-[20px] bg-surface-2 px-4 py-3 text-left transition-transform duration-150 active:scale-[0.98]">
             <span className="shrink-0 whitespace-nowrap text-sm text-muted">{t('Up next')}</span>
-            <span className="flex items-center gap-2 text-right font-display text-sm uppercase">{next.name.replace(/\s*\([^)]*\)/g, '')}{next.rounds > 1 ? ` · ${next.round}/${next.rounds}` : ''}<span aria-hidden className="text-muted">›</span></span>
+            <span className="flex items-center gap-2 text-right font-display text-sm uppercase">{up.name.replace(/\s*\([^)]*\)/g, '')}{up.rounds > 1 ? ` · ${up.round}/${up.rounds}` : ''}<span aria-hidden className="text-muted">›</span></span>
           </button>
-        : <p className="mt-3 mb-4 text-sm text-muted">{t('Up next')}: {next ? (next.type === 'rest' ? t('Rest') : next.name) : t('Last one.')}</p>}
+        : <p className="mt-3 mb-4 text-sm text-muted">{t('Up next')}: {t('Last one.')}</p>}
 
       <div className="flex h-2 gap-[3px]" aria-label={t('Part {n} of {total}', { n: blocks.findIndex((b) => st.i >= b.from && st.i <= b.to) + 1, total: blocks.length })}>
         {blocks.map((b, bi) => {

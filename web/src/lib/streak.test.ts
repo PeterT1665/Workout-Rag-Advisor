@@ -39,6 +39,11 @@ describe('plan streak', () => {
     expect(planStreak([h2('2026-11-16', 25), h2('2026-11-17', 20)], games, 4, {}, at('2026-11-17'))).toMatchObject({ days: 2, today: true })
     expect(planStreak([h2('2026-11-16', 25), h2('2026-11-17', 5)], games, 4, {}, at('2026-11-17'))).toMatchObject({ days: 1, today: false })
     expect(planStreak([h2('2026-11-16', 25), h2('2026-11-17', 12), h2('2026-11-17', 10)], games, 4, {}, at('2026-11-17')).today).toBe(false)
+    // a recovery session counts from 15 minutes (any other kind still needs 20)
+    const rec = (date: string, minutes: number): HistoryEntry => ({ ...h2(date, minutes), type: 'recovery' })
+    expect(planStreak([h2('2026-11-16', 25), rec('2026-11-17', 15)], games, 4, {}, at('2026-11-17')).today).toBe(true)
+    expect(planStreak([h2('2026-11-16', 25), rec('2026-11-17', 14)], games, 4, {}, at('2026-11-17')).today).toBe(false)
+    expect(planStreak([h2('2026-11-16', 25), h2('2026-11-17', 17)], games, 4, {}, at('2026-11-17')).today).toBe(false)
   })
 
   test('a missed day is open for a make-up for 2 days, then breaks the streak', () => {
