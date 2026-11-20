@@ -8,6 +8,7 @@ import { cardStatsFor } from '../lib/cardStats'
 import { useProfile, type Accent, type Foot, type Position, type Profile } from '../lib/profile'
 import { syncEnabled } from '../lib/sync'
 import { takeNewFriend } from '../lib/invite'
+import { load, save } from '../lib/storage'
 import {
   USERNAME, acceptFriend, activity, askFriend, avatarUrls, claimUsername, cleanUsername, findPlayer, friendRequests,
   leaderboard, myTeamProfile, removeFriend, setAvatar, type FoundPlayer, type FriendRequest, type TeamProfile,
@@ -50,25 +51,34 @@ function TeamGuest({ streak, onSignUp, onSignIn }: { streak: Streak; onSignUp?: 
   )
 }
 
+// The last team seen, so opening Team again shows it straight away while it updates quietly (no loading flash,
+// no empty leaderboard, nothing jumping). Kept on this phone across restarts; photo links only in memory.
+type TeamCache = { mine: TeamProfile; board: TeamProfile[]; requests: FriendRequest[] }
+const CACHE = 'team:cache'
+let urlMemo: Record<string, string> = {}
+const readCache = (): TeamCache | null => { const c = load<TeamCache | null>(CACHE, null); return c && c.mine && Array.isArray(c.board) && Array.isArray(c.requests) ? c : null }
+
 function TeamSignedIn({ streak, onInvite }: { streak: Streak; onInvite?: () => void }) {
   const me = useProfile()
+  const [cached] = useState(readCache)
   const [newFriend, setNewFriend] = useState<string | null>(() => takeNewFriend()) // just added through a QR
-  const [mine, setMine] = useState<TeamProfile | null | undefined>(undefined) // undefined: loading
-  const [board, setBoard] = useState<TeamProfile[]>([])
-  const [requests, setRequests] = useState<FriendRequest[]>([])
-  const [urls, setUrls] = useState<Record<string, string>>({})
+  const [mine, setMine] = useState<TeamProfile | null | undefined>(cached?.mine) // undefined: loading
+  const [board, setBoard] = useState<TeamProfile[]>(cached?.board ?? [])
+  const [requests, setRequests] = useState<FriendRequest[]>(cached?.requests ?? [])
+  const [urls, setUrls] = useState<Record<string, string>>(urlMemo)
   const [open, setOpen] = useState<TeamProfile | null>(null)
   const [renaming, setRenaming] = useState(false)
   const [offline, setOffline] = useState(false)
 
   const refresh = useCallback(async () => {
     try {
-      const p = await myTeamProfile()
-      setMine(p)
-      if (!p) return
-      const [b, r] = await Promise.all([leaderboard(), friendRequests()])
-      setBoard(b); setRequests(r); setOffline(false)
-      setUrls(await avatarUrls([...b.map((x) => x.avatar_path), ...r.map((x) => x.avatar_path)]))
+      // everything at once, shown together (photo links included), so the page settles in one step
+      const [p, b, r] = await Promise.all([myTeamProfile(), leaderboard(), friendRequests()])
+      if (!p) { setMine(null); try { localStorage.removeItem(CACHE) } catch { /* ignore */ } return }
+      const u = await avatarUrls([p.avatar_path, ...b.map((x) => x.avatar_path), ...r.map((x) => x.avatar_path)])
+      urlMemo = u
+      setMine(p); setBoard(b); setRequests(r); setUrls(u); setOffline(false)
+      save(CACHE, { mine: p, board: b, requests: r })
     } catch { setOffline(true); setMine((m) => m ?? null) }
   }, [])
   useEffect(() => {
@@ -77,7 +87,7 @@ function TeamSignedIn({ streak, onInvite }: { streak: Streak; onInvite?: () => v
     return () => clearInterval(t)
   }, [refresh])
 
-  if (mine === undefined) return <Shell><p className="mt-4 text-muted" aria-busy="true">{t('Loading your team…')}</p></Shell>
+  if (mine === undefined) return <Shell><TeamSkeleton /></Shell>
   if (offline && !mine) return <Shell><p className="mt-4 text-muted">{t("You're offline. Team needs a connection.")}</p></Shell>
   if (!mine || renaming) {
     return (
@@ -200,11 +210,34 @@ function Row({ rank, name, number, sub, streak, lit, rating, avatar, online, onO
   return onOpen ? <button onClick={onOpen} className={`${cls} active:scale-[0.99]`}>{body}</button> : <div className={cls}>{body}</div>
 }
 
+// First open, nothing kept yet: the page's shape in grey (your row, the leaderboard), not a line of text.
+function TeamSkeleton() {
+  const bar = 'rounded-full bg-surface-2 animate-pulse motion-reduce:animate-none'
+  return (
+    <div aria-busy="true" aria-label={t('Loading your team…')}>
+      <div className="mt-4 flex items-center gap-3">
+        <span className="h-16 w-16 shrink-0 rounded-full bg-surface animate-pulse motion-reduce:animate-none" />
+        <span className="flex flex-1 flex-col gap-2"><span className={`h-4 w-32 ${bar}`} /><span className={`h-3 w-48 ${bar}`} /></span>
+      </div>
+      <div className="mt-6 rounded-[24px] bg-surface p-4">
+        <span className={`block h-4 w-28 ${bar}`} />
+        {[0, 1].map((i) => <span key={i} className="mt-3 block h-[60px] rounded-2xl bg-surface-2 animate-pulse motion-reduce:animate-none" />)}
+      </div>
+    </div>
+  )
+}
+
+// The initial sits underneath; the photo fades in over it once loaded (no pop, no blank circle).
 function Avatar({ url, name, big = false }: { url?: string; name: string; big?: boolean }) {
   const size = big ? 'h-16 w-16 text-xl' : 'h-10 w-10 text-sm'
-  return url
-    ? <img src={url} alt="" className={`${size} shrink-0 rounded-full object-cover`} />
-    : <span className={`${size} grid shrink-0 place-items-center rounded-full bg-surface font-display uppercase text-muted`} aria-hidden="true">{name.slice(0, 1)}</span>
+  const [loaded, setLoaded] = useState(false)
+  return (
+    <span className={`${size} relative grid shrink-0 place-items-center overflow-hidden rounded-full bg-surface font-display uppercase text-muted`}>
+      <span aria-hidden="true">{name.slice(0, 1)}</span>
+      {url && <img src={url} alt="" onLoad={() => setLoaded(true)} ref={(el) => { if (el?.complete && el.naturalWidth) setLoaded(true) }}
+        className={`absolute inset-0 h-full w-full object-cover transition-opacity duration-200 ${loaded ? 'opacity-100' : 'opacity-0'}`} />}
+    </span>
+  )
 }
 
 function AvatarPicker({ url, name, onChanged }: { url?: string; name: string; onChanged: () => void }) {

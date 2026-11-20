@@ -89,7 +89,7 @@ export function startSync() {
 // Everything the app stores for one person. Cleared on sign-out (shared devices) and before an account takes over.
 export function clearLocalData() {
   try {
-    const drop = Object.keys(localStorage).filter((k) => isKey(k) || k === 'sync:meta' || k.startsWith('demo:') || k.startsWith('kit:'))
+    const drop = Object.keys(localStorage).filter((k) => isKey(k) || k === 'sync:meta' || k.startsWith('demo:') || k.startsWith('kit:') || k.startsWith('team:')) // team: the last team seen, someone else's on this phone after a sign-out
     drop.forEach((k) => localStorage.removeItem(k))
   } catch { /* ignore */ }
 }
