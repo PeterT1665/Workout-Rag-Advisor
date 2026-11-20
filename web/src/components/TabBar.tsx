@@ -23,7 +23,7 @@ export function TabBar({ tab, onTab, onKickOff, review = false }: { tab: Tab; on
         className="-mt-9 grid h-[70px] w-[70px] place-items-center justify-self-center rounded-full border-4 border-bg bg-red shadow-[0_8px_20px_-6px_rgba(0,0,0,.6)] transition-transform duration-150 ease-snap active:scale-95">
         {review ? <ReviewIcon className="h-9 w-9 text-on-red" /> : <BallIcon className="h-11 w-11" />}
       </button>
-      {item('player', t('Performance'))}
+      {item('player', t('Record'))}
       {item('team', t('Team'))}
 
     </nav>

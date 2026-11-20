@@ -32,15 +32,20 @@ export async function inviteInfo(code: string): Promise<Inviter | null> {
 }
 
 // Signed in with a code waiting: become friends, remember who for the Team tab's note.
+// The code is kept in this browser and, from sign-up, on the account (for when the email link opens elsewhere).
 export async function acceptPendingInvite() {
-  const code = pendingInvite()
-  if (!code) return
   try {
     const sb = await supabase()
+    const { data: s } = await sb.auth.getSession()
+    const saved = s.session?.user.user_metadata?.invite
+    const onAccount = typeof saved === 'string' && /^[a-z0-9]{10}$/.test(saved) ? saved : null
+    const code = pendingInvite() ?? onAccount
+    if (!code) return
     const who = await inviteInfo(code)
     const { data, error } = await sb.rpc('accept_invite', { p_code: code })
     if (error) return // offline: try again next time
     dropInvite()
+    if (onAccount) await sb.auth.updateUser({ data: { invite: null } }) // used
     if (data === 'ok' && who) localStorage.setItem(DONE, who.name)
   } catch { /* offline: try again next time */ }
 }

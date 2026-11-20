@@ -250,7 +250,7 @@ describe('app', () => {
     await screen.findByRole('dialog', {}, { timeout: 2000 })
     await showing('Your streak')
     fireEvent.click(box().getByRole('button', { name: 'Next' }))
-    await showing('Performance')
+    await showing('Record')
     fireEvent.click(box().getByRole('button', { name: 'Skip tour' }))
     expect(screen.queryByRole('dialog')).toBeNull()
     unmount()
@@ -259,7 +259,7 @@ describe('app', () => {
     expect(screen.queryByRole('dialog')).toBeNull() // seen: not again
     click(/^Settings$/)
     click(/Show the app tour/)
-    for (const title of ['Your streak', 'Performance', 'Your week', 'Kick off', 'Team']) {
+    for (const title of ['Your streak', 'Record', 'Your week', 'Kick off', 'Team']) {
       await showing(title)
       fireEvent.click(box().getByRole('button', { name: 'Next' }))
     }
@@ -270,7 +270,7 @@ describe('app', () => {
 
   test('rating session: three tests rate the player, the card is revealed and kept', () => {
     render(<App />)
-    fireEvent.click(screen.getByRole('button', { name: /^Performance$/ }))
+    fireEvent.click(screen.getByRole('button', { name: /^Record$/ }))
     click(/Start rating session/)
     click(/^Start$/)
     fireEvent.change(screen.getByLabelText('Your result'), { target: { value: '3.3' } }) // PAC

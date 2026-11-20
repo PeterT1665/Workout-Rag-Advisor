@@ -1,6 +1,7 @@
 // Phone <-> laptop sync through Supabase. Local-first: localStorage is what the UI reads;
 // changes are pushed in the background and pulled when the app opens or comes back to the foreground.
 // Rules (newer wins, history merged) live in the database function put_state; see supabase/migrations.
+import { pendingInvite } from './invite'
 import { setSaveHook } from './storage'
 import { supabase } from './supabase'
 import { PHOTO_SLOTS, clearPhotos } from './photos'
@@ -128,7 +129,10 @@ export type SignUpResult = 'signed-in' | 'confirm-email' | 'exists' | 'closed' |
 export async function signUp(email: string, password: string): Promise<SignUpResult> {
   try {
     const sb = await supabase()
-    const { data, error } = await sb.auth.signUp({ email: email.trim(), password, options: { emailRedirectTo: location.origin } })
+    // a friend's QR code goes with the account: the confirmation link may open in another browser or the installed app,
+    // which can't see this browser's storage
+    const invite = pendingInvite()
+    const { data, error } = await sb.auth.signUp({ email: email.trim(), password, options: { emailRedirectTo: location.origin, data: invite ? { invite } : undefined } })
     if (error) {
       const m = error.message.toLowerCase()
       if (error.status === 429) return 'throttled'

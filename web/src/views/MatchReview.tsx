@@ -134,7 +134,7 @@ export function RatingBadge({ value, size = 'lg' }: { value: number; size?: 'lg'
   )
 }
 
-// The match report: the app's rating, the result, your numbers and notes. Shown after saving and from Performance.
+// The match report: the app's rating, the result, your numbers and notes. Shown after saving and from Record.
 export function MatchReport({ m, onDone, onEdit, fresh = false }: { m: Review; onDone: () => void; onEdit?: () => void; fresh?: boolean }) {
   const res = resultOf(m)
   const streaks = resultStreaks(loadMatches())

@@ -22,14 +22,14 @@ const fmtDate = (iso: string) => {
 
 type Side = 'player' | 'matches'
 
-// Performance: your player (card, week, training log) and your matches (reviews, ratings, results streaks).
+// Record: your player (card, week, training log) and your matches (reviews, ratings, results streaks).
 export function PlayerTab({ wide = false, onTestDay, onMatch }: { wide?: boolean; onTestDay?: () => void; onMatch?: (date: string) => void }) {
   const [side, setSideState] = useState<Side>(() => load<Side>('performance:side', 'player'))
   const setSide = (v: Side) => { setSideState(v); save('performance:side', v) }
   return (
     <main className={wide ? 'px-10 pt-10 pb-12' : 'mx-auto max-w-xl px-4 pt-[max(20px,var(--sat))] pb-32'}>
-      <Title>{t('Performance')}</Title>
-      <div role="tablist" aria-label={t('Performance')} className="mt-3 grid grid-cols-2 rounded-full bg-surface p-1">
+      <Title>{t('Record')}</Title>
+      <div role="tablist" aria-label={t('Record')} className="mt-3 grid grid-cols-2 rounded-full bg-surface p-1">
         {([['player', t('Player')], ['matches', t('Matches')]] as const).map(([id, label]) => (
           <button key={id} role="tab" aria-selected={side === id} onClick={() => setSide(id)}
             className={`min-h-10 rounded-full font-display text-sm uppercase transition-colors duration-150 ${side === id ? 'bg-red text-on-red' : 'text-muted'}`}>{label}</button>
