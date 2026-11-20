@@ -41,6 +41,23 @@ const b64 = (s: string) => {
 }
 const swReady = () => Promise.race([navigator.serviceWorker.ready, new Promise<null>((r) => setTimeout(() => r(null), 6000))])
 
+// One registration per device for each app (staging and production are separate apps): this device's identity
+// is its browser + model string. Saving a new one removes the device's older ones (a reinstall, a renewed address),
+// so the server never fans out to dead registrations. Needs migration 0010; skipped quietly before it.
+const deviceId = () => ({ app: location.origin, device: navigator.userAgent.slice(0, 300) })
+async function dropMyOldOnes(sb: Awaited<ReturnType<typeof supabase>>, userId: string, endpoint: string) {
+  const { app, device } = deviceId()
+  await sb.from('push_subscriptions').delete().eq('user_id', userId).eq('app', app).eq('device', device).neq('endpoint', endpoint)
+}
+async function saveDevice(sb: Awaited<ReturnType<typeof supabase>>, row: Record<string, unknown>) {
+  // newest columns first; older databases (before 0010 / 0009 / 0008) take a smaller row
+  let { error } = await sb.from('push_subscriptions').upsert({ ...row, lang: currentLang(), ...deviceId() })
+  if (error && /app|device/.test(error.message)) ({ error } = await sb.from('push_subscriptions').upsert({ ...row, lang: currentLang() }))
+  if (error && /lang|matches/.test(error.message)) { const { matches: _m, ...older } = row; void _m; ({ error } = await sb.from('push_subscriptions').upsert(older)) }
+  if (!error) await dropMyOldOnes(sb, row.user_id as string, row.endpoint as string).catch(() => {})
+  return error
+}
+
 export type Prefs = { rest_alerts: boolean; weekly: boolean; matches?: boolean }
 
 // Ask permission (must run inside a tap), subscribe this device, and save it to the account.
@@ -60,8 +77,7 @@ export async function enablePush(prefs: Prefs = { rest_alerts: true, weekly: tru
       endpoint: j.endpoint, user_id: me.id, p256dh: j.keys.p256dh, auth: j.keys.auth,
       tz: Intl.DateTimeFormat().resolvedOptions().timeZone || 'UTC', ...prefs,
     }
-    let { error } = await sb.from('push_subscriptions').upsert({ ...row, lang: currentLang() })
-    if (error && /lang|matches/.test(error.message)) { const { matches: _m, ...older } = row; void _m; ({ error } = await sb.from('push_subscriptions').upsert(older)) } // before migration 0009
+    const error = await saveDevice(sb, row)
     if (error) return 'unsupported'
     setFlag(true)
     try { localStorage.setItem(ENDPOINT, j.endpoint) } catch { /* ignore */ }
@@ -118,8 +134,7 @@ export async function refreshPush() {
     if (!me || !j.endpoint || !j.keys) return
     const sb = await supabase()
     const row = { endpoint: j.endpoint, user_id: me.id, p256dh: j.keys.p256dh, auth: j.keys.auth, tz: Intl.DateTimeFormat().resolvedOptions().timeZone || 'UTC' }
-    let { error } = await sb.from('push_subscriptions').upsert({ ...row, lang: currentLang() })
-    if (error && /lang/.test(error.message)) ({ error } = await sb.from('push_subscriptions').upsert(row))
+    const error = await saveDevice(sb, row)
     const old = saved()
     try { localStorage.setItem(ENDPOINT, j.endpoint) } catch { /* ignore */ }
     if (!error && old && old !== j.endpoint) await sb.from('push_subscriptions').delete().eq('endpoint', old) // the old address is dead

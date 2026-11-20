@@ -5,14 +5,17 @@ self.addEventListener('push', (event) => {
   try { d = event.data ? event.data.json() : {} } catch { d = { body: event.data && event.data.text() } }
   // Each notification gets its own tag: on iPhone, reusing a tag can swap the old one out silently, with no banner.
   // Older ones of the same kind are cleared first so Notification Centre doesn't fill up with rests.
+  // Show it FIRST, then tidy: iPhone drops a push (and soon stops delivering) if showNotification isn't reached,
+  // and waiting on getNotifications() first could stall there.
   const kind = d.kind || 'other'
-  event.waitUntil(self.registration.getNotifications()
-    .then((old) => old.forEach((n) => { if (n.data && n.data.kind === kind) n.close() }))
-    .catch(() => {})
-    .then(() => self.registration.showNotification(d.title || 'Football Personal Coach', {
-      body: d.body || '', tag: d.tag || `fpc-${Date.now()}`,
-      icon: '/icon-192.png', badge: '/icon-192.png', data: { url: d.url || '/', kind },
-    })))
+  const tag = d.tag || `fpc-${Date.now()}`
+  event.waitUntil(self.registration.showNotification(d.title || 'Football Personal Coach', {
+    body: d.body || '', tag, icon: '/icon-192.png', badge: '/icon-192.png', data: { url: d.url || '/', kind },
+  }).then(() => Promise.race([
+    self.registration.getNotifications()
+      .then((old) => old.forEach((n) => { if (n.tag !== tag && n.data && n.data.kind === kind) n.close() })),
+    new Promise((r) => setTimeout(r, 1000)),
+  ])).catch(() => {}))
 })
 
 self.addEventListener('notificationclick', (event) => {
