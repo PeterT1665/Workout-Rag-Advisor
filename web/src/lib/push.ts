@@ -53,15 +53,15 @@ async function saveDevice(sb: Awaited<ReturnType<typeof supabase>>, row: Record<
   // newest columns first; older databases (before 0010 / 0009 / 0008) take a smaller row
   let { error } = await sb.from('push_subscriptions').upsert({ ...row, lang: currentLang(), ...deviceId() })
   if (error && /app|device/.test(error.message)) ({ error } = await sb.from('push_subscriptions').upsert({ ...row, lang: currentLang() }))
-  if (error && /lang|matches/.test(error.message)) { const { matches: _m, ...older } = row; void _m; ({ error } = await sb.from('push_subscriptions').upsert(older)) }
+  if (error && /lang|matches|friends/.test(error.message)) { const { matches: _m, friends: _f, ...older } = row; void _m; void _f; ({ error } = await sb.from('push_subscriptions').upsert(older)) }
   if (!error) await dropMyOldOnes(sb, row.user_id as string, row.endpoint as string).catch(() => {})
   return error
 }
 
-export type Prefs = { rest_alerts: boolean; weekly: boolean; matches?: boolean }
+export type Prefs = { rest_alerts: boolean; weekly: boolean; matches?: boolean; friends?: boolean }
 
 // Ask permission (must run inside a tap), subscribe this device, and save it to the account.
-export async function enablePush(prefs: Prefs = { rest_alerts: true, weekly: true, matches: true }): Promise<PushState> {
+export async function enablePush(prefs: Prefs = { rest_alerts: true, weekly: true, matches: true, friends: true }): Promise<PushState> {
   const state = pushState()
   if (state !== 'off' && state !== 'on') return state
   try {

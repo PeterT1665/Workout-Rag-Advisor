@@ -1,4 +1,4 @@
-// send-push: delivers due notifications (rest is over, plan next week) to every device of the player.
+// send-push: delivers due notifications (rest is over, plan next week, match day, friends) to every device of the player.
 // Called by pg_cron (supabase/setup/push_cron.sql) only when something is due, with the x-cron-secret header.
 // Secrets (Edge Function secrets): VAPID_PUBLIC_KEY, VAPID_PRIVATE_KEY, CRON_SECRET.
 // SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY are provided by Supabase. Deploy with "Verify JWT" OFF.
@@ -10,7 +10,7 @@ const env = (k: string) => Deno.env.get(k) ?? ''
 webpush.setVapidDetails('https://football-personal-coach.ducphu1665.workers.dev', env('VAPID_PUBLIC_KEY'), env('VAPID_PRIVATE_KEY'))
 
 type Due = { id: number; user_id: string; title: string; body: string; url: string; kind: string; endpoint: string | null }
-type Sub = { endpoint: string; p256dh: string; auth: string; rest_alerts: boolean; weekly: boolean; matches?: boolean; created_at: string }
+type Sub = { endpoint: string; p256dh: string; auth: string; rest_alerts: boolean; weekly: boolean; matches?: boolean; friends?: boolean; created_at: string }
 
 Deno.serve(async (req) => {
   if (!env('CRON_SECRET') || req.headers.get('x-cron-secret') !== env('CRON_SECRET')) return new Response('no', { status: 401 })
@@ -38,6 +38,8 @@ Deno.serve(async (req) => {
       const one = d.endpoint ? mine.filter((s) => s.endpoint === d.endpoint) : []
       return (one.length ? one : mine).filter((s) => s.rest_alerts)
     }
+    // friend requests: every device that wants them (one per app since 0010), so whichever you pick up shows it
+    if (d.kind === 'friend') return mine.filter((s) => s.friends !== false)
     const wants = (s: Sub) => (d.kind === 'match' ? s.matches !== false : s.weekly)
     return mine.filter(wants).sort((a, b) => b.created_at.localeCompare(a.created_at)).slice(0, 1)
   }
@@ -47,7 +49,7 @@ Deno.serve(async (req) => {
         await webpush.sendNotification(
           { endpoint: s.endpoint, keys: { p256dh: s.p256dh, auth: s.auth } },
           JSON.stringify({ title: d.title, body: d.body, url: d.url, kind: d.kind, tag: `${d.kind}-${d.id}` }),
-          { TTL: d.kind === 'rest' ? 120 : d.kind === 'match' ? 3 * 3600 : 6 * 3600, urgency: d.kind === 'weekly' ? 'normal' : 'high' },
+          { TTL: d.kind === 'rest' ? 120 : d.kind === 'match' ? 3 * 3600 : d.kind === 'friend' ? 24 * 3600 : 6 * 3600, urgency: d.kind === 'weekly' ? 'normal' : 'high' },
         )
         sent++
       } catch (e) {

@@ -71,7 +71,7 @@ const dayName = (date: string) => { const d = new Date(`${date}T12:00:00`).toLoc
 // onSignUp: guests can start making an account from inside the app (Team needs one)
 export default function App({ onSignUp, onSignIn }: { onSignUp?: () => void; onSignIn?: () => void } = {}) {
   // a notification can open a tab directly ("plan next week" opens the week)
-  const [tab, setTab] = useState<Tab>(() => (typeof location !== 'undefined' && new URLSearchParams(location.search).get('tab') === 'week' ? 'week' : 'home'))
+  const [tab, setTab] = useState<Tab>(() => (typeof location !== 'undefined' && (['week', 'team'] as const).find((x) => x === new URLSearchParams(location.search).get('tab')) || 'home')) // notification links: ?tab=week, ?tab=team
   // just switched language: reopen Settings where you were, fading in from the switch
   const [back] = useState(langBack)
   const [overlay, setOverlay] = useState<Overlay | null>(() => (back?.screen === 'settings' ? { name: 'settings' } : null))
