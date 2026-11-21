@@ -49,6 +49,8 @@ export async function acceptPendingInvite() {
     if (data === 'ok' && who) localStorage.setItem(DONE, who.name)
   } catch { /* offline: try again next time */ }
 }
+// The friend just added, without using up Team's one-time note.
+export const peekNewFriend = () => { try { return localStorage.getItem(DONE) } catch { return null } }
 export function takeNewFriend() {
   try { const n = localStorage.getItem(DONE); if (n !== null) localStorage.removeItem(DONE); return n } catch { return null }
 }
