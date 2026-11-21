@@ -43,7 +43,8 @@ export function Onboarding({ initial, initialGames = [], welcome = false, onDone
             {[
               ['🗓', t('A week planned around your games')],
               ['🔊', t('Drills coached out loud, LEFT / RIGHT cues')],
-              ['🏋️', t('Gym sessions for speed and power')],
+              ['🏋️', t('Gym sessions with a 3D demo for every exercise')],
+              ['💬', t('A coach that knows your training')],
             ].map(([icon, text]) => (
               <li key={text} className="flex items-center gap-3">
                 <span aria-hidden="true" className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-white/10 text-lg backdrop-blur-md">{icon}</span>

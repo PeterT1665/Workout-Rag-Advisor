@@ -200,3 +200,19 @@ h1, h2, h3 {
   hyphens: auto;
   -webkit-hyphens: auto;
 }
+/* First-visit intro (views/Intro.tsx): pitch lines draw, the ball rolls to the centre spot */
+@keyframes intro-draw { from { stroke-dashoffset: var(--len); } to { stroke-dashoffset: 0; } }
+.intro-draw { stroke-dasharray: var(--len); animation: intro-draw 900ms var(--ease-out) both; }
+@keyframes intro-roll {
+  0% { transform: translateX(-70vw) rotate(-540deg); opacity: 0; }
+  15% { opacity: 1; }
+  80% { transform: translateX(6px) rotate(8deg); }
+  100% { transform: none; }
+}
+.intro-roll { animation: intro-roll 900ms cubic-bezier(.2,.8,.2,1) 250ms both; }
+@keyframes intro-bar { from { transform: scaleX(0); } to { transform: none; } }
+.intro-bar { transform-origin: left; animation: intro-bar linear both; }
+@media (prefers-reduced-motion: reduce) {
+  .intro-draw { animation: none; stroke-dashoffset: 0; }
+  .intro-roll { animation: fade-in 200ms both; }
+}

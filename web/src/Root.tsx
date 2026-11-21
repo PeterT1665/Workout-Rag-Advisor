@@ -14,6 +14,7 @@ import { acceptPendingInvite, inviteSeen, pendingInvite } from './lib/invite'
 import { FriendInvite } from './views/FriendInvite'
 import { tourReset } from './components/Tour'
 import { PickUsername } from './views/PickUsername'
+import { Intro } from './views/Intro'
 import { load, save } from './lib/storage'
 
 applyAccent(getProfile().accent)
@@ -80,6 +81,7 @@ function Main() {
 }
 
 // No account: visitors make their own player or use the sample one (daily-refreshed sample log).
+let introShown = false // once per visit
 function Guest({ onSignIn, onSignUp }: { onSignIn?: () => void; onSignUp?: () => void }) {
   const [ready, setReady] = useState(() => {
     // the laptop's home-screen preview opens straight on the sample player
@@ -87,6 +89,9 @@ function Guest({ onSignIn, onSignUp }: { onSignIn?: () => void; onSignUp?: () =>
     return hasProfile()
   })
   const [next, setNext] = useState(false) // the "You're in" screen after making a player
+  // new visitors: a few seconds of welcome before "Train like a pro"
+  const [intro, setIntro] = useState(() => !ready && !introShown && preview !== 'home')
+  if (intro) return <Intro onDone={() => { introShown = true; setIntro(false) }} />
   if (!ready) {
     return (
       <Onboarding welcome onSignIn={onSignIn}
