@@ -9,7 +9,7 @@ import { t } from '../i18n'
 const fmtSec = (s: number) => (s >= 60 ? `${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}` : `${s}s`)
 
 // One drill's details, opened from a drill card. Video instructions will live here later.
-export function DrillSheet({ block: b, onClose, onSession }: { block: Block; onClose: () => void; onSession: () => void }) {
+export function DrillSheet({ block: b, onClose, onSession }: { block: Block; onClose: () => void; onSession?: () => void }) {
   useSheet(onClose)
   const label = b.category ? CATEGORY_LABELS[b.category] ?? b.category : null
   const name = b.name.replace(/\s*\([^)]*\)/g, '')
@@ -39,7 +39,7 @@ export function DrillSheet({ block: b, onClose, onSession }: { block: Block; onC
           <VideoBox name={b.name} />
           <div className="mt-5 flex gap-3">
             <Button variant="ghost" className="flex-1 bg-surface-2" onClick={onClose}>{t('Close')}</Button>
-            <Button className="flex-[1.4]" onClick={onSession}>{t('Full session')}</Button>
+            {onSession && <Button className="flex-[1.4]" onClick={onSession}>{t('Full session')}</Button>}
 
           </div>
         </div>

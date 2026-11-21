@@ -20,6 +20,7 @@ import { MatchDayBox } from '../components/MatchDayBox'
 import type { Block, Session } from '../lib/types'
 
 type Props = {
+  onCoach?: (ask?: string) => void // open the coach, optionally asking something straight away
   today: Today
   onKickOff: (s: Session) => void
   onOpen: (s: Session) => void
@@ -197,6 +198,24 @@ export function WeekStrip({ today, kindFor }: { today: Today; kindFor?: (day: nu
 
 
 
+// Ask the coach: a box that looks like the chat's, and two questions to tap.
+function CoachBar({ onCoach }: { onCoach: (ask?: string) => void }) {
+  const qs = [t('What should I do today?'), t('How was my week?')]
+  return (
+    <section aria-label={t('Coach')} className="mt-6 rounded-[22px] bg-surface p-3">
+      <button onClick={() => onCoach()} className="flex min-h-12 w-full items-center gap-3 rounded-full bg-surface-2 pr-2 pl-4 text-left text-muted active:scale-[0.99]">
+        <span className="flex-1">{t('Ask your coach…')}</span>
+        <span className="grid h-9 w-9 place-items-center rounded-full bg-red text-on-red" aria-hidden="true">
+          <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14M13 6l6 6-6 6" /></svg>
+        </span>
+      </button>
+      <div className="mt-2 flex flex-wrap gap-2">
+        {qs.map((q) => <button key={q} onClick={() => onCoach(q)} className="min-h-9 rounded-full bg-surface-2 px-3.5 text-sm font-semibold active:scale-95">{q}</button>)}
+      </div>
+    </section>
+  )
+}
+
 export function Home(p: Props) {
   const s = p.today.session
   const drills = s.blocks.filter((b) => b.kind === 'drill')
@@ -235,6 +254,7 @@ export function Home(p: Props) {
         </section>
       )}
       <NotifyPrompt />
+      {p.onCoach && <CoachBar onCoach={p.onCoach} />}
 
       <SectionHead title={t("Today's drills")} right={<button onClick={p.onAllSessions} className="text-sm font-semibold text-muted">{t('All sessions')}</button>} />
       <div className="no-scrollbar -mx-4 flex snap-x scroll-px-4 gap-3 overflow-x-auto px-4">

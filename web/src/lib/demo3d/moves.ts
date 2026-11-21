@@ -387,7 +387,10 @@ export const MOVES: Record<string, Move> = {
   'ball-run': { dur: 0.7, anchor: 'none', ball: true, run: 5, contacts: 'feet', cam: { yaw: 70 }, keys: [[0, { ...SPRINT_A, ball: [0, 0.11, 0.7] }], [0.25, { ...SPRINT_A, air: 0.08, ball: [0, 0.11, 0.9] }], [0.5, { ...SPRINT_B, ball: [0, 0.11, 0.7] }], [0.75, { ...SPRINT_B, air: 0.08, ball: [0, 0.11, 0.9] }]] },
 
   // mobility and stretching
-  'ham-stretch': { dur: 4, hold: true, cam: { yaw: 80 }, keys: [[0, { pitch: 70, spine: 10, ...both({ hip: 80, sh: 80 }) }]] },
+  'ham-stretch': {
+    dur: 6, anchor: 'none', flatFeet: false, cam: { yaw: 75, tilt: 22 },
+    keys: alternate([[0, { pitch: SUPINE, L: { hip: 0, sh: 0 }, R: { hip: 20, knee: 40, sh: 60, elb: 20 } }], [0.35, { pitch: SUPINE, L: { hip: 0 }, R: { hip: 88, knee: 0, ankle: 15, sh: 95, elb: 25 } }], [0.85, { pitch: SUPINE, L: { hip: 0 }, R: { hip: 90, knee: 0, ankle: 15, sh: 95, elb: 25 } }]]),
+  },
   'couch': {
     dur: 4, hold: true, anchor: 'L', flatFeet: false, contacts: 'all', cam: { yaw: 80 }, props: [{ kind: 'sofa', at: [0, 0, -0.72], size: [1, 0.45, 0.5] }],
     keys: [[0, { L: { hip: 80, knee: 85, ankle: 0 }, R: { hip: -15, knee: 160, ankle: -60, sh: 10 } }]],
@@ -406,8 +409,15 @@ export const MOVES: Record<string, Move> = {
   'hip-opener': { dur: 2.4, anchor: 'L', cam: { yaw: 30 }, keys: alternate([[0, { L: { shAbd: 40 }, R: { hip: 90, knee: 95, shAbd: 40 } }], [0.5, { L: { shAbd: 40 }, R: { hip: 70, abd: 55, rot: 30, knee: 95, shAbd: 40 } }], [0.8, { L: { shAbd: 40 }, R: { hip: 10, abd: 20, knee: 60, shAbd: 40 } }]]) },
   'quad-stretch': { dur: 4, hold: true, anchor: 'L', cam: { yaw: 75 }, keys: [[0, { L: { shAbd: 50 }, R: { hip: -5, knee: 150, ankle: -40, sh: -40, elb: 40 } }]] },
   'cooldown': {
-    dur: 12, anchor: 'L', cam: { yaw: 75 },
-    keys: [[0, { L: { shAbd: 50 }, R: { hip: -5, knee: 150, ankle: -40, sh: -40, elb: 40 } }], [0.3, { L: { shAbd: 50 }, R: { hip: -5, knee: 150, ankle: -40, sh: -40, elb: 40 } }], [0.45, { pitch: 70, spine: 10, ...both({ hip: 80, sh: 80 }) }], [0.8, { pitch: 70, spine: 10, ...both({ hip: 80, sh: 80 }) }]],
+    dur: 14, anchor: 'L', flatFeet: false, cam: { yaw: 75 },
+    keys: [
+      [0, { L: { hip: 80, knee: 85, ankle: 0, sh: 20 }, R: { hip: -25, knee: 90, ankle: -60, sh: 20 } }], // kneeling hip-flexor stretch
+      [0.28, { L: { hip: 80, knee: 85, ankle: 0, sh: 20 }, R: { hip: -25, knee: 90, ankle: -60, sh: 20 } }],
+      [0.38, { L: { shAbd: 50 }, R: { hip: -5, knee: 150, ankle: -40, sh: -40, elb: 40 } }], // quad stretch
+      [0.62, { L: { shAbd: 50 }, R: { hip: -5, knee: 150, ankle: -40, sh: -40, elb: 40 } }],
+      [0.72, { pitch: 70, spine: 10, ...both({ hip: 80, sh: 80 }) }], // hamstrings
+      [0.95, { pitch: 70, spine: 10, ...both({ hip: 80, sh: 80 }) }],
+    ],
   },
   'warmup': {
     dur: 6, anchor: 'none', contacts: 'feet', cam: { yaw: 60 },

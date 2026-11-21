@@ -55,7 +55,7 @@ type Overlay =
   | { name: 'builder'; from: Template | null }
   | { name: 'profile' }
   | { name: 'testday' }
-  | { name: 'coach' }
+  | { name: 'coach'; from?: Tab; ask?: string }
   | { name: 'invite'; partner?: boolean; back?: Overlay }
   | { name: 'match'; date: string; back?: Overlay }
   | { name: 'matchReport'; date: string }
@@ -248,7 +248,10 @@ export default function App({ onSignUp, onSignIn }: { onSignUp?: () => void; onS
   function renderOverlay(overlay: Overlay) {
     switch (overlay.name) {
       case 'coach':
-        return <CoachView onBack={() => { close(); setTab('week') }} />
+        return <CoachView ask={overlay.ask} ctx={{ profile: me, history: loadHistory(), matches: loadMatches(), today, sessions: library, streak }}
+          onBack={() => { close(); setTab(overlay.from ?? 'week') }}
+          onSession={(id) => { const s = library.find((x) => x.id === id); if (s) setOverlay({ name: 'detail', session: s }) }}
+          onGo={(to) => { if (to === 'settings') setOverlay({ name: 'settings' }); else { close(); setTab(to === 'record' ? 'player' : to) } }} />
       case 'library':
         return <Library sessions={library} onOpen={openFromLibrary} onNew={() => build(null)} onBack={close} />
       case 'detail':
@@ -296,6 +299,7 @@ export default function App({ onSignUp, onSignIn }: { onSignUp?: () => void; onS
           onAllSessions={() => setOverlay({ name: 'library' })}
           onAddClips={() => setOverlay({ name: 'media', from: 'home' })}
           onPlayer={() => setTab('player')}
+          onCoach={(ask) => setOverlay({ name: 'coach', from: 'home', ask })}
           streak={streak}
           makeup={makeup}
           match={md ? { day: md, onReview: () => openReview(md.date), onChanged: () => setNow(new Date()) } : null}
@@ -308,7 +312,7 @@ export default function App({ onSignUp, onSignIn }: { onSignUp?: () => void; onS
           }}
         />
       )}
-      {tab === 'week' && <WeekView today={today} games={games} sessions={sessions} library={library} changes={changes} onChange={changeDay} onGames={updateGames} onOpen={open} onCoach={() => setOverlay({ name: 'coach' })} />}
+      {tab === 'week' && <WeekView today={today} games={games} sessions={sessions} library={library} changes={changes} onChange={changeDay} onGames={updateGames} onOpen={open} onCoach={() => setOverlay({ name: 'coach', from: 'week' })} />}
       {tab === 'player' && <PlayerTab onTestDay={() => setOverlay({ name: 'testday' })} onMatch={(date) => setOverlay({ name: 'matchReport', date })} />}
       {tab === 'team' && <TeamView streak={streak} onSignUp={onSignUp} onSignIn={onSignIn} onInvite={() => setOverlay({ name: 'invite' })} />}
       </div>
