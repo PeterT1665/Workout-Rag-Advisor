@@ -10,6 +10,10 @@ import { AnimateDigits } from '../components/AnimateDigits'
 import type { Player } from '../lib/player'
 import type { Session, Settings } from '../lib/types'
 import { t } from '../i18n'
+import { LiftsEditor } from '../components/LiftsEditor'
+import { loggable, planLifts, type LiftLog } from '../lib/lifts'
+import { liveLifts, saveLiveLifts, withLive } from '../lib/liveLifts'
+import { loadHistory } from '../lib/storage'
 
 const R = 100
 const C = 2 * Math.PI * R
@@ -32,6 +36,8 @@ export function PlayerView({ session, player, settings, onExit }: { session: Ses
   useWakeLock(!st.finished)
   const [plan, setPlan] = useState(false)
   const [info, setInfo] = useState<number | null>(null) // step whose how-to + video is open
+  const [logging, setLogging] = useState<LiftLog[] | null>(null) // sets being logged after an exercise
+  const [, setLogged] = useState(0)
 
   const step = st.steps[st.i]
   // a new card per rest step, not per tick
@@ -60,6 +66,15 @@ export function PlayerView({ session, player, settings, onExit }: { session: Ses
     at += x.seconds
   })
   const prevPair = isRest ? st.steps[st.i - 1]?.pair : undefined
+  // The rest after an exercise's last set (or a superset's last round): log its sets now, while the numbers are fresh.
+  const prevWork = isRest ? st.steps[st.i - 1] : undefined
+  const finished = isRest && prevWork && step.round === step.rounds
+    ? [...new Set(st.steps.filter((x) => x.type === 'work' && (prevWork.pair ? x.pair?.[0] === prevWork.pair[0] : x.blockIdx === prevWork.blockIdx)).map((x) => x.blockIdx))]
+        .map((bi) => session.blocks[bi]).filter((b) => b && loggable(b))
+    : []
+  const live = finished.length ? liveLifts(st.startedAt) : []
+  const doneLogging = finished.length > 0 && finished.every((b) => live.some((l) => l.name === b.name))
+  const openLog = () => setLogging(withLive(planLifts({ ...session, blocks: finished }, loadHistory()), live))
   const phase = isRest ? t('Rest') : step.kind === 'warmup' ? t('Warm-up') : step.kind === 'cooldown' ? t('Cool-down') : step.pair ? t('Superset {x}', { x: step.pair }) : t('Work')
 
   return (
@@ -86,6 +101,16 @@ export function PlayerView({ session, player, settings, onExit }: { session: Ses
         </div>
       </div>
 
+      {finished.length > 0 && (
+        <button onClick={openLog} aria-haspopup="dialog"
+          className={`mb-3 flex w-full items-center justify-between gap-3 rounded-[20px] px-4 py-3 text-left active:scale-[0.98] ${doneLogging ? 'bg-surface-2' : 'bg-red text-on-red'}`}>
+          <span className="min-w-0">
+            <span className="block font-display text-sm uppercase">{doneLogging ? t('Sets logged') : t('Log your sets')}</span>
+            <span className={`block truncate text-sm ${doneLogging ? 'text-muted' : 'opacity-85'}`}>{finished.map((b) => t(b.name)).join(' + ')}</span>
+          </span>
+          <span aria-hidden className="shrink-0 font-display">{doneLogging ? '✓' : '›'}</span>
+        </button>
+      )}
       <div className="min-h-24 rounded-[20px] bg-surface p-4">
         {isRest ? (restQuote ? <QuoteCard text={restQuote} /> : <p className="m-0">{t('Breathe. Walk it off. Sip water.')}</p>) : <p className="m-0">{step.how}</p>}
       </div>
@@ -118,6 +143,17 @@ export function PlayerView({ session, player, settings, onExit }: { session: Ses
         <Button variant="ghost" size="sm" onClick={() => { if (!confirm(t('End the session now?'))) return; if (player.getState().elapsed >= 60) player.endEarly(); else onExit() }}>{t('End session')}</Button>
       </div>
       {plan && <PlanSheet player={player} onClose={() => setPlan(false)} />}
+      {logging && (
+        <Sheet label={t('Log your sets')} onClose={() => setLogging(null)}>
+          <div className="flex items-baseline justify-between gap-3">
+            <h2 className="m-0 font-display text-xl uppercase">{t('Log your sets')}</h2>
+            <span className="shrink-0 font-display text-sm tabular-nums text-muted">{isRest ? t('Rest {time}', { time: fmtTime(st.remainingMs / 1000) }) : phase}</span>
+          </div>
+          <p className="m-0 mt-1 mb-3 text-sm text-muted">{t("Last time's numbers are filled in, change what's different.")}</p>
+          <LiftsEditor lifts={logging} onChange={setLogging} />
+          <Button block className="mt-4" onClick={() => { saveLiveLifts(st.startedAt, logging); setLogging(null); setLogged((n) => n + 1) }}>{t('Save sets')}</Button>
+        </Sheet>
+      )}
       {info !== null && st.steps[info] && (() => {
         const x = st.steps[info]
         return (

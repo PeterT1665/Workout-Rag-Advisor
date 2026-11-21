@@ -13,6 +13,8 @@ import { saveGames } from './lib/today'
 import { acceptPendingInvite, inviteSeen, pendingInvite } from './lib/invite'
 import { FriendInvite } from './views/FriendInvite'
 import { tourReset } from './components/Tour'
+import { PickUsername } from './views/PickUsername'
+import { load, save } from './lib/storage'
 
 applyAccent(getProfile().accent)
 
@@ -31,6 +33,16 @@ function Main() {
   const [profiled, setProfiled] = useState(hasProfile)
   const [authStart, setAuthStart] = useState<'signin' | 'signup'>('signin')
   const [invite, setInvite] = useState(() => !!pendingInvite() && !inviteSeen())
+  const [needsName, setNeedsName] = useState(false) // signed in, no username yet: asked once, right away
+  async function checkUsername() {
+    if (load<boolean>('team:askedName', false)) return
+    try {
+      const { myTeamProfile } = await import('./lib/team')
+      const mine = await Promise.race([myTeamProfile(), new Promise<'slow'>((r) => setTimeout(() => r('slow'), 4000))])
+      if (mine === null) setNeedsName(true) // 'slow' or offline: ask another time
+    } catch { /* offline: ask another time */ }
+  }
+  const nameDone = () => { save('team:askedName', true); setNeedsName(false) }
 
   async function enterAccount(next: Mode = 'account') {
     // A guest's sample player or leftovers must not end up in the account. A guest's own player is kept and uploaded.
@@ -44,6 +56,7 @@ function Main() {
     setProfiled(hasProfile())
     setMode(next)
     void acceptPendingInvite() // came from a friend's QR: you're friends now
+    void checkUsername()
   }
 
   useEffect(() => {
@@ -62,6 +75,7 @@ function Main() {
   if (mode === 'guest' && invite && accountsEnabled) return <FriendInvite onSignUp={auth('signup')} onSignIn={auth('signin')} onSkip={() => setInvite(false)} />
   if (mode === 'guest') return <Guest onSignIn={accountsEnabled ? auth('signin') : undefined} onSignUp={accountsEnabled ? auth('signup') : undefined} />
   if (!profiled) return <Onboarding onDone={(p, games) => { tourReset(); saveGames(games); setProfile(p); setProfiled(true) }} />
+  if (needsName) return <PickUsername onDone={nameDone} />
   return <App />
 }
 

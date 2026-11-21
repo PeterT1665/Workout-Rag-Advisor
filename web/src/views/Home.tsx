@@ -51,7 +51,7 @@ export function Hero({ today, onKickOff, onOpen, onSettings, onCustomise, streak
     ? today.slot.kind === 'game' ? t('Game day. Keep the legs fresh.')
       : today.slot.kind === 'cheer' ? t('Cheer practice this morning.')
         : null
-    : !today.scheduled ? t('Rest day.') : null
+    : !today.scheduled ? t('Rest day.') : today.done ? t("Today's training is done. Go again only if you feel fresh.") : null
   const date = new Date().toLocaleDateString(locale(), { weekday: 'short', day: 'numeric', month: 'short' })
   const me = useProfile()
   const sample = DEMO && me.sample

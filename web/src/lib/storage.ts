@@ -89,6 +89,15 @@ export function reflectLast(r: Reflection) {
   save('history', h.map((x, i) => (i === at ? updated : x)))
   return updated
 }
+// Skipped the check-in but logged sets during the session: keep the sets (effort can be added later in Record).
+export function keepLiftsOnLast(lifts: LiftLog[], bw?: number) {
+  const clean = cleanLifts(lifts)
+  if (!clean.length) return
+  const h = allHistory()
+  const at = h.findLastIndex((x) => !x.deleted)
+  if (at < 0) return
+  save('history', h.map((x, i) => (i === at ? { ...x, lifts: clean, ...(bw ? { bw } : {}), at: Date.now() } : x)))
+}
 // Edit a logged session later (Record → tap it): sets, effort.
 export function editHistory(e: HistoryEntry, r: Reflection) {
   const h = allHistory()

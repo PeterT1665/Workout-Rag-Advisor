@@ -263,7 +263,7 @@ function AvatarPicker({ url, name, onChanged }: { url?: string; name: string; on
   </>)
 }
 
-function UsernameForm({ current, profile, onDone, onCancel }: { current?: string; profile: Profile; onDone: () => void; onCancel?: () => void }) {
+export function UsernameForm({ current, profile, onDone, onCancel }: { current?: string; profile: Profile; onDone: () => void; onCancel?: () => void }) {
   const [name, setName] = useState(current ?? '')
   const [msg, setMsg] = useState<string | null>(null)
   const [busy, setBusy] = useState(false)

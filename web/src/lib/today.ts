@@ -24,6 +24,7 @@ export type Today = {
   md: string | null
   session: Session // what Kick off starts
   scheduled: boolean // true if the session is today's planned one
+  done?: boolean // everything planned for today is done (Kick off offers the last one again)
   nextDay: number | null
   changed?: 'session' | 'rest' // the player changed today by hand (Week screen or a session's Do it today)
 }
@@ -49,18 +50,23 @@ export function sessionForSlot(slot: Slot, plan: WeekPlan, all: Session[]): Sess
   return null
 }
 
-export function planToday(all: Session[], games: Game[], now = new Date(), gym = DEFAULT_GYM): Today {
+// `doneKinds`: what you've already trained today (football, gym, recovery). A day with football and gym
+// moves on to the gym once the football is in the log.
+export function planToday(all: Session[], games: Game[], now = new Date(), gym = DEFAULT_GYM, doneKinds: string[] = []): Today {
   const day = todayIndex(now)
   const plan = buildWeek(games, { gym })
   const slots = plan.slots.filter((s) => s.day === day)
+  const work = slots.filter((s) => s.kind !== 'game')
+  const pending = work.find((s) => !doneKinds.includes(s.kind))
   // a game day is a game day, even when a short recovery follows the game
-  const slot = slots.find((s) => s.kind === 'game') ?? slots.find((s) => s.kind !== 'game') ?? null
+  const slot = slots.find((s) => s.kind === 'game') ?? pending ?? work[work.length - 1] ?? null
   const todays = slot ? sessionForSlot(slot, plan, all) : null
   const next = plan.slots.find((s) => s.day > day && sessionForSlot(s, plan, all))
   const fallback = (next && sessionForSlot(next, plan, all)) ?? soloFootball(all)[0] ?? all[0]
   return {
     day, plan, slot, md: matchdayLabel(day, games),
     session: todays ?? fallback, scheduled: !!todays, nextDay: next?.day ?? null,
+    ...(work.length && !pending && slot?.kind !== 'game' ? { done: true } : {}),
   }
 }
 

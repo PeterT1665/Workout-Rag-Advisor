@@ -35,7 +35,7 @@ import { createPlayer, trainedMinutes, type Player, type Snapshot } from './lib/
 import { nextQuote } from './lib/quotes'
 import { addHistory, loadHistory, loadSettings, save } from './lib/storage'
 import { loadGames, planToday, saveGames, withChange } from './lib/today'
-import { planStreak } from './lib/streak'
+import { planStreak, counts } from './lib/streak'
 import { DEFAULT_GYM } from './lib/weekplan'
 import { changeFor, changedSession, loadWeekChanges, saveWeekChange, type DayChange } from './lib/weekChanges'
 import type { Game } from './lib/weekplan'
@@ -96,7 +96,10 @@ export default function App({ onSignUp, onSignIn }: { onSignUp?: () => void; onS
   const [active, setActive] = useState(loadActive) // a session left unfinished (app closed or reloaded)
   const gymPerWeek = useProfile().gym
   const [changes, setChanges] = useState(loadWeekChanges)
-  const planned = useMemo(() => planToday(sessions, games, new Date(), gymPerWeek), [games, gymPerWeek])
+  // what's already in today's log (football, gym, recovery), so Kick off moves on to the next one
+  const doneToday = [...new Set(loadHistory().filter((h) => h.date === new Date().toLocaleDateString('en-CA') && counts(h))
+    .map((h) => (h.type === 'gym' || h.type === 'home' ? 'gym' : h.type === 'recovery' ? 'recovery' : 'football')))].sort().join(',')
+  const planned = useMemo(() => planToday(sessions, games, new Date(), gymPerWeek, doneToday ? doneToday.split(',') : []), [games, gymPerWeek, doneToday])
   const [library, setLibrary] = useState(allSessions) // recommended + the user's own
   const today = useMemo(() => withChange(planned, changeFor(planned.day, changes), library), [planned, changes, library])
   // week 1 = next week (planned on Sunday)

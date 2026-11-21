@@ -21,6 +21,19 @@ describe('today', () => {
     expect(t.session.id).not.toContain('partner')
     expect(t.md).toMatch(/^MD[+-]\d$/)
   })
+  test('a football + gym day moves on to the gym once the football is done', () => {
+    const games = [{ day: 2, kind: 'competitive' as const }]
+    const slots = buildWeek(games).slots
+    const both = slots.find((x) => x.kind === 'football' && slots.some((y) => y.day === x.day && y.kind === 'gym'))!.day
+    const date = new Date(2026, 9, 26 + both, 9)
+    expect(planToday(sessions, games, date).session.type).toBe('football')
+    const after = planToday(sessions, games, date, undefined, ['football'])
+    expect(after.slot?.kind).toBe('gym')
+    expect(after.session.type).toBe('gym')
+    expect(after.scheduled).toBe(true)
+    expect(after.done).toBeUndefined()
+    expect(planToday(sessions, games, date, undefined, ['football', 'gym']).done).toBe(true)
+  })
   test('game day is not a training day; Kick off offers the next session', () => {
     const t = planToday(sessions, [{ day: 2, kind: 'competitive' }], wednesday)
     expect(t.slot?.kind).toBe('game')

@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
-import { loadHistory, reflectLast, weekLoads, type Legs } from '../lib/storage'
+import { keepLiftsOnLast, loadHistory, reflectLast, weekLoads, type Legs } from '../lib/storage'
+import { clearLiveLifts, liveLifts, withLive } from '../lib/liveLifts'
 import { bestsFrom, planLifts, scoreLifts, type LiftLog, type LiftScore } from '../lib/lifts'
 import { bodyWeight } from '../lib/body'
 import { LiftsEditor } from '../components/LiftsEditor'
@@ -42,7 +43,8 @@ export function FullTime({ session, st, onExit }: { session: Session; st: Player
   const [legs, setLegs] = useState<Legs | null>(null)
   const [sore, setSore] = useState<string[]>([])
   // gym sets: last time's weights and reps (or the plan's reps) filled in, the player fixes what changed
-  const [lifts, setLifts] = useState<LiftLog[]>(() => planLifts(session, loadHistory()))
+  const [lifts, setLifts] = useState<LiftLog[]>(() => withLive(planLifts(session, loadHistory()), liveLifts(st.startedAt)))
+  const loggedLive = liveLifts(st.startedAt).length > 0
   const [saved, setSaved] = useState<{ load: number; week: number; effort: number; measured: number | null; lifts: LiftScore[] } | null>(null)
   const shown = useCountUp(saved?.load ?? 0, !!saved)
 
@@ -50,6 +52,7 @@ export function FullTime({ session, st, onExit }: { session: Session; st: Player
   const save = () => {
     if (!rpe || !legs) return
     const e = reflectLast({ rpe, legs, sore, lifts, bw: bodyWeight() })
+    clearLiveLifts()
     const all = loadHistory()
     const week = weekLoads(all).reduce((a, b) => a + b, 0)
     const scored = scoreLifts(e?.lifts ?? [], rpe, bestsFrom(all.slice(0, -1), e?.bw), e?.bw)
@@ -77,7 +80,7 @@ export function FullTime({ session, st, onExit }: { session: Session; st: Player
         {!saved ? (
           <section className="mt-8 flex flex-1 flex-col">
             <h2 className="m-0 font-display text-xl uppercase">{lifts.length ? t('Check-in') : t('20-second check-in')}</h2>
-            <p className="m-0 mt-1 text-sm text-white/60">{lifts.length ? t("Your sets first: last time's numbers are filled in, change what's different.") : t("Tap, don't type.")}</p>
+            <p className="m-0 mt-1 text-sm text-white/60">{lifts.length ? (loggedLive ? t('Your sets from the session are in: check them, fill in any you missed.') : t("Your sets first: last time's numbers are filled in, change what's different.")) : t("Tap, don't type.")}</p>
 
             {lifts.length > 0 && <>
               <h3 className="m-0 mt-6 mb-2 font-semibold">{t('Your sets')}</h3>
@@ -111,7 +114,7 @@ export function FullTime({ session, st, onExit }: { session: Session; st: Player
                 className="min-h-14 rounded-full bg-[var(--red)] font-display text-sm uppercase tracking-wide text-white transition-[transform,opacity] duration-150 ease-snap active:scale-[0.97] disabled:opacity-40">
                 {t('Save check-in')}
               </button>
-              <button onClick={onExit} className="min-h-11 text-sm font-semibold text-white/60">{t('Skip for now')}</button>
+              <button onClick={() => { if (loggedLive) keepLiftsOnLast(liveLifts(st.startedAt), bodyWeight()); clearLiveLifts(); onExit() }} className="min-h-11 text-sm font-semibold text-white/60">{t('Skip for now')}</button>
             </div>
           </section>
         ) : (
