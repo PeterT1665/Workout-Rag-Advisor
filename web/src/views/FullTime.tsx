@@ -1,5 +1,9 @@
 import { useEffect, useState } from 'react'
 import { loadHistory, reflectLast, weekLoads, type Legs } from '../lib/storage'
+import { bestsFrom, planLifts, scoreLifts, type LiftLog, type LiftScore } from '../lib/lifts'
+import { bodyWeight } from '../lib/body'
+import { LiftsEditor } from '../components/LiftsEditor'
+import { EFFORT_WORDS, LiftSummary } from '../components/LiftSummary'
 import { trainedMinutes, type PlayerState } from '../lib/player'
 import type { Session } from '../lib/types'
 import { AnimateDigits } from '../components/AnimateDigits'
@@ -8,7 +12,6 @@ import { mark, t } from '../i18n'
 import { tr } from '../i18n/rich'
 
 const SORE = [mark('Hips'), mark('Knee'), mark('Hamstring'), mark('Quad'), mark('Ankle'), mark('Other')]
-const EFFORT_WORDS = () => ['', t('Very easy'), t('Easy'), t('Easy'), t('Moderate'), t('Moderate'), t('Hard'), t('Hard'), t('Very hard'), t('Very hard'), t('Max')]
 
 // Count up once, on the rare full-time moment (delight tier): a few scoreboard steps the digits roll through.
 // Lands on the real number immediately when motion is reduced.
@@ -38,15 +41,19 @@ export function FullTime({ session, st, onExit }: { session: Session; st: Player
   const [rpe, setRpe] = useState<number | null>(null)
   const [legs, setLegs] = useState<Legs | null>(null)
   const [sore, setSore] = useState<string[]>([])
-  const [saved, setSaved] = useState<{ load: number; week: number } | null>(null)
+  // gym sets: last time's weights and reps (or the plan's reps) filled in, the player fixes what changed
+  const [lifts, setLifts] = useState<LiftLog[]>(() => planLifts(session, loadHistory()))
+  const [saved, setSaved] = useState<{ load: number; week: number; effort: number; measured: number | null; lifts: LiftScore[] } | null>(null)
   const shown = useCountUp(saved?.load ?? 0, !!saved)
 
   const toggleSore = (s: string) => setSore((x) => (x.includes(s) ? x.filter((y) => y !== s) : [...x, s]))
   const save = () => {
     if (!rpe || !legs) return
-    const e = reflectLast({ rpe, legs, sore })
-    const week = weekLoads(loadHistory()).reduce((a, b) => a + b, 0)
-    setSaved({ load: e?.load ?? minutes * rpe, week })
+    const e = reflectLast({ rpe, legs, sore, lifts, bw: bodyWeight() })
+    const all = loadHistory()
+    const week = weekLoads(all).reduce((a, b) => a + b, 0)
+    const scored = scoreLifts(e?.lifts ?? [], rpe, bestsFrom(all.slice(0, -1), e?.bw), e?.bw)
+    setSaved({ load: e?.load ?? minutes * rpe, week, effort: e?.effort ?? rpe, ...scored })
   }
 
   return (
@@ -69,10 +76,15 @@ export function FullTime({ session, st, onExit }: { session: Session; st: Player
 
         {!saved ? (
           <section className="mt-8 flex flex-1 flex-col">
-            <h2 className="m-0 font-display text-xl uppercase">{t('20-second check-in')}</h2>
-            <p className="m-0 mt-1 text-sm text-white/60">{t("Tap, don't type.")}</p>
+            <h2 className="m-0 font-display text-xl uppercase">{lifts.length ? t('Check-in') : t('20-second check-in')}</h2>
+            <p className="m-0 mt-1 text-sm text-white/60">{lifts.length ? t("Your sets first: last time's numbers are filled in, change what's different.") : t("Tap, don't type.")}</p>
 
-            <h3 className="m-0 mt-6 mb-2 font-semibold">{t('How hard was it?')}{rpe ? <span className="ml-2 font-normal text-white/60">{EFFORT_WORDS()[rpe]}</span> : null}</h3>
+            {lifts.length > 0 && <>
+              <h3 className="m-0 mt-6 mb-2 font-semibold">{t('Your sets')}</h3>
+              <LiftsEditor lifts={lifts} onChange={setLifts} />
+            </>}
+
+            <h3 className="m-0 mt-6 mb-2 font-semibold">{lifts.length ? t('How hard was the whole session?') : t('How hard was it?')}{rpe ? <span className="ml-2 font-normal text-white/60">{EFFORT_WORDS()[rpe]}</span> : null}</h3>
             <div className="grid grid-cols-5 gap-2">
               {Array.from({ length: 10 }, (_, i) => i + 1).map((n) => (
                 <button key={n} onClick={() => setRpe(n)} aria-pressed={rpe === n} aria-label={t('Effort {n}', { n })}
@@ -106,16 +118,25 @@ export function FullTime({ session, st, onExit }: { session: Session; st: Player
           <section className="rise mt-10 flex flex-1 flex-col">
             <p className="m-0 font-semibold text-white/70">{t('Session load')}</p>
             <p className="m-0 font-display text-[clamp(4rem,24vw,7rem)] leading-none"><AnimateDigits value={String(shown)} /></p>
-            <p className="m-0 mt-2 text-white/70">{tr('{minutes} min × effort {rpe}. This week so far: <b>{week}</b>.', {}, { minutes, rpe: rpe ?? 0, week: saved.week })}</p>
+            <p className="m-0 mt-2 text-white/70">{tr('{minutes} min × effort {rpe}. This week so far: <b>{week}</b>.', {}, { minutes, rpe: saved.effort, week: saved.week })}</p>
+            {saved.measured !== null && (
+              <>
+                <p className="m-0 mt-1 text-sm text-white/60">{t('Effort {e}: you said {rpe}, your sets say {m}.', { e: saved.effort, rpe: rpe ?? 0, m: saved.measured })}</p>
+                <h2 className="m-0 mt-6 mb-2 font-display text-lg uppercase">{t('Your sets')}</h2>
+                <LiftSummary dark lifts={saved.lifts} />
+              </>
+            )}
             {sore.length > 0 && (
               <p className="m-0 mt-4 rounded-[18px] bg-white/[.06] p-4 text-sm">
                 {t('Noted: {list}. Your plan keeps an eye on it.', { list: sore.map((x) => t(x)).join(', ').toLowerCase() })}
               </p>
             )}
-            <button onClick={onExit}
-              className="mt-auto min-h-14 rounded-full bg-[var(--red)] font-display text-sm uppercase tracking-wide text-white transition-transform duration-150 ease-snap active:scale-[0.97]">
-              {t('Back home')}
-            </button>
+            <div className="mt-auto pt-8">
+              <button onClick={onExit}
+                className="min-h-14 w-full rounded-full bg-[var(--red)] font-display text-sm uppercase tracking-wide text-white transition-transform duration-150 ease-snap active:scale-[0.97]">
+                {t('Back home')}
+              </button>
+            </div>
           </section>
         )}
       </div>

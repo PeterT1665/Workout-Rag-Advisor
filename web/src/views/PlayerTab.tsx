@@ -14,6 +14,8 @@ import { load, save } from '../lib/storage'
 import { loadMatches, resultOf, resultStreaks, type MatchReview } from '../lib/match'
 import { RatingBadge } from './MatchReview'
 import { FlameIcon } from '../components/icons'
+import { BodyPanel } from '../components/BodyPanel'
+import { SessionSheet } from './SessionSheet'
 
 const fmtDate = (iso: string) => {
   const [y, m, d] = iso.split('-').map(Number)
@@ -95,6 +97,7 @@ function PlayerSide({ wide, onTestDay }: { wide: boolean; onTestDay?: () => void
   const stats = cardStatsFor(me)
   const [, setVersion] = useState(0)
   const [cropping, setCropping] = useState<Blob | null>(null)
+  const [openEntry, setOpenEntry] = useState<HistoryEntry | null>(null)
   const all = loadHistory()
   const history = all.slice().reverse()
   const remove = (h: HistoryEntry) => {
@@ -120,6 +123,7 @@ function PlayerSide({ wide, onTestDay }: { wide: boolean; onTestDay?: () => void
       </p>
       {cropping && <CropSheet file={cropping} title={t('Your card photo')} onCancel={() => setCropping(null)} onDone={(b) => { setCropping(null); void setPhoto('card', b) }} />}
       {onTestDay && <Button block className="mt-4" onClick={onTestDay}>{me.ratings ? t('New rating session') : t('Start rating session')}</Button>}
+      {!me.sample && <><SectionHead title={t('Body')} /><BodyPanel /></>}
 
       </div>
       <div>
@@ -130,19 +134,22 @@ function PlayerSide({ wide, onTestDay }: { wide: boolean; onTestDay?: () => void
         ? <Panel><p className="m-0 text-muted">{t('No sessions yet.')}</p></Panel>
         : <ul className="m-0 flex list-none flex-col gap-2 p-0">
             {history.slice(0, 20).map((h, i) => (
-              <li key={`${h.date}-${h.id}-${i}`} className={`flex items-center justify-between gap-3 rounded-[16px] bg-surface py-3 pr-2 pl-4 ${!counts(h) ? 'opacity-60' : ''}`}>
+              <li key={`${h.date}-${h.id}-${i}`} className={`flex items-center justify-between gap-1 rounded-[16px] bg-surface pr-2 ${!counts(h) ? 'opacity-60' : ''}`}>
+                <button onClick={() => setOpenEntry(h)} className="flex min-w-0 flex-1 items-center gap-3 py-3 pl-4 text-left active:opacity-70">
                 <span className="h-8 w-1 shrink-0 rounded-full" style={{ background: KINDS.find((k) => k.id === kindOf(h))!.color }} aria-hidden="true" />
                 <span className="min-w-0 flex-1">
                   <span className="block truncate font-semibold">{t(h.title)}</span>
-                  <span className="text-sm text-muted">{fmtDate(h.date)} · {t('{n} min', { n: h.minutes })}{h.rpe ? ` · ${t('effort {n}', { n: h.rpe })}` : ''}{h.sore?.length ? ` · ${t('sore: {list}', { list: h.sore.map((x) => t(x)).join(', ').toLowerCase() })}` : ''}</span>
+                  <span className="text-sm text-muted">{fmtDate(h.date)} · {t('{n} min', { n: h.minutes })}{h.rpe ? ` · ${t('effort {n}', { n: h.effort ?? h.rpe })}` : ''}{h.lifts?.length ? ` · ${h.lifts.length === 1 ? t('1 lift') : t('{n} lifts', { n: h.lifts.length })}` : ''}{h.sore?.length ? ` · ${t('sore: {list}', { list: h.sore.map((x) => t(x)).join(', ').toLowerCase() })}` : ''}</span>
                   {!counts(h) && <span className="mt-1 inline-block rounded-full bg-surface-2 px-2 py-0.5 text-xs font-semibold text-muted">{t("Under {n} min: doesn't count", { n: minFor(h.type) })}</span>}
                 </span>
                 {h.load ? <span className="shrink-0 text-right"><span className="block font-display text-lg leading-none">{h.load}</span><span className="text-xs text-muted">{t('load')}</span></span> : null}
+                </button>
                 <button onClick={() => remove(h)} aria-label={t('Delete {title} on {date}', { title: t(h.title), date: fmtDate(h.date) })}
                   className="grid h-9 w-9 shrink-0 place-items-center rounded-full text-sm text-muted active:bg-surface-2">✕</button>
               </li>
             ))}
           </ul>}
+      {openEntry && <SessionSheet entry={openEntry} date={fmtDate(openEntry.date)} onClose={() => setOpenEntry(null)} onSaved={() => { setOpenEntry(null); setVersion((v) => v + 1) }} />}
       </div>
       </div>
     </>

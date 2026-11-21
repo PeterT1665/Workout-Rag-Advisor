@@ -19,7 +19,10 @@ export type Profile = {
   sample?: boolean // the demo's sample player: history is reseeded daily
   ratings?: Ratings // latest rating session (test day)
   prevRatings?: Ratings // the one before, for progress arrows
+  heightCm?: number
+  body?: BodyEntry[] // body weight (and body fat, if known) over time, oldest first; private, never on Team
 }
+export type BodyEntry = { date: string; kg: number; fat?: number }
 
 export const POSITIONS: { id: Position; label: string; short: string }[] = [
   { id: 'winger', label: t('Winger'), short: 'W' }, { id: 'striker', label: t('Striker'), short: 'ST' },
