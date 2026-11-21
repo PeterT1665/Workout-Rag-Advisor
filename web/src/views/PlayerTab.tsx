@@ -123,7 +123,7 @@ function PlayerSide({ wide, onTestDay }: { wide: boolean; onTestDay?: () => void
       </p>
       {cropping && <CropSheet file={cropping} title={t('Your card photo')} onCancel={() => setCropping(null)} onDone={(b) => { setCropping(null); void setPhoto('card', b) }} />}
       {onTestDay && <Button block className="mt-4" onClick={onTestDay}>{me.ratings ? t('New rating session') : t('Start rating session')}</Button>}
-      {!me.sample && <><SectionHead title={t('Body')} /><BodyPanel /></>}
+      <SectionHead title={t('Body')} /><BodyPanel />
 
       </div>
       <div>
