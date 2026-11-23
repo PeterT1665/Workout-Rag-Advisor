@@ -1,5 +1,14 @@
 import { useEffect, useState } from 'react'
-import { keepLiftsOnLast, loadHistory, reflectLast, weekLoads, type Legs } from '../lib/storage'
+import { keepLiftsOnLast, loadHistory, reflectLast, weekLoads, type Legs, type Tally } from '../lib/storage'
+import { setDayPhoto, useDayPhotos } from '../lib/dayPhotos'
+import { sessionShare, type ShareItem } from '../lib/shareStats'
+import { ShareSheet } from './CalendarView'
+import { planStreak } from '../lib/streak'
+import { loadGames } from '../lib/today'
+import { loadWeekChanges } from '../lib/weekChanges'
+import { DEFAULT_GYM } from '../lib/weekplan'
+import { ACCENTS, getProfile } from '../lib/profile'
+import { latestBody } from '../lib/body'
 import { clearLiveLifts, liveLifts, withLive } from '../lib/liveLifts'
 import { bestsFrom, planLifts, scoreLifts, type LiftLog, type LiftScore } from '../lib/lifts'
 import { bodyWeight } from '../lib/body'
@@ -28,6 +37,32 @@ function useCountUp(target: number, run: boolean) {
   return v
 }
 
+// Shots, on target, goals: three − / + counters, kept in order (goals ≤ on target ≤ shots).
+function TallyBox({ tally, onChange }: { tally: Required<Tally>; onChange: (t: Required<Tally>) => void }) {
+  const set = (k: keyof Tally, d: number) => {
+    const n = { ...tally, [k]: Math.max(0, Math.min(200, tally[k] + d)) }
+    if (k === 'shots') { n.onTarget = Math.min(n.onTarget, n.shots); n.goals = Math.min(n.goals, n.onTarget) }
+    if (k === 'onTarget') { n.shots = Math.max(n.shots, n.onTarget); n.goals = Math.min(n.goals, n.onTarget) }
+    if (k === 'goals') { n.onTarget = Math.max(n.onTarget, n.goals); n.shots = Math.max(n.shots, n.onTarget) }
+    onChange(n)
+  }
+  const rows: [keyof Tally, string][] = [['shots', t('Shots')], ['onTarget', t('On target')], ['goals', t('Goals')]]
+  return (
+    <div className="grid grid-cols-3 gap-2">
+      {rows.map(([k, label]) => (
+        <div key={k} className="rounded-[18px] bg-white/[.06] p-2.5 text-center">
+          <p className="m-0 text-xs text-white/60">{label}</p>
+          <p className="m-0 font-display text-3xl tabular-nums" aria-live="polite">{tally[k]}</p>
+          <div className="mt-1 grid grid-cols-2 gap-1">
+            <button onClick={() => set(k, -1)} aria-label={t('{name}: one less', { name: label })} className="h-10 rounded-xl bg-white/10 text-lg active:scale-95">−</button>
+            <button onClick={() => set(k, 1)} aria-label={t('{name}: one more', { name: label })} className="h-10 rounded-xl bg-white/10 text-lg active:scale-95">+</button>
+          </div>
+        </div>
+      ))}
+    </div>
+  )
+}
+
 function Choice({ on, onClick, children, className = '' }: { on: boolean; onClick: () => void; children: React.ReactNode; className?: string }) {
   return (
     <button onClick={onClick} aria-pressed={on}
@@ -47,11 +82,21 @@ export function FullTime({ session, st, onExit }: { session: Session; st: Player
   const loggedLive = liveLifts(st.startedAt).length > 0
   const [saved, setSaved] = useState<{ load: number; week: number; effort: number; measured: number | null; lifts: LiftScore[] } | null>(null)
   const shown = useCountUp(saved?.load ?? 0, !!saved)
+  // finishing in the session: count shots, on target and goals (they go on the share card)
+  const shooting = session.blocks.some((b) => b.category === 'finishing' || /shoot|finish|volley/i.test(b.name))
+  const [tally, setTally] = useState<Required<Tally>>({ shots: 0, onTarget: 0, goals: 0 })
+  const day = new Date().toLocaleDateString('en-CA')
+  const photo = useDayPhotos()[day]
+  const [sharing, setSharing] = useState<ShareItem | null>(null)
+  const openShare = () => {
+    const all = loadHistory(), last = all[all.length - 1]
+    if (last) setSharing(sessionShare(last, all, latestBody(getProfile())?.kg ?? 70))
+  }
 
   const toggleSore = (s: string) => setSore((x) => (x.includes(s) ? x.filter((y) => y !== s) : [...x, s]))
   const save = () => {
     if (!rpe || !legs) return
-    const e = reflectLast({ rpe, legs, sore, lifts, bw: bodyWeight() })
+    const e = reflectLast({ rpe, legs, sore, lifts, bw: bodyWeight(), ...(tally.shots ? { tally } : {}) })
     clearLiveLifts()
     const all = loadHistory()
     const week = weekLoads(all).reduce((a, b) => a + b, 0)
@@ -87,6 +132,11 @@ export function FullTime({ session, st, onExit }: { session: Session; st: Player
               <LiftsEditor lifts={lifts} onChange={setLifts} />
             </>}
 
+            {shooting && <>
+              <h3 className="m-0 mt-6 mb-2 font-semibold">{t('Your shooting')}</h3>
+              <TallyBox tally={tally} onChange={setTally} />
+            </>}
+
             <h3 className="m-0 mt-6 mb-2 font-semibold">{lifts.length ? t('How hard was the whole session?') : t('How hard was it?')}{rpe ? <span className="ml-2 font-normal text-white/60">{EFFORT_WORDS()[rpe]}</span> : null}</h3>
             <div className="grid grid-cols-5 gap-2">
               {Array.from({ length: 10 }, (_, i) => i + 1).map((n) => (
@@ -108,6 +158,18 @@ export function FullTime({ session, st, onExit }: { session: Session; st: Player
             <div className="flex flex-wrap gap-2">
               {SORE.map((s) => <Choice key={s} on={sore.includes(s)} onClick={() => toggleSore(s)} className="px-5">{t(s)}</Choice>)}
             </div>
+
+            <h3 className="m-0 mt-6 mb-2 font-semibold">{t('Photo of today')} <span className="font-normal text-white/50">{t('(optional)')}</span></h3>
+            <label className="flex cursor-pointer items-center gap-3 rounded-[18px] bg-white/[.06] p-2.5 active:scale-[0.99]">
+              <span className="grid h-16 w-16 shrink-0 place-items-center overflow-hidden rounded-[14px] bg-white/10">
+                {photo ? <img src={photo} alt="" className="h-full w-full object-cover" /> : <svg viewBox="0 0 24 24" className="h-6 w-6 text-white/70" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M4 8h3l1.5-2h7L17 8h3v11H4V8Z" /><circle cx="12" cy="13" r="3.5" /></svg>}
+              </span>
+              <span className="text-sm">
+                <span className="block font-semibold">{photo ? t('Change photo') : t('Add a photo of today')}</span>
+                <span className="block text-white/55">{t('It goes on your streak calendar and your share picture. It stays on this phone.')}</span>
+              </span>
+              <input type="file" accept="image/*" className="sr-only" onChange={(e) => { const f = e.target.files?.[0]; if (f) void setDayPhoto(day, f) }} />
+            </label>
 
             <div className="mt-auto flex flex-col gap-2 pt-8">
               <button onClick={save} disabled={!rpe || !legs}
@@ -134,7 +196,11 @@ export function FullTime({ session, st, onExit }: { session: Session; st: Player
                 {t('Noted: {list}. Your plan keeps an eye on it.', { list: sore.map((x) => t(x)).join(', ').toLowerCase() })}
               </p>
             )}
-            <div className="mt-auto pt-8">
+            <div className="mt-auto flex flex-col gap-2 pt-8">
+              <button onClick={openShare}
+                className="min-h-14 w-full rounded-full bg-white font-display text-sm uppercase tracking-wide text-black transition-transform duration-150 ease-snap active:scale-[0.97]">
+                {t('Share')}
+              </button>
               <button onClick={onExit}
                 className="min-h-14 w-full rounded-full bg-[var(--red)] font-display text-sm uppercase tracking-wide text-white transition-transform duration-150 ease-snap active:scale-[0.97]">
                 {t('Back home')}
@@ -143,6 +209,8 @@ export function FullTime({ session, st, onExit }: { session: Session; st: Player
           </section>
         )}
       </div>
+      {sharing && <ShareSheet item={sharing} photo={photo} accent={ACCENTS.find((a) => a.id === getProfile().accent)?.hex ?? '#e01b35'}
+        streak={planStreak(loadHistory(), loadGames(), getProfile().gym ?? DEFAULT_GYM, loadWeekChanges()).days} onClose={() => setSharing(null)} />}
     </div>
   )
 }

@@ -1,7 +1,8 @@
 import { useEffect, useRef, useState } from 'react'
 import { Button, Screen } from '../components/ui'
 import { PlayerCard, overall } from '../components/PlayerCard'
-import { TESTS, ratingsFrom, toCardStats, type Stat, type Test } from '../lib/testday'
+import { TESTS, WARMUP, ratingsFrom, toCardStats, type Stat, type Test } from '../lib/testday'
+import { Demo3D } from '../components/Demo3D'
 import { getProfile, setProfile, type Profile } from '../lib/profile'
 import { beep, say, unlockAudio } from '../lib/audio'
 import { loadSettings } from '../lib/storage'
@@ -13,6 +14,7 @@ import { tr } from '../i18n/rich'
 // The only place the app asks for numbers mid-session: rating day is a test, not a workout.
 export function TestDay({ onDone }: { onDone: () => void }) {
   const [i, setI] = useState(-1) // -1 intro, TESTS.length = reveal
+  const [warm, setWarm] = useState<number | null>(null) // warm-up step, before the tests
   const [raw, setRaw] = useState<Partial<Record<Stat, number>>>({})
   const [saved, setSaved] = useState<Profile | null>(null)
   const photo = usePersonalImage('card.jpg')
@@ -24,6 +26,10 @@ export function TestDay({ onDone }: { onDone: () => void }) {
     setProfile(next)
     setSaved(next)
     setI(TESTS.length)
+  }
+
+  if (i === -1 && warm !== null) {
+    return <WarmUp step={warm} onStep={setWarm} onClose={() => setWarm(null)} onReady={() => { setWarm(null); setI(0) }} />
   }
 
   if (i === -1) {
@@ -39,8 +45,9 @@ export function TestDay({ onDone }: { onDone: () => void }) {
             </li>
           ))}
         </ul>
-        <p className="mt-4 text-sm text-muted">{t('Bring a ball, 6 markers and a wall. Warm up first.')}</p>
-        <Button block className="mt-auto" onClick={() => { unlockAudio(); setI(0) }}>{t('Start')}</Button>
+        <p className="mt-4 text-sm text-muted">{t('Bring a ball, 6 markers and a wall. A guided {n}-minute warm-up comes first: warm legs give real, comparable results.', { n: WARMUP.reduce((a, w) => a + w.minutes, 0) })}</p>
+        <Button block className="mt-auto" onClick={() => { unlockAudio(); setWarm(0) }}>{t('Start warm-up')}</Button>
+        <Button block variant="ghost" className="mt-2" onClick={() => { unlockAudio(); setI(0) }}>{t('Already warm: go to the tests')}</Button>
       </Screen>
     )
   }
@@ -55,7 +62,7 @@ export function TestDay({ onDone }: { onDone: () => void }) {
         <h1 className="m-0 mt-2 font-display text-4xl uppercase leading-none">{tier ? `${tier} card` : t('Almost there')}</h1>
         <div className="pop mt-6 w-full max-w-[280px]"><PlayerCard p={saved} stats={stats} photo={photo} /></div>
         <p className="mt-6 max-w-[34ch] text-muted">
-          {stats ? t('Redo it every 6-8 weeks.') : t('Do at least 3 tests to get rated.')}
+          {stats ? t('Redo it every week, same day and same warm-up, so the card follows your real progress.') : t('Do at least 3 tests to get rated.')}
         </p>
         <Button block className="mt-auto" onClick={onDone}>{t('Done')}</Button>
       </Screen>
@@ -127,6 +134,8 @@ function Stopwatch({ onStop }: { onStop: (seconds: number) => void }) {
   )
 }
 
+const clock = (n: number) => (n >= 60 ? `${Math.floor(n / 60)}:${String(n % 60).padStart(2, '0')}` : `${n}s`)
+
 function Countdown({ seconds }: { seconds: number }) {
   const [left, setLeft] = useState<number | null>(null)
   useEffect(() => {
@@ -142,7 +151,31 @@ function Countdown({ seconds }: { seconds: number }) {
       aria-label={t('Start {n} second countdown', { n: seconds })}
       className={`mt-5 flex min-h-24 w-full items-center justify-between rounded-[24px] px-6 ${left !== null && left > 0 ? 'bg-red text-on-red' : 'bg-surface'}`}>
       <span className="font-display text-sm uppercase">{left === null ? t('Start') : left > 0 ? 'Go' : 'Time · again'}</span>
-      <span className="font-display text-5xl tabular-nums">{left ?? seconds}s</span>
+      <span className="font-display text-5xl tabular-nums">{clock(left ?? seconds)}</span>
     </button>
+  )
+}
+
+// The warm-up: one step at a time with its 3D demo and a timer (a beep when the time is up), then the tests.
+function WarmUp({ step, onStep, onClose, onReady }: { step: number; onStep: (n: number) => void; onClose: () => void; onReady: () => void }) {
+  const w = WARMUP[step]
+  const last = step === WARMUP.length - 1
+  return (
+    <Screen className="flex flex-col">
+      <div className="mb-5 flex items-center gap-3">
+        <Button variant="ghost" size="sm" onClick={() => (step ? onStep(step - 1) : onClose())}>{t('Back')}</Button>
+        <div className="flex flex-1 gap-1" aria-label={t('Warm-up step {n} of {total}', { n: step + 1, total: WARMUP.length })}>
+          {WARMUP.map((_, k) => <div key={k} className={`h-1.5 flex-1 rounded-full ${k <= step ? 'bg-ink/60' : 'bg-surface-2'}`} />)}
+        </div>
+      </div>
+      <div key={step} className="rise flex-1">
+        <p className="m-0 font-display text-sm uppercase text-muted">{t('Warm-up')} · {t('{n} min', { n: w.minutes })}</p>
+        <h1 className="m-0 mt-1 font-display text-3xl uppercase leading-none">{w.name}</h1>
+        <p className="mt-3 mb-0 text-muted">{w.how}</p>
+        <Demo3D name={w.demo} className="mt-4" />
+        <Countdown key={step} seconds={w.minutes * 60} />
+      </div>
+      <Button block className="mt-6" onClick={() => (last ? onReady() : onStep(step + 1))}>{last ? t('Ready: start the tests') : t('Next')}</Button>
+    </Screen>
   )
 }

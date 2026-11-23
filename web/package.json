@@ -9,10 +9,13 @@
     "lint": "oxlint",
     "preview": "vite preview",
     "test": "vitest run",
+    "i18n:strict": "I18N_STRICT=1 vitest run src/i18n",
+    "demo:strip": "node scripts/demo-strip.mjs",
     "build:demo": "tsc -b && VITE_DEMO=1 vite build --outDir dist-demo --emptyOutDir && rm -rf dist-demo/personal"
   },
   "dependencies": {
     "@fontsource-variable/archivo": "^5.3.0",
+    "@fontsource-variable/plus-jakarta-sans": "^5.3.0",
     "@fontsource/barlow": "^5.3.0",
     "@fontsource/barlow-condensed": "^5.3.0",
     "@supabase/supabase-js": "^2.119.0",
@@ -34,6 +37,7 @@
     "fake-indexeddb": "^6.2.6",
     "jsdom": "^29.1.1",
     "oxlint": "^1.88.0",
+    "playwright-core": "^1.65.1",
     "tailwindcss": "^4.3.3",
     "typescript": "~6.0.3",
     "vite": "^8.3.4",

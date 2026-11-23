@@ -216,15 +216,20 @@ describe('app', () => {
     click(/Edit player/)
     fireEvent.change(screen.getByLabelText('Name'), { target: { value: 'Jordan' } })
     click(/^Next$/)
-    click(/Defender/)
-    click(/^left$/i)
+    fireEvent.click(screen.getAllByRole('button', { name: /Centre-back/ })[0]) // on the pitch, next to the winger already picked
     click(/^Next$/)
+    click(/^left$/i)
+    click(/^Next$/) // level
+    click(/^Next$/) // goals
+    click(/^Next$/) // games
     click(/^Saturday$/)
+    click(/^Next$/) // gym
+    click(/^Next$/) // where you train
     click(/^Next$/)
     click(/^Blue$/)
     expect(document.documentElement.dataset.accent).toBe('blue')
     click(/^Done/)
-    expect(getProfile()).toMatchObject({ name: 'Jordan', positions: ['winger', 'defender'], foot: 'left', accent: 'blue' })
+    expect(getProfile()).toMatchObject({ name: 'Jordan', positions: ['winger', 'cb'], foot: 'left', accent: 'blue' })
     expect(JSON.parse(localStorage.getItem('games') || '[]').map((g: { day: number }) => g.day)).toContain(5)
     expect(screen.getByText(/Jordan/)).toBeTruthy()
   })
@@ -272,7 +277,9 @@ describe('app', () => {
     render(<App />)
     fireEvent.click(screen.getByRole('button', { name: /^Record$/ }))
     click(/Start rating session/)
-    click(/^Start$/)
+    click(/Start warm-up/) // the guided warm-up: six steps, then the tests
+    for (let k = 0; k < 5; k++) click(/^Next$/)
+    click(/Ready: start the tests/)
     fireEvent.change(screen.getByLabelText('Your result'), { target: { value: '3.3' } }) // PAC
     click(/Next test/)
     click(/^Skip$/) // DRI
@@ -286,6 +293,12 @@ describe('app', () => {
     expect(getProfile().ratings?.stats).toEqual({ PAC: 82, SHO: 83, PAS: 85 })
     click(/^Done$/)
     expect(screen.getByText(/New rating session/)).toBeTruthy()
+    // the card turns over to show every result of that session
+    const card = screen.getByRole('button', { name: /Turn your card over/ })
+    fireEvent.click(card)
+    expect(card.getAttribute('aria-pressed')).toBe('true')
+    expect(screen.getByText('3.3 s')).toBeTruthy()
+    expect(screen.getByText('24 passes')).toBeTruthy()
   })
 
   test('invite: QR from Settings, and Train together on partner sessions', () => {

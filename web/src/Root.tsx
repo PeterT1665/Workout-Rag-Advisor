@@ -75,7 +75,7 @@ function Main() {
   // a friend's QR, not signed in yet: who invited you, then sign up or sign in
   if (mode === 'guest' && invite && accountsEnabled) return <FriendInvite onSignUp={auth('signup')} onSignIn={auth('signin')} onSkip={() => setInvite(false)} />
   if (mode === 'guest') return <Guest onSignIn={accountsEnabled ? auth('signin') : undefined} onSignUp={accountsEnabled ? auth('signup') : undefined} />
-  if (!profiled) return <Onboarding onDone={(p, games) => { tourReset(); saveGames(games); setProfile(p); setProfiled(true) }} />
+  if (!profiled) return <Onboarding fresh onDone={(p, games) => { tourReset(); saveGames(games); setProfile(p); setProfiled(true) }} />
   if (needsName) return <PickUsername onDone={nameDone} />
   return <App />
 }

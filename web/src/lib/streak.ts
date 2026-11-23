@@ -21,7 +21,9 @@ const ymd = (d: Date) => d.toLocaleDateString('en-CA')
 const addDays = (d: Date, n: number) => { const x = new Date(d); x.setDate(x.getDate() + n); return x }
 
 export type MakeUp = { date: string; by: string; kind: SlotKind | string } // missed day, last day to make it up (YYYY-MM-DD)
-export type Streak = { days: number; today: boolean; makeup?: MakeUp } // today: today already counts (the flame glows)
+export type Streak = { days: number; today: boolean; makeup?: MakeUp; status?: Record<string, DayStatus> } // today: today already counts (the flame glows)
+// each day since the first log: kept (trained, or rested on a rest day), made up later, missed, or today still to do
+export type DayStatus = 'kept' | 'made-up' | 'missed' | 'pending'
 
 export function planStreak(history: HistoryEntry[], games: Game[], gym: number, changes: WeekChanges, now = new Date()): Streak {
   if (!history.length) return { days: 0, today: false }
@@ -82,5 +84,6 @@ export function planStreak(history: HistoryEntry[], games: Game[], gym: number, 
       makeup = { date: key, by: ymd(addDays(d, MAKEUP_DAYS)), kind: planned(d) ?? 'session' } // the oldest open one wins
     }
   }
-  return { days, today, ...(makeup ? { makeup } : {}) }
+  const days_ = Object.fromEntries([...status.entries()].map(([k, v]) => [k, v === 'missed' && madeUp.has(k) ? 'made-up' : v])) as Record<string, DayStatus>
+  return { days, today, ...(makeup ? { makeup } : {}), status: days_ }
 }

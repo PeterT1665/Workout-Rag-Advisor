@@ -71,6 +71,18 @@ describe('player engine', () => {
     expect(said(log).filter((s) => s === 'left' || s === 'right')).toHaveLength(cues.length)
   })
 
+  test('the number drill calls numbers instead of left/right', () => {
+    const { deps, log } = fakeAudio()
+    const nums: Session = { ...session, blocks: [{ ...session.blocks[1], name: 'Wall passes: number call', cue: 'numbers' }] }
+    const p = createPlayer(nums, { audio: deps, getSettings: settings() })
+    p.start()
+    vi.advanceTimersByTime(3200 + 14000)
+    const called = said(log).filter((s) => /^[1-9]$/.test(s))
+    expect(called.length).toBeGreaterThanOrEqual(3)
+    expect(said(log).filter((s) => s === 'left' || s === 'right')).toHaveLength(0)
+    called.slice(1).forEach((n, i) => expect(n).not.toBe(called[i])) // never the same number twice in a row
+  })
+
   test('pause freezes the clock and stops cues; resume continues', () => {
     const { deps, log } = fakeAudio()
     const p = createPlayer(session, { audio: deps, getSettings: settings() })
@@ -154,5 +166,33 @@ describe('player engine', () => {
     expect(p.getState().finished).toBe(false) // still doing the warm-up
     vi.advanceTimersByTime(3200)
     expect(p.getState().finished).toBe(true)
+  })
+})
+
+describe('changing sets mid-exercise', () => {
+  test('add a set to the exercise under way, and remove one, never below the set being done', () => {
+    vi.useFakeTimers()
+    const { deps } = fakeAudio()
+    const gym: Session = { id: 'g', title: 'G', type: 'gym', summary: '', needs: [], blocks: [
+      { name: 'Bench', kind: 'drill', work: 5, rest: 4, rounds: 2 },
+      { name: 'Plank', kind: 'drill', work: 5 },
+    ] }
+    const p = createPlayer(gym, { audio: deps, getSettings: settings() })
+    p.start()
+    p.skip() // bench set 1 done: resting
+    const st = () => p.getState(), cur = () => st().steps[st().i]
+    expect(cur().type).toBe('rest')
+    p.setRounds(0, 3)
+    expect(p.getSession().blocks[0].rounds).toBe(3)
+    expect(cur().type).toBe('rest') // still the same rest
+    expect(st().steps.filter((x) => x.type === 'work' && x.name === 'Bench').length).toBe(3)
+    p.skip(); p.skip() // set 2 done
+    p.setRounds(0, 1) // can't drop below set 2
+    expect(p.getSession().blocks[0].rounds).toBe(3)
+    p.setRounds(0, 2) // drop the third
+    expect(st().steps.filter((x) => x.type === 'work' && x.name === 'Bench').length).toBe(2)
+    p.skip()
+    expect(cur().name).toBe('Plank')
+    p.stop()
   })
 })

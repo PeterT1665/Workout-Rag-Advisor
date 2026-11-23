@@ -23,6 +23,7 @@ export function catalog() {
   const lib = JSON.parse(readFileSync(join(SRC, 'data/library.json'), 'utf8'))
   for (const e of lib.exercises) {
     if (e.how) out.add(e.how)
+    if (e.safe) out.add(e.safe)
     if (e.reps && !/^\d+(-\d+)?$/.test(e.reps)) out.add(e.reps)
     for (const n of e.needs ?? []) out.add(n)
   }

@@ -1,5 +1,5 @@
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
-import { allSessions, BUILTIN_SESSIONS, dayKindOf, deleteMySession, saveMySession, templateFor, toSession, type MySession, type Template } from './lib/library'
+import { allSessions, isMine, BUILTIN_SESSIONS, dayKindOf, deleteMySession, saveMySession, templateFor, toSession, type MySession, type Template } from './lib/library'
 import { Home } from './views/Home'
 import { Library } from './views/Library'
 import { Builder } from './views/Builder'
@@ -30,11 +30,16 @@ import { openPhotos } from './lib/photos'
 import { setBusy } from './lib/updates'
 import { attachRemote, beginRemote, endRemote } from './lib/remote'
 import { clearActive, loadActive, saveActive } from './lib/activeSession'
+import { learn, withPrefs } from './lib/prefs'
+import { registerMine, sendRequests } from './lib/myExercises'
+import { CalendarView } from './views/CalendarView'
+import { activeInjuries, safestInstead } from './lib/injuries'
 import { beep, realAudio, unlockAudio } from './lib/audio'
 import { createPlayer, trainedMinutes, type Player, type Snapshot } from './lib/player'
 import { nextQuote } from './lib/quotes'
 import { addHistory, loadHistory, loadSettings, save } from './lib/storage'
-import { loadGames, planToday, saveGames, withChange } from './lib/today'
+import { loadGames, planToday, saveGames, setPlanGoals, withChange } from './lib/today'
+import { fitSession } from './lib/fit'
 import { planStreak, counts } from './lib/streak'
 import { DEFAULT_GYM } from './lib/weekplan'
 import { changeFor, changedSession, loadWeekChanges, saveWeekChange, type DayChange } from './lib/weekChanges'
@@ -48,7 +53,8 @@ const sessions = BUILTIN_SESSIONS // the week planner picks from the recommended
 type Overlay =
   | { name: 'library' }
   | { name: 'detail'; session: Session; fromLibrary?: boolean }
-  | { name: 'preroll'; session: Session; quote: string | null }
+  | { name: 'calendar' }
+  | { name: 'preroll'; session: Session; quote: string | null; original?: Session; applied?: string[] }
   | { name: 'player'; session: Session; player: Player }
   | { name: 'settings' }
   | { name: 'media'; from: 'settings' | 'home' }
@@ -94,14 +100,22 @@ export default function App({ onSignUp, onSignIn }: { onSignUp?: () => void; onS
   const started = useRef(false)
   const stopPersist = useRef<() => void>(() => {})
   const [active, setActive] = useState(loadActive) // a session left unfinished (app closed or reloaded)
-  const gymPerWeek = useProfile().gym
+  const profile = useProfile()
+  const gymPerWeek = profile.gym
   const [changes, setChanges] = useState(loadWeekChanges)
+  const [prefsRev, setPrefsRev] = useState(0) // bumped when a finished session teaches the app your way of doing it
   // what's already in today's log (football, gym, recovery), so Kick off moves on to the next one
   const doneToday = [...new Set(loadHistory().filter((h) => h.date === new Date().toLocaleDateString('en-CA') && counts(h))
     .map((h) => (h.type === 'gym' || h.type === 'home' ? 'gym' : h.type === 'recovery' ? 'recovery' : 'football')))].sort().join(',')
-  const planned = useMemo(() => planToday(sessions, games, new Date(), gymPerWeek, doneToday ? doneToday.split(',') : []), [games, gymPerWeek, doneToday])
+  const planned = useMemo(() => { setPlanGoals(profile.goals); return planToday(sessions, games, new Date(), gymPerWeek, doneToday ? doneToday.split(',') : []) }, [games, gymPerWeek, doneToday, profile.goals])
   const [library, setLibrary] = useState(allSessions) // recommended + the user's own
-  const today = useMemo(() => withChange(planned, changeFor(planned.day, changes), library), [planned, changes, library])
+  // your way of doing it (what you changed last time), inside the match-day rules
+  // and an injury that guts a leg day turns it into the gym session it leaves most of (lib/injuries)
+  const today = useMemo(() => {
+    const td = withChange(planned, changeFor(planned.day, changes), library)
+    const instead = td.scheduled && !td.changed ? safestInstead(td.session, library.filter((x) => !isMine(x.id)), activeInjuries(profile)) : null
+    return { ...td, session: fitSession(withPrefs(instead ?? td.session, td.md).session, profile).session }
+  }, [planned, changes, library, prefsRev, profile])
   // week 1 = next week (planned on Sunday)
   const changeDay = (day: number, change: DayChange | null, week: 0 | 1 = 0) =>
     setChanges(saveWeekChange(day, change, week ? new Date(Date.now() + 7 * 864e5) : new Date()))
@@ -118,6 +132,13 @@ export default function App({ onSignUp, onSignIn }: { onSignUp?: () => void; onS
   useLayoutEffect(() => { window.scrollTo(0, 0) }, [tab, overlay?.name])
   // an app update may reload the page: hold it while a session, rating test or edit is open
   useEffect(() => { void refreshPush() }, []) // this phone still registered for notifications, in the app's language
+  // the player's own exercises: in the library, and sent to the team as requests (again after every sync)
+  useEffect(() => {
+    const on = () => { registerMine(); void sendRequests() }
+    on()
+    window.addEventListener('ta-sync', on)
+    return () => window.removeEventListener('ta-sync', on)
+  }, [])
   useEffect(() => { setBusy(tour || ['preroll', 'player', 'testday', 'builder', 'profile', 'media', 'match'].includes(overlay?.name ?? '')) }, [overlay?.name, tour]) // the tour isn't cut off by an update either
 
   const updateSettings = (p: Partial<Settings>) => {
@@ -130,11 +151,14 @@ export default function App({ onSignUp, onSignIn }: { onSignUp?: () => void; onS
   function beginSession(session: Session, resume?: Snapshot) {
     if (started.current) return
     started.current = true
+    const base = (resume && loadActive()?.base) || session // as it started: what you change from here is learned (lib/prefs)
     const player = createPlayer(session, {
       audio: realAudio(() => settingsRef.current),
       getSettings: () => settingsRef.current,
       resume,
       onFinish: (st) => {
+        learn(base, player.getSession() ?? session)
+        setPrefsRev((n) => n + 1)
         clearActive()
         setActive(null)
         // training time actually done (pauses and skipped drills don't count)
@@ -147,7 +171,7 @@ export default function App({ onSignUp, onSignIn }: { onSignUp?: () => void; onS
     })
     // keep the session safe if the app is closed or reloaded mid-way
     let lastSave = 0
-    const persist = () => { if (!player.getState().finished) saveActive(player.getSession(), player.snapshot()) } // keeps mid-session edits
+    const persist = () => { if (!player.getState().finished) saveActive(player.getSession(), player.snapshot(), base) } // keeps mid-session edits
     // Rest call-back: booked on the server when a rest starts (the app may be gone by the time it ends),
     // dropped when the rest is paused, skipped, or ends with you still in the app.
     let booked = '' // which rest is booked
@@ -190,7 +214,12 @@ export default function App({ onSignUp, onSignIn }: { onSignUp?: () => void; onS
     if (s.earbudControls) beginRemote(session.title)
     // referee whistle: two short blasts
     beep(s, 2900, 90); setTimeout(() => beep(s, 2900, 260), 160)
-    setOverlay({ name: 'preroll', session, quote: s.cards ? nextQuote() : null })
+    // your way of doing it (lib/prefs), with the original one tap away
+    const md = session.id === today.session.id ? today.md : null
+    const original = allSessions().find((x) => x.id === session.id)
+    const mine = original ? withPrefs(original, md) : null
+    const personal = fitSession(mine?.applied.length ? withPrefs(session, md).session : session, getProfile()).session
+    setOverlay({ name: 'preroll', session: personal, quote: s.cards ? nextQuote() : null, original: mine?.applied.length ? original : undefined, applied: mine?.applied.map((a) => a.text) })
   }
 
   const close = () => setOverlay(null)
@@ -247,6 +276,8 @@ export default function App({ onSignUp, onSignIn }: { onSignUp?: () => void; onS
 
   function renderOverlay(overlay: Overlay) {
     switch (overlay.name) {
+      case 'calendar':
+        return <CalendarView history={loadHistory()} matches={loadMatches()} streak={streak} onBack={close} />
       case 'coach':
         return <CoachView ask={overlay.ask} ctx={{ profile: me, history: loadHistory(), matches: loadMatches(), today, sessions: library, streak }}
           onBack={() => { close(); setTab(overlay.from ?? 'week') }}
@@ -262,7 +293,7 @@ export default function App({ onSignUp, onSignIn }: { onSignUp?: () => void; onS
         return <Builder from={overlay.from} onSave={saveBuilt} onDelete={deleteBuilt}
           onCancel={() => setOverlay(overlay.from ? { name: 'detail', session: toSession(overlay.from), fromLibrary: true } : { name: 'library' })} />
       case 'preroll':
-        return <Preroll session={overlay.session} quote={overlay.quote} onGo={() => beginSession(overlay.session)} />
+        return <Preroll session={overlay.session} quote={overlay.quote} original={overlay.original} applied={overlay.applied} onGo={(s) => beginSession(s)} onCancel={() => setOverlay(null)} />
       case 'player':
         return <PlayerView key={overlay.player.getState().startedAt} session={overlay.session} player={overlay.player} settings={settings} onExit={() => { endRemote(); stopPersist.current(); void cancelRest(); clearActive(); setActive(null); close() }} />
       case 'settings':
@@ -298,7 +329,7 @@ export default function App({ onSignUp, onSignIn }: { onSignUp?: () => void; onS
           onSettings={() => setOverlay({ name: 'settings' })}
           onAllSessions={() => setOverlay({ name: 'library' })}
           onAddClips={() => setOverlay({ name: 'media', from: 'home' })}
-          onPlayer={() => setTab('player')}
+          onPlayer={() => setOverlay({ name: 'calendar' })}
           onCoach={(ask) => setOverlay({ name: 'coach', from: 'home', ask })}
           streak={streak}
           makeup={makeup}

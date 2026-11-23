@@ -1,5 +1,7 @@
 import { describe, expect, test } from 'vitest'
-import { planStreak } from './streak'
+import { planStreak as withStatus } from './streak'
+// the streak itself (the per-day status for the calendar is checked on its own)
+const planStreak = (...a: Parameters<typeof withStatus>) => { const { status: _s, ...r } = withStatus(...a); return r }
 import { buildWeek } from './weekplan'
 import type { HistoryEntry } from './storage'
 
@@ -66,5 +68,10 @@ describe('plan streak', () => {
   test('a short extra session does not count as a make-up', () => {
     const log = [h2('2026-11-16', 40), h2('2026-11-18', 10)]
     expect(planStreak(log, games, 4, {}, at('2026-11-20')).makeup?.date).toBe('2026-11-19') // Tue gone (window closed), Thu open
+  })
+  test('each day has a status for the calendar: kept, missed, made up', () => {
+    const st = withStatus([h('2026-11-16'), h('2026-11-18'), h('2026-11-18')], games, 4, {}, at('2026-11-18')).status!
+    expect(st['2026-11-16']).toBe('kept')
+    expect(['made-up', 'kept']).toContain(st['2026-11-17'])
   })
 })

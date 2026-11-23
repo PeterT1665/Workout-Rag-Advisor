@@ -22,7 +22,7 @@ export function flattenSession(session: Session): Step[] {
         const b = blocks[g]
         steps.push({
           type: 'work', blockIdx: g, name: b.name, kind: b.kind, round: r, rounds: b.rounds || 1,
-          seconds: b.work, cue: !!b.cue, how: b.how || '', needs: b.needs || [], reps: b.reps, category: b.category,
+          seconds: b.work, cue: !!b.cue, ...(b.cue === 'numbers' ? { cueKind: 'numbers' as const } : {}), how: b.how || '', needs: b.needs || [], reps: b.reps, category: b.category,
           ...(isSet ? { pair: `${tag}${group.indexOf(g) + 1}` } : {}),
         })
         const endOfRound = k === active.length - 1

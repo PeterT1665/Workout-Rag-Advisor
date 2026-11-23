@@ -13,7 +13,7 @@ export type PlayerState = {
   elapsed: number // seconds of planned time already covered (skipped steps included)
   trained: number // seconds the session actually ran (not paused): what the log saves, so skipping through isn't training
   total: number
-  cue: Direction | null
+  cue: Direction | number | null // a number: the number drill (even: pass back, odd: turn)
   cueKey: number
   finished: boolean
   startedAt: number
@@ -59,6 +59,7 @@ export function createPlayer(session: Session, opts: PlayerOptions) {
   let tick: ReturnType<typeof setInterval> | null = null
   let timers: ReturnType<typeof setTimeout>[] = []
   const cueHistory: Direction[] = []
+  let lastNumber = 0
   const drillsSeen = new Set<number>(opts.resume?.drills ?? [])
   // real training time: counts while running, stops on pause
   let trainedMs = opts.resume?.trainedMs ?? 0
@@ -88,6 +89,16 @@ export function createPlayer(session: Session, opts: PlayerOptions) {
 
   function fireCue() {
     if (!state.running) return
+    if (state.steps[state.i]?.cueKind === 'numbers') {
+      let n = 1 + Math.floor(rng() * 9)
+      if (n === lastNumber) n = (n % 9) + 1 // never the same number twice in a row
+      lastNumber = n
+      const key = state.cueKey + 1
+      set({ cue: n, cueKey: key, cuesCalled: state.cuesCalled + 1 })
+      audio.say(String(n))
+      setTimeout(() => { if (state.cueKey === key) set({ cue: null }) }, CUE_SHOW_MS)
+      return
+    }
     const dir = pickCue(cueHistory, rng, 3)
     cueHistory.push(dir)
     const key = state.cueKey + 1
@@ -201,6 +212,24 @@ export function createPlayer(session: Session, opts: PlayerOptions) {
       steps = flattenSession(session)
       if (state.i >= steps.length) { set({ steps }); return finish() }
       set({ steps, total: totalSeconds(steps), elapsed: elapsedAt(state.i, state.remainingMs) })
+    },
+    // change the number of sets of an exercise, the current one included (never below the set under way)
+    setRounds(bi: number, n: number) {
+      if (state.finished || !session.blocks[bi]) return
+      const cur = steps[state.i]
+      const doing = cur ? steps.slice(0, state.i + 1).filter((x) => x.type === 'work' && x.blockIdx === bi).length : 0
+      const rounds = Math.max(1, Math.min(10, Math.round(n)))
+      if (rounds < doing) return
+      session = { ...session, blocks: session.blocks.map((b, k) => (k === bi ? { ...b, rounds } : b)) }
+      const next = flattenSession(session)
+      // the same step in the new list: same kind, exercise (or superset), round, and how many of its kind came before
+      const same = (a: typeof cur, b: typeof cur) => a.type === b.type && a.round === b.round && (a.type === 'work' ? a.blockIdx === b.blockIdx : (a.pair ?? '') === (b.pair ?? ''))
+      const nth = steps.slice(0, state.i).filter((x) => same(x, cur)).length
+      let j = -1
+      for (let k = 0, seen = 0; k < next.length; k++) if (same(next[k], cur)) { if (seen === nth) { j = k; break } seen++ }
+      steps = next
+      const i = j >= 0 ? j : Math.min(state.i, steps.length - 1)
+      set({ steps, i, total: totalSeconds(steps), elapsed: elapsedAt(i, state.remainingMs) })
     },
     // self-paced set finished: on to the rest
     setDone: () => { if (selfPaced(steps[state.i])) { audio.beep(1320, 200); goto(state.i + 1) } },

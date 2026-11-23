@@ -12,19 +12,20 @@ export type Pose = {
   spine?: number; side?: number; twist?: number; neck?: number
   L?: Side; R?: Side
   ball?: Vec | { at: 'L' | 'R' | 'hands'; off?: Vec } // ball position in the world, or held on a foot / in the hands
+  arc?: number // the ball flies from this key to the next on an arc this high (m): throws, lobs
 }
 export type Key = [t: number, pose: Pose]
 
 export type PropKind =
-  | 'barbell' | 'barbell-back' | 'barbell-front' | 'barbell-hips' | 'dumbbells' | 'dumbbell-R' | 'kettlebell' | 'trapbar' | 'medball' | 'landmine'
-  | 'bench' | 'box' | 'bar' | 'wall' | 'cones' | 'hurdles' | 'sofa' | 'table' | 'bike' | 'sled' | 'goal' | 'roller' | 'band' | 'step' | 'towel'
-export type Prop = { kind: PropKind; at?: Vec; size?: Vec; yaw?: number }
+  | 'barbell' | 'barbell-back' | 'barbell-front' | 'barbell-hips' | 'dumbbell-hips' | 'dumbbells' | 'dumbbell-R' | 'kettlebell' | 'trapbar' | 'medball' | 'landmine'
+  | 'bench' | 'box' | 'bar' | 'wall' | 'cones' | 'hurdles' | 'hurdle' | 'incline' | 'cable' | 'handle' | 'post' | 'sofa' | 'table' | 'bike' | 'sled' | 'goal' | 'roller' | 'band' | 'step' | 'towel' | 'swissball'
+export type Prop = { kind: PropKind; at?: Vec; size?: Vec; yaw?: number; hand?: 'L' | 'R' } // hand: held in one hand (landmine); at: a landmine's pivot on the floor
 
 export type Move = {
   dur: number // seconds per loop
   keys: Key[]
   props?: Prop[]
-  ball?: boolean // a football
+  ball?: boolean | 'medball' // a football (or a med ball that can leave the hands: throws, slams)
   anchor?: 'feet' | 'L' | 'R' | 'hands' | 'none' // what stays put on the floor (default: both feet)
   contacts?: 'all' | 'feet' | 'back' | 'hands-feet' // which points touch the floor/support (default all)
   base?: number // height of what the contacts rest on (bench top...)

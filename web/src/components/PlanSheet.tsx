@@ -33,6 +33,7 @@ export function PlanSheet({ player, onClose }: { player: Player; onClose: () => 
   useSyncExternalStore(player.subscribe, () => player.getState().i)
   const st = player.getState()
   const [adding, setAdding] = useState(false)
+  const [, redraw] = useState(0) // sets changed on the exercise under way
   useSheet(adding ? undefined : onClose)
   const scroller = useRef<HTMLDivElement>(null)
   const blocks = player.getSession().blocks
@@ -80,7 +81,7 @@ export function PlanSheet({ player, onClose }: { player: Player; onClose: () => 
       <div className="rise relative flex max-h-[90dvh] w-full max-w-xl flex-col rounded-t-[28px] bg-surface pb-[max(16px,env(safe-area-inset-bottom))]">
         <div className="px-5 pt-5">
           <h2 className="m-0 font-display text-xl uppercase">{t('Session plan')}</h2>
-          <p className="m-0 mt-1 text-sm text-muted">{t('Hold ⋮⋮ to move an exercise. Pair two into a superset, swap one if the kit is taken, or add more.')}</p>
+          <p className="m-0 mt-1 text-sm text-muted">{t('Hold ⋮⋮ to move an exercise. Change the sets, pair two into a superset, swap one if the kit is taken, or add more.')}</p>
         </div>
         <div ref={scroller} className="mt-4 flex-1 overflow-y-auto overscroll-contain px-5 pb-2">
           <ol className="m-0 flex list-none flex-col gap-1.5 p-0">
@@ -94,7 +95,15 @@ export function PlanSheet({ player, onClose }: { player: Player; onClose: () => 
                     {pair && <span className="mr-1.5 font-display text-red-ink">{pair}</span>}
                     {short(b.name)}
                   </span>
-                  <span className="shrink-0 font-display text-xs tabular-nums text-muted">{fmtDose(b)}</span>
+                  {now && b.kind === 'drill' ? (
+                    <span className="flex shrink-0 items-center gap-1.5">
+                      <button aria-label={t('One set less of {name}', { name: short(b.name) })} onClick={() => { player.setRounds(bi, (b.rounds ?? 1) - 1); redraw((n) => n + 1) }}
+                        className="grid h-7 w-7 place-items-center rounded-full bg-surface font-display text-sm active:scale-90">−</button>
+                      <span className="font-display text-xs tabular-nums text-muted" aria-live="polite">{fmtDose(b)}</span>
+                      <button aria-label={t('One more set of {name}', { name: short(b.name) })} onClick={() => { player.setRounds(bi, (b.rounds ?? 1) + 1); redraw((n) => n + 1) }}
+                        className="grid h-7 w-7 place-items-center rounded-full bg-surface font-display text-sm active:scale-90">+</button>
+                    </span>
+                  ) : <span className="shrink-0 font-display text-xs tabular-nums text-muted">{fmtDose(b)}</span>}
                 </li>
               )
             })}
@@ -119,6 +128,7 @@ export function PlanSheet({ player, onClose }: { player: Player; onClose: () => 
                         apply(rows.map((x) => (x.key === r.key ? { key: x.key, block: { ...b, superset: x.block.superset } } : x)))
                         setSwapping(null)
                       }}
+                      onSets={(n) => patch(r.key, { rounds: n })}
                       onRemove={() => apply(withoutRow(rows, r.key))} />
                   )
                 })}
@@ -136,9 +146,9 @@ export function PlanSheet({ player, onClose }: { player: Player; onClose: () => 
   )
 }
 
-function PlanRow({ row: { block: b }, pair, grip, joined, inSet, canPair, swapping, onSwapToggle, onPair, onSwap, onRemove }: {
+function PlanRow({ row: { block: b }, pair, grip, joined, inSet, canPair, swapping, onSwapToggle, onPair, onSwap, onSets, onRemove }: {
   row: Row; pair?: string; grip: GripProps; joined: boolean; inSet: boolean; canPair: boolean; swapping: boolean
-  onSwapToggle: () => void; onPair: () => void; onSwap: (id: string) => void; onRemove: () => void
+  onSwapToggle: () => void; onPair: () => void; onSwap: (id: string) => void; onSets: (n: number) => void; onRemove: () => void
 }) {
   const alts = swapping ? alternativesFor(b) : []
   const name = short(b.name)
@@ -153,7 +163,16 @@ function PlanRow({ row: { block: b }, pair, grip, joined, inSet, canPair, swappi
         </button>
         <div className="min-w-0 flex-1">
           <span className="block leading-tight">{pair && <span className="mr-1.5 font-display text-red-ink">{pair}</span>}{name}</span>
-          <span className="font-display text-xs tabular-nums text-muted">{fmtDose(b)}</span>
+          {b.kind === 'drill' ? (
+            // sets: − / + right here (1-10)
+            <span className="mt-0.5 flex items-center gap-1.5">
+              <button aria-label={t('One set less of {name}', { name })} disabled={(b.rounds ?? 1) <= 1} onClick={() => onSets((b.rounds ?? 1) - 1)}
+                className="grid h-7 w-7 place-items-center rounded-full bg-surface font-display text-sm active:scale-90 disabled:opacity-35">−</button>
+              <span className="min-w-[4.5rem] text-center font-display text-xs tabular-nums text-muted" aria-live="polite">{fmtDose(b)}</span>
+              <button aria-label={t('One more set of {name}', { name })} disabled={(b.rounds ?? 1) >= 10} onClick={() => onSets((b.rounds ?? 1) + 1)}
+                className="grid h-7 w-7 place-items-center rounded-full bg-surface font-display text-sm active:scale-90 disabled:opacity-35">+</button>
+            </span>
+          ) : <span className="font-display text-xs tabular-nums text-muted">{fmtDose(b)}</span>}
         </div>
         {b.kind === 'drill' && (
           <button onClick={onSwapToggle} aria-expanded={swapping}

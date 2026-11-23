@@ -8,7 +8,9 @@
    "category": "warmup",
    "kind": "warmup",
    "work": 180,
-   "how": "Easy jog, then leg swings front/side, walking lunges with a twist. Keep it relaxed."
+   "how": "Easy jog, then leg swings front/side, walking lunges with a twist. Keep it relaxed.",
+   "works": [],
+   "also": []
   },
   {
    "id": "hip-openers-glute-activation",
@@ -17,7 +19,9 @@
    "category": "warmup",
    "kind": "warmup",
    "work": 150,
-   "how": "90/90 hip switches, glute bridges, lateral band-free side steps. Hip and knee insurance."
+   "how": "90/90 hip switches, glute bridges, lateral band-free side steps. Hip and knee insurance.",
+   "works": [],
+   "also": []
   },
   {
    "id": "build-up-sprints-no-ball",
@@ -28,7 +32,19 @@
    "work": 12,
    "rest": 40,
    "rounds": 3,
-   "how": "10-15 m at 70%, 80%, 90%. Stop if you feel sharp knee pain."
+   "how": "10-15 m at 70%, 80%, 90%. Stop if you feel sharp knee pain.",
+   "works": [
+    "hamstrings",
+    "quads",
+    "calves"
+   ],
+   "also": [
+    "glutes",
+    "hips",
+    "groin",
+    "ankles",
+    "knees"
+   ]
   },
   {
    "id": "juggling",
@@ -42,6 +58,14 @@
    "how": "Round 1 stronger foot, round 2 weaker foot, round 3 both feet + thighs. Count your best streak.",
    "needs": [
     "ball"
+   ],
+   "works": [
+    "ankles",
+    "hips"
+   ],
+   "also": [
+    "calves",
+    "knees"
    ]
   },
   {
@@ -56,6 +80,18 @@
    "how": "Sprint 10 m to a marker, plant hard, cut 45-90 degrees, accelerate 5 m. Alternate the cutting foot.",
    "needs": [
     "markers"
+   ],
+   "works": [
+    "quads",
+    "ankles",
+    "groin",
+    "knees"
+   ],
+   "also": [
+    "hamstrings",
+    "calves",
+    "hips",
+    "glutes"
    ]
   },
   {
@@ -71,6 +107,14 @@
    "needs": [
     "ball",
     "markers"
+   ],
+   "works": [
+    "ankles"
+   ],
+   "also": [
+    "calves",
+    "knees",
+    "groin"
    ]
   },
   {
@@ -86,6 +130,14 @@
    "needs": [
     "ball",
     "markers"
+   ],
+   "works": [
+    "ankles"
+   ],
+   "also": [
+    "calves",
+    "knees",
+    "groin"
    ]
   },
   {
@@ -100,6 +152,14 @@
    "how": "Free play with the ball: feints, rolls, step-overs, whatever you want to own. Try one new move each round.",
    "needs": [
     "ball"
+   ],
+   "works": [
+    "ankles"
+   ],
+   "also": [
+    "calves",
+    "knees",
+    "groin"
    ]
   },
   {
@@ -116,6 +176,17 @@
    "needs": [
     "ball",
     "markers"
+   ],
+   "works": [
+    "ankles",
+    "knees",
+    "quads"
+   ],
+   "also": [
+    "hamstrings",
+    "groin",
+    "calves",
+    "hips"
    ]
   },
   {
@@ -132,6 +203,17 @@
    "needs": [
     "ball",
     "goal or target"
+   ],
+   "works": [
+    "ankles",
+    "knees",
+    "quads"
+   ],
+   "also": [
+    "hamstrings",
+    "groin",
+    "calves",
+    "hips"
    ]
   },
   {
@@ -141,7 +223,9 @@
    "category": "cooldown",
    "kind": "cooldown",
    "work": 300,
-   "how": "Hip flexor stretch, quad stretch, hamstring stretch, figure-4 glute stretch, 60 s each side. Breathe slowly."
+   "how": "Hip flexor stretch, quad stretch, hamstring stretch, figure-4 glute stretch, 60 s each side. Breathe slowly.",
+   "works": [],
+   "also": []
   },
   {
    "id": "wall-passes-ground-both-feet",
@@ -156,6 +240,15 @@
    "needs": [
     "ball",
     "wall"
+   ],
+   "works": [
+    "groin",
+    "hips"
+   ],
+   "also": [
+    "ankles",
+    "knees",
+    "quads"
    ]
   },
   {
@@ -171,6 +264,15 @@
    "needs": [
     "ball",
     "wall"
+   ],
+   "works": [
+    "groin",
+    "hips"
+   ],
+   "also": [
+    "ankles",
+    "knees",
+    "quads"
    ]
   },
   {
@@ -186,6 +288,15 @@
    "needs": [
     "ball",
     "wall"
+   ],
+   "works": [
+    "groin",
+    "hips"
+   ],
+   "also": [
+    "ankles",
+    "knees",
+    "quads"
    ]
   },
   {
@@ -201,6 +312,16 @@
    "needs": [
     "ball",
     "goal or target"
+   ],
+   "works": [
+    "quads",
+    "hips",
+    "groin"
+   ],
+   "also": [
+    "knees",
+    "ankles",
+    "hamstrings"
    ]
   },
   {
@@ -216,6 +337,16 @@
    "needs": [
     "ball",
     "goal or target"
+   ],
+   "works": [
+    "quads",
+    "hips",
+    "groin"
+   ],
+   "also": [
+    "knees",
+    "ankles",
+    "hamstrings"
    ]
   },
   {
@@ -231,6 +362,16 @@
    "needs": [
     "ball",
     "target"
+   ],
+   "works": [
+    "quads",
+    "hips",
+    "groin"
+   ],
+   "also": [
+    "knees",
+    "ankles",
+    "hamstrings"
    ]
   },
   {
@@ -246,6 +387,15 @@
    "needs": [
     "ball",
     "partner"
+   ],
+   "works": [
+    "groin",
+    "hips"
+   ],
+   "also": [
+    "ankles",
+    "knees",
+    "quads"
    ]
   },
   {
@@ -261,6 +411,15 @@
    "needs": [
     "ball",
     "partner"
+   ],
+   "works": [
+    "groin",
+    "hips"
+   ],
+   "also": [
+    "ankles",
+    "knees",
+    "quads"
    ]
   },
   {
@@ -276,6 +435,14 @@
    "needs": [
     "ball",
     "partner"
+   ],
+   "works": [
+    "ankles",
+    "hips"
+   ],
+   "also": [
+    "calves",
+    "knees"
    ]
   },
   {
@@ -291,6 +458,15 @@
    "needs": [
     "ball",
     "partner"
+   ],
+   "works": [
+    "groin",
+    "hips"
+   ],
+   "also": [
+    "ankles",
+    "knees",
+    "quads"
    ]
   },
   {
@@ -307,6 +483,17 @@
     "ball",
     "partner",
     "goal or target"
+   ],
+   "works": [
+    "ankles",
+    "knees",
+    "quads"
+   ],
+   "also": [
+    "hamstrings",
+    "groin",
+    "calves",
+    "hips"
    ]
   },
   {
@@ -316,7 +503,9 @@
    "category": "cooldown",
    "kind": "cooldown",
    "work": 240,
-   "how": "Hip flexor, quad, hamstring, glute stretch, 45 s each side."
+   "how": "Hip flexor, quad, hamstring, glute stretch, 45 s each side.",
+   "works": [],
+   "also": []
   },
   {
    "id": "foam-roll-quads-and-glutes",
@@ -325,7 +514,9 @@
    "category": "mobility",
    "kind": "warmup",
    "work": 240,
-   "how": "Slow passes, pause on tight spots for 20-30 s. Roll the outer thigh lightly, not hard on the IT band."
+   "how": "Slow passes, pause on tight spots for 20-30 s. Roll the outer thigh lightly, not hard on the IT band.",
+   "works": [],
+   "also": []
   },
   {
    "id": "90-90-hip-switches",
@@ -336,7 +527,9 @@
    "work": 45,
    "rest": 15,
    "rounds": 3,
-   "how": "Sit tall, rotate both knees side to side with control."
+   "how": "Sit tall, rotate both knees side to side with control.",
+   "works": [],
+   "also": []
   },
   {
    "id": "couch-stretch-hip-flexor-quad",
@@ -347,7 +540,9 @@
    "work": 60,
    "rest": 10,
    "rounds": 2,
-   "how": "Rear knee on a mat, foot up on the wall or bench. Squeeze the glute. Each side."
+   "how": "Rear knee on a mat, foot up on the wall or bench. Squeeze the glute. Each side.",
+   "works": [],
+   "also": []
   },
   {
    "id": "hamstring-stretch",
@@ -358,7 +553,9 @@
    "work": 60,
    "rest": 10,
    "rounds": 2,
-   "how": "Lying leg raise with a strap or towel. Each side."
+   "how": "Lying leg raise with a strap or towel. Each side.",
+   "works": [],
+   "also": []
   },
   {
    "id": "glute-bridge",
@@ -369,7 +566,14 @@
    "work": 40,
    "rest": 20,
    "rounds": 3,
-   "how": "Drive through the heels, pause 2 s at the top."
+   "how": "Drive through the heels, pause 2 s at the top.",
+   "works": [
+    "glutes",
+    "hamstrings"
+   ],
+   "also": [
+    "back"
+   ]
   },
   {
    "id": "side-lying-leg-raise-clamshell",
@@ -380,7 +584,9 @@
    "work": 40,
    "rest": 20,
    "rounds": 3,
-   "how": "Slow and controlled. Each side. Feel the outer hip, not the lower back."
+   "how": "Slow and controlled. Each side. Feel the outer hip, not the lower back.",
+   "works": [],
+   "also": []
   },
   {
    "id": "figure-4-glute-stretch",
@@ -391,7 +597,9 @@
    "work": 60,
    "rest": 10,
    "rounds": 2,
-   "how": "Lying down, ankle over opposite knee. Each side."
+   "how": "Lying down, ankle over opposite knee. Each side.",
+   "works": [],
+   "also": []
   },
   {
    "id": "toe-taps",
@@ -405,6 +613,14 @@
    "how": "Tap the top of the ball with alternate soles, light and fast on the balls of your feet.",
    "needs": [
     "ball"
+   ],
+   "works": [
+    "ankles"
+   ],
+   "also": [
+    "calves",
+    "knees",
+    "groin"
    ]
   },
   {
@@ -419,6 +635,14 @@
    "how": "Roll the ball across your body with the sole, switch feet each time. Weaker foot leads on even rounds.",
    "needs": [
     "ball"
+   ],
+   "works": [
+    "ankles"
+   ],
+   "also": [
+    "calves",
+    "knees",
+    "groin"
    ]
   },
   {
@@ -437,6 +661,14 @@
    "positions": [
     "winger",
     "midfielder"
+   ],
+   "works": [
+    "ankles"
+   ],
+   "also": [
+    "calves",
+    "knees",
+    "groin"
    ]
   },
   {
@@ -456,6 +688,18 @@
    "positions": [
     "winger",
     "striker"
+   ],
+   "works": [
+    "quads",
+    "ankles",
+    "groin",
+    "knees"
+   ],
+   "also": [
+    "hamstrings",
+    "calves",
+    "hips",
+    "glutes"
    ]
   },
   {
@@ -475,6 +719,14 @@
    "positions": [
     "winger",
     "striker"
+   ],
+   "works": [
+    "ankles"
+   ],
+   "also": [
+    "calves",
+    "knees",
+    "groin"
    ]
   },
   {
@@ -495,6 +747,14 @@
     "midfielder",
     "winger",
     "striker"
+   ],
+   "works": [
+    "ankles"
+   ],
+   "also": [
+    "calves",
+    "knees",
+    "groin"
    ]
   },
   {
@@ -514,6 +774,14 @@
    "positions": [
     "midfielder",
     "defender"
+   ],
+   "works": [
+    "ankles"
+   ],
+   "also": [
+    "calves",
+    "knees",
+    "groin"
    ]
   },
   {
@@ -528,6 +796,14 @@
    "how": "Toss the ball high, kill it dead with foot, thigh or chest. Every third one with the weaker foot.",
    "needs": [
     "ball"
+   ],
+   "works": [
+    "ankles",
+    "hips"
+   ],
+   "also": [
+    "calves",
+    "knees"
    ]
   },
   {
@@ -547,6 +823,16 @@
    "positions": [
     "midfielder",
     "defender"
+   ],
+   "works": [
+    "quads",
+    "hips",
+    "groin"
+   ],
+   "also": [
+    "knees",
+    "ankles",
+    "hamstrings"
    ]
   },
   {
@@ -566,6 +852,16 @@
    "positions": [
     "striker",
     "winger"
+   ],
+   "works": [
+    "quads",
+    "hips",
+    "groin"
+   ],
+   "also": [
+    "knees",
+    "ankles",
+    "hamstrings"
    ]
   },
   {
@@ -584,6 +880,16 @@
    ],
    "positions": [
     "striker"
+   ],
+   "works": [
+    "quads",
+    "hips",
+    "groin"
+   ],
+   "also": [
+    "knees",
+    "ankles",
+    "hamstrings"
    ]
   },
   {
@@ -603,6 +909,16 @@
    ],
    "positions": [
     "winger"
+   ],
+   "works": [
+    "quads",
+    "hips",
+    "groin"
+   ],
+   "also": [
+    "knees",
+    "ankles",
+    "hamstrings"
    ]
   },
   {
@@ -621,6 +937,18 @@
    ],
    "positions": [
     "defender"
+   ],
+   "works": [
+    "quads",
+    "ankles",
+    "groin",
+    "knees"
+   ],
+   "also": [
+    "hamstrings",
+    "calves",
+    "hips",
+    "glutes"
    ]
   },
   {
@@ -632,7 +960,19 @@
    "work": 6,
    "rest": 45,
    "rounds": 6,
-   "how": "From a standing, side-on or backwards start, explode for 5-10 m. Full recovery, every rep at max speed."
+   "how": "From a standing, side-on or backwards start, explode for 5-10 m. Full recovery, every rep at max speed.",
+   "works": [
+    "hamstrings",
+    "quads",
+    "calves"
+   ],
+   "also": [
+    "glutes",
+    "hips",
+    "groin",
+    "ankles",
+    "knees"
+   ]
   },
   {
    "id": "lateral-shuffle-sprint",
@@ -650,6 +990,18 @@
    "positions": [
     "defender",
     "winger"
+   ],
+   "works": [
+    "quads",
+    "ankles",
+    "groin",
+    "knees"
+   ],
+   "also": [
+    "hamstrings",
+    "calves",
+    "hips",
+    "glutes"
    ]
   },
   {
@@ -665,6 +1017,18 @@
    "positions": [
     "winger",
     "striker"
+   ],
+   "works": [
+    "hamstrings",
+    "quads",
+    "calves"
+   ],
+   "also": [
+    "glutes",
+    "hips",
+    "groin",
+    "ankles",
+    "knees"
    ]
   },
   {
@@ -679,6 +1043,18 @@
    "how": "Run about 70 m at 80% pace, walk back. Builds the engine for 90 minutes.",
    "positions": [
     "midfielder"
+   ],
+   "works": [
+    "hamstrings",
+    "quads",
+    "calves"
+   ],
+   "also": [
+    "glutes",
+    "hips",
+    "groin",
+    "ankles",
+    "knees"
    ]
   },
   {
@@ -693,6 +1069,16 @@
    "how": "Dribble at a high tempo around a large square, keep the ball close the whole time.",
    "needs": [
     "ball"
+   ],
+   "works": [
+    "hamstrings",
+    "quads",
+    "calves"
+   ],
+   "also": [
+    "ankles",
+    "knees",
+    "groin"
    ]
   },
   {
@@ -705,7 +1091,40 @@
    "rest": 150,
    "rounds": 4,
    "reps": "5",
-   "how": "Heavy but clean: 2 reps left in the tank. Drive up fast."
+   "how": "Heavy but clean: 2 reps left in the tank. Drive up fast, as explosive as you can on every rep. Small plates under the heels help you sit deeper.",
+   "works": [
+    "quads",
+    "glutes"
+   ],
+   "also": [
+    "knees",
+    "back",
+    "hips",
+    "core"
+   ],
+   "safe": "Brace before every rep and keep the bar over the middle of your feet. Knees follow the toes; stop the set if your lower back rounds at the bottom."
+  },
+  {
+   "sport": "gym",
+   "kind": "drill",
+   "id": "db-goblet-squat",
+   "name": "Goblet squat",
+   "category": "lower-strength",
+   "work": 40,
+   "rest": 90,
+   "rounds": 3,
+   "reps": "8",
+   "how": "One dumbbell held up at your chest, elbows in. Sit down between your hips, chest up, then drive up fast.",
+   "works": [
+    "quads",
+    "glutes"
+   ],
+   "also": [
+    "knees",
+    "back",
+    "hips",
+    "core"
+   ]
   },
   {
    "id": "trap-bar-deadlift",
@@ -717,7 +1136,19 @@
    "rest": 150,
    "rounds": 4,
    "reps": "5",
-   "how": "Push the floor away, stand up fast. Keep your back flat."
+   "how": "Push the floor away, stand up fast. Keep your back flat.",
+   "works": [
+    "glutes",
+    "hamstrings",
+    "quads",
+    "back"
+   ],
+   "also": [
+    "knees",
+    "core",
+    "arms"
+   ],
+   "safe": "Stand in the middle of the bar, flat back, push through the whole foot. Lock out with your glutes, not by leaning back."
   },
   {
    "id": "bulgarian-split-squat",
@@ -729,7 +1160,65 @@
    "rest": 90,
    "rounds": 3,
    "reps": "8 each leg",
-   "how": "Rear foot on a bench, front knee tracks over the toes. Hip and knee stability for cutting."
+   "how": "Rear foot on a bench, front knee at 90 degrees at the bottom and tracking over the toes, back straight with a slight forward lean. Hip and knee stability for cutting.",
+   "works": [
+    "quads",
+    "glutes"
+   ],
+   "also": [
+    "knees",
+    "hips",
+    "groin",
+    "hamstrings",
+    "ankles"
+   ],
+   "safe": "Front foot far enough forward that the knee stays over the toes; back foot just rests on the bench."
+  },
+  {
+   "sport": "gym",
+   "kind": "drill",
+   "id": "db-split-squat",
+   "name": "Dumbbell split squat",
+   "category": "single-limb",
+   "work": 50,
+   "rest": 90,
+   "rounds": 3,
+   "reps": "8 each leg",
+   "how": "Dumbbells at your sides, feet staggered. Lower until the back knee nearly touches, drive up through the front foot.",
+   "works": [
+    "quads",
+    "glutes"
+   ],
+   "also": [
+    "knees",
+    "hips",
+    "groin",
+    "hamstrings",
+    "ankles"
+   ]
+  },
+  {
+   "sport": "gym",
+   "kind": "drill",
+   "id": "db-curtsy-lunge",
+   "name": "Dumbbell curtsy lunge",
+   "category": "single-limb",
+   "work": 50,
+   "rest": 90,
+   "rounds": 3,
+   "reps": "6 each leg",
+   "how": "Dumbbells at your sides. Step back on a diagonal behind the front leg, sink, then drive back up through the front foot.",
+   "works": [
+    "quads",
+    "glutes"
+   ],
+   "also": [
+    "knees",
+    "hips",
+    "groin",
+    "hamstrings",
+    "ankles"
+   ]
   },
   {
    "id": "romanian-deadlift",
@@ -741,7 +1230,86 @@
    "rest": 120,
    "rounds": 3,
    "reps": "8",
-   "how": "Hinge back, soft knees, feel the hamstrings. Controlled down, strong up."
+   "how": "Hinge back with soft knees and a straight back until you feel it down the back of the legs. Controlled down, explosive up.",
+   "works": [
+    "hamstrings",
+    "glutes",
+    "back"
+   ],
+   "also": [
+    "core",
+    "arms",
+    "knees"
+   ],
+   "safe": "Soft knees, push the hips back and keep the bar on your legs. Stop when your back starts to round, usually just below the knees."
+  },
+  {
+   "sport": "gym",
+   "kind": "drill",
+   "id": "db-rdl",
+   "name": "Dumbbell Romanian deadlift",
+   "category": "lower-strength",
+   "work": 45,
+   "rest": 90,
+   "rounds": 3,
+   "reps": "8",
+   "how": "Dumbbells in front of the thighs, soft knees. Push the hips back, dumbbells close to the legs, feel the hamstrings, stand up strong.",
+   "works": [
+    "hamstrings",
+    "glutes",
+    "back"
+   ],
+   "also": [
+    "core",
+    "arms",
+    "knees"
+   ],
+   "safe": "Dumbbells close to your legs, hips back, flat back. Stop when your back starts to round."
+  },
+  {
+   "sport": "gym",
+   "kind": "drill",
+   "id": "db-deadlift",
+   "name": "Dumbbell deadlift",
+   "category": "lower-strength",
+   "work": 40,
+   "rest": 120,
+   "rounds": 3,
+   "reps": "6",
+   "how": "Dumbbells by your feet, flat back. Push the floor away and stand tall, dumbbells close to your legs.",
+   "works": [
+    "glutes",
+    "hamstrings",
+    "quads",
+    "back"
+   ],
+   "also": [
+    "knees",
+    "core",
+    "arms"
+   ],
+   "safe": "Dumbbells beside your feet, flat back, push the floor away. Don't let the weights drift forward."
+  },
+  {
+   "sport": "gym",
+   "kind": "drill",
+   "id": "db-hip-thrust",
+   "name": "Dumbbell hip thrust",
+   "category": "lower-strength",
+   "work": 40,
+   "rest": 90,
+   "rounds": 3,
+   "reps": "10",
+   "how": "Shoulders on a bench, a heavy dumbbell on your hips. Drive the hips up, squeeze the glutes at the top for a second.",
+   "works": [
+    "glutes",
+    "hamstrings"
+   ],
+   "also": [
+    "back",
+    "hips",
+    "knees"
+   ]
   },
   {
    "id": "nordic-curl",
@@ -753,7 +1321,15 @@
    "rest": 90,
    "rounds": 3,
    "reps": "5",
-   "how": "Kneel with heels anchored, lower yourself as slowly as you can. Big hamstring-injury protector."
+   "how": "Kneel with heels anchored, lower yourself as slowly as you can. Big hamstring-injury protector.",
+   "works": [
+    "hamstrings"
+   ],
+   "also": [
+    "knees",
+    "glutes"
+   ],
+   "safe": "Start with a few slow reps and catch yourself with your hands. Big jumps in Nordic volume cause the soreness you're trying to prevent."
   },
   {
    "id": "calf-raise",
@@ -765,7 +1341,14 @@
    "rest": 60,
    "rounds": 3,
    "reps": "12 each leg",
-   "how": "Full range, pause at the top. Ankles and Achilles for sprinting."
+   "how": "Full range, pause at the top. Ankles and Achilles for sprinting.",
+   "works": [
+    "calves",
+    "ankles"
+   ],
+   "also": [
+    "knees"
+   ]
   },
   {
    "id": "bench-press",
@@ -777,7 +1360,58 @@
    "rest": 120,
    "rounds": 4,
    "reps": "6",
-   "how": "Shoulder blades pinned, feet planted, bar to mid-chest."
+   "how": "Shoulder blades pinned, feet planted, bar to mid-chest.",
+   "works": [
+    "chest",
+    "shoulder",
+    "arms"
+   ],
+   "also": [
+    "core"
+   ],
+   "safe": "Shoulder blades squeezed back, feet planted, elbows about 45 degrees. Lower to the lower chest with control, and use a spotter or safety pins when it's heavy."
+  },
+  {
+   "sport": "gym",
+   "kind": "drill",
+   "id": "db-bench-press",
+   "name": "Dumbbell bench press",
+   "category": "upper-strength",
+   "work": 40,
+   "rest": 90,
+   "rounds": 3,
+   "reps": "8",
+   "how": "On a flat bench, dumbbells over the chest. Lower to the sides of the chest, press up and slightly in.",
+   "works": [
+    "chest",
+    "shoulder",
+    "arms"
+   ],
+   "also": [
+    "core"
+   ],
+   "safe": "Shoulder blades back, elbows about 45 degrees. Bring the dumbbells to your chest with control, never bounce."
+  },
+  {
+   "id": "incline-db-press",
+   "name": "Incline dumbbell press",
+   "sport": "gym",
+   "category": "upper-strength",
+   "kind": "drill",
+   "work": 40,
+   "rest": 90,
+   "rounds": 3,
+   "reps": "8",
+   "how": "Bench at 30-45 degrees, dumbbells at the upper chest. Press up and slightly in, lower slowly to the sides of the chest.",
+   "works": [
+    "chest",
+    "shoulder",
+    "arms"
+   ],
+   "also": [
+    "core"
+   ],
+   "safe": "Bench at about 30–45 degrees, shoulder blades back, elbows under the dumbbells."
   },
   {
    "id": "pull-up",
@@ -789,7 +1423,16 @@
    "rest": 120,
    "rounds": 3,
    "reps": "6-8",
-   "how": "Full hang to chin over the bar. Add weight when 8 feels easy."
+   "how": "Full hang to chin over the bar. Add weight when 8 feels easy.",
+   "works": [
+    "back",
+    "arms"
+   ],
+   "also": [
+    "shoulder",
+    "core"
+   ],
+   "safe": "Full hang at the bottom, shoulders down before you pull. No kipping or swinging."
   },
   {
    "id": "db-overhead-press",
@@ -801,7 +1444,39 @@
    "rest": 90,
    "rounds": 3,
    "reps": "8",
-   "how": "Ribs down, press straight up, no leaning back."
+   "how": "Ribs down, press straight up, no leaning back.",
+   "works": [
+    "shoulder",
+    "arms"
+   ],
+   "also": [
+    "core",
+    "back",
+    "chest"
+   ],
+   "safe": "Ribs down and glutes tight; press up without leaning back. Elbows a little in front of the body."
+  },
+  {
+   "id": "barbell-overhead-press",
+   "name": "Barbell overhead press",
+   "sport": "gym",
+   "category": "upper-strength",
+   "kind": "drill",
+   "work": 40,
+   "rest": 120,
+   "rounds": 4,
+   "reps": "6",
+   "how": "Bar on the front of the shoulders, glutes tight. Press straight up and push the head through at the top. No leaning back.",
+   "works": [
+    "shoulder",
+    "arms"
+   ],
+   "also": [
+    "core",
+    "back",
+    "chest"
+   ],
+   "safe": "Squeeze your glutes and keep the ribs down so the lower back doesn't arch. Head through at the top."
   },
   {
    "id": "bent-over-row",
@@ -813,7 +1488,99 @@
    "rest": 90,
    "rounds": 3,
    "reps": "8",
-   "how": "Flat back, pull to the belly, squeeze the shoulder blades."
+   "how": "Flat back, pull to the belly, squeeze the shoulder blades.",
+   "works": [
+    "back",
+    "arms"
+   ],
+   "also": [
+    "shoulder",
+    "core"
+   ],
+   "safe": "Flat back at about 45 degrees, knees soft. Pull to the lower ribs without jerking the torso up."
+  },
+  {
+   "sport": "gym",
+   "kind": "drill",
+   "id": "db-row",
+   "name": "Dumbbell bent-over row",
+   "category": "upper-strength",
+   "work": 40,
+   "rest": 75,
+   "rounds": 3,
+   "reps": "10",
+   "how": "Hinge forward with a flat back, dumbbells hanging. Pull them to your hips, squeeze the shoulder blades, lower slowly.",
+   "works": [
+    "back",
+    "arms"
+   ],
+   "also": [
+    "shoulder",
+    "core"
+   ]
+  },
+  {
+   "id": "landmine-row",
+   "name": "Landmine row (T-bar)",
+   "category": "upper-strength",
+   "work": 40,
+   "rest": 75,
+   "rounds": 3,
+   "reps": "10",
+   "how": "Straddle the bar facing away from the corner, flat back, knees soft. Pull the end to your chest, squeeze the shoulder blades, lower slowly.",
+   "sport": "gym",
+   "kind": "drill",
+   "needs": [
+    "landmine or barbell in a corner"
+   ],
+   "works": [
+    "back",
+    "arms"
+   ],
+   "also": [
+    "shoulder",
+    "core"
+   ]
+  },
+  {
+   "id": "seated-cable-row",
+   "name": "Seated cable row",
+   "sport": "gym",
+   "category": "upper-strength",
+   "kind": "drill",
+   "work": 40,
+   "rest": 75,
+   "rounds": 3,
+   "reps": "10",
+   "how": "Sit tall, chest up. Pull the handle to your belly and squeeze the shoulder blades. Don't lean back to move the weight.",
+   "works": [
+    "back",
+    "arms"
+   ],
+   "also": [
+    "shoulder",
+    "core"
+   ]
+  },
+  {
+   "id": "face-pull",
+   "name": "Face pull",
+   "sport": "gym",
+   "category": "upper-strength",
+   "kind": "drill",
+   "work": 35,
+   "rest": 60,
+   "rounds": 3,
+   "reps": "12",
+   "how": "Rope at face height. Pull to your eyes with the elbows high and wide, squeeze the upper back. Keeps shoulders healthy.",
+   "works": [
+    "back",
+    "arms"
+   ],
+   "also": [
+    "shoulder",
+    "core"
+   ]
   },
   {
    "id": "push-up",
@@ -825,7 +1592,15 @@
    "rest": 60,
    "rounds": 3,
    "reps": "12-15",
-   "how": "Body in one straight line, chest to a fist from the floor."
+   "how": "Body in one straight line, chest to a fist from the floor.",
+   "works": [
+    "chest",
+    "shoulder",
+    "arms"
+   ],
+   "also": [
+    "core"
+   ]
   },
   {
    "id": "box-jump",
@@ -837,7 +1612,19 @@
    "rest": 90,
    "rounds": 4,
    "reps": "3",
-   "how": "Jump up explosively, land soft and quiet, step down. Quality over height."
+   "how": "Jump up explosively, land soft and quiet, step down. Quality over height.",
+   "works": [
+    "quads",
+    "glutes",
+    "calves"
+   ],
+   "also": [
+    "knees",
+    "ankles",
+    "hamstrings",
+    "hips"
+   ],
+   "safe": "Pick a box you land on easily, land soft with knees out, and step down; don't jump down."
   },
   {
    "id": "broad-jump",
@@ -849,7 +1636,18 @@
    "rest": 90,
    "rounds": 4,
    "reps": "3",
-   "how": "Swing the arms, jump as far as you can, stick the landing."
+   "how": "Swing the arms, jump as far as you can, stick the landing.",
+   "works": [
+    "quads",
+    "glutes",
+    "calves"
+   ],
+   "also": [
+    "knees",
+    "ankles",
+    "hamstrings",
+    "hips"
+   ]
   },
   {
    "id": "single-leg-bounds",
@@ -865,6 +1663,18 @@
    "positions": [
     "winger",
     "striker"
+   ],
+   "works": [
+    "quads",
+    "glutes",
+    "calves",
+    "groin"
+   ],
+   "also": [
+    "knees",
+    "ankles",
+    "hamstrings",
+    "hips"
    ]
   },
   {
@@ -880,6 +1690,15 @@
    "how": "Side-on to a wall, rotate from the hips and throw hard. Shooting and turning power.",
    "needs": [
     "medicine ball"
+   ],
+   "works": [
+    "core",
+    "shoulder"
+   ],
+   "also": [
+    "hips",
+    "back",
+    "ankles"
    ]
   },
   {
@@ -892,7 +1711,17 @@
    "rest": 60,
    "rounds": 3,
    "reps": "12",
-   "how": "Snap the hips, let the bell float to chest height. Hinge, not squat."
+   "how": "Snap the hips, let the bell float to chest height. Hinge, not squat.",
+   "works": [
+    "glutes",
+    "hamstrings"
+   ],
+   "also": [
+    "back",
+    "core",
+    "shoulder"
+   ],
+   "safe": "It's a hinge, not a squat: hips back, flat back, snap the hips. The arms only guide the bell."
   },
   {
    "id": "plank",
@@ -904,7 +1733,15 @@
    "rest": 45,
    "rounds": 3,
    "reps": "45 s",
-   "how": "Elbows under shoulders, squeeze glutes, no sagging."
+   "how": "Elbows under shoulders, squeeze glutes, no sagging. Harder: a plate on your back.",
+   "works": [
+    "core"
+   ],
+   "also": [
+    "shoulder",
+    "back",
+    "hips"
+   ]
   },
   {
    "id": "copenhagen-plank",
@@ -916,7 +1753,17 @@
    "rest": 45,
    "rounds": 3,
    "reps": "20 s each side",
-   "how": "Top leg on a bench, lift the hips. Groin-injury protector for footballers."
+   "how": "Top leg on a bench, lift the hips into a straight line. Groin-injury protector for footballers. New to it? Start with the short lever (knee on the bench) and move up when the hold is solid.",
+   "works": [
+    "groin",
+    "core"
+   ],
+   "also": [
+    "hips",
+    "shoulder",
+    "knees"
+   ],
+   "safe": "Start with the knee on the bench (short lever) before the foot. Stop if you feel a sharp pain in the groin."
   },
   {
    "id": "pallof-press",
@@ -928,7 +1775,36 @@
    "rest": 45,
    "rounds": 3,
    "reps": "10 each side",
-   "how": "Cable or band at chest height, press out and resist the twist."
+   "how": "Cable or band at chest height, press out and resist the twist.",
+   "works": [
+    "core"
+   ],
+   "also": [
+    "shoulder",
+    "back",
+    "hips"
+   ]
+  },
+  {
+   "id": "hanging-leg-raise",
+   "name": "Hanging leg raise",
+   "sport": "gym",
+   "category": "core",
+   "kind": "drill",
+   "work": 40,
+   "rest": 60,
+   "rounds": 3,
+   "reps": "10",
+   "how": "Hang from a bar, ribs down. Raise the legs to hip height or higher without swinging, lower slowly. Bent knees make it easier.",
+   "works": [
+    "core",
+    "hips"
+   ],
+   "also": [
+    "shoulder",
+    "arms",
+    "back"
+   ]
   },
   {
    "id": "dead-bug",
@@ -940,7 +1816,15 @@
    "rest": 45,
    "rounds": 3,
    "reps": "10 each side",
-   "how": "Lower back pressed into the floor, opposite arm and leg reach slowly."
+   "how": "Lower back pressed into the floor, opposite arm and leg reach slowly. Harder: hold a plate over your chest.",
+   "works": [
+    "core"
+   ],
+   "also": [
+    "shoulder",
+    "back",
+    "hips"
+   ]
   },
   {
    "id": "bike-intervals",
@@ -952,7 +1836,14 @@
    "rest": 60,
    "rounds": 6,
    "reps": "30 s hard",
-   "how": "30 seconds all-out on the bike, easy spin in the rest."
+   "how": "30 seconds all-out on the bike, easy spin in the rest.",
+   "works": [
+    "quads"
+   ],
+   "also": [
+    "knees",
+    "glutes"
+   ]
   },
   {
    "id": "sled-push",
@@ -964,7 +1855,19 @@
    "rest": 90,
    "rounds": 5,
    "reps": "20 m",
-   "how": "Low body angle, drive the knees. Acceleration strength."
+   "how": "Low body angle, drive the knees. Acceleration strength.",
+   "works": [
+    "quads",
+    "glutes",
+    "calves"
+   ],
+   "also": [
+    "hamstrings",
+    "knees",
+    "ankles",
+    "back"
+   ],
+   "safe": "Arms long, flat back, drive with short steps. Pick a weight you can keep moving."
   },
   {
    "id": "gym-warmup",
@@ -973,7 +1876,9 @@
    "category": "warmup",
    "kind": "warmup",
    "work": 300,
-   "how": "5 min easy bike or row, then leg swings, hip openers and a few bodyweight squats."
+   "how": "5 min easy bike or row, then leg swings, hip openers and a few bodyweight squats.",
+   "works": [],
+   "also": []
   },
   {
    "id": "gym-cooldown",
@@ -982,7 +1887,9 @@
    "category": "cooldown",
    "kind": "cooldown",
    "work": 240,
-   "how": "Hip flexors, hamstrings, glutes, chest. Slow breathing."
+   "how": "Hip flexors, hamstrings, glutes, chest. Slow breathing.",
+   "works": [],
+   "also": []
   },
   {
    "id": "power-clean",
@@ -994,7 +1901,22 @@
    "rest": 150,
    "rounds": 5,
    "reps": "3",
-   "how": "Bar from the floor, explode with the hips, catch high in a quarter squat. Speed, not grind."
+   "how": "Bar from the floor, explode with the hips, catch high in a quarter squat. Speed, not grind.",
+   "works": [
+    "quads",
+    "glutes",
+    "hamstrings",
+    "back",
+    "shoulder"
+   ],
+   "also": [
+    "knees",
+    "ankles",
+    "calves",
+    "core",
+    "arms"
+   ],
+   "safe": "Learn it light. Bar close, back flat, the hips do the work and the arms only guide. Catch with elbows high and knees bent; never catch with straight legs."
   },
   {
    "id": "hang-clean",
@@ -1006,7 +1928,49 @@
    "rest": 150,
    "rounds": 4,
    "reps": "3",
-   "how": "Start at mid-thigh, jump and shrug, fast elbows. Easier to learn than the full clean."
+   "how": "Start at mid-thigh, jump and shrug, fast elbows. Easier to learn than the full clean.",
+   "works": [
+    "quads",
+    "glutes",
+    "hamstrings",
+    "back",
+    "shoulder"
+   ],
+   "also": [
+    "knees",
+    "ankles",
+    "calves",
+    "core",
+    "arms"
+   ],
+   "safe": "Start from above the knee with a flat back. Jump and shrug, then catch soft with elbows high. Light weights until it's clean."
+  },
+  {
+   "sport": "gym",
+   "kind": "drill",
+   "id": "db-hang-clean",
+   "name": "Dumbbell hang clean",
+   "category": "olympic",
+   "work": 30,
+   "rest": 120,
+   "rounds": 4,
+   "reps": "4",
+   "how": "Dumbbells at mid-thigh. Jump and shrug, pull them up and catch them on your shoulders in a quarter squat. Fast elbows.",
+   "works": [
+    "quads",
+    "glutes",
+    "hamstrings",
+    "back",
+    "shoulder"
+   ],
+   "also": [
+    "knees",
+    "ankles",
+    "calves",
+    "core",
+    "arms"
+   ],
+   "safe": "Dumbbells at your sides, hips drive, catch on the shoulders with soft knees. Don't curl them up."
   },
   {
    "id": "push-jerk",
@@ -1018,7 +1982,46 @@
    "rest": 150,
    "rounds": 4,
    "reps": "3",
-   "how": "Short dip, drive with the legs, punch the bar overhead and catch in a slight bend."
+   "how": "Short dip, drive with the legs, punch the bar overhead and catch in a slight bend.",
+   "works": [
+    "quads",
+    "glutes",
+    "hamstrings",
+    "back",
+    "shoulder"
+   ],
+   "also": [
+    "knees",
+    "ankles",
+    "calves",
+    "core",
+    "arms"
+   ],
+   "safe": "Dip straight down, not forward, then drive. Lock the bar over the back of your head with ribs down."
+  },
+  {
+   "sport": "gym",
+   "kind": "drill",
+   "id": "db-push-press",
+   "name": "Dumbbell push press",
+   "category": "explosive",
+   "work": 30,
+   "rest": 90,
+   "rounds": 3,
+   "reps": "5",
+   "how": "Dumbbells at your shoulders. Short dip, drive with the legs and press them overhead in one move.",
+   "works": [
+    "shoulder",
+    "arms",
+    "quads"
+   ],
+   "also": [
+    "knees",
+    "core",
+    "back",
+    "glutes"
+   ],
+   "safe": "Short dip straight down, drive with the legs, then press. Don't arch back to finish."
   },
   {
    "id": "split-jerk",
@@ -1030,7 +2033,22 @@
    "rest": 150,
    "rounds": 4,
    "reps": "2",
-   "how": "Dip and drive, split the feet front and back to catch. Alternate the front foot each set."
+   "how": "Dip and drive, split the feet front and back to catch. Alternate the front foot each set.",
+   "works": [
+    "quads",
+    "glutes",
+    "hamstrings",
+    "back",
+    "shoulder"
+   ],
+   "also": [
+    "knees",
+    "ankles",
+    "calves",
+    "core",
+    "arms"
+   ],
+   "safe": "Dip straight down, split fast with the front shin vertical, and lock out over your head. Go light while learning the split."
   },
   {
    "id": "hang-snatch",
@@ -1042,7 +2060,22 @@
    "rest": 150,
    "rounds": 5,
    "reps": "2",
-   "how": "Wide grip from mid-thigh, extend fully, pull under and catch overhead. Light weight, perfect positions."
+   "how": "Wide grip from mid-thigh, extend fully, pull under and catch overhead. Light weight, perfect positions.",
+   "works": [
+    "quads",
+    "glutes",
+    "hamstrings",
+    "back",
+    "shoulder"
+   ],
+   "also": [
+    "knees",
+    "ankles",
+    "calves",
+    "core",
+    "arms"
+   ],
+   "safe": "The most technical lift: light weights, wide grip, bar close. Catch with locked arms; if you lose it, let it fall forward and step back."
   },
   {
    "id": "db-snatch",
@@ -1054,7 +2087,22 @@
    "rest": 90,
    "rounds": 3,
    "reps": "4 each arm",
-   "how": "One explosive pull from the floor to overhead. A simpler snatch for power."
+   "how": "One explosive pull from the floor to overhead. A simpler snatch for power.",
+   "works": [
+    "quads",
+    "glutes",
+    "hamstrings",
+    "back",
+    "shoulder"
+   ],
+   "also": [
+    "knees",
+    "ankles",
+    "calves",
+    "core",
+    "arms"
+   ],
+   "safe": "Hips drive the dumbbell up, arm guides it close to the body. Punch up to lock out; don't swing it out wide."
   },
   {
    "id": "jump-squat",
@@ -1066,7 +2114,41 @@
    "rest": 90,
    "rounds": 4,
    "reps": "5",
-   "how": "Light load or bodyweight, quarter dip and jump as high as you can. Land soft."
+   "how": "Light load or bodyweight, quarter dip and jump as high as you can. Land soft.",
+   "works": [
+    "quads",
+    "glutes",
+    "calves"
+   ],
+   "also": [
+    "knees",
+    "ankles",
+    "hamstrings",
+    "hips"
+   ]
+  },
+  {
+   "sport": "gym",
+   "kind": "drill",
+   "id": "db-jump-squat",
+   "name": "Dumbbell jump squat",
+   "category": "explosive",
+   "work": 25,
+   "rest": 90,
+   "rounds": 3,
+   "reps": "5",
+   "how": "Light dumbbells at your sides. Quarter dip and jump as high as you can, land soft, reset each rep.",
+   "works": [
+    "quads",
+    "glutes",
+    "calves"
+   ],
+   "also": [
+    "knees",
+    "ankles",
+    "hamstrings",
+    "hips"
+   ]
   },
   {
    "id": "trap-bar-jump",
@@ -1078,7 +2160,18 @@
    "rest": 120,
    "rounds": 4,
    "reps": "4",
-   "how": "Light trap bar (20-30% of your deadlift), jump straight up, reset each rep."
+   "how": "Light trap bar (20-30% of your deadlift), jump straight up, reset each rep.",
+   "works": [
+    "quads",
+    "glutes",
+    "calves"
+   ],
+   "also": [
+    "knees",
+    "ankles",
+    "back",
+    "hamstrings"
+   ]
   },
   {
    "id": "speed-bench",
@@ -1090,7 +2183,16 @@
    "rest": 90,
    "rounds": 4,
    "reps": "5",
-   "how": "About 50-60% load, lower under control, press as fast as possible."
+   "how": "About 50-60% load, lower under control, press as fast as possible.",
+   "works": [
+    "chest",
+    "shoulder",
+    "arms"
+   ],
+   "also": [
+    "core"
+   ],
+   "safe": "Light bar, fast but controlled: no bouncing off the chest."
   },
   {
    "id": "landmine-push-press",
@@ -1105,6 +2207,68 @@
    "how": "Dip and drive the bar up from the shoulder in one explosive push.",
    "needs": [
     "landmine or barbell in a corner"
+   ],
+   "works": [
+    "shoulder",
+    "arms",
+    "quads"
+   ],
+   "also": [
+    "knees",
+    "core",
+    "back",
+    "glutes"
+   ],
+   "safe": "Stay tall and drive with the legs; press up and slightly forward, not across your face."
+  },
+  {
+   "id": "landmine-rotational-press",
+   "name": "Landmine rotational press",
+   "category": "explosive",
+   "work": 30,
+   "rest": 90,
+   "rounds": 3,
+   "reps": "5 each side",
+   "how": "Bar end at your shoulder, side-on. Load the back hip, then turn the hips and punch the bar up and across in one move, like striking a ball.",
+   "sport": "gym",
+   "kind": "drill",
+   "needs": [
+    "landmine or barbell in a corner"
+   ],
+   "works": [
+    "core",
+    "shoulder",
+    "arms"
+   ],
+   "also": [
+    "hips",
+    "back",
+    "ankles",
+    "quads"
+   ]
+  },
+  {
+   "id": "landmine-rotation",
+   "name": "Landmine rotation",
+   "category": "core",
+   "work": 40,
+   "rest": 60,
+   "rounds": 3,
+   "reps": "6 each side",
+   "how": "Arms long, bar end above your head. Turn it down to one hip, then the other, in a rainbow, hips leading and feet turning with it, arms straight. Once it's smooth, make it fast and powerful.",
+   "sport": "gym",
+   "kind": "drill",
+   "needs": [
+    "landmine or barbell in a corner"
+   ],
+   "works": [
+    "core",
+    "shoulder"
+   ],
+   "also": [
+    "hips",
+    "back",
+    "ankles"
    ]
   },
   {
@@ -1120,6 +2284,14 @@
    "how": "Throw hard into a wall from the chest, catch and go again. Upper-body speed.",
    "needs": [
     "medicine ball"
+   ],
+   "works": [
+    "chest",
+    "shoulder",
+    "arms"
+   ],
+   "also": [
+    "core"
    ]
   },
   {
@@ -1135,6 +2307,15 @@
    "how": "Reach tall, slam the ball into the floor with everything.",
    "needs": [
     "medicine ball"
+   ],
+   "works": [
+    "core",
+    "shoulder",
+    "arms"
+   ],
+   "also": [
+    "back",
+    "hips"
    ]
   },
   {
@@ -1147,7 +2328,113 @@
    "rest": 120,
    "rounds": 4,
    "reps": "4",
-   "how": "Step off a low box, touch the floor and jump straight up instantly. Short ground contact."
+   "how": "Step off a low box, touch the floor and jump straight up instantly. Short ground contact.",
+   "works": [
+    "quads",
+    "glutes",
+    "calves"
+   ],
+   "also": [
+    "knees",
+    "ankles",
+    "hamstrings",
+    "hips"
+   ],
+   "safe": "Step off, don't jump off. Land and leave the floor fast; if you sink deep or land loud, the box is too high."
+  },
+  {
+   "id": "depth-jump-hurdle",
+   "name": "Depth jump over hurdle",
+   "sport": "gym",
+   "category": "plyometrics",
+   "kind": "drill",
+   "work": 20,
+   "rest": 120,
+   "rounds": 3,
+   "reps": "3",
+   "how": "Advanced depth jump. Step off a box, land on both feet and jump straight over a hurdle in front. Short ground contact: master the depth jump first.",
+   "works": [
+    "quads",
+    "glutes",
+    "calves"
+   ],
+   "also": [
+    "knees",
+    "ankles",
+    "hamstrings",
+    "hips"
+   ],
+   "safe": "Advanced: only once normal depth jumps are easy. Low box and low hurdle first."
+  },
+  {
+   "id": "split-stance-jump",
+   "name": "Split-stance step-up jump",
+   "sport": "gym",
+   "category": "plyometrics",
+   "kind": "drill",
+   "work": 25,
+   "rest": 90,
+   "rounds": 3,
+   "reps": "4 each leg",
+   "how": "Front foot on a low step or plate, back foot on the floor: the same stance as the split-stance quarter squat. Dip and jump as high as you can, land back in the stance.",
+   "works": [
+    "quads",
+    "glutes",
+    "calves"
+   ],
+   "also": [
+    "knees",
+    "ankles",
+    "hamstrings",
+    "hips"
+   ]
+  },
+  {
+   "id": "single-leg-rdl-box-jump",
+   "name": "Single-leg RDL to box jump",
+   "sport": "gym",
+   "category": "plyometrics",
+   "kind": "drill",
+   "work": 30,
+   "rest": 90,
+   "rounds": 3,
+   "reps": "4 each leg",
+   "how": "Bodyweight single-leg RDL, snap the free knee forward and up, and jump onto the box off the standing foot. Land soft on both feet, step down.",
+   "works": [
+    "hamstrings",
+    "glutes",
+    "quads",
+    "calves"
+   ],
+   "also": [
+    "knees",
+    "ankles",
+    "hips",
+    "back"
+   ]
+  },
+  {
+   "id": "skater-snap-box-jump",
+   "name": "Skater snap to box jump",
+   "sport": "gym",
+   "category": "plyometrics",
+   "kind": "drill",
+   "work": 30,
+   "rest": 90,
+   "rounds": 3,
+   "reps": "4 each side",
+   "how": "Skate onto the left foot, snap across to the right, snap straight back, then jump onto the box at once. Fast feet, short contacts.",
+   "works": [
+    "quads",
+    "glutes",
+    "calves"
+   ],
+   "also": [
+    "knees",
+    "ankles",
+    "hamstrings",
+    "hips"
+   ]
   },
   {
    "id": "pogo-hops",
@@ -1159,7 +2446,14 @@
    "rest": 60,
    "rounds": 3,
    "reps": "20",
-   "how": "Stiff ankles, bounce off the balls of the feet. Quick and springy."
+   "how": "Stiff ankles, bounce off the balls of the feet. Quick and springy.",
+   "works": [
+    "calves",
+    "ankles"
+   ],
+   "also": [
+    "knees"
+   ]
   },
   {
    "id": "hurdle-hops",
@@ -1174,6 +2468,17 @@
    "how": "Hop over low hurdles in a row, minimal time on the ground.",
    "needs": [
     "mini hurdles or cones"
+   ],
+   "works": [
+    "quads",
+    "glutes",
+    "calves"
+   ],
+   "also": [
+    "knees",
+    "ankles",
+    "hamstrings",
+    "hips"
    ]
   },
   {
@@ -1190,6 +2495,18 @@
    "positions": [
     "winger",
     "defender"
+   ],
+   "works": [
+    "quads",
+    "glutes",
+    "calves",
+    "groin"
+   ],
+   "also": [
+    "knees",
+    "ankles",
+    "hamstrings",
+    "hips"
    ]
   },
   {
@@ -1202,7 +2519,18 @@
    "rest": 60,
    "rounds": 3,
    "reps": "5",
-   "how": "Quick dip, swing the arms, jump for max height. Test-day jump too."
+   "how": "Quick dip, swing the arms, jump for max height. Test-day jump too.",
+   "works": [
+    "quads",
+    "glutes",
+    "calves"
+   ],
+   "also": [
+    "knees",
+    "ankles",
+    "hamstrings",
+    "hips"
+   ]
   },
   {
    "id": "plyo-push-up",
@@ -1214,7 +2542,15 @@
    "rest": 90,
    "rounds": 3,
    "reps": "6",
-   "how": "Push the floor away hard enough that your hands leave the ground."
+   "how": "Push the floor away hard enough that your hands leave the ground.",
+   "works": [
+    "chest",
+    "shoulder",
+    "arms"
+   ],
+   "also": [
+    "core"
+   ]
   },
   {
    "id": "sprint-10-20",
@@ -1226,7 +2562,19 @@
    "rest": 90,
    "rounds": 6,
    "reps": "10-20 m",
-   "how": "Full speed from a standing start on the track or turf. Full rest: quality over fatigue."
+   "how": "Full speed from a standing start on the track or turf. Full rest: quality over fatigue.",
+   "works": [
+    "hamstrings",
+    "quads",
+    "calves"
+   ],
+   "also": [
+    "glutes",
+    "hips",
+    "groin",
+    "ankles",
+    "knees"
+   ]
   },
   {
    "id": "flying-sprint",
@@ -1238,7 +2586,19 @@
    "rest": 120,
    "rounds": 4,
    "reps": "20 m",
-   "how": "Build up over 20 m, then hit top speed for 20 m."
+   "how": "Build up over 20 m, then hit top speed for 20 m.",
+   "works": [
+    "hamstrings",
+    "quads",
+    "calves"
+   ],
+   "also": [
+    "glutes",
+    "hips",
+    "groin",
+    "ankles",
+    "knees"
+   ]
   },
   {
    "id": "resisted-sprint",
@@ -1250,7 +2610,19 @@
    "rest": 120,
    "rounds": 5,
    "reps": "15 m",
-   "how": "Light sled or band, drive the knees, lean forward. First-step power."
+   "how": "Light sled or band, drive the knees, lean forward. First-step power.",
+   "works": [
+    "hamstrings",
+    "quads",
+    "calves"
+   ],
+   "also": [
+    "glutes",
+    "hips",
+    "groin",
+    "ankles",
+    "knees"
+   ]
   },
   {
    "id": "half-squat",
@@ -1262,7 +2634,18 @@
    "rest": 150,
    "rounds": 4,
    "reps": "5",
-   "how": "Heavier than your full squat, down to thighs about 45 degrees. Strength in the range you sprint and jump."
+   "how": "Heavier than your full squat, down to thighs about 45 degrees. Strength in the range you sprint and jump.",
+   "works": [
+    "quads",
+    "glutes"
+   ],
+   "also": [
+    "knees",
+    "back",
+    "hips",
+    "core"
+   ],
+   "safe": "Heavy and short range: stay braced and stop at half depth with control, never drop into it."
   },
   {
    "id": "quarter-squat",
@@ -1274,7 +2657,68 @@
    "rest": 150,
    "rounds": 3,
    "reps": "5",
-   "how": "Heavy, short dip, drive up fast. Use safety bars."
+   "how": "Heavy, short dip, drive up fast. Use safety bars.",
+   "works": [
+    "quads",
+    "glutes"
+   ],
+   "also": [
+    "knees",
+    "back",
+    "hips",
+    "core"
+   ],
+   "safe": "Very heavy loads: use safety bars, stay braced, and keep the knees over the toes."
+  },
+  {
+   "id": "landmine-squat",
+   "name": "Landmine squat",
+   "category": "lower-strength",
+   "work": 40,
+   "rest": 90,
+   "rounds": 3,
+   "reps": "8",
+   "how": "Hold the end of the bar at your chest with both hands, feet a little wider than hips. Sit down between your hips, chest up, then drive up. Easy on the back.",
+   "sport": "gym",
+   "kind": "drill",
+   "needs": [
+    "landmine or barbell in a corner"
+   ],
+   "works": [
+    "quads",
+    "glutes"
+   ],
+   "also": [
+    "knees",
+    "back",
+    "hips",
+    "core"
+   ],
+   "safe": "Keep your chest up into the bar and your knees out; the bar end stays at your chest."
+  },
+  {
+   "id": "split-stance-quarter-squat",
+   "name": "Split-stance quarter squat",
+   "sport": "gym",
+   "category": "lower-strength",
+   "kind": "drill",
+   "work": 40,
+   "rest": 120,
+   "rounds": 3,
+   "reps": "5 each leg",
+   "how": "Bar on your back, feet staggered: front foot flat, back heel up. Quarter-squat depth, then drive up fast. The front leg does the work.",
+   "works": [
+    "quads",
+    "glutes"
+   ],
+   "also": [
+    "knees",
+    "hips",
+    "groin",
+    "hamstrings",
+    "ankles"
+   ],
+   "safe": "Bar on your back, feet hip-width apart in the split, not on one line. Front knee tracks over the toes."
   },
   {
    "id": "front-squat",
@@ -1286,7 +2730,18 @@
    "rest": 150,
    "rounds": 4,
    "reps": "5",
-   "how": "Elbows high, chest up, sit between the hips."
+   "how": "Elbows high, chest up, sit between the hips.",
+   "works": [
+    "quads",
+    "glutes"
+   ],
+   "also": [
+    "knees",
+    "back",
+    "hips",
+    "core"
+   ],
+   "safe": "Elbows high so the bar sits on your shoulders, not your wrists. Stay tall: if the elbows drop, the back rounds."
   },
   {
    "id": "hip-thrust",
@@ -1298,7 +2753,17 @@
    "rest": 90,
    "rounds": 3,
    "reps": "8",
-   "how": "Shoulders on a bench, drive the hips up, squeeze the glutes at the top. Sprint power."
+   "how": "Shoulders on a bench, knees at 90 degrees at the top. Drive the hips up, hold a second and squeeze the glutes, lower slowly. Sprint power.",
+   "works": [
+    "glutes",
+    "hamstrings"
+   ],
+   "also": [
+    "back",
+    "hips",
+    "knees"
+   ],
+   "safe": "Chin tucked and ribs down; finish with the glutes, not by arching your lower back. Pad the bar."
   },
   {
    "id": "deadlift",
@@ -1310,7 +2775,19 @@
    "rest": 180,
    "rounds": 4,
    "reps": "4",
-   "how": "Bar over mid-foot, flat back, push the floor away."
+   "how": "Bar over mid-foot, flat back, push the floor away.",
+   "works": [
+    "glutes",
+    "hamstrings",
+    "quads",
+    "back"
+   ],
+   "also": [
+    "knees",
+    "core",
+    "arms"
+   ],
+   "safe": "Bar over the middle of your feet, flat back, push the floor away. Never jerk the bar off the floor or round your back to finish a rep."
   },
   {
    "id": "single-leg-rdl",
@@ -1322,7 +2799,122 @@
    "rest": 60,
    "rounds": 3,
    "reps": "8 each leg",
-   "how": "Hinge on one leg, reach the other leg back, hips square. Balance and hamstrings."
+   "how": "Hinge on one leg, reach the other leg back, hips square. Balance and hamstrings.",
+   "works": [
+    "hamstrings",
+    "glutes"
+   ],
+   "also": [
+    "back",
+    "knees",
+    "ankles",
+    "hips",
+    "core"
+   ],
+   "safe": "Go light until your balance is solid. Hips square, flat back, standing knee soft."
+  },
+  {
+   "id": "single-leg-rdl-clean",
+   "name": "Single-leg RDL clean",
+   "sport": "gym",
+   "category": "explosive",
+   "kind": "drill",
+   "work": 40,
+   "rest": 90,
+   "rounds": 3,
+   "reps": "5 each leg",
+   "how": "Light barbell. Hinge on one leg, then drive up fast and bring the free knee forward and up, like the pull of a clean. Finish tall on the standing leg.",
+   "works": [
+    "hamstrings",
+    "glutes",
+    "back"
+   ],
+   "also": [
+    "knees",
+    "ankles",
+    "shoulder",
+    "arms",
+    "core"
+   ],
+   "safe": "Light bar only. Hinge with a flat back, then drive up tall; don't pull with your arms or lean back at the top."
+  },
+  {
+   "id": "landmine-diagonal-lunge",
+   "name": "Landmine diagonal reverse lunge",
+   "sport": "gym",
+   "category": "single-limb",
+   "kind": "drill",
+   "work": 50,
+   "rest": 90,
+   "rounds": 3,
+   "reps": "6 each leg",
+   "how": "Hold the end of the bar at your shoulder with both hands. Step back on a diagonal behind the front leg, lean into the bar, drive back up through the front foot.",
+   "needs": [
+    "landmine or barbell in a corner"
+   ],
+   "works": [
+    "quads",
+    "glutes"
+   ],
+   "also": [
+    "knees",
+    "hips",
+    "groin",
+    "hamstrings",
+    "ankles"
+   ]
+  },
+  {
+   "id": "landmine-single-leg-rdl",
+   "name": "Landmine single-leg RDL",
+   "category": "single-limb",
+   "work": 50,
+   "rest": 75,
+   "rounds": 3,
+   "reps": "8 each leg",
+   "how": "Bar end in the hand opposite the standing leg. Hinge on one leg, the free leg reaching back, hips square. The bar guides you, so you can load it heavier.",
+   "sport": "gym",
+   "kind": "drill",
+   "needs": [
+    "landmine or barbell in a corner"
+   ],
+   "works": [
+    "hamstrings",
+    "glutes"
+   ],
+   "also": [
+    "back",
+    "knees",
+    "ankles",
+    "hips",
+    "core"
+   ]
+  },
+  {
+   "id": "landmine-lateral-lunge",
+   "name": "Landmine lateral lunge",
+   "category": "single-limb",
+   "work": 50,
+   "rest": 75,
+   "rounds": 3,
+   "reps": "6 each side",
+   "how": "Bar end at your chest. Step wide to the side and sit into that hip, the other leg long, then push back to the middle. Groin and side-to-side strength.",
+   "sport": "gym",
+   "kind": "drill",
+   "needs": [
+    "landmine or barbell in a corner"
+   ],
+   "works": [
+    "quads",
+    "glutes"
+   ],
+   "also": [
+    "knees",
+    "hips",
+    "groin",
+    "hamstrings",
+    "ankles"
+   ]
   },
   {
    "id": "step-up",
@@ -1334,7 +2926,19 @@
    "rest": 60,
    "rounds": 3,
    "reps": "6 each leg",
-   "how": "Box at knee height, drive up through the front leg, finish with a knee drive."
+   "how": "Box at knee height, drive up through the front leg, finish with a knee drive. Sprinter version: a lower step, fast and explosive.",
+   "works": [
+    "quads",
+    "glutes"
+   ],
+   "also": [
+    "knees",
+    "hips",
+    "groin",
+    "hamstrings",
+    "ankles"
+   ],
+   "safe": "Drive through the front foot, don't spring off the back one. Box no higher than your knee."
   },
   {
    "id": "skater-squat",
@@ -1346,7 +2950,18 @@
    "rest": 60,
    "rounds": 3,
    "reps": "6 each leg",
-   "how": "Single-leg squat, back knee touches a pad behind you. Control on the way down."
+   "how": "Single-leg squat, back knee touches a pad behind you. Control on the way down.",
+   "works": [
+    "quads",
+    "glutes"
+   ],
+   "also": [
+    "knees",
+    "hips",
+    "groin",
+    "hamstrings",
+    "ankles"
+   ]
   },
   {
    "id": "single-arm-db-press",
@@ -1358,7 +2973,15 @@
    "rest": 60,
    "rounds": 3,
    "reps": "8 each arm",
-   "how": "One dumbbell, resist the twist through your trunk."
+   "how": "One dumbbell, resist the twist through your trunk.",
+   "works": [
+    "chest",
+    "shoulder",
+    "arms"
+   ],
+   "also": [
+    "core"
+   ]
   },
   {
    "id": "single-arm-row",
@@ -1370,7 +2993,15 @@
    "rest": 60,
    "rounds": 3,
    "reps": "10 each arm",
-   "how": "Hand on a bench, pull to the hip, no twisting."
+   "how": "Hand on a bench, pull to the hip, no twisting.",
+   "works": [
+    "back",
+    "arms"
+   ],
+   "also": [
+    "shoulder",
+    "core"
+   ]
   },
   {
    "id": "iso-split-squat",
@@ -1382,7 +3013,18 @@
    "rest": 60,
    "rounds": 3,
    "reps": "30 s each leg",
-   "how": "Hold the bottom of a split squat, front thigh parallel. Knee and tendon strength."
+   "how": "Hold the bottom of a split squat, front thigh parallel. Knee and tendon strength.",
+   "works": [
+    "quads",
+    "glutes"
+   ],
+   "also": [
+    "knees",
+    "hips",
+    "groin",
+    "hamstrings",
+    "ankles"
+   ]
   },
   {
    "id": "wall-sit",
@@ -1394,7 +3036,14 @@
    "rest": 60,
    "rounds": 3,
    "reps": "45 s",
-   "how": "Back flat on the wall, thighs parallel to the floor."
+   "how": "Back flat on the wall, thighs parallel to the floor.",
+   "works": [
+    "quads"
+   ],
+   "also": [
+    "knees",
+    "glutes"
+   ]
   },
   {
    "id": "iso-mid-thigh-pull",
@@ -1406,7 +3055,18 @@
    "rest": 90,
    "rounds": 5,
    "reps": "5 s max pulls",
-   "how": "Bar fixed at mid-thigh (or pinned in a rack), pull as hard as you can for 5 seconds."
+   "how": "Bar fixed at mid-thigh (or pinned in a rack), pull as hard as you can for 5 seconds.",
+   "works": [
+    "glutes",
+    "hamstrings",
+    "back",
+    "quads"
+   ],
+   "also": [
+    "knees",
+    "arms",
+    "core"
+   ]
   },
   {
    "id": "iso-hamstring-bridge",
@@ -1418,7 +3078,14 @@
    "rest": 45,
    "rounds": 3,
    "reps": "30 s",
-   "how": "Heels on a bench, legs nearly straight, lift the hips and hold. Hamstring protection."
+   "how": "Heels on a bench, legs nearly straight, lift the hips and hold. Harder: one leg at a time, 20 s each. Hamstring protection.",
+   "works": [
+    "hamstrings",
+    "glutes"
+   ],
+   "also": [
+    "back"
+   ]
   },
   {
    "id": "home-warmup",
@@ -1427,7 +3094,9 @@
    "category": "warmup",
    "kind": "warmup",
    "work": 240,
-   "how": "March on the spot, arm circles, leg swings holding a wall, 10 glute bridges, 10 slow squats. Get warm before anything fast."
+   "how": "March on the spot, arm circles, leg swings holding a wall, 10 glute bridges, 10 slow squats. Get warm before anything fast.",
+   "works": [],
+   "also": []
   },
   {
    "id": "home-tempo-squat",
@@ -1439,7 +3108,17 @@
    "rest": 60,
    "rounds": 3,
    "reps": "12",
-   "how": "3 seconds down, pause at the bottom, drive up fast. Too easy? Hold a backpack full of books."
+   "how": "3 seconds down, pause at the bottom, drive up fast. Too easy? Hold a backpack full of books.",
+   "works": [
+    "quads",
+    "glutes"
+   ],
+   "also": [
+    "knees",
+    "back",
+    "hips",
+    "core"
+   ]
   },
   {
    "id": "home-reverse-lunge",
@@ -1451,7 +3130,18 @@
    "rest": 60,
    "rounds": 3,
    "reps": "10 each leg",
-   "how": "Step back, back knee just above the floor, push through the front heel. Stay tall."
+   "how": "Step back, back knee just above the floor, push through the front heel. Stay tall.",
+   "works": [
+    "quads",
+    "glutes"
+   ],
+   "also": [
+    "knees",
+    "hips",
+    "groin",
+    "hamstrings",
+    "ankles"
+   ]
   },
   {
    "id": "home-sofa-split-squat",
@@ -1466,6 +3156,17 @@
    "how": "Bulgarian split squat at home: back foot on the sofa or a chair, slow down, strong up.",
    "needs": [
     "sofa or chair"
+   ],
+   "works": [
+    "quads",
+    "glutes"
+   ],
+   "also": [
+    "knees",
+    "hips",
+    "groin",
+    "hamstrings",
+    "ankles"
    ]
   },
   {
@@ -1478,7 +3179,14 @@
    "rest": 45,
    "rounds": 3,
    "reps": "12 each leg",
-   "how": "Shoulders on the floor, one foot planted, drive the hips up and squeeze for a second at the top."
+   "how": "Shoulders on the floor, one foot planted, drive the hips up and squeeze for a second at the top.",
+   "works": [
+    "glutes",
+    "hamstrings"
+   ],
+   "also": [
+    "back"
+   ]
   },
   {
    "id": "home-hamstring-slide",
@@ -1493,6 +3201,13 @@
    "how": "On a smooth floor, heels on a towel: bridge up, slide the heels out slowly, pull them back in. Hamstring insurance.",
    "needs": [
     "towel"
+   ],
+   "works": [
+    "hamstrings"
+   ],
+   "also": [
+    "knees",
+    "glutes"
    ]
   },
   {
@@ -1505,7 +3220,17 @@
    "rest": 45,
    "rounds": 3,
    "reps": "6 each side",
-   "how": "Wide stance, sit into one hip with the other leg straight, toes up. Good for groins and hips."
+   "how": "Wide stance, sit into one hip with the other leg straight, toes up. Good for groins and hips.",
+   "works": [
+    "groin",
+    "quads",
+    "glutes"
+   ],
+   "also": [
+    "knees",
+    "hips",
+    "ankles"
+   ]
   },
   {
    "id": "home-wall-sit",
@@ -1520,6 +3245,13 @@
    "how": "Back flat on a wall, thighs parallel to the floor. Breathe and hold.",
    "needs": [
     "wall"
+   ],
+   "works": [
+    "quads"
+   ],
+   "also": [
+    "knees",
+    "glutes"
    ]
   },
   {
@@ -1532,7 +3264,18 @@
    "rest": 60,
    "rounds": 4,
    "reps": "6",
-   "how": "Quick dip and jump as high as you can. Land soft and quiet, reset, then go again."
+   "how": "Quick dip and jump as high as you can. Land soft and quiet, reset, then go again.",
+   "works": [
+    "quads",
+    "glutes",
+    "calves"
+   ],
+   "also": [
+    "knees",
+    "ankles",
+    "hamstrings",
+    "hips"
+   ]
   },
   {
    "id": "home-skater-hops",
@@ -1544,7 +3287,19 @@
    "rest": 45,
    "rounds": 3,
    "reps": "6 each side",
-   "how": "Jump sideways from one leg to the other, stick each landing for a second."
+   "how": "Jump sideways from one leg to the other, stick each landing for a second.",
+   "works": [
+    "quads",
+    "glutes",
+    "calves",
+    "groin"
+   ],
+   "also": [
+    "knees",
+    "ankles",
+    "hamstrings",
+    "hips"
+   ]
   },
   {
    "id": "home-split-jump",
@@ -1556,7 +3311,18 @@
    "rest": 60,
    "rounds": 3,
    "reps": "5 each leg",
-   "how": "From a lunge, jump and switch legs in the air. Land soft, stay balanced."
+   "how": "From a lunge, jump and switch legs in the air. Land soft, stay balanced.",
+   "works": [
+    "quads",
+    "glutes",
+    "calves"
+   ],
+   "also": [
+    "knees",
+    "ankles",
+    "hamstrings",
+    "hips"
+   ]
   },
   {
    "id": "home-push-up",
@@ -1568,7 +3334,15 @@
    "rest": 60,
    "rounds": 3,
    "reps": "10-15",
-   "how": "2 seconds down, chest to the floor, push up fast. Knees down if the form goes."
+   "how": "2 seconds down, chest to the floor, push up fast. Knees down if the form goes.",
+   "works": [
+    "chest",
+    "shoulder",
+    "arms"
+   ],
+   "also": [
+    "core"
+   ]
   },
   {
    "id": "home-pike-push-up",
@@ -1580,7 +3354,16 @@
    "rest": 60,
    "rounds": 3,
    "reps": "8",
-   "how": "Hips high in an upside-down V, lower the head towards the floor, press back up. Shoulders."
+   "how": "Hips high in an upside-down V, lower the head towards the floor, press back up. Shoulders.",
+   "works": [
+    "shoulder",
+    "arms"
+   ],
+   "also": [
+    "core",
+    "back",
+    "chest"
+   ]
   },
   {
    "id": "home-table-row",
@@ -1595,6 +3378,14 @@
    "how": "Lie under a sturdy table, grip the edge, pull your chest up to it with a straight body. Back and arms.",
    "needs": [
     "sturdy table"
+   ],
+   "works": [
+    "back",
+    "arms"
+   ],
+   "also": [
+    "shoulder",
+    "core"
    ]
   },
   {
@@ -1610,6 +3401,14 @@
    "how": "Hands on the edge of a chair, lower until the elbows are at 90 degrees, press up.",
    "needs": [
     "sofa or chair"
+   ],
+   "works": [
+    "chest",
+    "shoulder",
+    "arms"
+   ],
+   "also": [
+    "core"
    ]
   },
   {
@@ -1622,7 +3421,15 @@
    "rest": 45,
    "rounds": 3,
    "reps": "20 taps",
-   "how": "High plank, feet wide, tap the opposite shoulder without the hips rocking."
+   "how": "High plank, feet wide, tap the opposite shoulder without the hips rocking.",
+   "works": [
+    "core"
+   ],
+   "also": [
+    "shoulder",
+    "back",
+    "hips"
+   ]
   },
   {
    "id": "home-side-plank",
@@ -1634,7 +3441,15 @@
    "rest": 30,
    "rounds": 3,
    "reps": "30 s each side",
-   "how": "Elbow under the shoulder, body in a straight line. Hips up the whole time."
+   "how": "Elbow under the shoulder, body in a straight line. Hips up the whole time.",
+   "works": [
+    "core"
+   ],
+   "also": [
+    "shoulder",
+    "back",
+    "hips"
+   ]
   },
   {
    "id": "home-hollow-hold",
@@ -1646,7 +3461,15 @@
    "rest": 40,
    "rounds": 3,
    "reps": "20 s",
-   "how": "Lower back pressed into the floor, arms and legs long and just off the ground."
+   "how": "Lower back pressed into the floor, arms and legs long and just off the ground.",
+   "works": [
+    "core"
+   ],
+   "also": [
+    "shoulder",
+    "back",
+    "hips"
+   ]
   },
   {
    "id": "home-copenhagen-sofa",
@@ -1661,6 +3484,15 @@
    "how": "Side plank with the top leg on the sofa, bottom leg hanging. Groin strength for footballers.",
    "needs": [
     "sofa or chair"
+   ],
+   "works": [
+    "groin",
+    "core"
+   ],
+   "also": [
+    "hips",
+    "shoulder",
+    "knees"
    ]
   },
   {
@@ -1672,7 +3504,20 @@
    "work": 30,
    "rest": 30,
    "rounds": 6,
-   "how": "Steady rhythm for the whole interval, not a sprint and a stop."
+   "how": "Steady rhythm for the whole interval, not a sprint and a stop.",
+   "works": [
+    "quads",
+    "chest",
+    "shoulder",
+    "calves"
+   ],
+   "also": [
+    "knees",
+    "ankles",
+    "core",
+    "arms",
+    "hamstrings"
+   ]
   },
   {
    "id": "home-high-knees",
@@ -1683,7 +3528,19 @@
    "work": 20,
    "rest": 40,
    "rounds": 6,
-   "how": "10 seconds high knees, 10 seconds fast feet on the spot, repeat. Arms working."
+   "how": "10 seconds high knees, 10 seconds fast feet on the spot, repeat. Arms working.",
+   "works": [
+    "hamstrings",
+    "quads",
+    "calves"
+   ],
+   "also": [
+    "glutes",
+    "hips",
+    "groin",
+    "ankles",
+    "knees"
+   ]
   },
   {
    "id": "home-toe-taps",
@@ -1697,6 +3554,14 @@
    "how": "Alternate toe taps on top of the ball, then roll it side to side under the sole. Light and quick.",
    "needs": [
     "ball"
+   ],
+   "works": [
+    "ankles"
+   ],
+   "also": [
+    "calves",
+    "knees",
+    "groin"
    ]
   },
   {
@@ -1711,6 +3576,14 @@
    "how": "Pull the ball back with the sole and push it away with the inside of the same foot, both feet. Small space is fine.",
    "needs": [
     "ball"
+   ],
+   "works": [
+    "ankles"
+   ],
+   "also": [
+    "calves",
+    "knees",
+    "groin"
    ]
   },
   {
@@ -1725,6 +3598,14 @@
    "how": "Weak foot only, count your best streak. Low touches, ankle locked.",
    "needs": [
     "ball"
+   ],
+   "works": [
+    "ankles",
+    "hips"
+   ],
+   "also": [
+    "calves",
+    "knees"
    ]
   },
   {
@@ -1740,6 +3621,15 @@
    "needs": [
     "ball",
     "wall"
+   ],
+   "works": [
+    "groin",
+    "hips"
+   ],
+   "also": [
+    "ankles",
+    "knees",
+    "quads"
    ]
   },
   {
@@ -1749,7 +3639,618 @@
    "category": "cooldown",
    "kind": "cooldown",
    "work": 240,
-   "how": "Hip flexor stretch, hamstring stretch, figure-4 glute, child's pose. Slow breathing."
+   "how": "Hip flexor stretch, hamstring stretch, figure-4 glute, child's pose. Slow breathing.",
+   "works": [],
+   "also": []
+  },
+  {
+   "id": "landmine-half-kneeling-press",
+   "name": "Half-kneeling landmine press",
+   "sport": "gym",
+   "category": "upper-strength",
+   "kind": "drill",
+   "work": 45,
+   "rest": 75,
+   "rounds": 3,
+   "reps": "8 each arm",
+   "how": "Kneel on the knee on the same side as the pressing arm, front foot flat, glute of the down knee squeezed. Press along the line of the bar and lean slightly into it, up and forward until the arm is long. Don't press back or lean away.",
+   "needs": [
+    "landmine or barbell in a corner"
+   ],
+   "works": [
+    "shoulder",
+    "arms"
+   ],
+   "also": [
+    "core",
+    "back",
+    "chest"
+   ]
+  },
+  {
+   "id": "landmine-single-arm-row",
+   "name": "Landmine single-arm row",
+   "sport": "gym",
+   "category": "upper-strength",
+   "kind": "drill",
+   "work": 45,
+   "rest": 75,
+   "rounds": 3,
+   "reps": "8 each arm",
+   "how": "Split stance beside the end of the bar, free hand on the front knee, back flat. Pull the bar end to your hip, pause, lower slowly. Don't twist open.",
+   "needs": [
+    "landmine or barbell in a corner"
+   ],
+   "works": [
+    "back",
+    "arms"
+   ],
+   "also": [
+    "shoulder",
+    "core"
+   ]
+  },
+  {
+   "id": "lateral-step-up",
+   "name": "Lateral step-up (knee drive)",
+   "sport": "gym",
+   "category": "single-limb",
+   "kind": "drill",
+   "work": 50,
+   "rest": 60,
+   "rounds": 3,
+   "reps": "6 each leg",
+   "how": "Stand side-on to a box, kettlebell at your chest. Near foot on the box, drive up through it and finish with the other knee high. Step down slowly.",
+   "works": [
+    "quads",
+    "glutes"
+   ],
+   "also": [
+    "knees",
+    "hips",
+    "groin",
+    "hamstrings",
+    "ankles"
+   ]
+  },
+  {
+   "id": "kneeling-jump-box-jump",
+   "name": "Kneeling jump to box jump",
+   "sport": "gym",
+   "category": "plyometrics",
+   "kind": "drill",
+   "work": 20,
+   "rest": 90,
+   "rounds": 4,
+   "reps": "3",
+   "how": "Start tall on both knees. Swing your arms and pop up onto your feet in a squat, then jump straight onto the box. Land soft, step down, reset.",
+   "works": [
+    "quads",
+    "glutes",
+    "calves"
+   ],
+   "also": [
+    "knees",
+    "ankles",
+    "hamstrings",
+    "hips"
+   ]
+  },
+  {
+   "id": "wall-drive",
+   "name": "Wall drive (acceleration march)",
+   "sport": "football",
+   "category": "speed",
+   "kind": "drill",
+   "work": 20,
+   "rest": 45,
+   "rounds": 3,
+   "reps": "6 each leg",
+   "how": "Hands on a wall, body in one straight line at about 45 degrees, up on the balls of your feet. Drive one knee up hard, then switch. Hips stay high and the line doesn't break: the same angle as the first steps of a sprint.",
+   "needs": [
+    "wall"
+   ],
+   "works": [
+    "hamstrings",
+    "quads",
+    "calves"
+   ],
+   "also": [
+    "glutes",
+    "hips",
+    "groin",
+    "ankles",
+    "knees"
+   ]
+  },
+  {
+   "id": "kettlebell-halo",
+   "name": "Half-kneeling kettlebell halo",
+   "sport": "gym",
+   "category": "core",
+   "kind": "drill",
+   "work": 30,
+   "rest": 45,
+   "rounds": 2,
+   "reps": "5 each side",
+   "how": "Half-kneeling, hold a kettlebell upside down by the handle at your chest. Circle it close around your head, then the other way. Ribs down, glutes tight, don't lean.",
+   "works": [
+    "shoulder",
+    "core"
+   ],
+   "also": [
+    "arms",
+    "back"
+   ]
+  },
+  {
+   "id": "stir-the-pot",
+   "name": "Stir the pot",
+   "sport": "gym",
+   "category": "core",
+   "kind": "drill",
+   "work": 40,
+   "rest": 45,
+   "rounds": 3,
+   "reps": "5 each side",
+   "how": "Forearms on a stability ball, feet wide, body in a plank. Draw small circles with your forearms without letting your hips sag or twist.",
+   "works": [
+    "core"
+   ],
+   "also": [
+    "shoulder",
+    "back",
+    "hips"
+   ]
+  },
+  {
+   "id": "sl-lateral-rebound",
+   "name": "Single-leg lateral rebounds",
+   "sport": "gym",
+   "category": "plyometrics",
+   "work": 20,
+   "rest": 60,
+   "rounds": 3,
+   "reps": "6 each leg",
+   "how": "On one leg beside a line or a low box. Hop sideways over it and straight back, as quick and springy as you can. Short ground contact, knee over the toes.",
+   "works": [
+    "calves",
+    "ankles",
+    "groin",
+    "glutes"
+   ],
+   "also": [
+    "knees",
+    "quads",
+    "hips"
+   ],
+   "kind": "drill"
+  },
+  {
+   "id": "toe-down-wall-strikes",
+   "name": "Toe-down wall strikes",
+   "sport": "football",
+   "category": "finishing",
+   "kind": "drill",
+   "work": 40,
+   "rest": 30,
+   "rounds": 4,
+   "reps": "10 each foot",
+   "how": "Stand close to a wall. Strike the ball into it with your toe pointing straight down and the ankle locked, contact on the laces. Small, firm strikes: the locked ankle is what puts power in a shot.",
+   "needs": [
+    "ball",
+    "wall"
+   ],
+   "works": [
+    "ankles",
+    "quads",
+    "hips"
+   ],
+   "also": [
+    "calves",
+    "knees",
+    "groin"
+   ]
+  },
+  {
+   "id": "number-call-wall-passes",
+   "name": "Wall passes: number call",
+   "sport": "football",
+   "category": "first-touch",
+   "kind": "drill",
+   "work": 60,
+   "rest": 30,
+   "rounds": 4,
+   "cue": "numbers",
+   "how": "Pass against a wall. The app calls a number as the ball comes back: even, pass it straight back first time; odd, take a touch to turn and drive away. Scan, listen, react.",
+   "needs": [
+    "ball",
+    "wall"
+   ],
+   "works": [
+    "ankles",
+    "hips",
+    "groin"
+   ],
+   "also": [
+    "knees",
+    "quads",
+    "calves"
+   ]
+  },
+  {
+   "id": "bulgarian-split-jump",
+   "name": "Bulgarian split squat jump",
+   "sport": "gym",
+   "category": "plyometrics",
+   "work": 25,
+   "rest": 90,
+   "rounds": 3,
+   "reps": "5 each leg",
+   "how": "Back foot on a low bench, front foot forward as in a Bulgarian split squat. Drop into it, then jump as high as you can off the front leg and land softly back in the same stance.",
+   "works": [
+    "quads",
+    "glutes",
+    "calves"
+   ],
+   "also": [
+    "knees",
+    "hips",
+    "ankles",
+    "groin"
+   ],
+   "kind": "drill"
+  },
+  {
+   "id": "broad-jump-cut",
+   "name": "Broad jump to cut",
+   "sport": "football",
+   "category": "speed",
+   "kind": "drill",
+   "work": 10,
+   "rest": 60,
+   "rounds": 3,
+   "reps": "3 each side",
+   "how": "Broad jump forward and land soft on both feet, then straight away plant and cut 45 degrees into a 5 m sprint. Alternate the side you cut to.",
+   "works": [
+    "quads",
+    "glutes",
+    "groin",
+    "ankles"
+   ],
+   "also": [
+    "knees",
+    "calves",
+    "hamstrings",
+    "hips"
+   ]
+  },
+  {
+   "id": "box-toe-taps",
+   "name": "Box toe taps",
+   "sport": "football",
+   "category": "speed",
+   "kind": "drill",
+   "work": 15,
+   "rest": 30,
+   "rounds": 3,
+   "how": "Stand in front of a low box or step. Tap the top with one foot then the other, as fast as you can, up on the balls of your feet. Arms pump like sprinting.",
+   "works": [
+    "calves",
+    "ankles",
+    "hips"
+   ],
+   "also": [
+    "quads",
+    "knees"
+   ]
+  },
+  {
+   "id": "seated-box-jump",
+   "name": "Seated box jump",
+   "sport": "gym",
+   "category": "plyometrics",
+   "work": 20,
+   "rest": 90,
+   "rounds": 3,
+   "reps": "5",
+   "how": "Sit on a bench, feet flat, a box in front. Swing your arms and jump from seated straight onto the box, landing soft. No rocking: it trains starting strength from a dead stop.",
+   "works": [
+    "quads",
+    "glutes",
+    "calves"
+   ],
+   "also": [
+    "knees",
+    "ankles",
+    "hamstrings"
+   ],
+   "kind": "drill"
+  },
+  {
+   "id": "single-leg-box-jump",
+   "name": "Single-leg box jump",
+   "sport": "gym",
+   "category": "plyometrics",
+   "work": 20,
+   "rest": 90,
+   "rounds": 3,
+   "reps": "4 each leg",
+   "how": "On one leg in front of a low box. Swing your arms and jump onto the box off that leg, landing on the same leg, soft and balanced. Step down; don't jump down.",
+   "works": [
+    "quads",
+    "glutes",
+    "calves"
+   ],
+   "also": [
+    "knees",
+    "ankles",
+    "hips",
+    "groin"
+   ],
+   "kind": "drill"
+  },
+  {
+   "id": "copenhagen-short-lever",
+   "name": "Copenhagen plank (short lever)",
+   "sport": "gym",
+   "category": "core",
+   "work": 40,
+   "rest": 45,
+   "rounds": 3,
+   "reps": "20 s each side",
+   "how": "Side plank on your forearm with the top knee on a bench and the bottom knee bent under you. Lift the hips into a straight line and hold. The first step before the full Copenhagen.",
+   "works": [
+    "groin",
+    "core"
+   ],
+   "also": [
+    "hips",
+    "shoulder"
+   ],
+   "kind": "drill"
+  },
+  {
+   "id": "falling-starts",
+   "name": "Falling starts",
+   "sport": "football",
+   "category": "speed",
+   "kind": "drill",
+   "work": 8,
+   "rest": 60,
+   "rounds": 4,
+   "reps": "10 m",
+   "how": "Stand tall on the balls of your feet. Lean forward as one stiff line until you're about to fall, then sprint out with short, powerful steps for 10 m. Teaches the acceleration angle.",
+   "works": [
+    "hamstrings",
+    "quads",
+    "calves"
+   ],
+   "also": [
+    "glutes",
+    "hips",
+    "ankles",
+    "knees"
+   ]
+  },
+  {
+   "id": "get-up-sprints",
+   "name": "Get-up sprints",
+   "sport": "football",
+   "category": "speed",
+   "kind": "drill",
+   "work": 8,
+   "rest": 60,
+   "rounds": 4,
+   "reps": "10 m",
+   "how": "Lie face down, hands by your chest. Push up, get your feet under you as fast as you can and sprint 10 m. Reaction and first steps from an awkward start, like getting up after a tackle.",
+   "works": [
+    "hamstrings",
+    "quads",
+    "calves"
+   ],
+   "also": [
+    "glutes",
+    "hips",
+    "ankles",
+    "knees",
+    "shoulder"
+   ]
+  },
+  {
+   "id": "ankling",
+   "name": "Ankling",
+   "sport": "football",
+   "category": "speed",
+   "kind": "drill",
+   "work": 15,
+   "rest": 30,
+   "rounds": 2,
+   "reps": "15 m",
+   "how": "Small, quick steps forward with stiff ankles: the ball of the foot hits the ground just under the hips and pops off. Tall posture, relaxed arms. Sprint rhythm before the fast work.",
+   "works": [
+    "calves",
+    "ankles"
+   ],
+   "also": [
+    "hamstrings",
+    "knees"
+   ]
+  },
+  {
+   "id": "pro-agility-shuttle",
+   "name": "5-10-5 shuttle",
+   "sport": "football",
+   "category": "speed",
+   "kind": "drill",
+   "work": 10,
+   "rest": 75,
+   "rounds": 3,
+   "reps": "2 each side",
+   "how": "Three markers 5 m apart in a line, start at the middle one. Sprint 5 m to one side, touch the line, 10 m to the far marker, touch, then 5 m back through the middle. Stay low into every turn.",
+   "needs": [
+    "markers"
+   ],
+   "works": [
+    "quads",
+    "ankles",
+    "groin",
+    "knees"
+   ],
+   "also": [
+    "hamstrings",
+    "calves",
+    "hips",
+    "glutes"
+   ]
+  },
+  {
+   "id": "backpedal-hip-turn",
+   "name": "Backpedal to hip turn",
+   "sport": "football",
+   "category": "speed",
+   "kind": "drill",
+   "work": 10,
+   "rest": 45,
+   "rounds": 4,
+   "reps": "4",
+   "how": "Backpedal with short steps, chest over your toes. Open your hips 45 degrees, crossover step and sprint away. Defending: this is how you turn and run with an attacker.",
+   "works": [
+    "quads",
+    "hips",
+    "ankles"
+   ],
+   "also": [
+    "hamstrings",
+    "groin",
+    "calves",
+    "knees"
+   ]
+  },
+  {
+   "id": "ab-wheel-rollout",
+   "name": "Ab wheel rollout",
+   "sport": "gym",
+   "category": "core",
+   "work": 40,
+   "rest": 60,
+   "rounds": 3,
+   "reps": "8",
+   "how": "Kneel holding an ab wheel (or a barbell with plates) under your shoulders. Roll forward slowly as far as you can without your lower back sagging, then pull back with your abs. Ribs down the whole time.",
+   "works": [
+    "core"
+   ],
+   "also": [
+    "shoulder",
+    "back",
+    "arms"
+   ],
+   "kind": "drill"
+  },
+  {
+   "id": "side-plank-thread-needle",
+   "name": "Side plank thread the needle",
+   "sport": "gym",
+   "category": "core",
+   "work": 40,
+   "rest": 45,
+   "rounds": 3,
+   "reps": "8 each side",
+   "how": "Side plank on your forearm, top arm to the ceiling. Reach it under your body, turning the chest to the floor, then open back up tall. Hips stay high the whole time.",
+   "works": [
+    "core",
+    "shoulder"
+   ],
+   "also": [
+    "hips",
+    "back"
+   ],
+   "kind": "drill"
+  },
+  {
+   "id": "standing-hip-cars",
+   "name": "Standing hip CARs",
+   "sport": "mobility",
+   "category": "mobility",
+   "kind": "drill",
+   "work": 45,
+   "rest": 15,
+   "rounds": 2,
+   "reps": "5 each way",
+   "how": "Stand tall holding a post. Lift one knee up, open it out to the side, turn it round behind you and bring it down: the biggest slow circle you can make without the trunk moving. Then reverse.",
+   "works": [],
+   "also": []
+  },
+  {
+   "id": "banded-hip-march",
+   "name": "Banded hip-flexor march",
+   "sport": "gym",
+   "category": "single-limb",
+   "work": 40,
+   "rest": 45,
+   "rounds": 3,
+   "reps": "8 each leg",
+   "how": "Mini band round both feet, stand tall holding a post. Drive one knee up to hip height against the band, hold 2 seconds, lower slowly. Strong hip flexors for sprinting.",
+   "works": [
+    "hips"
+   ],
+   "also": [
+    "core",
+    "knees"
+   ],
+   "kind": "drill"
+  },
+  {
+   "id": "med-ball-side-slam",
+   "name": "Med ball rotational slam",
+   "sport": "gym",
+   "category": "explosive",
+   "work": 30,
+   "rest": 60,
+   "rounds": 3,
+   "reps": "6 each side",
+   "how": "Ball overhead, turn and slam it hard into the floor beside your outside foot, pivoting the back foot. Pick it up and go to the other side. The power comes from the hips.",
+   "needs": [
+    "medicine ball"
+   ],
+   "works": [
+    "core",
+    "shoulder",
+    "arms"
+   ],
+   "also": [
+    "hips",
+    "back",
+    "ankles"
+   ],
+   "kind": "drill"
+  },
+  {
+   "id": "landmine-squat-press",
+   "name": "Landmine squat to press",
+   "sport": "gym",
+   "category": "explosive",
+   "kind": "drill",
+   "work": 40,
+   "rest": 90,
+   "rounds": 3,
+   "reps": "6",
+   "how": "End of the bar at your chest in both hands. Squat down, then drive up and press the bar up and forward in one move, finishing on your toes. The legs start it, the arms finish it.",
+   "needs": [
+    "landmine or barbell in a corner"
+   ],
+   "works": [
+    "quads",
+    "glutes",
+    "shoulder",
+    "arms"
+   ],
+   "also": [
+    "knees",
+    "core",
+    "back"
+   ],
+   "safe": "Brace before you drive; press along the bar's line, not back over your head."
   }
  ],
  "templates": [
@@ -1926,7 +4427,7 @@
      "ex": "gym-warmup"
     },
     {
-     "ex": "box-jump"
+     "ex": "kneeling-jump-box-jump"
     },
     {
      "ex": "single-leg-bounds"
@@ -1979,10 +4480,13 @@
      "superset": true
     },
     {
+     "ex": "face-pull"
+    },
+    {
      "ex": "pallof-press"
     },
     {
-     "ex": "dead-bug",
+     "ex": "hanging-leg-raise",
      "superset": true
     },
     {
@@ -2048,6 +4552,9 @@
      "ex": "depth-jump"
     },
     {
+     "ex": "wall-drive"
+    },
+    {
      "ex": "sprint-10-20"
     },
     {
@@ -2083,7 +4590,7 @@
      "ex": "single-leg-rdl"
     },
     {
-     "ex": "step-up"
+     "ex": "landmine-lateral-lunge"
     },
     {
      "ex": "iso-split-squat"
@@ -2130,6 +4637,53 @@
      "ex": "plyo-push-up",
      "superset": true,
      "rounds": 4,
+     "rest": 120
+    },
+    {
+     "ex": "copenhagen-plank"
+    },
+    {
+     "ex": "gym-cooldown"
+    }
+   ]
+  },
+  {
+   "id": "gym-explosive-lower",
+   "title": "Gym: explosive lower body",
+   "type": "gym",
+   "summary": "Contrast pairs: a heavy-ish lift, then the explosive version of the same movement straight after. Split stance, single leg and lateral, like the game. Rest fully between rounds.",
+   "needs": [
+    "gym"
+   ],
+   "items": [
+    {
+     "ex": "gym-warmup"
+    },
+    {
+     "ex": "depth-jump-hurdle"
+    },
+    {
+     "ex": "split-stance-quarter-squat"
+    },
+    {
+     "ex": "split-stance-jump",
+     "superset": true,
+     "rest": 150
+    },
+    {
+     "ex": "single-leg-rdl-clean"
+    },
+    {
+     "ex": "single-leg-rdl-box-jump",
+     "superset": true,
+     "rest": 120
+    },
+    {
+     "ex": "landmine-diagonal-lunge"
+    },
+    {
+     "ex": "skater-snap-box-jump",
+     "superset": true,
      "rest": 120
     },
     {
@@ -2344,11 +4898,11 @@
      "ex": "landmine-push-press"
     },
     {
-     "ex": "single-arm-row",
+     "ex": "landmine-single-arm-row",
      "superset": true
     },
     {
-     "ex": "med-ball-slam"
+     "ex": "landmine-rotational-press"
     },
     {
      "ex": "gym-cooldown"
@@ -2375,10 +4929,13 @@
      "ex": "med-ball-throw"
     },
     {
+     "ex": "landmine-rotation"
+    },
+    {
      "ex": "pallof-press"
     },
     {
-     "ex": "dead-bug",
+     "ex": "stir-the-pot",
      "superset": true
     },
     {
@@ -2429,6 +4986,42 @@
     },
     {
      "ex": "gym-cooldown"
+    }
+   ]
+  },
+  {
+   "id": "fb-speed-acceleration",
+   "title": "Speed: acceleration and agility",
+   "type": "football",
+   "summary": "Rhythm drills, then jumps for distance, then sprint starts and cuts. Fully rested reps: quality over quantity.",
+   "needs": [],
+   "items": [
+    {
+     "ex": "jog-dynamic-leg-swings"
+    },
+    {
+     "ex": "ankling"
+    },
+    {
+     "ex": "wall-drive"
+    },
+    {
+     "ex": "broad-jump-cut"
+    },
+    {
+     "ex": "falling-starts"
+    },
+    {
+     "ex": "get-up-sprints"
+    },
+    {
+     "ex": "pro-agility-shuttle"
+    },
+    {
+     "ex": "backpedal-hip-turn"
+    },
+    {
+     "ex": "cool-down-hips-quads-hamstrings-it-band"
     }
    ]
   }

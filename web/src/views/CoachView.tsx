@@ -1,13 +1,16 @@
 import { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { Button } from '../components/ui'
 import { DrillSheet } from '../components/DrillSheet'
-import { answer, starterChips, type Card, type CoachCtx, type Reply } from '../lib/coach/coach'
+import { answer, starterChips, type Card, type CoachCtx, type Reply, type Save } from '../lib/coach/coach'
+import { addInjury, healInjury, rateInjury } from '../lib/injuries'
+import { logBody } from '../lib/body'
+import { getProfile, setProfile } from '../lib/profile'
 import { exerciseBlock } from '../lib/library'
 import { load, save } from '../lib/storage'
 import { t } from '../i18n'
 
 type Msg = { id: number; me?: string; reply?: Reply }
-const KEY = 'coach:chat' // this phone only
+const KEY = 'coach:chat' // the chat itself stays on this phone; what it learns (injuries, weight) goes on the synced profile
 
 // The coach: a chat that answers from your own data and the app's knowledge (lib/coach). Works offline.
 export function CoachView({ ctx, ask: first, onBack, onSession, onGo }: {
@@ -25,7 +28,11 @@ export function CoachView({ ctx, ask: first, onBack, onSession, onGo }: {
   // a short pause reads as thought; the answer itself is instant
   useEffect(() => {
     if (pending === null) return
-    const id = setTimeout(() => { setMsgs((m) => [...m, { id: Date.now() + 1, reply: answer(pending, ctx) }]); setPending(null) }, 380 + Math.min(500, pending.length * 8))
+    const id = setTimeout(() => {
+      const reply = answer(pending, ctx)
+      reply.save?.forEach(remember)
+      setMsgs((m) => [...m, { id: Date.now() + 1, reply: { ...reply, save: undefined } }]); setPending(null)
+    }, 380 + Math.min(500, pending.length * 8))
     return () => clearTimeout(id)
   }, [pending]) // eslint-disable-line react-hooks/exhaustive-deps
   // opened with a question (Home's quick questions): ask it once
@@ -49,7 +56,7 @@ export function CoachView({ ctx, ask: first, onBack, onSession, onGo }: {
       <header className="flex items-center gap-3 border-b border-white/5 px-4 pt-[max(14px,var(--sat))] pb-3">
         <Button variant="ghost" size="sm" onClick={onBack}>{t('Back')}</Button>
         <div className="min-w-0 flex-1">
-          <h1 className="m-0 font-display text-xl uppercase leading-none">{t('Coach')}</h1>
+          <h1 className="m-0 font-display text-xl uppercase leading-none">{t('AI coach')}</h1>
           <p className="m-0 mt-0.5 truncate text-xs text-muted">{t('Knows your plan, your log and every exercise. Works offline.')}</p>
         </div>
         {msgs.length > 0 && <button onClick={() => { if (confirm(t('Clear this chat?'))) setMsgs([]) }} className="min-h-10 px-2 text-sm font-semibold text-muted">{t('Clear')}</button>}
@@ -97,6 +104,15 @@ export function CoachView({ ctx, ask: first, onBack, onSession, onGo }: {
     else if (c.kind === 'session') onSession(c.id)
     else onGo(c.to)
   }
+}
+
+// What the coach noted goes on the profile (synced to the account, private): injuries, weigh-ins, height.
+function remember(s: Save) {
+  if (s.kind === 'injury') addInjury(s.injury)
+  else if (s.kind === 'rate') rateInjury(s.id, s.severity)
+  else if (s.kind === 'healed') healInjury(s.id)
+  else if (s.kind === 'weight') logBody({ kg: s.kg })
+  else setProfile({ ...getProfile(), heightCm: s.cm })
 }
 
 function CoachBubble({ reply, onCard }: { reply: Reply; onCard: (c: Card) => void }) {

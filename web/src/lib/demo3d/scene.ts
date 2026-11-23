@@ -1,6 +1,7 @@
 // The 3D demo: a faceless mannequin acting out a move, with its kit. Loaded only when a demo is shown.
 import * as THREE from 'three'
 import { poseAt, type Move, type Pose, type Prop, type Side, type Vec } from './pose'
+import type { Mark } from './form'
 
 const D = Math.PI / 180
 // body sizes (m)
@@ -39,14 +40,15 @@ function buildLimb(side: 1 | -1, pelvis: THREE.Group, chest: THREE.Group, mat: T
 
 function buildRig(p: Palette): Rig {
   const mat = new THREE.MeshStandardMaterial({ color: p.body, roughness: 0.55, metalness: 0.05 })
-  const shoe = new THREE.MeshStandardMaterial({ color: p.accent, roughness: 0.5 })
+  const shoe = new THREE.MeshStandardMaterial({ color: p.joint, roughness: 0.5 }) // neutral: red is kept for mistakes
+  const shirt = new THREE.MeshStandardMaterial({ color: p.accent, roughness: 0.6 }) // the player's team colour
   const root = new THREE.Group()
   const pelvis = new THREE.Group(); root.add(pelvis)
   const hips = new THREE.Mesh(new THREE.CapsuleGeometry(0.1, 0.12, 4, 12), mat); hips.rotation.z = Math.PI / 2; hips.scale.set(1, 1, 0.8); hips.castShadow = true; pelvis.add(hips)
   const spine = new THREE.Group(); spine.position.y = 0.05; pelvis.add(spine)
-  spine.add(capsule(ABS, 0.11, mat, 1)).scale.set(1, 1, 0.75)
+  spine.add(capsule(ABS, 0.11, shirt, 1)).scale.set(1, 1, 0.75)
   const chest = new THREE.Group(); chest.position.y = ABS; spine.add(chest)
-  const torso = capsule(CHEST, 0.14, mat, 1); torso.scale.set(1.25, 1, 0.75); chest.add(torso)
+  const torso = capsule(CHEST, 0.14, shirt, 1); torso.scale.set(1.25, 1, 0.75); chest.add(torso)
   const neck = new THREE.Group(); neck.position.y = CHEST + 0.02; chest.add(neck)
   neck.add(capsule(0.1, 0.045, mat, 1))
   const head = new THREE.Mesh(new THREE.SphereGeometry(0.105, 20, 16), mat); head.scale.set(0.92, 1.12, 1); head.position.y = 0.19; head.castShadow = true; neck.add(head)
@@ -139,7 +141,7 @@ function kitMesh(kind: Prop['kind'], p: Palette, size?: Vec): THREE.Object3D {
       for (const s of [-1, 1]) { const plate = add(cyl(0.22, 0.07, dark)); plate.rotation.z = Math.PI / 2; plate.position.x = s * 0.78 }
       break
     }
-    case 'dumbbells': case 'dumbbell-R': {
+    case 'dumbbells': case 'dumbbell-R': case 'dumbbell-hips': {
       const h = add(cyl(0.016, 0.16, metal)); h.rotation.z = Math.PI / 2
       for (const s of [-1, 1]) { const w = add(cyl(0.055, 0.06, dark)); w.rotation.z = Math.PI / 2; w.position.x = s * 0.1 }
       break
@@ -159,6 +161,11 @@ function kitMesh(kind: Prop['kind'], p: Palette, size?: Vec): THREE.Object3D {
     case 'wall': { const [x, y] = size ?? [3, 2.2]; const w = add(box(x, y, 0.1, soft)); w.position.y = y / 2; break }
     case 'cones': for (const z of [0, 1.2, 2.4, 3.6]) { const c = add(new THREE.Mesh(new THREE.ConeGeometry(0.08, 0.2, 14), new THREE.MeshStandardMaterial({ color: p.accent }))); c.position.set(0, 0.1, z) } break
     case 'hurdles': for (const z of [0, 0.9, 1.8]) { const top = add(cyl(0.012, 0.6, new THREE.MeshStandardMaterial({ color: p.accent }))); top.rotation.z = Math.PI / 2; top.position.set(0, 0.22, z); for (const s of [-1, 1]) { const leg = add(cyl(0.01, 0.22, metal)); leg.position.set(s * 0.3, 0.11, z) } } break
+    case 'hurdle': { const top = add(cyl(0.014, 0.6, new THREE.MeshStandardMaterial({ color: p.joint }))); top.rotation.z = Math.PI / 2; top.position.y = 0.3; for (const s of [-1, 1]) { const leg = add(cyl(0.012, 0.3, metal)); leg.position.set(s * 0.3, 0.15, 0) } break }
+    case 'incline': { const seat = add(box(0.32, 0.06, 0.42, dark)); seat.position.set(0, 0.42, 0.05); const pad = add(box(0.32, 0.06, 0.95, dark)); pad.rotation.x = 40 * D; pad.position.set(0, 0.62, -0.44); const leg = add(box(0.05, 0.42, 0.05, metal)); leg.position.set(0, 0.21, 0); break }
+    case 'post': { const [x, y, z] = size ?? [0.16, 1.9, 0.16]; const b = add(box(x, y, z, metal)); b.position.y = y / 2; break }
+    case 'cable': { const c = add(cyl(0.011, 1, soft)); c.rotation.z = Math.PI / 2; c.position.x = 0.5; break }
+    case 'handle': { const h = add(cyl(0.016, 0.3, metal)); h.rotation.z = Math.PI / 2; break }
     case 'goal': { const w = 2.4, h = 1.2; for (const s of [-1, 1]) { const post = add(cyl(0.03, h, soft)); post.position.set(s * w / 2, h / 2, 0) } const cross = add(cyl(0.03, w, soft)); cross.rotation.z = Math.PI / 2; cross.position.y = h; break }
     case 'bike': {
       const seat = add(box(0.12, 0.05, 0.25, dark)); seat.position.set(0, 0.95, -0.15)
@@ -172,6 +179,7 @@ function kitMesh(kind: Prop['kind'], p: Palette, size?: Vec): THREE.Object3D {
     case 'sled': { const s = add(box(0.55, 0.12, 0.7, dark)); s.position.y = 0.06; for (const x of [-0.2, 0.2]) { const pole = add(cyl(0.02, 0.9, metal)); pole.position.set(x, 0.5, -0.3); pole.rotation.x = 0.3 } break }
     case 'roller': { const r = add(cyl(0.075, 0.45, soft)); r.rotation.z = Math.PI / 2; r.position.y = 0.075; break }
     case 'band': { const b = add(cyl(0.008, 1.2, new THREE.MeshStandardMaterial({ color: p.accent }))); b.rotation.z = Math.PI / 2; break }
+    case 'swissball': { const b = add(new THREE.Mesh(new THREE.SphereGeometry(0.33, 28, 20), soft)); b.position.y = 0.33; break }
     case 'towel': { const t = add(box(0.35, 0.01, 0.25, new THREE.MeshStandardMaterial({ color: p.accent }))); t.position.y = 0.005; break }
   }
   return g
@@ -193,7 +201,8 @@ function football(p: Palette) {
 // ---------- the demo ----------
 export type Demo = { dispose: () => void; setPlaying: (on: boolean) => void; resize: () => void }
 
-export function createDemo(canvas: HTMLCanvasElement, move: Move, pal: Palette, opts: { speed?: number; at?: number } = {}): Demo {
+// marks: glowing spots on the joints that matter (form check: red on the mistake, green on the fix)
+export function createDemo(canvas: HTMLCanvasElement, move: Move, pal: Palette, opts: { speed?: number; at?: number; marks?: { parts: Mark[]; color: string } } = {}): Demo {
   const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: false, powerPreference: 'low-power' })
   renderer.setPixelRatio(Math.min(2, window.devicePixelRatio || 1))
   renderer.shadowMap.enabled = true
@@ -227,23 +236,35 @@ export function createDemo(canvas: HTMLCanvasElement, move: Move, pal: Palette, 
 
   const rig = buildRig(pal)
   scene.add(rig.root)
+  const markAt: Record<Mark, THREE.Object3D[]> = {
+    knees: [rig.L.knee, rig.R.knee], 'front-knee': [rig.L.knee], elbows: [rig.L.elb, rig.R.elb], back: [rig.back],
+    lowback: [rig.points[3]], hips: [rig.pelvis], chest: [rig.front],
+  }
+  const marks = (opts.marks?.parts ?? []).flatMap((part) => markAt[part]).map((target) => {
+    const m = new THREE.Mesh(new THREE.SphereGeometry(0.09, 20, 14), new THREE.MeshBasicMaterial({ color: opts.marks!.color, transparent: true, opacity: 0.55, depthTest: false }))
+    m.renderOrder = 10; scene.add(m)
+    return { m, target }
+  })
   const flat = move.flatFeet ?? true
 
   // kit in the world, and kit that follows the hands
-  const held: { obj: THREE.Object3D; kind: Prop['kind'] }[] = []
+  const held: { obj: THREE.Object3D; kind: Prop['kind']; at?: Vec; hand?: 'L' | 'R' }[] = []
   for (const pr of move.props ?? []) {
     const obj = kitMesh(pr.kind, pal, pr.size)
-    if (['barbell', 'barbell-back', 'barbell-front', 'barbell-hips', 'dumbbells', 'dumbbell-R', 'kettlebell', 'trapbar', 'medball', 'landmine'].includes(pr.kind)) {
+    if (['barbell', 'barbell-back', 'barbell-front', 'barbell-hips', 'dumbbell-hips', 'dumbbells', 'dumbbell-R', 'kettlebell', 'trapbar', 'medball', 'landmine', 'cable', 'handle'].includes(pr.kind)) {
       if (pr.kind === 'dumbbells') { const other = kitMesh('dumbbells', pal); scene.add(other); held.push({ obj: other, kind: 'dumbbell-R' }); held.push({ obj, kind: 'dumbbell-L' as Prop['kind'] }) }
-      else held.push({ obj, kind: pr.kind })
+      else held.push({ obj, kind: pr.kind, at: pr.at, hand: pr.hand })
     } else {
       if (pr.at) obj.position.set(...pr.at)
       obj.rotation.y = (pr.yaw ?? 0) * D
     }
     scene.add(obj)
   }
-  const ball = move.ball ? football(pal) : null
+  const ball = move.ball === 'medball' ? (() => { const m = new THREE.Mesh(new THREE.SphereGeometry(0.12, 18, 14), new THREE.MeshStandardMaterial({ color: pal.joint, roughness: 0.7 })); m.castShadow = true; return m })()
+    : move.ball ? football(pal) : null
   if (ball) scene.add(ball)
+  const inHands = (k: number) => { const b = move.keys[k][1].ball; return !!b && !Array.isArray(b) && b.at === 'hands' }
+  const handOff = (k: number) => { const b = move.keys[k][1].ball; return new THREE.Vector3(...((b && !Array.isArray(b) && b.off) || [0, 0, 0])) }
 
   // where each key's ball is (keys hold it on a foot or in the hands, or put it in the world)
   applyPose(rig, move.keys[0][1], flat)
@@ -265,7 +286,8 @@ export function createDemo(canvas: HTMLCanvasElement, move: Move, pal: Palette, 
     applyPose(rig, pose, flat); place(rig, move, pose, anchor0)
     for (const o of [...rig.points, rig.L.hand, rig.R.hand, rig.head]) box.expandByPoint(world(o))
   }
-  for (const pr of move.props ?? []) if (pr.at && !['cones', 'hurdles', 'wall', 'goal'].includes(pr.kind)) box.expandByPoint(new THREE.Vector3(...pr.at))
+  for (const pr of move.props ?? []) if (pr.at && !['cones', 'hurdles', 'hurdle', 'wall', 'goal', 'cable'].includes(pr.kind)) box.expandByPoint(new THREE.Vector3(...pr.at))
+  if (move.ball === 'medball') for (const v of ballKeys) box.expandByPoint(v) // keep a thrown ball in view
   box.expandByPoint(new THREE.Vector3(box.min.x, 0, box.min.z))
   const center = box.getCenter(new THREE.Vector3())
   const sizeV = box.getSize(new THREE.Vector3())
@@ -309,12 +331,18 @@ export function createDemo(canvas: HTMLCanvasElement, move: Move, pal: Palette, 
     const lh = world(rig.L.hand), rh = world(rig.R.hand), mid = lh.clone().add(rh).multiplyScalar(0.5)
     for (const h of held) {
       if (h.kind === 'barbell-back' || h.kind === 'barbell-front') { h.obj.position.copy(world(h.kind === 'barbell-back' ? rig.back : rig.front)); rig.chest.getWorldQuaternion(quat); h.obj.quaternion.copy(quat); continue }
-      if (h.kind === 'barbell-hips') { h.obj.position.copy(world(rig.pelvis)).add(new THREE.Vector3(0, 0.12, 0)); h.obj.rotation.set(0, 0, 0); continue }
+      if (h.kind === 'barbell-hips' || h.kind === 'dumbbell-hips') { h.obj.position.copy(world(rig.pelvis)).add(new THREE.Vector3(0, 0.12, 0)); h.obj.rotation.set(0, 0, 0); continue }
       if (h.kind === 'dumbbell-R') { h.obj.position.copy(rh); rig.R.elb.getWorldQuaternion(quat); h.obj.quaternion.copy(quat); continue }
       if (h.kind === ('dumbbell-L' as Prop['kind'])) { h.obj.position.copy(lh); rig.L.elb.getWorldQuaternion(quat); h.obj.quaternion.copy(quat); continue }
       if (h.kind === 'landmine') { // pivots on the floor in front, the far end in the hands
-        const pivot = new THREE.Vector3(mid.x, 0.03, mid.z + 1.7), dir = mid.clone().sub(pivot)
+        const grip = h.hand === 'L' ? lh : h.hand === 'R' ? rh : mid
+        const pivot = h.at ? new THREE.Vector3(...h.at) : new THREE.Vector3(grip.x, 0.03, grip.z + 1.7), dir = grip.clone().sub(pivot)
         h.obj.position.copy(pivot); h.obj.quaternion.setFromUnitVectors(new THREE.Vector3(1, 0, 0), dir.clone().normalize()); h.obj.scale.set(dir.length() / 1.6, 1, 1)
+        continue
+      }
+      if (h.kind === 'cable') { // a cable from its pulley (prop `at`) to the hands
+        const pivot = new THREE.Vector3(...(h.at ?? [0, 1, 1.2])), dir = mid.clone().sub(pivot)
+        h.obj.position.copy(pivot); h.obj.quaternion.setFromUnitVectors(new THREE.Vector3(1, 0, 0), dir.clone().normalize()); h.obj.scale.set(dir.length(), 1, 1)
         continue
       }
       h.obj.position.copy(mid)
@@ -324,12 +352,19 @@ export function createDemo(canvas: HTMLCanvasElement, move: Move, pal: Palette, 
       if (dir.lengthSq() > 1e-6) h.obj.quaternion.setFromUnitVectors(new THREE.Vector3(1, 0, 0), dir.normalize())
     }
     if (ball) {
-      const pa = ballKeys[a], pb = ballKeys[b]
-      ball.position.lerpVectors(pa, pb, u)
-      if (move.keys[a][1].ball && !Array.isArray(move.keys[a][1].ball) && a === b) ball.position.copy(pa)
-      ball.rotation.x += 0.08 * speed
+      // held: follows the hands; thrown: flies from where it left the hands; caught: flies into the hands where they are now
+      const ha = inHands(a), hb = inHands(b)
+      const live = mid.clone().add(handOff(ha ? a : b))
+      if (ha && (hb || a === b)) ball.position.copy(live)
+      else {
+        ball.position.lerpVectors(ballKeys[a], hb ? live : ballKeys[b], u)
+        const arc = move.keys[a][1].arc ?? 0
+        if (arc) ball.position.y += arc * 4 * u * (1 - u)
+      }
+      if (!ha) ball.rotation.x += 0.08 * speed
     }
     if (move.run) floorTex.offset.y = (tSec * move.run * speed) / 2
+    for (const { m, target } of marks) { m.position.copy(world(target)); m.scale.setScalar(1 + 0.18 * Math.sin(tSec * 6)) }
     renderer.render(scene, camera)
   }
   const loop = (now: number) => { frame((now - start) / 1000); raf = requestAnimationFrame(loop) }

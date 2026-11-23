@@ -56,6 +56,24 @@ export const DEMOS: Record<string, Demo> = {
   // upper strength
   'bench-press': M('bench-press'), 'bent-over-row': M('row'), 'db-overhead-press': M('ohp'), 'home-chair-dip': M('dip'), 'home-pike-push-up': M('pike-push-up'),
   'home-push-up': M('push-up', 0.7), 'home-table-row': M('table-row'), 'pull-up': M('pull-up'), 'push-up': M('push-up'),
+  // explosive lower body (21/11)
+  'split-stance-quarter-squat': M('split-squat-quarter'), 'split-stance-jump': M('split-step-jump'), 'single-leg-rdl-clean': M('sl-rdl-clean'),
+  'single-leg-rdl-box-jump': M('sl-rdl-box-jump'), 'landmine-diagonal-lunge': M('landmine-lunge'), 'skater-snap-box-jump': M('skater-snap-box'), 'depth-jump-hurdle': M('depth-hurdle'),
+  'landmine-half-kneeling-press': M('landmine-hk-press'), 'landmine-single-arm-row': M('landmine-sa-row'), 'lateral-step-up': M('lateral-step-up'),
+  'kneeling-jump-box-jump': M('kneel-box-jump'), 'wall-drive': M('wall-drive'), 'kettlebell-halo': M('kb-halo'), 'stir-the-pot': M('stir-pot'),
+  'sl-lateral-rebound': M('sl-lateral-rebound'), 'toe-down-wall-strikes': M('wall-strike'), 'number-call-wall-passes': M('pass-wall-quick'), 'bulgarian-split-jump': M('split-jump-rear'),
+  'broad-jump-cut': M('broad-cut'), 'box-toe-taps': M('box-taps'), 'seated-box-jump': M('seated-box-jump'), 'single-leg-box-jump': M('sl-box-jump'),
+  'copenhagen-short-lever': M('copenhagen-short'), 'falling-starts': M('falling-start'), 'get-up-sprints': M('get-up-sprint'), 'ankling': M('ankling'),
+  'pro-agility-shuttle': M('shuffle'), 'backpedal-hip-turn': M('jockey'), 'ab-wheel-rollout': M('ab-rollout'), 'side-plank-thread-needle': M('thread-needle'),
+  'standing-hip-cars': M('hip-cars'), 'banded-hip-march': M('march'), 'med-ball-side-slam': M('mb-side-slam'), 'landmine-squat-press': M('landmine-squat-press'),
+  // from Peter's gym clips
+  'incline-db-press': M('incline-db-press'), 'barbell-overhead-press': M('ohp-barbell'), 'seated-cable-row': M('cable-row'), 'face-pull': M('face-pull'), 'hanging-leg-raise': M('hanging-leg-raise'),
+  // landmine
+  'landmine-squat': M('landmine-squat'), 'landmine-single-leg-rdl': M('landmine-sl-rdl'), 'landmine-lateral-lunge': M('landmine-lateral-lunge'),
+  'landmine-rotational-press': M('landmine-punch'), 'landmine-rotation': M('landmine-rotation'), 'landmine-row': M('landmine-row'),
+  // dumbbell versions
+  'db-goblet-squat': M('db-goblet-squat'), 'db-rdl': M('db-rdl'), 'db-deadlift': M('db-deadlift'), 'db-hip-thrust': M('db-hip-thrust'), 'db-split-squat': M('db-split-squat'),
+  'db-curtsy-lunge': M('db-curtsy-lunge'), 'db-bench-press': M('db-bench-press'), 'db-row': M('db-row'), 'db-hang-clean': M('db-hang-clean'), 'db-push-press': M('db-push-press'), 'db-jump-squat': M('db-jump-squat'),
 }
 
 const byName = new Map((data.exercises as { id: string; name: string }[]).map((e) => [e.name.toLowerCase(), e.id]))

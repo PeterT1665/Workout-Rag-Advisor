@@ -6,7 +6,7 @@ import type { Block, Session } from './types'
 import { mark, t } from '../i18n'
 
 export type Sport = 'football' | 'gym' | 'home' | 'mobility'
-export type Exercise = Block & { id: string; sport: Sport; category: string; positions?: string[] }
+export type Exercise = Block & { id: string; sport: Sport; category: string; positions?: string[]; mine?: boolean } // mine: the player's own (lib/myExercises)
 export type Item = { ex: string; work?: number; rest?: number; rounds?: number; how?: string; superset?: boolean }
 export type Template = { id: string; title: string; type: string; summary: string; needs: string[]; items: Item[] }
 export type MySession = Template & { mine: true; updated: string }
@@ -14,10 +14,26 @@ export type MySession = Template & { mine: true; updated: string }
 // Instructions and descriptive reps ("8 each leg") in the app's language; names stay English, and "needs"
 // stay English data (the kit check reads them) and are translated where they're shown.
 const tReps = (r?: string) => (r && !/^\d+(-\d+)?$/.test(r) ? t(r) : r)
-export const EXERCISES = (data.exercises as Exercise[]).map((e) => ({ ...e, how: e.how && t(e.how), reps: tReps(e.reps) }))
+export const EXERCISES = (data.exercises as Exercise[]).map((e) => ({ ...e, how: e.how && t(e.how), safe: e.safe && t(e.safe), reps: tReps(e.reps) }))
 export const TEMPLATES = data.templates as Template[]
 const byId = new Map(EXERCISES.map((e) => [e.id, e]))
 export const exercise = (id: string) => byId.get(id)
+const byLowerName = new Map(EXERCISES.map((e) => [e.name.toLowerCase(), e]))
+// The player's own exercises join the library (replacing earlier copies of themselves); `exercisesVersion` lets
+// indexes built from the library (the coach's search) know to rebuild.
+let version = 0
+export const exercisesVersion = () => version
+export function registerExercises(list: Exercise[]) {
+  for (let i = EXERCISES.length - 1; i >= 0; i--) if (EXERCISES[i].mine) { byId.delete(EXERCISES[i].id); byLowerName.delete(EXERCISES[i].name.toLowerCase()); EXERCISES.splice(i, 1) }
+  for (const e of list) {
+    if (byLowerName.has(e.name.toLowerCase())) continue // same name as a library exercise: use that one
+    const x = { ...e, how: e.how, safe: undefined, reps: e.reps }
+    EXERCISES.push(x); byId.set(x.id, x); byLowerName.set(x.name.toLowerCase(), x)
+  }
+  version++
+}
+// A library exercise from a step or block name ("Back squat (heavy)" finds Back squat).
+export const exerciseByName = (name: string) => byLowerName.get(name.replace(/\s*\([^)]*\)$/, '').trim().toLowerCase()) ?? byLowerName.get(name.trim().toLowerCase())
 
 export const SPORTS: { id: Sport; label: string }[] = [
   { id: 'football', label: t('Football') }, { id: 'gym', label: t('Gym') }, { id: 'home', label: t('At home') }, { id: 'mobility', label: t('Mobility') },
@@ -27,7 +43,7 @@ export const CATEGORY_LABELS: Record<string, string> = {
   finishing: t('Finishing'), '1v1': '1v1', speed: t('Speed & agility'), conditioning: t('Conditioning'),
   olympic: t('Olympic lifts'), explosive: t('Explosive'), plyometrics: t('Plyo & jumps'), sprints: t('Sprints'),
   'lower-strength': t('Lower body'), 'upper-strength': t('Upper body'), 'single-limb': t('Single leg / arm'), isometrics: t('Isometrics'),
-  core: t('Core'), 'gym-conditioning': t('Conditioning'), mobility: t('Mobility'),
+  core: t('Core'), 'gym-conditioning': t('Conditioning'), mobility: t('Mobility'), mine: t('My exercises'),
 }
 // Categories in display order for one sport, only those that have exercises.
 export function categories(sport: Sport) {
@@ -97,7 +113,7 @@ export const alternativesFor = (b: Block) =>
 
 // No gym today: the home session closest to a gym session (bodyweight and household kit only).
 const HOME_VERSION: Record<string, string> = {
-  'gym-lower-power': 'home-legs-power', 'gym-explosive': 'home-legs-power', 'gym-single-leg': 'home-legs-power', 'gym-contrast': 'home-legs-power',
+  'gym-lower-power': 'home-legs-power', 'gym-explosive': 'home-legs-power', 'gym-single-leg': 'home-legs-power', 'gym-contrast': 'home-legs-power', 'gym-explosive-lower': 'home-legs-power',
   'gym-upper-core': 'home-upper-core', 'gym-full-light': 'home-full-body',
   'gym-upper-power': 'home-upper-core', 'gym-core-prevention': 'home-upper-core', 'gym-activation': 'home-full-body',
 }

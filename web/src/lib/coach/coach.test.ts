@@ -78,4 +78,62 @@ describe('the coach', () => {
   test('accents optional: Vietnamese without marks still finds soreness', () => {
     expect(answer('dau gan kheo', ctx()).cards?.length).toBeGreaterThan(0)
   })
+  test('remembers an injury, flags today, and heals it when told', () => {
+    const r = answer('I pulled my hamstring sprinting yesterday', ctx())
+    expect(r.save).toEqual([{ kind: 'injury', injury: { part: 'hamstrings', tissue: 'muscle', kind: 'strain' } }]) // the app's terms, not the message
+    expect(r.text.join(' ')).toMatch(/hamstring, muscle strain/)
+    expect(r.text.join(' ')).toMatch(/How bad is it/)
+    const hurt = ctx({ profile: { ...ctx().profile, injuries: [{ id: 'a', part: 'hamstrings', tissue: 'muscle', kind: 'strain', since: '2026-11-18' }] } })
+    expect(answer('Moderate: it hurts to run or jump', hurt).save).toEqual([{ kind: 'rate', id: 'a', severity: 'moderate' }])
+    expect(all('it is pretty serious, swollen', hurt)).toMatch(/no training on it/)
+    expect(answer('my hamstring is better now', hurt).save).toEqual([{ kind: 'healed', id: 'a' }])
+    expect(answer('I want to get better at finishing', hurt).save).toBeUndefined()
+    expect(all('what should I do today?', hurt)).not.toMatch(/undefined/)
+    expect(all('hi', hurt)).toMatch(/hamstring injury is on file/)
+  })
+  test('injuries are described in the app\'s terms', () => {
+    const inj = (q: string) => (answer(q, ctx()).save?.[0] as { injury: object } | undefined)?.injury
+    expect(inj('I sprained my ankle')).toEqual({ part: 'ankles', tissue: 'ligament', kind: 'sprain' })
+    expect(inj('I think I tore my ACL')).toEqual({ part: 'knees', tissue: 'ligament', kind: 'tear', severity: 'serious' })
+    expect(inj('my knee hurts a bit')).toEqual({ part: 'knees', tissue: 'joint', kind: 'pain', severity: 'light' })
+    expect(inj('toi bi cang co dui sau')).toMatchObject({ part: 'hamstrings', kind: 'strain' })
+    expect(inj('I have achilles tendinitis')).toMatchObject({ part: 'ankles', tissue: 'tendon' })
+  })
+  test('questions about injuries are not reports', () => {
+    expect(answer('how do I avoid a hamstring injury?', ctx()).save).toBeUndefined()
+    expect(answer('my hamstrings are sore', ctx()).save).toBeUndefined()
+    expect(answer('I hurt myself', ctx()).text.join(' ')).toMatch(/Where is it/)
+  })
+  test('remembers weight and height said with a unit, not lifts', () => {
+    expect(answer('I weigh 74.5 kg now', ctx()).save).toEqual([{ kind: 'weight', kg: 74.5 }])
+    expect(answer("I'm 180 cm tall", ctx()).save).toEqual([{ kind: 'height', cm: 180 }])
+    expect(answer('I benched 80 kg for 5 reps', ctx()).save).toBeUndefined()
+    expect(answer('toi nang 70 kg', ctx()).save).toEqual([{ kind: 'weight', kg: 70 }])
+  })
+  test('injury warnings name exercises that load the part', () => {
+    const hurt = ctx({ profile: { ...ctx().profile, injuries: [{ id: 'a', part: 'knees', tissue: 'joint', kind: 'pain', since: '2026-11-18' }] } })
+    const today = all('what should I do today?', hurt)
+    if (hurt.today.session.blocks.some((b) => /squat|jump|lunge/i.test(b.name))) expect(today).toMatch(/Heads up, your knee injury/)
+  })
+  test.each([
+    ['How can I increase my speed?', /Top speed/],
+    ['how do i get faster off the mark', /first 3 steps/],
+    ['how can I improve my stamina', /repeating sprints/],
+    ['tips to jump higher for headers', /Jump height/],
+    ['how do I shoot harder', /Power comes from the ground up/],
+    ['I play as a winger, how can I be more efficient', /side-on/],
+    ['how can I play better as a striker', /Movement scores/],
+    ['how do I change my plan', /Week tab/],
+    ['how do I build my own session', /Build a session/],
+    ['can I make my own exercise', /Add your own exercise/],
+    ['how do I avoid hamstring injuries', /Nordic curls/],
+    ['how do I change sets during a session', /open the Plan/],
+    ['lam sao de chay nhanh hon', /Top speed/],
+  ])('advice and how-to: %s', (q, re) => expect(all(q as string)).toMatch(re as RegExp))
+  test('advice cards leave out exercises that load an injury', () => {
+    const hurt = ctx({ profile: { ...ctx().profile, injuries: [{ id: 'a', part: 'hamstrings', tissue: 'muscle', kind: 'strain', since: '2026-11-18' }] } })
+    const cards = (answer('how can I increase my speed?', hurt).cards ?? []).map((x) => ('id' in x ? x.id : ''))
+    expect(cards).not.toContain('nordic-curl')
+    expect(cards.length).toBeGreaterThan(0)
+  })
 })

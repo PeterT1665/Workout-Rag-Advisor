@@ -2,14 +2,16 @@
 // facts from your own data and the app's knowledge (retrieval), and writes the answer from them. No model, no network:
 // every number it says is computed by the same code the rest of the app uses.
 import { t } from '../../i18n'
-import { CATEGORY_LABELS, EXERCISES, type Exercise } from '../library'
+import { CATEGORY_LABELS, EXERCISES, exercisesVersion, type Exercise } from '../library'
 import { sessionMinutes } from '../logic'
 import { bestsFrom, e1rm, isBodyweight, moved } from '../lifts'
 import { bmi, bmiBand, latestBody, latestFat, weightTrend } from '../body'
 import { counts } from '../streak'
 import { gameLength, resultOf, resultStreaks, type MatchReview } from '../match'
 import { FOCUS_LABEL, kindLabel } from '../weekplan'
-import type { Profile } from '../profile'
+import { familyOf, type Profile } from '../profile'
+import { activeInjuries, describe, injuryKind, isLeg, loadsPart, partLabel, partOf, PARTS, seriousInjury, severityLabel, severityOf, type Part, type Severity } from '../injuries'
+import type { Injury } from '../profile'
 import type { HistoryEntry } from '../storage'
 import type { Today } from '../today'
 import type { Streak } from '../streak'
@@ -22,7 +24,9 @@ export type Card =
   | { kind: 'exercise'; id: string; name: string; sub: string }
   | { kind: 'session'; id: string; title: string; sub: string }
   | { kind: 'go'; to: 'record' | 'week' | 'settings' | 'team'; label: string }
-export type Reply = { text: string[]; cards?: Card[]; after?: string[]; chips?: string[] } // after: text under the cards
+// What the coach should remember from a message (the chat screen saves it on the profile: synced, private).
+export type Save = { kind: 'injury'; injury: Pick<Injury, 'part' | 'tissue' | 'kind' | 'severity'> } | { kind: 'rate'; id: string; severity: Severity } | { kind: 'healed'; id: string } | { kind: 'weight'; kg: number } | { kind: 'height'; cm: number }
+export type Reply = { text: string[]; cards?: Card[]; after?: string[]; chips?: string[]; save?: Save[] } // after: text under the cards
 
 // ---------- words that give the question away (any of the app's languages, accents optional) ----------
 const W = {
@@ -39,19 +43,10 @@ const W = {
   alt: ['instead', 'alternative', 'replace', 'swap', 'substitute', 'without', 'no barbell', 'no gym', 'no equipment', 'don t have', 'dont have', 'thay', 'thay the', 'en lugar', 'sin', 'em vez', 'sem', 'au lieu', 'sans', 'ganti', 'tanpa'],
   session: ['session', 'workout', 'routine', 'drill', 'drills', 'plan me', 'build me', 'give me', 'suggest', 'recommend', 'minutes', 'min', 'buoi tap', 'bai tap', 'sesion', 'entrenamiento', 'treino', 'seance', 'entrainement', 'sesi', 'latihan'],
   position: ['position', 'winger', 'striker', 'midfielder', 'defender', 'defence', 'defense', 'centre back', 'fullback', 'full back', 'forward', 'my role', 'vi tri', 'hau ve', 'tien dao', 'tien ve', 'posicion', 'defensa', 'delantero', 'posicao', 'zagueiro', 'poste', 'defenseur', 'posisi', 'bek'],
+  advice: ['improve', 'increase', 'better', 'faster', 'quicker', 'stronger', 'higher', 'harder', 'get good', 'tips', 'tip', 'advice', 'how can i', 'how do i get', 'how do i become', 'develop', 'work on', 'efficient', 'strategy', 'tactic', 'tactics', 'as a', 'play as', 'playing as', 'avoid', 'prevent', 'build', 'change', 'make', 'create', 'add', 'edit', 'customise', 'customize',
+    'cai thien', 'tang', 'nhanh hon', 'tot hon', 'lam sao de', 'meo', 'mejorar', 'aumentar', 'mas rapido', 'consejo', 'melhorar', 'mais rapido', 'dica', 'ameliorer', 'plus vite', 'conseil', 'meningkatkan', 'lebih cepat', 'tips', 'saran'],
   why: ['why', 'tai sao', 'vi sao', 'por que', 'porque', 'pourquoi', 'kenapa', 'mengapa', 'help me', 'benefit', 'good for', 'do for me'],
 }
-
-// Body parts → stretches and easy work for them, and what to keep off for now.
-const PARTS: { words: string[]; label: string; easy: string[] }[] = [
-  { words: ['hamstring', 'hammy', 'hammies', 'back of thigh', 'gan kheo', 'isquio', 'ischio', 'paha belakang'], label: 'hamstrings', easy: ['hamstring-stretch', 'glute-bridge', 'foam-roll-quads-and-glutes'] },
-  { words: ['hip', 'hips', 'groin', 'adductor', 'hong', 'bang', 'cadera', 'ingle', 'quadril', 'virilha', 'hanche', 'aine', 'pinggul', 'selangkangan'], label: 'hips', easy: ['90-90-hip-switches', 'figure-4-glute-stretch', 'couch-stretch-hip-flexor-quad'] },
-  { words: ['quad', 'quads', 'thigh', 'knee', 'knees', 'dui', 'goi', 'cuadriceps', 'rodilla', 'joelho', 'genou', 'cuisse', 'lutut', 'paha'], label: 'quads and knees', easy: ['foam-roll-quads-and-glutes', 'couch-stretch-hip-flexor-quad', 'glute-bridge'] },
-  { words: ['calf', 'calves', 'ankle', 'achilles', 'shin', 'bap chan', 'co chan', 'gemelo', 'tobillo', 'panturrilha', 'tornozelo', 'mollet', 'cheville', 'betis', 'pergelangan'], label: 'calves and ankles', easy: ['side-lying-leg-raise-clamshell', 'glute-bridge', 'hamstring-stretch'] },
-  { words: ['back', 'lower back', 'spine', 'lung', 'espalda', 'costas', 'dos', 'punggung'], label: 'back', easy: ['dead-bug', 'glute-bridge', 'figure-4-glute-stretch'] },
-  { words: ['glute', 'glutes', 'butt', 'mong', 'gluteo', 'fessier', 'bokong'], label: 'glutes', easy: ['figure-4-glute-stretch', 'foam-roll-quads-and-glutes', '90-90-hip-switches'] },
-]
-const PART_LABEL = (k: string) => ({ hamstrings: t('hamstrings'), hips: t('hips'), 'quads and knees': t('quads and knees'), 'calves and ankles': t('calves and ankles'), back: t('back'), glutes: t('glutes') })[k] ?? k
 
 // Short names people use for exercises.
 const ALIASES: Record<string, string> = {
@@ -63,7 +58,9 @@ const ALIASES: Record<string, string> = {
 
 let exIndex: Index<Exercise> | null = null
 let factIndex: Index<Fact> | null = null
-const exercises = () => (exIndex ??= new Index(EXERCISES.map((e) => ({ id: e.id, item: e, boost: `${e.name} ${t(e.name)} ${e.id.replace(/-/g, ' ')}`, text: `${CATEGORY_LABELS[e.category] ?? e.category} ${e.category} ${e.how ?? ''} ${(e.needs ?? []).join(' ')} ${(e.positions ?? []).join(' ')}` }))))
+let exVer = -1
+const exercises = () => { if (exVer !== exercisesVersion()) { exIndex = null; exVer = exercisesVersion() } return exercises_() }
+const exercises_ = () => (exIndex ??= new Index(EXERCISES.map((e) => ({ id: e.id, item: e, boost: `${e.name} ${t(e.name)} ${e.id.replace(/-/g, ' ')}`, text: `${CATEGORY_LABELS[e.category] ?? e.category} ${e.category} ${e.how ?? ''} ${(e.needs ?? []).join(' ')} ${(e.positions ?? []).join(' ')}` }))))
 const facts = () => (factIndex ??= new Index(FACTS().map((f) => ({ id: f.id, item: f, boost: `${f.title} ${f.tags}`, text: f.answer }))))
 export const resetCoachIndex = () => { exIndex = null; factIndex = null } // after a language change
 
@@ -100,6 +97,12 @@ function todayReply(c: CoachCtx): Reply {
     text.push(t('Today{md}: {title}, {n} minutes.', { md: td.md ? ` (${td.md})` : '', title: s.title, n: sessionMinutes(s) }) + (job ? ' ' + t('The job today: {job}.', { job: job.toLowerCase() }) : ''))
     if (td.slot?.note) text.push(t('Why: {note}.', { note: td.slot.note }))
   } else text.push(t('Rest day on your plan. If you feel fresh, the next session is {title} ({n} min).', { title: s.title, n: sessionMinutes(s) }))
+  const serious = seriousInjury(activeInjuries(c.profile))
+  if (serious && !td.done && td.slot?.kind !== 'game') return { text: [t('No training today: your {part} injury is serious. Rest it and see a physio or doctor before you train again. Tell me when it\'s healed.', { part: partLabel(serious.part) })], chips: [t('My {part} is better now', { part: partLabel(serious.part) })] }
+  for (const i of activeInjuries(c.profile)) {
+    const hits = td.slot?.kind === 'game' || td.done ? [] : s.blocks.filter((b) => loadsPart(b, i.part, i.severity)).map((b) => t(b.name))
+    if (hits.length) text.push(t('Heads up, your {part} injury. Today\'s session puts load on it: {list}. Kick off swaps those out for you.', { part: partLabel(i.part), list: hits.slice(0, 4).join(', ') }))
+  }
   if (!c.streak.today && c.streak.days > 0 && td.scheduled && !td.done) text.push(t('Train today to keep your {n}-day streak going.', { n: c.streak.days }))
   return { text, cards: td.slot?.kind === 'game' || td.done ? [] : [sessionCard(s)], chips: [t('Why is my week planned like this?'), t('How was my week?')] }
 }
@@ -193,7 +196,7 @@ function bodyReply(c: CoachCtx): Reply {
   if (tr) text.push(tr.kg === 0 ? t('Steady over the last weeks.') : t('{d} kg since {date}.', { d: (tr.kg > 0 ? '+' : '') + tr.kg, date: tr.since }))
   if (c.profile.heightCm) {
     const v = bmi(b.kg, c.profile.heightCm)
-    const band = { under: t('Below range'), healthy: t('Healthy range'), above: t('Above range'), 'well-above': t('Well above range') }[bmiBand(v)]
+    const band = BAND(bmiBand(v))
     text.push(t('BMI {v}: {band}. BMI can\'t tell muscle from fat, so a strong player can read high.', { v: v.toFixed(1), band: band.toLowerCase() }))
   }
   const fat = latestFat(c.profile)
@@ -220,22 +223,108 @@ function matchReply(c: CoachCtx): Reply {
   return { text, cards: [{ kind: 'go', to: 'record', label: t('Open Record') }], chips: [t('How does the match rating work?')] }
 }
 
-function soreReply(q: string): Reply {
-  const part = PARTS.find((p) => has(q, p.words))
+function soreReply(c: CoachCtx, q: string): Reply {
+  const part = PARTS.find((p) => p.part === partOf(q))
   const general = FACTS().find((f) => f.id === 'sore')!
   if (!part) return { text: [general.answer, t('Tell me where it is (hamstring, hip, knee, calf, back) and I\'ll point you to the right stretches.')], chips: [t('My hamstrings are sore'), t('My hips feel tight')] }
   const easy = part.easy.map(exById).filter((e) => !!e) as Exercise[]
+  const injured = activeInjuries(c.profile).find((i) => i.part === part.part)
   return {
-    text: [t('Sore {part}: keep moving gently, it recovers faster than full rest. These help:', { part: PART_LABEL(part.label) })],
+    text: [t('Sore {part}: keep moving gently, it recovers faster than full rest. These help:', { part: partLabel(part.part) })],
     cards: easy.map(exCard),
-    after: [t('Skip heavy or explosive work for the {part} until it feels normal. Sharp pain, swelling or a limp: see a physio. I\'m not a doctor.', { part: PART_LABEL(part.label) })],
+    after: [
+      ...(injured ? [t('Your {part} injury from {date} is still on file. If this is that injury, go easy and get it checked.', { part: partLabel(injured.part), date: injured.since })] : []),
+      t('Skip heavy or explosive work for the {part} until it feels normal. Sharp pain, swelling or a limp: see a physio. I\'m not a doctor.', { part: partLabel(part.part) }),
+    ],
+  }
+}
+
+const BAND = (b: ReturnType<typeof bmiBand>) => ({ under: t('Below range'), healthy: t('Healthy range'), above: t('Above range'), 'well-above': t('Well above range') })[b]
+
+// ---------- what the coach remembers ----------
+// Only statements about the player ("I pulled my hamstring", "I weigh 72 kg"), not questions about prevention or other people.
+const INJURY = ['injury', 'injured', 'injure', 'tendinitis', 'tendonitis', 'broke', 'broken', 'fracture', 'fractured', 'bruised', 'ruptured', 'niggle', 'hurt', 'hurts', 'hurting', 'pain', 'painful', 'strain', 'strained', 'pulled', 'pull my', 'sprain', 'sprained', 'tear', 'torn', 'tore', 'tweaked', 'twisted', 'rolled my',
+  'chan thuong', 'bi thuong', 'cang co', 'rach', 'trat', 'lesion', 'lesionado', 'lesionada', 'esguince', 'distension', 'lesao', 'machuquei', 'machucado', 'estiramento', 'blessure', 'blesse', 'claquage', 'entorse', 'cedera', 'keseleo', 'terkilir', 'robek']
+const ME = ['i', 'im', 'ive', 'my', 'me', 'toi', 'minh', 'em', 'tao', 'mi', 'me', 'tengo', 'estoy', 'meu', 'minha', 'estou', 'je', 'jai', 'mon', 'ma', 'saya', 'aku']
+const NOT_ME = ['avoid', 'prevent', 'prevention', 'stop getting', 'what if', 'risk', 'tranh', 'phong', 'phong ngua', 'evitar', 'prevenir', 'eviter', 'mencegah', 'hindari', 'cegah']
+const HEALED = ['better', 'healed', 'recovered', 'fine now', 'all good', 'no pain', 'no more pain', 'pain free', 'back to normal', 'fully fit', 'het dau', 'khoi', 'da khoi', 'on roi', 'mejor', 'curado', 'recuperado', 'melhor', 'curei', 'gueri', 'va mieux', 'sembuh', 'pulih', 'sudah baik']
+const LIFT_WORDS = ['bench', 'squat', 'deadlift', 'lift', 'lifted', 'press', 'row', 'clean', 'set', 'sets', 'reps', 'bar', 'dumbbell', 'plate']
+
+const SEVERITY_CHIPS = () => [t('Light: gone in a day or two'), t('Moderate: it hurts to run or jump'), t("Serious: swelling, a pop, or I can't run on it")]
+const rated = (q: string): Severity | null => { const i = SEVERITY_CHIPS().indexOf(q.trim()); return i < 0 ? null : (['light', 'moderate', 'serious'] as const)[i] }
+// What a severity means for training (the same rules kick-off runs: lib/injuries).
+function planFor(sev: Severity, part: Part) {
+  if (sev === 'light') return t('Light: for the next 2 days, exercises that mainly work your {part} are swapped out, then you\'re back to normal. Still hurts after that? Tell me and we\'ll treat it as moderate.', { part: partLabel(part) })
+  if (sev === 'moderate') return t('Moderate: every exercise that loads your {part} is out of your sessions until you tell me it\'s better.', { part: partLabel(part) }) + (isLeg(part) ? ' ' + t('No jumps, sprints or Olympic lifts either.') : '')
+  return t('Serious: no training on it. Your sessions are off until it\'s healed. Rest it, ice it if it\'s swollen, and see a physio or doctor before you train again.')
+}
+
+function remember(q: string, c: CoachCtx): Reply | null {
+  const f = fold(q)
+  const me = has(q, ME)
+  const text: string[] = []
+  const save: Save[] = []
+  const chips: string[] = []
+  const active = activeInjuries(c.profile)
+  const part = partOf(q)
+  // better now: heal the injury they name (or the only one on file)
+  if (active.length && has(q, HEALED) && !q.trim().endsWith('?')) {
+    const aboutIt = has(q, ['injury', 'injuries', 'pain', 'hurt', 'hurting', 'it', 'its', 'het dau', 'khoi', 'lesion', 'lesao', 'blessure', 'cedera'])
+    const healed = part ? active.filter((i) => i.part === part) : aboutIt && active.length === 1 ? active : has(q, ['all healed', 'everything is better', 'all better']) ? active : []
+    for (const i of healed) { save.push({ kind: 'healed', id: i.id }); text.push(t('Great news. Your {part} injury is marked as healed.', { part: partLabel(i.part) })) }
+    if (healed.length) text.push(t('Ease back in: the first week, go lighter than before and stop if it hurts again.'))
+  }
+  // how bad: the answer to "How bad is it?" (a chip or their own words), for the latest injury not rated yet
+  else if (active.length && !q.trim().endsWith('?') && (rated(q) || (severityOf(q) && !has(q, INJURY))) && (!part || active.some((i) => i.part === part))) {
+    const i = (part ? active.filter((x) => x.part === part) : active.filter((x) => !x.severity)).at(-1) ?? (active.length === 1 ? active[0] : null)
+    const sev = rated(q) ?? severityOf(q)!
+    if (i) { save.push({ kind: 'rate', id: i.id, severity: sev }); text.push(planFor(sev, i.part)); if (sev !== 'serious') chips.push(t('What should I do today?')) ; chips.push(t('My {part} is better now', { part: partLabel(i.part) })) }
+  }
+  // a new injury: saved in the app's terms (part, tissue, what happened), then: how bad is it?
+  else if (me && has(q, INJURY) && !has(q, NOT_ME) && !has(q, ['sore', 'doms'])) {
+    if (part) {
+      const inj = describe(q, part)
+      save.push({ kind: 'injury', injury: inj })
+      text.push(t('Sorry to hear that. Saved to your profile (only you see it): {part}, {kind}.', { part: partLabel(part), kind: injuryKind(inj) }))
+      if (inj.severity) { text.push(planFor(inj.severity, part)); chips.push(t('My {part} is better now', { part: partLabel(part) })) }
+      else { text.push(t('How bad is it? It decides what you can still train.')); chips.push(...SEVERITY_CHIPS()) }
+    } else {
+      text.push(t('Sorry to hear that. Where is it: hamstring, groin, knee, ankle, calf, back, shoulder? Tell me and I\'ll save it and keep your sessions safe.'))
+      chips.push(t('I pulled my hamstring'), t('I sprained my ankle'), t('My knee hurts'))
+    }
+  }
+  // body weight and height, stated with a unit
+  if (me && !has(q, LIFT_WORDS)) {
+    const kg = Number(f.match(/(\d{2,3}(?:[.,]\d)?)\s*(?:kg|kgs|kilo|kilos|kilograms?|ky|can)\b/)?.[1]?.replace(',', '.'))
+    if (kg >= 30 && kg <= 200 && has(q, ['weigh', 'weight', 'im', 'i am', 'am', 'nang', 'can nang', 'nang', 'peso', 'pese', 'poids', 'pese', 'berat', 'beratku'])) {
+      save.push({ kind: 'weight', kg })
+      const h = c.profile.heightCm
+      text.push(t('Saved: {kg} kg as today\'s weigh-in.', { kg: fmtKg(kg) }) + (h ? ' ' + t('BMI {v}: {band}.', { v: bmi(kg, h).toFixed(1), band: BAND(bmiBand(bmi(kg, h))).toLowerCase() }) : ''))
+    }
+    const cm = Number(f.match(/(\d{3})\s*cm\b/)?.[1] ?? 0) || Math.round(Number(f.match(/\b(1[.,]\d{1,2})\s*m\b/)?.[1]?.replace(',', '.') ?? 0) * 100)
+    if (cm >= 120 && cm <= 230 && has(q, ['tall', 'height', 'cao', 'chieu cao', 'mido', 'altura', 'meco', 'tenho', 'mesure', 'taille', 'tinggi', 'im', 'i am'])) {
+      save.push({ kind: 'height', cm })
+      text.push(t('Saved your height: {cm} cm.', { cm }))
+    }
+  }
+  if (!save.length && !text.length) return null
+  return { text, save, chips: chips.length ? chips : undefined, cards: save.some((s) => s.kind === 'weight' || s.kind === 'height') ? [{ kind: 'go', to: 'record', label: t('Open Record') }] : undefined,
+    after: save.some((s) => s.kind === 'injury' || s.kind === 'rate') ? [t('Sharp pain, swelling, a pop or a limp: see a physio before training it again. I\'m not a doctor.')] : undefined }
+}
+
+function injuriesReply(c: CoachCtx): Reply {
+  const act = activeInjuries(c.profile)
+  if (!act.length) return { text: [t('No injuries on file. If something hurts, tell me where and I\'ll keep an eye on it.')] }
+  return {
+    text: [t('On file:'), ...act.map((i) => `• ${t('{part}, {kind} ({severity}), since {date}', { part: partLabel(i.part), kind: injuryKind(i), severity: severityLabel(i.severity).toLowerCase(), date: i.since })}`)],
+    chips: act.slice(0, 2).map((i) => t('My {part} is better now', { part: partLabel(i.part) })),
   }
 }
 
 function exerciseReply(c: CoachCtx, ex: Exercise, q: string): Reply {
   const text = [`${t(ex.name)}${ex.reps ? ` · ${t('{sets} × {reps}', { sets: ex.rounds || 1, reps: ex.reps })}` : ''}`, ex.how ?? '']
   if (ex.needs?.length) text.push(t('You need: {list}.', { list: ex.needs.map((n) => t(n)).join(', ') }))
-  const mine = c.profile.positions.filter((p) => ex.positions?.includes(p))
+  const mine = c.profile.positions.filter((p) => ex.positions?.includes(familyOf(p)))
   if (has(q, W.why) || has(q, W.position) || mine.length) {
     const why = CATEGORY_WHY()[ex.category]
     if (why) text.push(why)
@@ -298,14 +387,19 @@ function positionReply(c: CoachCtx, q: string): Reply {
     defender: ['defender', 'defence', 'defense', 'centre back', 'fullback', 'full back', 'hau ve', 'defensa', 'zagueiro', 'defenseur', 'bek'],
   }
   const asked = Object.keys(POS_WORDS).find((p) => has(q, POS_WORDS[p])) as Profile['positions'][number] | undefined
-  const pos = asked ?? c.profile.positions[0] ?? 'winger'
-  const f = FACTS().find((x) => x.id === `pos-${pos}`)!
-  const picks = EXERCISES.filter((e) => e.positions?.includes(pos)).slice(0, 4)
+  const role = asked ?? c.profile.positions[0] ?? 'winger'
+  const fam = familyOf(role)
+  // keepers and full-backs have their own "play better" answer; the rest use their family's training answer
+  const f = FACTS().find((x) => x.id === (fam === 'goalkeeper' ? 'play-keeper' : role === 'fb' ? 'play-fullback' : `pos-${fam}`))!
+  const picks = EXERCISES.filter((e) => e.positions?.includes(fam === 'goalkeeper' ? 'defender' : fam)).slice(0, 4)
   return { text: [f.answer, t('Exercises picked out for this position:')], cards: picks.map(exCard), chips: [t('Why is my week planned like this?')] }
 }
 
 const intro = (c: CoachCtx): Reply => ({
-  text: [t('Hi {name}. I know your plan, your log, your lifts, your matches and every exercise in the app. Ask me anything about your training.', { name: c.profile.name || t('player') })],
+  text: [
+    t('Hi {name}. I know your plan, your log, your lifts, your matches, every exercise and how the app works. Ask me about your training, getting faster or stronger, your position, or how to change anything in the app.', { name: c.profile.name || t('player') }),
+    ...activeInjuries(c.profile).slice(0, 2).map((i) => t('Your {part} injury is on file. Tell me when it\'s better.', { part: partLabel(i.part) })),
+  ],
   chips: [t('What should I do today?'), t('How was my week?'), t('What are my best lifts?'), t('How do the exercises help my position?')],
 })
 
@@ -317,7 +411,15 @@ export function answer(q: string, c: CoachCtx): Reply {
   const ex = findExercise(query)
 
   if (words.length <= 2 && has(query, W.hello)) return intro(c)
-  if (has(query, W.sore)) return soreReply(query)
+  const mem = remember(query, c)
+  if (mem) return mem
+  if (has(query, ['my injuries', 'injury list', 'what injuries', 'any injuries', 'injuries on file', 'chan thuong cua toi', 'mis lesiones', 'minhas lesoes', 'mes blessures', 'cedera saya'])) return injuriesReply(c)
+  // advice and how-to questions ("how can I get faster", "how do I build my own session", "tips as a winger")
+  if (has(query, W.advice) && !has(query, ['my week', 'today', 'my best', 'my last'])) {
+    const f = facts().search(query, 2)
+    if (f[0] && f[0].score > 4 && !(ex && fold(query).includes(fold(ex.name)) && !f[0].doc.item.ex?.includes(ex.id))) return factReply(f[0].doc.item, f[1] && f[1].score > f[0].score * 0.85 ? f[1].doc.item : undefined, c)
+  }
+  if (has(query, W.sore)) return soreReply(c, query)
   if (has(query, W.alt) && ex) return altReply(ex, query)
   if (has(query, W.position) && (has(query, W.why) || has(query, ['exercise', 'exercises', 'train', 'training', 'help', 'bai tap', 'ejercicio', 'exercicio', 'exercice', 'latihan']))) return positionReply(c, query)
   if (has(query, W.streak)) return streakReply(c)
@@ -336,22 +438,27 @@ export function answer(q: string, c: CoachCtx): Reply {
 
   // anything else: the best matching facts, then exercises
   const f = facts().search(query, 2)
-  if (f[0] && f[0].score > 2.5) return factReply(f[0].doc.item, f[1] && f[1].score > f[0].score * 0.8 ? f[1].doc.item : undefined)
+  if (f[0] && f[0].score > 2.5) return factReply(f[0].doc.item, f[1] && f[1].score > f[0].score * 0.8 ? f[1].doc.item : undefined, c)
   if (ex) return exerciseReply(c, ex, query)
   const e = exercises().search(query, 3)
   if (e[0] && e[0].score > 3) return { text: [t('These exercises match that best:')], cards: e.map((h) => exCard(h.doc.item)) }
   if (has(query, W.week)) return weekReply(c)
   return {
-    text: [t("I'm not sure about that one yet. I can help with your plan, your log and lifts, your matches, any exercise, soreness and how the app works.")],
-    chips: [t('What should I do today?'), t('How is the load calculated?'), t('My hamstrings are sore')],
+    text: [t("I'm not sure about that one yet. I can help with your plan, your log and lifts, your matches, any exercise, soreness and injuries, getting faster, stronger or fitter, playing your position, and how to do anything in the app.")],
+    chips: [t('How can I get faster?'), t('How do I build my own session?'), t('Tips for my position'), t('What should I do today?')],
   }
 }
 
-function factReply(f: Fact, also?: Fact): Reply {
+function factReply(f: Fact, also?: Fact, c?: CoachCtx): Reply {
   const text = [f.answer]
   if (also && also.id !== f.id) text.push(also.answer)
   const go = f.see ? [{ kind: 'go' as const, to: f.see, label: { record: t('Open Record'), week: t('Open Week'), settings: t('Open Settings'), team: t('Open Team') }[f.see] }] : []
-  return { text, cards: go }
+  // exercises that train it, minus any that load an injury on file
+  const inj = c ? activeInjuries(c.profile) : []
+  const exs = (f.ex ?? []).map((id) => exById(id) as Exercise | undefined).filter((e): e is Exercise => !!e && !inj.some((i) => loadsPart(e, i.part, i.severity))).slice(0, 4)
+  if (exs.length) text.push(t('Exercises in the app that train it:'))
+  if (inj.length && (f.ex ?? []).length > exs.length) text.push(exs.length ? t('Some are left out because of your injury.') : t('The exercises for this load your injury, so they\'re left out until it\'s better.'))
+  return { text, cards: [...exs.map(exCard), ...go] }
 }
 
-export const starterChips = () => [t('What should I do today?'), t('How was my week?'), t('What are my best lifts?'), t('How do the exercises help my position?'), t('My hamstrings are sore'), t('Give me a 30-minute home session')]
+export const starterChips = () => [t('What should I do today?'), t('How can I get faster?'), t('Tips for my position'), t('How do I change my plan?'), t('How was my week?'), t('What are my best lifts?'), t('My hamstrings are sore'), t('Give me a 30-minute home session')]

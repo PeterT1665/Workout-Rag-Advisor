@@ -69,7 +69,7 @@ export function Hero({ today, onKickOff, onOpen, onSettings, onCustomise, streak
         : 'absolute inset-0 bg-[linear-gradient(to_bottom,rgba(10,12,11,.6)_0%,rgba(10,12,11,0)_22%,rgba(10,12,11,0)_55%,rgba(10,12,11,.96)_86%)]'} />
       {!desktop && <div className="absolute inset-x-4 top-[max(16px,var(--sat))] flex items-center justify-between">
         {streak ? (
-          <button onClick={onStreak} data-tour="streak" aria-label={`${streak.days === 1 ? t('Plan streak: 1 day') : t('Plan streak: {n} days', { n: streak.days })}${streak.today ? '' : `, ${t('train today to keep it going')}`}. ${t('Open your training log')}`}
+          <button onClick={onStreak} data-tour="streak" aria-label={`${streak.days === 1 ? t('Plan streak: 1 day') : t('Plan streak: {n} days', { n: streak.days })}${streak.today ? '' : `, ${t('train today to keep it going')}`}. ${t('Open your calendar')}`}
             className="flex h-10 items-center gap-1.5 rounded-full bg-white/15 pr-3.5 pl-2.5 text-white backdrop-blur-md active:scale-95">
             <FlameIcon lit={streak.days > 0} className={`h-6 w-6 ${streak.today ? 'drop-shadow-[0_0_6px_rgba(255,90,31,.7)]' : ''}`} />
             <span className={`font-display text-lg tabular-nums leading-none ${streak.days > 0 ? 'text-[#ff9a1f]' : 'text-white/80'}`}>{streak.days}</span>
@@ -202,9 +202,9 @@ export function WeekStrip({ today, kindFor }: { today: Today; kindFor?: (day: nu
 function CoachBar({ onCoach }: { onCoach: (ask?: string) => void }) {
   const qs = [t('What should I do today?'), t('How was my week?')]
   return (
-    <section aria-label={t('Coach')} className="mt-6 rounded-[22px] bg-surface p-3">
+    <section aria-label={t('AI coach')} className="mt-6 rounded-[22px] bg-surface p-3">
       <button onClick={() => onCoach()} className="flex min-h-12 w-full items-center gap-3 rounded-full bg-surface-2 pr-2 pl-4 text-left text-muted active:scale-[0.99]">
-        <span className="flex-1">{t('Ask your coach…')}</span>
+        <span className="flex-1">{t('Ask your AI coach…')}</span>
         <span className="grid h-9 w-9 place-items-center rounded-full bg-red text-on-red" aria-hidden="true">
           <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14M13 6l6 6-6 6" /></svg>
         </span>

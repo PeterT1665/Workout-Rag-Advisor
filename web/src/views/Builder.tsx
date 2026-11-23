@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { DragList, type GripProps } from '../components/DragList'
 import { moveUnit, unitsOf } from '../lib/units'
 import { VideoBox } from '../components/VideoBox'
+import { AddExerciseSheet } from '../components/AddExerciseSheet'
 import { Button, Pill, Screen, Title, TopBar } from '../components/ui'
 import { fmtReps, sessionMinutes } from '../lib/logic'
 import {
@@ -160,6 +161,7 @@ export function Picker({ items, onAdd, onRemove, onDone }: { items: Item[]; onAd
   const cats = categories(sport)
   const [cat, setCat] = useState<string>('all')
   const [open, setOpen] = useState<Exercise | null>(null)
+  const [adding, setAdding] = useState(false)
   const list = EXERCISES.filter((e) => e.sport === sport && (cat === 'all' || e.category === cat))
     .sort((a, b) => cats.indexOf(a.category) - cats.indexOf(b.category)) // 'All' reads in category order
   const count = (id: string) => items.filter((i) => i.ex === id).length
@@ -194,7 +196,11 @@ export function Picker({ items, onAdd, onRemove, onDone }: { items: Item[]; onAd
           )
         })}
       </ul>
+      <button onClick={() => setAdding(true)} className="mt-4 flex min-h-14 w-full items-center justify-center gap-2 rounded-2xl border border-dashed border-muted/40 text-sm font-semibold text-muted active:scale-[0.99]">
+        {t("Can't find it? Add your own exercise")}
+      </button>
       {open && <ExerciseSheet e={open} n={count(open.id)} onAdd={() => onAdd(open.id)} onRemove={() => onRemove(open.id)} onClose={() => setOpen(null)} />}
+      {adding && <AddExerciseSheet sport={sport} onClose={() => setAdding(false)} onAdded={(m) => { setAdding(false); setSport(m.sport); setCat('mine'); onAdd(m.id) }} />}
     </Screen>
   )
 }

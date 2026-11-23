@@ -50,6 +50,7 @@ export type HistoryEntry = {
   effort?: number // session effort: what you felt and what your sets say (lib/lifts.ts); the load uses it
   bw?: number // body weight that day, for bodyweight exercises
   drills?: number; cues?: number
+  tally?: Tally // shots, on target and goals counted at Full time (finishing drills)
   at?: number // last edited (ms): when two devices disagree, the later edit wins
   deleted?: true // removed by the player; kept as a marker so syncing doesn't bring it back
 }
@@ -67,7 +68,8 @@ export function deleteHistory(e: HistoryEntry) {
   save('history', all.map((x, i) => (i === at ? { ...x, deleted: true as const, at: Date.now() } : x)))
 }
 
-export type Reflection = { rpe: number; legs?: Legs; sore?: string[]; lifts?: LiftLog[]; bw?: number }
+export type Tally = { shots?: number; onTarget?: number; goals?: number }
+export type Reflection = { rpe: number; legs?: Legs; sore?: string[]; lifts?: LiftLog[]; bw?: number; tally?: Tally }
 // The check-in, scored: your sets against your own bests from earlier sessions, effort, and load.
 function scored(all: HistoryEntry[], at: number, r: Reflection): HistoryEntry {
   const e = { ...all[at], ...r }

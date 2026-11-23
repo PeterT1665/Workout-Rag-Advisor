@@ -46,16 +46,23 @@ export function BrushIcon() {
 }
 
 // Streak flame: orange-to-red while there's a streak, grey at 0. Home adds a glow once today counts.
-export function FlameIcon({ lit = true, className = 'h-6 w-6' }: { lit?: boolean; className?: string }) {
+export type FlameTone = 'plan' | 'unbeaten' | 'wins'
+// Fire colours: the plan streak burns orange; game streaks stand apart: unbeaten burns blue, a win streak purple.
+export const FIRE: Record<FlameTone | 'off', readonly [string, string, string]> = {
+  plan: ['#ff3b1f', '#ff9a1f', '#ffd23f'], unbeaten: ['#1460ff', '#38a8ff', '#b4ecff'], wins: ['#6a16ff', '#b45cff', '#f1cbff'], off: ['#7a7d84', '#a3a6ad', '#c9cbd0'],
+}
+export function FlameIcon({ lit = true, tone = 'plan', className = 'h-6 w-6' }: { lit?: boolean; tone?: FlameTone; className?: string }) {
+  const [a, b, c] = FIRE[lit ? tone : 'off']
+  const id = `flame-${lit ? tone : 'off'}`
   return (
     <svg viewBox="0 0 24 24" className={className} aria-hidden="true">
       <defs>
-        <linearGradient id="flame-outer" x1="0" y1="1" x2="0" y2="0">
-          <stop offset="0" stopColor={lit ? '#ff3b1f' : '#7a7d84'} /><stop offset="1" stopColor={lit ? '#ff9a1f' : '#a3a6ad'} />
+        <linearGradient id={id} x1="0" y1="1" x2="0" y2="0">
+          <stop offset="0" stopColor={a} /><stop offset="1" stopColor={b} />
         </linearGradient>
       </defs>
-      <path fill="url(#flame-outer)" d="M12 1.8c.6 3.1-1 4.9-2.6 6.6C7.8 10.1 6 12 6 15a6 6 0 0 0 12 0c0-2.4-1.1-4.3-2.3-5.8-.2 1.3-.8 2.3-1.8 2.9.3-3.9-.9-7.6-1.9-10.3Z" />
-      <path fill={lit ? '#ffd23f' : '#c9cbd0'} d="M12 12.2c-.3 1.4-1.1 2.1-1.8 2.8-.6.6-1 1.2-1 2.1a2.8 2.8 0 0 0 5.6 0c0-1.2-.6-2.1-1.3-2.8-.2.6-.6 1-1.1 1.2.1-1.2 0-2.3-.4-3.3Z" />
+      <path fill={`url(#${id})`} d="M12 1.8c.6 3.1-1 4.9-2.6 6.6C7.8 10.1 6 12 6 15a6 6 0 0 0 12 0c0-2.4-1.1-4.3-2.3-5.8-.2 1.3-.8 2.3-1.8 2.9.3-3.9-.9-7.6-1.9-10.3Z" />
+      <path fill={c} d="M12 12.2c-.3 1.4-1.1 2.1-1.8 2.8-.6.6-1 1.2-1 2.1a2.8 2.8 0 0 0 5.6 0c0-1.2-.6-2.1-1.3-2.8-.2.6-.6 1-1.1 1.2.1-1.2 0-2.3-.4-3.3Z" />
     </svg>
   )
 }

@@ -5,6 +5,7 @@ import { supabase } from './supabase'
 import { currentUser } from './sync'
 import type { CardStats } from '../components/PlayerCard'
 import type { Profile } from './profile'
+import type { Socials } from './socials'
 import { t } from '../i18n'
 
 export type TeamProfile = {
@@ -12,6 +13,7 @@ export type TeamProfile = {
   positions: string[]; foot: string; accent: string; avatar_path: string | null
   card: CardStats | null; rating: number | null
   streak: number; best_streak: number; trained_today: boolean; last_active: string | null
+  socials?: Socials | null // migration 0014; friends only, like the rest
 }
 export type FoundPlayer = { user_id: string; username: string; display_name: string; number: number; avatar_path: string | null; friendship: 'friends' | 'requested' | 'asked-you' | null }
 export type FriendRequest = { user_id: string; username: string; display_name: string; number: number; avatar_path: string | null; incoming: boolean }
@@ -68,6 +70,17 @@ export async function leaderboard(): Promise<TeamProfile[]> {
   const sb = await supabase()
   const { data } = await sb.from('profiles').select('*')
   return ((data as TeamProfile[] | null) ?? []).sort((a, b) => b.streak - a.streak || (b.rating ?? 0) - (a.rating ?? 0) || a.username.localeCompare(b.username))
+}
+
+// Your social links (cleaned in lib/socials). False when it didn't save (offline, or before migration 0014).
+export async function saveSocials(socials: Socials): Promise<boolean> {
+  try {
+    const sb = await supabase()
+    const id = await me()
+    const clean = Object.fromEntries(Object.entries(socials).filter(([, v]) => v))
+    const { error } = await sb.from('profiles').update({ socials: clean }).eq('user_id', id)
+    return !error
+  } catch { return false }
 }
 
 export async function findPlayer(username: string, number: number): Promise<FoundPlayer | null> {

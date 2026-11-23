@@ -93,3 +93,23 @@ export function ratingsFrom(raw: Partial<Record<Stat, number>>, date = new Date(
   }
   return { date, raw, stats }
 }
+
+// Rate yourself weekly (same day, same warm-up) so the card follows real progress.
+export const RATE_EVERY_DAYS = 7
+export function nextRatingDue(r: Ratings | undefined): string | null {
+  if (!r) return null
+  const [y, m, d] = r.date.split('-').map(Number)
+  return new Date(y, m - 1, d + RATE_EVERY_DAYS).toLocaleDateString('en-CA')
+}
+
+// A proper warm-up before the tests, so the results are real and comparable week to week.
+// Gentle to sharp: jog, build-up runs, the ball, jumps, then change of direction. `demo` = the library exercise shown in 3D.
+export type WarmStep = { name: string; how: string; minutes: number; demo: string }
+export const WARMUP: WarmStep[] = [
+  { name: t('Easy jog'), how: t('Jog around the area, then leg swings front and side. Get warm, not tired.'), minutes: 3, demo: 'Jog + dynamic leg swings' },
+  { name: t('Build-up runs'), how: t('Three 20 m runs at about 50%, 70% and 85% speed. Walk back between them.'), minutes: 2, demo: 'Build-up sprints (no ball)' },
+  { name: t('Wall passes'), how: t('Easy two-touch passes against the wall with both feet. Find your touch.'), minutes: 2, demo: 'Wall passes: ground, both feet' },
+  { name: t('Dribbling'), how: t('Dribble through the markers at half pace, then a little quicker. Close touches.'), minutes: 2, demo: 'Cone weave dribble' },
+  { name: t('Jumps'), how: t('10 pogo hops, then 3 easy broad jumps at about 70%.'), minutes: 1, demo: 'Pogo hops' },
+  { name: t('Change of direction'), how: t('Shuffle and cut between the markers at 70%, then two sharp ones. Now you are ready.'), minutes: 2, demo: 'Sprint + change of direction (no ball)' },
+]

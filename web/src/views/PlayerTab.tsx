@@ -1,5 +1,6 @@
 import { Button, Panel, SectionHead, Title } from '../components/ui'
-import { PlayerCard } from '../components/PlayerCard'
+import { FlipCard } from '../components/FlipCard'
+import { nextRatingDue } from '../lib/testday'
 import { cardStatsFor } from '../lib/cardStats'
 import { usePersonalImage } from '../lib/personal'
 import { setPhoto } from '../lib/photos'
@@ -95,6 +96,8 @@ function PlayerSide({ wide, onTestDay }: { wide: boolean; onTestDay?: () => void
   const bg = usePersonalImage('card.jpg')
   const me = useProfile()
   const stats = cardStatsFor(me)
+  const due = nextRatingDue(me.ratings)
+  const todayIso = new Date().toLocaleDateString('en-CA')
   const [, setVersion] = useState(0)
   const [cropping, setCropping] = useState<Blob | null>(null)
   const [openEntry, setOpenEntry] = useState<HistoryEntry | null>(null)
@@ -110,10 +113,10 @@ function PlayerSide({ wide, onTestDay }: { wide: boolean; onTestDay?: () => void
       <div className={wide ? 'grid grid-cols-[minmax(0,1.1fr)_minmax(0,1fr)] items-start gap-10' : ''}>
       <div>
       <div className="mx-auto mt-4 w-full max-w-[300px]">
-        <PlayerCard p={me} stats={stats} photo={bg} />
+        <FlipCard p={me} stats={stats} photo={bg} />
       </div>
       <p className="mt-4 text-center text-sm text-muted">
-        {me.sample ? t('Example ratings.') : me.ratings ? `Rated ${me.ratings.date}` : t('Not rated yet.')}
+        {me.sample ? t('Example ratings.') : me.ratings ? t('Rated {date}. Tap the card for the results.', { date: new Date(me.ratings.date + 'T12:00').toLocaleDateString(locale(), { day: 'numeric', month: 'short' }) }) : t('Not rated yet.')}
         {' · '}
         <label className="cursor-pointer font-semibold text-ink underline decoration-red decoration-2 underline-offset-4">
           {t('Change photo')}
@@ -122,7 +125,7 @@ function PlayerSide({ wide, onTestDay }: { wide: boolean; onTestDay?: () => void
         </label>
       </p>
       {cropping && <CropSheet file={cropping} title={t('Your card photo')} onCancel={() => setCropping(null)} onDone={(b) => { setCropping(null); void setPhoto('card', b) }} />}
-      {onTestDay && <Button block className="mt-4" onClick={onTestDay}>{me.ratings ? t('New rating session') : t('Start rating session')}</Button>}
+      {onTestDay && <Button block className="mt-4" onClick={onTestDay}>{!me.ratings ? t('Start rating session') : due && due <= todayIso ? t('Rating session due: start') : t('New rating session')}</Button>}
       <SectionHead title={t('Body')} /><BodyPanel />
 
       </div>

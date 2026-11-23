@@ -30,7 +30,9 @@ function useWakeLock(active: boolean) {
   }, [active])
 }
 
-export function PlayerView({ session, player, settings, onExit }: { session: Session; player: Player; settings: Settings; onExit: () => void }) {
+export function PlayerView({ session: planned, player, settings, onExit }: { session: Session; player: Player; settings: Settings; onExit: () => void }) {
+  // the plan as it is now: exercises added, swapped, moved or paired in the Plan sheet count (step indexes point into it)
+  const session = player.getSession() ?? planned
   const st = useSyncExternalStore(player.subscribe, player.getState)
   useEffect(() => { player.start(); return () => player.stop() }, [player])
   useWakeLock(!st.finished)
@@ -66,11 +68,12 @@ export function PlayerView({ session, player, settings, onExit }: { session: Ses
     at += x.seconds
   })
   const prevPair = isRest ? st.steps[st.i - 1]?.pair : undefined
-  // The rest after an exercise's last set (or a superset's last round): log its sets now, while the numbers are fresh.
+  // The rest after an exercise's last set: log its sets now, while the numbers are fresh. In a superset each exercise is
+  // asked for after its own last round (pull-ups 3 sets, bench 4: pull-ups after round 3, bench after round 4).
   const prevWork = isRest ? st.steps[st.i - 1] : undefined
-  const finished = isRest && prevWork && step.round === step.rounds
+  const finished = isRest && prevWork
     ? [...new Set(st.steps.filter((x) => x.type === 'work' && (prevWork.pair ? x.pair?.[0] === prevWork.pair[0] : x.blockIdx === prevWork.blockIdx)).map((x) => x.blockIdx))]
-        .map((bi) => session.blocks[bi]).filter((b) => b && loggable(b))
+        .map((bi) => session.blocks[bi]).filter((b) => b && (b.rounds || 1) === step.round && loggable(b))
     : []
   const live = finished.length ? liveLifts(st.startedAt) : []
   const doneLogging = finished.length > 0 && finished.every((b) => live.some((l) => l.name === b.name))
@@ -111,9 +114,21 @@ export function PlayerView({ session, player, settings, onExit }: { session: Ses
           <span aria-hidden className="shrink-0 font-display">{doneLogging ? '✓' : '›'}</span>
         </button>
       )}
-      <div className="min-h-24 rounded-[20px] bg-surface p-4">
-        {isRest ? (restQuote ? <QuoteCard text={restQuote} /> : <p className="m-0">{t('Breathe. Walk it off. Sip water.')}</p>) : <p className="m-0">{step.how}</p>}
-      </div>
+      {isRest ? (
+        <div className="min-h-24 rounded-[20px] bg-surface p-4">
+          {restQuote ? <QuoteCard text={restQuote} /> : <p className="m-0">{t('Breathe. Walk it off. Sip water.')}</p>}
+        </div>
+      ) : (
+        // the how-to opens this exercise's video instructions (3D demo and your own link)
+        <button aria-haspopup="dialog" aria-label={t('{name}: how-to and video', { name: step.name.replace(/\s*\([^)]*\)/g, '') })} onClick={() => setInfo(st.i)}
+          className="block min-h-24 w-full rounded-[20px] bg-surface p-4 text-left transition-transform duration-150 active:scale-[0.98]">
+          {step.how && <span className="block">{step.how}</span>}
+          <span className="mt-2 flex items-center gap-1.5 text-sm font-semibold text-[var(--red-ink)]">
+            <svg viewBox="0 0 24 24" className="h-4 w-4" fill="currentColor" aria-hidden="true"><path d="M8 5.5v13a1 1 0 0 0 1.5.86l10.4-6.5a1 1 0 0 0 0-1.72L9.5 4.64A1 1 0 0 0 8 5.5Z" /></svg>
+            {t('Watch how')}
+          </span>
+        </button>
+      )}
       {up
         ? <button aria-haspopup="dialog" onClick={() => setInfo(upIdx)} className="mt-3 mb-4 flex w-full items-center justify-between gap-3 rounded-[20px] bg-surface-2 px-4 py-3 text-left transition-transform duration-150 active:scale-[0.98]">
             <span className="shrink-0 whitespace-nowrap text-sm text-muted">{t('Up next')}</span>
@@ -174,7 +189,13 @@ export function PlayerView({ session, player, settings, onExit }: { session: Ses
           <span className="min-w-0 truncate">{step.name.replace(/\s*\([^)]*\)/g, '')} · {step.round}/{step.rounds}</span>
           <span className="tabular-nums">{fmtTime(st.remainingMs / 1000)}</span>
         </div>
-        {st.cue && (
+        {typeof st.cue === 'number' && (
+          <div key={st.cueKey} className="slam flex flex-1 flex-col items-center justify-center text-center">
+            <div className="font-display text-[clamp(10rem,60vw,18rem)] leading-[.8] tabular-nums">{st.cue}</div>
+            <div className="mt-6 font-display text-sm uppercase tracking-wider opacity-90">{st.cue % 2 === 0 ? t('Even · pass it back first time') : t('Odd · turn and go')}</div>
+          </div>
+        )}
+        {(st.cue === 'left' || st.cue === 'right') && (
           <div key={st.cueKey} className="slam flex flex-1 flex-col items-center justify-center text-center">
             <svg viewBox="0 0 24 24" className="h-[min(70vw,300px)] w-[min(70vw,300px)]" fill="none" stroke="#fff" strokeWidth="3.2" strokeLinecap="round" strokeLinejoin="round"
               style={{ transform: st.cue === 'right' ? 'scaleX(-1)' : undefined }}>

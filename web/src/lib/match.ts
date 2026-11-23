@@ -2,7 +2,7 @@
 // and the times that decide when the review opens (supabase/migrations/0009_match_day.sql sends the reminders).
 import { load, save } from './storage'
 import { todayIndex, type Game } from './weekplan'
-import type { Position } from './profile'
+import { familyOf, type Position } from './profile'
 import type { CardStats } from '../components/PlayerCard'
 
 export type MatchReview = {
@@ -59,7 +59,7 @@ export const resultOf = (m: Pick<MatchReview, 'us' | 'them'>): Result => (m.us >
 // (a full futsal game is a full game, not 40 of 90). Each extra contribution adds a little less, so a 10 is rare.
 // The result and your first touch move it a little. Calibrated to sports apps: a goal and an assist in a win is about 7.6,
 // a hat-trick with chances made around 9.5. Your own rating and how tiring it was don't change it.
-const WEIGHTS: Record<Position, { goal: number; assist: number; key: number; dribble: number; duel: number; cleanSheet: number }> = {
+const WEIGHTS: Record<'winger' | 'striker' | 'midfielder' | 'defender', { goal: number; assist: number; key: number; dribble: number; duel: number; cleanSheet: number }> = {
   striker: { goal: 0.8, assist: 0.55, key: 0.15, dribble: 0.08, duel: 0.08, cleanSheet: 0 },
   winger: { goal: 0.8, assist: 0.6, key: 0.16, dribble: 0.1, duel: 0.08, cleanSheet: 0 },
   midfielder: { goal: 0.9, assist: 0.6, key: 0.18, dribble: 0.09, duel: 0.1, cleanSheet: 0.25 },
@@ -67,7 +67,8 @@ const WEIGHTS: Record<Position, { goal: number; assist: number; key: number; dri
 }
 const SOFT = 8 // diminishing returns: raw 1.4 -> 1.3, raw 3.7 -> 3.0, never more than 8
 export function matchRating(m: Omit<MatchReview, 'rating' | 'savedAt' | 'date' | 'moments' | 'self' | 'tiring'>): number {
-  const w = WEIGHTS[m.position] ?? WEIGHTS.midfielder
+  const fam = familyOf(m.position)
+  const w = WEIGHTS[fam === 'goalkeeper' ? 'defender' : fam] ?? WEIGHTS.midfielder
   const length = clamp(gameLength(m), 10, 120)
   const minutes = clamp(m.minutes || 0, 1, length)
   let raw = m.goals * w.goal + m.assists * w.assist + m.keyPasses * w.key + m.dribbles * w.dribble + m.duels * w.duel
@@ -77,7 +78,7 @@ export function matchRating(m: Omit<MatchReview, 'rating' | 'savedAt' | 'date' |
   const res = resultOf(m)
   r += res === 'W' ? 0.3 : res === 'L' ? -0.3 : 0
   if (m.them === 0) r += w.cleanSheet
-  else if (m.position === 'defender') r -= 0.12 * Math.max(0, m.them - 1)
+  else if (fam === 'defender' || fam === 'goalkeeper') r -= 0.12 * Math.max(0, m.them - 1)
   if (minutes < length * 0.22 && plus === 0) r = Math.min(r, 6.3) // a quiet cameo stays around 6
   return Math.round(clamp(r, 3, 10) * 10) / 10
 }

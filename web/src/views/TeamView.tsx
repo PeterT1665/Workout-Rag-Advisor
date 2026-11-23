@@ -1,4 +1,6 @@
 import { useCallback, useEffect, useState } from 'react'
+import { SocialButtons, SocialsSheet } from '../components/SocialsSheet'
+import { SOCIALS, hasSocials } from '../lib/socials'
 import { Button, Title } from '../components/ui'
 import { FlameIcon } from '../components/icons'
 import { Sheet } from '../components/Sheet'
@@ -68,6 +70,7 @@ function TeamSignedIn({ streak, onInvite }: { streak: Streak; onInvite?: () => v
   const [urls, setUrls] = useState<Record<string, string>>(urlMemo)
   const [open, setOpen] = useState<TeamProfile | null>(null)
   const [renaming, setRenaming] = useState(false)
+  const [socials, setSocials] = useState(false)
   const [offline, setOffline] = useState(false)
 
   const refresh = useCallback(async () => {
@@ -109,6 +112,11 @@ function TeamSignedIn({ streak, onInvite }: { streak: Streak; onInvite?: () => v
         </div>
         <button onClick={() => setRenaming(true)} className="min-h-10 shrink-0 rounded-full bg-surface-2 px-3 text-xs font-semibold">{t('Edit')}</button>
       </div>
+      <button onClick={() => setSocials(true)} className="mt-3 flex min-h-11 w-full items-center justify-between rounded-2xl bg-surface px-4 text-left text-sm active:scale-[0.99]">
+        <span><span className="font-semibold">{t('Your socials')}</span> <span className="text-muted">{hasSocials(mine.socials) ? Object.keys(mine.socials ?? {}).map((k) => SOCIALS.find((x) => x.id === k)?.label).filter(Boolean).join(', ') : t('Add Instagram, WhatsApp and more so friends can message you')}</span></span>
+        <span aria-hidden="true" className="text-muted">›</span>
+      </button>
+      {socials && <SocialsSheet current={mine.socials ?? {}} onClose={() => setSocials(false)} onSaved={() => { setSocials(false); void refresh() }} />}
 
       {newFriend !== null && (
         <section className="rise mt-6 flex items-center gap-3 rounded-[24px] border border-red/50 bg-surface p-4" aria-live="polite">
@@ -357,6 +365,7 @@ function FriendSheet({ p, photo, you, onClose, onRemove }: { p: TeamProfile; pho
           <Stat label={you ? t('You') : a.online ? t('Online') : t('Seen')} value={you ? '—' : a.online ? '●' : a.label} />
         </div>
         {!p.card && <p className="m-0 mt-3 text-center text-sm text-muted">{t('Not rated yet.')}</p>}
+        {!you && <SocialButtons socials={p.socials} />}
         <div className="mt-5 flex gap-3">
           {!you && <Button variant="ghost" className="flex-1 bg-surface-2" onClick={onRemove}>{t('Remove friend')}</Button>}
           <Button className="flex-1" onClick={onClose}>{t('Close')}</Button>

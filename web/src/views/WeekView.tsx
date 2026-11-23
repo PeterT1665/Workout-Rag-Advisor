@@ -96,7 +96,7 @@ export function WeekView({ today, games, sessions, library, changes, onChange, o
     <main className={wide ? 'px-10 pt-10 pb-12' : 'mx-auto max-w-xl px-4 pt-[max(20px,var(--sat))] pb-32'}>
       <div className="flex items-center justify-between gap-3">
         <Title>{t('This week')}</Title>
-        {onCoach && <button onClick={onCoach} className="min-h-10 shrink-0 rounded-full bg-surface-2 px-4 font-display text-xs uppercase text-ink active:scale-95">{t('Coach')}</button>}
+        {onCoach && <button onClick={onCoach} className="min-h-10 shrink-0 rounded-full bg-surface-2 px-4 font-display text-xs uppercase text-ink active:scale-95">{t('AI coach')}</button>}
       </div>
       <div className={wide ? 'mt-2 grid grid-cols-[minmax(0,1fr)_minmax(0,1.2fr)] gap-10' : ''}>
       <div>

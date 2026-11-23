@@ -1,7 +1,7 @@
 import { useLayoutEffect, useRef, useState, type ReactNode } from 'react'
 import { Button, Panel, Screen, Title, TopBar } from '../components/ui'
 import { FlameIcon } from '../components/icons'
-import { POSITIONS, useProfile, type Position } from '../lib/profile'
+import { POSITIONS, roleOf, useProfile, type Position } from '../lib/profile'
 import { BAND_COLOR, gameLength, lastLength, loadMatches, matchRating, ratingBand, resultOf, resultStreaks, saveMatch, type MatchReview as Review } from '../lib/match'
 import { locale, t } from '../i18n'
 
@@ -50,7 +50,7 @@ export function MatchReview({ date, onDone }: { date: string; onDone: () => void
   const me = useProfile()
   const old = loadMatches().find((m) => m.date === date)
   const [m, setM] = useState<Omit<Review, 'rating' | 'savedAt'>>(() => old ?? {
-    date, us: 0, them: 0, minutes: lastLength(), length: lastLength(), position: me.positions[0] ?? 'midfielder',
+    date, us: 0, them: 0, minutes: lastLength(), length: lastLength(), position: me.positions[0] ?? 'cm',
     goals: 0, assists: 0, dribbles: 0, keyPasses: 0, duels: 0, firstTouch: 6, tiring: 6, self: 6, moments: '',
   })
   const [saved, setSaved] = useState<Review | null>(null)
@@ -92,8 +92,8 @@ export function MatchReview({ date, onDone }: { date: string; onDone: () => void
         <Counter label={t('Minutes played')} value={Math.min(m.minutes, length)} of={length} step={5} max={length} onChange={(v) => set({ minutes: v })} />
         <div className="flex flex-wrap gap-2 py-1.5" role="radiogroup" aria-label={t('Position played')}>
           {POSITIONS.map((p) => (
-            <button key={p.id} type="button" role="radio" aria-checked={m.position === p.id} onClick={() => set({ position: p.id as Position })}
-              className={`min-h-10 rounded-full px-4 text-sm font-semibold ${m.position === p.id ? 'bg-red text-on-red' : 'bg-surface-2'}`}>{p.label}</button>
+            <button key={p.id} type="button" role="radio" aria-checked={roleOf(m.position) === p.id} onClick={() => set({ position: p.id as Position })}
+              className={`min-h-10 rounded-full px-4 text-sm font-semibold ${roleOf(m.position) === p.id ? 'bg-red text-on-red' : 'bg-surface-2'}`}>{p.label}</button>
           ))}
         </div>
       </Section>
@@ -142,7 +142,7 @@ export function MatchReport({ m, onDone, onEdit, fresh = false }: { m: Review; o
   return (
     <Screen className="pb-10">
       <TopBar left={<Title>{t('Match report')}</Title>} right={<Button variant="ghost" size="sm" onClick={onDone}>{t('Done')}</Button>} />
-      <p className="m-0 text-sm text-muted">{fmtDay(m.date)} · {POSITIONS.find((p) => p.id === m.position)?.label}</p>
+      <p className="m-0 text-sm text-muted">{fmtDay(m.date)} · {POSITIONS.find((p) => p.id === roleOf(m.position))?.label}</p>
       <section className={`mt-5 flex items-center gap-5 rounded-[22px] bg-surface p-5 ${fresh ? 'rise' : ''}`}>
         <RatingBadge value={m.rating} />
         <div className="min-w-0">
