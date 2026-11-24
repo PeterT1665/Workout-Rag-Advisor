@@ -98,6 +98,31 @@ export function toCardStats(saved: Ratings | undefined): CardStats | null {
 // session before the last, which is the same thing until the third session.)
 export const startingPoint = (p: { ratings?: Ratings; baseRatings?: Ratings; prevRatings?: Ratings }) => p.baseRatings ?? p.prevRatings
 
+// The result that earns a rating (the other way round from score): null when that rating can't be reached on the test.
+// Timed tests go on past their best anchor (10 rating points a second), counted ones stop at their top anchor.
+export function resultForRating(stat: Stat, rating: number): number | null {
+  const test = TESTS.find((x) => x.stat === stat)!
+  const pts = [...test.anchors].sort((a, b) => a[0] - b[0])
+  const lowerIsBetter = pts[0][1] > pts[pts.length - 1][1]
+  const best = lowerIsBetter ? pts[0][1] : pts[pts.length - 1][1], worst = lowerIsBetter ? pts[pts.length - 1][1] : pts[0][1]
+  if (rating > best) return lowerIsBetter ? pts[0][0] - (rating - pts[0][1]) / 10 : null
+  if (rating <= worst) return lowerIsBetter ? pts[pts.length - 1][0] : pts[0][0]
+  for (let i = 1; i < pts.length; i++) {
+    const [xa, ya] = pts[i - 1], [xb, yb] = pts[i]
+    if (Math.min(ya, yb) <= rating && rating <= Math.max(ya, yb)) return xa + ((rating - ya) / (yb - ya)) * (xb - xa)
+  }
+  return null
+}
+// A target as the player reads it: "3.23 s", "6 of 10", "19 clean", "247 cm".
+export function resultText(stat: Stat, value: number): string {
+  if (stat === 'PAC' || stat === 'DEF') return `${value.toFixed(2)} s`
+  if (stat === 'DRI') return `${value.toFixed(1)} s`
+  if (stat === 'SHO') return t('{n} of 10', { n: Math.round(value) })
+  if (stat === 'PAS') return t('{n} clean', { n: Math.round(value) })
+  return `${Math.round(value)} cm`
+}
+export const STAT_NAMES = (): Record<Stat, string> => ({ PAC: t('Pace'), SHO: t('Shooting'), PAS: t('Passing'), DRI: t('Dribbling'), DEF: t('Defending'), PHY: t('Physical') })
+
 // What a person can physically do in each test (research 24/11, rating-research.md section 3). Beyond lo/hi: impossible, the
 // result is refused. Past proofBelow / proofAbove: world-class, so the player is asked for a photo and a friend to check it.
 export type Limits = { lo: number; hi: number; proofBelow?: number; proofAbove?: number }

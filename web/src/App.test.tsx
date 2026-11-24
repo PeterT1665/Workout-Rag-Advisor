@@ -237,6 +237,7 @@ describe('app', () => {
     click(/^left$/i)
     click(/^Next$/) // level
     click(/^Next$/) // goals
+    click(/^Next$/) // card goal
     click(/^Next$/) // games
     click(/^Saturday$/)
     click(/^Next$/) // gym
@@ -286,6 +287,23 @@ describe('app', () => {
     await showing('More')
     fireEvent.click(box().getByRole('button', { name: "Let's go" }))
     expect(screen.queryByRole('dialog')).toBeNull()
+  })
+
+  test('How rating works: the guide, the goal window (gold 75 by default) and the full table', () => {
+    render(<App />)
+    fireEvent.click(screen.getByRole('button', { name: /^Record$/ }))
+    click(/^How rating works$/)
+    expect(screen.getByRole('dialog', { name: 'How your rating works' })).toBeTruthy()
+    expect(screen.getByText('75 is an average pro.')).toBeTruthy()
+    click(/What does my rating mean\?/)
+    expect(screen.getByText(/Do a rating session first/)).toBeTruthy() // not rated yet
+    expect(screen.getByRole('button', { name: 'Gold 75' }).getAttribute('aria-pressed')).toBe('true')
+    click(/^Top 85$/)
+    expect(getProfile().goal).toBe(85)
+    fireEvent.click(screen.getAllByRole('button', { name: 'Close' }).at(-1)!) // the window's own Close
+    click(/^Full table$/)
+    expect(screen.getByRole('dialog', { name: 'Full table' })).toBeTruthy()
+    expect(screen.getByText('3.11 s')).toBeTruthy() // the 20 m sprint that earns a 75
   })
 
   test('rating session: three tests rate the player, the card is revealed and kept', () => {

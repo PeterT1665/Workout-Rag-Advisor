@@ -27,6 +27,7 @@ export type Profile = {
   gym?: number // gym sessions a week (default 3)
   sample?: boolean // the demo's sample player: history is reseeded daily
   ratings?: Ratings // latest rating session (test day)
+  goal?: number // the overall rating the player is working toward (default 75: gold)
   baseRatings?: Ratings // the first rating session: the starting point the progress arrows measure from
   prevRatings?: Ratings // old profiles only: the session before the last (read as the starting point; no longer written)
   heightCm?: number

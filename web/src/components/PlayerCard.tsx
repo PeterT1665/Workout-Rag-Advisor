@@ -27,8 +27,9 @@ export const OVERALL_WEIGHTS: Record<string, Record<(typeof CARD_STATS)[number],
   defender: { PAC: .20, SHO: .05, PAS: .15, DRI: .05, DEF: .30, PHY: .25 },
 }
 const GROUP: Record<string, string> = { striker: 'striker', winger: 'winger', am: 'midfielder', cm: 'midfielder', dm: 'midfielder', midfielder: 'midfielder', cb: 'defender', fb: 'defender', defender: 'defender' }
+export const positionGroup = (positions?: readonly string[]) => GROUP[positions?.[0] ?? ''] ?? null
 export function overall(s: CardStats, positions?: readonly string[]) {
-  const w = OVERALL_WEIGHTS[GROUP[positions?.[0] ?? ''] ?? '']
+  const w = OVERALL_WEIGHTS[positionGroup(positions) ?? '']
   let sum = 0, total = 0
   for (const k of CARD_STATS) { const v = s[k]; if (typeof v === 'number') { const x = w ? w[k] : 1; sum += v * x; total += x } }
   return total ? Math.round(sum / total) : 0

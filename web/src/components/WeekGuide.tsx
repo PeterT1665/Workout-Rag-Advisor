@@ -1,22 +1,17 @@
 import { useState } from 'react'
 import { Sheet } from './Sheet'
-import { Button, Pill } from './ui'
+import { Button } from './ui'
 import { DAY_ABBR, DAYS, FOCUS_LABEL, matchdayLabel, type Game, type WeekPlan } from '../lib/weekplan'
 import { t } from '../i18n'
 
-// The rules the planner follows, and where each came from (docs/training-references.md).
+// The rules the planner follows (where each came from: docs/training-references.md).
 const RULES = () => [
-  { title: t('Every gym day has a job'), body: t('Set by how far it is from the game: legs at MD-4 or earlier, core & injury prevention at MD-3, upper body power at MD-2, a short activation at MD-1.'), from: [1] },
-  { title: t('Hard days hard, easy days easy'), body: t('The hardest day (MD-4) puts high-intensity football, legs and speed together. The day after stays light.'), from: [2] },
-  { title: t('Fresh legs for the game'), body: t('No heavy legs in the last three days. The day before is a 20-minute activation (isometric holds, a few fast jumps) or rest, never a hard session.'), from: [1, 2] },
-  { title: t('Recover first'), body: t('The day after a game is for recovery (mobility, hips, hamstrings). Training starts again at MD+2.'), from: [1, 2] },
-  { title: t('Games carry the football load'), body: t('1 game: 2 football sessions. 2 games: 1. 3 games: none, just gym and recovery. Busy weeks drop heavy legs.'), from: [] },
+  { title: t('Every gym day has a job'), body: t('Set by how far it is from the game: legs at MD-4 or earlier, core & injury prevention at MD-3, upper body power at MD-2, a short activation at MD-1.') },
+  { title: t('Hard days hard, easy days easy'), body: t('The hardest day (MD-4) puts high-intensity football, legs and speed together. The day after stays light.') },
+  { title: t('Fresh legs for the game'), body: t('No heavy legs in the last three days. The day before is a 20-minute activation (isometric holds, a few fast jumps) or rest, never a hard session.') },
+  { title: t('Recover first'), body: t('The day after a game is for recovery (mobility, hips, hamstrings). Training starts again at MD+2.') },
+  { title: t('Games carry the football load'), body: t('1 game: 2 football sessions. 2 games: 1. 3 games: none, just gym and recovery. Busy weeks drop heavy legs.') },
 ]
-const REFERENCES = () => [
-  { n: 1, who: t('A pro footballer (Sarmiento)'), what: t('His gym week around a Saturday game: a job for every day. Taught us MD-specific gym days and the match-eve activation.') },
-  { n: 2, who: t('"Train like a Premier League player"'), what: t('Team training + legs + speed on MD-4, a light MD-3. Taught us to stack the hard day and keep the next day easy.') },
-]
-
 const KIND_LABEL = (): Record<string, string> => ({ game: t('Game'), football: t('Football'), recovery: t('Recovery'), cheer: 'Cheer' }) // i18n-ignore: old cheer mode
 
 export function WeekGuide({ plan, games }: { plan: WeekPlan; games: Game[] }) {
@@ -77,18 +72,8 @@ export function WeekGuide({ plan, games }: { plan: WeekPlan; games: Game[] }) {
             <ul className="m-0 flex list-none flex-col gap-3 p-0">
               {RULES().map((r) => (
                 <li key={r.title}>
-                  <p className="m-0 font-semibold">{r.title} {r.from.map((n) => <Pill key={n} className="ml-1 align-middle">{t('Ref {n}', { n })}</Pill>)}</p>
+                  <p className="m-0 font-semibold">{r.title}</p>
                   <p className="m-0 mt-0.5 text-sm text-muted">{r.body}</p>
-                </li>
-              ))}
-            </ul>
-
-            <h3 className="m-0 mt-6 mb-2 font-display text-sm uppercase text-muted">{t('Learned from')}</h3>
-            <ul className="m-0 flex list-none flex-col gap-2 p-0">
-              {REFERENCES().map((r) => (
-                <li key={r.n} className="rounded-2xl bg-surface-2 px-3 py-2.5 text-sm">
-                  <strong>{t('Ref {n}', { n: r.n })}: {r.who}</strong>
-                  <span className="mt-0.5 block text-muted">{r.what}</span>
                 </li>
               ))}
             </ul>

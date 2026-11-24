@@ -30,6 +30,10 @@ test('new player: tour, one question per screen, building your week, the plan', 
   click(/^Next$/) // level: optional
   click(/Faster/); click(/Stronger/); click(/Stay injury-free/) // up to 2: the oldest goes
   click(/^Next$/)
+  expect(screen.getByText('Your card goal')).toBeTruthy()
+  expect(screen.getByRole('button', { name: /Gold · 75/ }).getAttribute('aria-pressed')).toBe('true') // everyone works toward gold
+  click(/Top · 85/)
+  click(/^Next$/)
   click(/^Wednesday$/); click(/^Sunday$/); click(/^Sunday/) // second tap: casual
   click(/^Next$/)
   click(/^New/) // gym experience
@@ -41,7 +45,7 @@ test('new player: tour, one question per screen, building your week, the plan', 
   act(() => { vi.advanceTimersByTime(6000) })
   click(/Let's train/)
   expect(onDone).toHaveBeenCalledWith(
-    expect.objectContaining({ name: 'Alex', number: 9, positions: ['striker', 'cm'], foot: 'right', goals: ['strength', 'injury-free'], gymExp: 'new', sample: false,
+    expect.objectContaining({ name: 'Alex', number: 9, positions: ['striker', 'cm'], foot: 'right', goals: ['strength', 'injury-free'], goal: 85, gymExp: 'new', sample: false,
       injuries: [expect.objectContaining({ part: 'hamstrings', severity: 'moderate', tissue: 'muscle' })] }),
     [{ day: 2, kind: 'competitive' }, { day: 6, kind: 'casual' }],
   )
@@ -62,7 +66,7 @@ test('answers are kept after every step: a closed app picks up where it stopped'
 test('edit player: no tour or injuries, colours at the end', () => {
   const onDone = vi.fn()
   render(<Onboarding initial={{ name: 'Peter', number: 7, positions: ['defender'], foot: 'left', accent: 'red', idol: '' }} onDone={onDone} onCancel={vi.fn()} />)
-  for (let i = 0; i < 8; i++) click(/^Next$/)
+  for (let i = 0; i < 9; i++) click(/^Next$/)
   expect(screen.getByText('Your colours')).toBeTruthy()
   click(/^Done/)
   expect(onDone.mock.calls[0][0]).not.toHaveProperty('injuries')

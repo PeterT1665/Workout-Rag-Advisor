@@ -1,6 +1,7 @@
 import { Button, Panel, SectionHead, Title } from '../components/ui'
 import { FlipCard } from '../components/FlipCard'
 import { nextRatingDue, startingPoint } from '../lib/testday'
+import { RatingGuide } from '../components/RatingGuide'
 import { cardStatsFor } from '../lib/cardStats'
 import { usePersonalImage } from '../lib/personal'
 import { setPhoto } from '../lib/photos'
@@ -100,6 +101,7 @@ function PlayerSide({ wide, onTestDay }: { wide: boolean; onTestDay?: () => void
   const todayIso = new Date().toLocaleDateString('en-CA')
   const [, setVersion] = useState(0)
   const [cropping, setCropping] = useState<Blob | null>(null)
+  const [guide, setGuide] = useState(false)
   const [openEntry, setOpenEntry] = useState<HistoryEntry | null>(null)
   const all = loadHistory()
   const history = all.slice().reverse()
@@ -132,6 +134,8 @@ function PlayerSide({ wide, onTestDay }: { wide: boolean; onTestDay?: () => void
         </p>
       )}
       {onTestDay && <Button block className="mt-4" onClick={onTestDay}>{!me.ratings ? t('Start rating session') : due && due <= todayIso ? t('Rating session due: start') : t('New rating session')}</Button>}
+      <Button block variant="ghost" className="mt-2 bg-black text-white ring-1 ring-white/15 hover:bg-black active:bg-black" onClick={() => setGuide(true)}>{t('How rating works')}</Button>
+      {guide && <RatingGuide onClose={() => setGuide(false)} />}
       <SectionHead title={t('Body')} /><BodyPanel />
 
       </div>

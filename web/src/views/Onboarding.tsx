@@ -18,8 +18,8 @@ import { tr } from '../i18n/rich'
 // Make your player. New players: a 3-screen tour, then one question per screen (what the planner needs), a short
 // "Building your week" moment and the plan it made. Edit player: the same questions plus colours and role model.
 // Answers are kept on the phone after every step, so a closed app picks up where it stopped.
-const NEW_STEPS = ['tour', 'name', 'position', 'foot', 'level', 'goals', 'week', 'gym', 'train', 'injuries'] as const
-const EDIT_STEPS = ['name', 'position', 'foot', 'level', 'goals', 'week', 'gym', 'train', 'style'] as const
+const NEW_STEPS = ['tour', 'name', 'position', 'foot', 'level', 'goals', 'card', 'week', 'gym', 'train', 'injuries'] as const
+const EDIT_STEPS = ['name', 'position', 'foot', 'level', 'goals', 'card', 'week', 'gym', 'train', 'style'] as const
 type StepId = (typeof NEW_STEPS)[number] | (typeof EDIT_STEPS)[number]
 type InjuryRow = { part: Part; sev: Severity; now: boolean }
 const DRAFT = 'onboarding:draft'
@@ -182,6 +182,15 @@ export function Onboarding({ initial, initialGames = [], welcome = false, fresh 
             <div className="flex flex-col gap-2">
               {([['speed', t('Faster and more explosive')], ['strength', t('Stronger')], ['stamina', t('More stamina')], ['skills', t('Better on the ball')], ['injury-free', t('Stay injury-free')]] as [Goal, string][]).map(([g, label]) => (
                 <Row key={g} on={!!p.goals?.includes(g)} onClick={() => set({ goals: toggle(p.goals, g, 2) })} title={label} />
+              ))}
+            </div>
+          </Step>
+        )}
+        {id === 'card' && (
+          <Step title={t('Your card goal')} hint={t('Where do you want your card? You can change it any time in Record, How rating works.')}>
+            <div className="flex flex-col gap-2">
+              {([[65, t('Silver · 65'), t('A solid club player')], [75, t('Gold · 75'), t('An average pro. Recommended.')], [85, t('Top · 85'), t('A top-flight standout')]] as [number, string, string][]).map(([g, label, hint]) => (
+                <Row key={g} on={(p.goal ?? 75) === g} onClick={() => set({ goal: g })} title={label} hint={hint} />
               ))}
             </div>
           </Step>
