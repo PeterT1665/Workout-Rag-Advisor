@@ -4,6 +4,7 @@ import data from '../data/library.json'
 import { load, save } from './storage'
 import type { Block, Session } from './types'
 import { mark, t } from '../i18n'
+import { demoFor } from './demo3d/catalog'
 
 export type Sport = 'football' | 'gym' | 'home' | 'mobility'
 export type Exercise = Block & { id: string; sport: Sport; category: string; positions?: string[]; mine?: boolean } // mine: the player's own (lib/myExercises)
@@ -95,6 +96,8 @@ const PHOTO_GROUP: Record<string, string> = {
   mobility: 'stretch', cooldown: 'stretch',
 }
 export const drillPhoto = (category?: string) => `${import.meta.env.BASE_URL}drill-img/${PHOTO_GROUP[category ?? ''] ?? 'run'}.jpg`
+// A drill's picture: a still of its 3D demo (public/demo-still, made by scripts/demo-stills.mjs); null when it has none.
+export const drillStill = (name?: string) => { const d = name ? demoFor(name) : null; return d ? `${import.meta.env.BASE_URL}demo-still/${d.move}.jpg` : null }
 export const newSessionId = () => `my-${Date.now().toString(36)}`
 export const templateFor = (id: string): Template | undefined => TEMPLATES.find((t) => t.id === id) ?? loadMySessions().find((t) => t.id === id)
 

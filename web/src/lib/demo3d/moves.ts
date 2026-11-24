@@ -177,7 +177,7 @@ export const MOVES: Record<string, Move> = {
     dur: 1.6, cam: { yaw: 75 }, props: [{ kind: 'kettlebell' }],
     keys: [[0, hinge(65, 85, 30, { sh: 35 })], [0.45, both({ sh: 95, shAbd: 5 })], [0.6, both({ sh: 90, shAbd: 5 })]],
   },
-  'iso-pull': { dur: 4, hold: true, cam: { yaw: 70 }, props: [{ kind: 'barbell' }], keys: [[0, hinge(22, 40, 30)]] },
+  'iso-pull': { dur: 4, hold: true, cam: { yaw: 35, zoom: 1.35, tilt: 12 }, props: [{ kind: 'barbell' }, { kind: 'rack' }], keys: [[0, hinge(22, 40, 30)]] },
   'sl-rdl': {
     dur: 3.4, anchor: 'L', cam: { yaw: 80 },
     keys: [[0, { L: { knee: 5 }, R: { hip: 10, knee: 20, sh: 10 } }], [0.45, { pitch: 75, spine: 5, L: { hip: 80, knee: 15, sh: 80 }, R: { hip: -5, knee: 0, sh: 80 } }], [0.6, { pitch: 75, spine: 5, L: { hip: 80, knee: 15, sh: 80 }, R: { hip: -5, knee: 0, sh: 80 } }]],

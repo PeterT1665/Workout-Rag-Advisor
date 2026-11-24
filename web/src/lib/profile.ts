@@ -27,7 +27,8 @@ export type Profile = {
   gym?: number // gym sessions a week (default 3)
   sample?: boolean // the demo's sample player: history is reseeded daily
   ratings?: Ratings // latest rating session (test day)
-  prevRatings?: Ratings // the one before, for progress arrows
+  baseRatings?: Ratings // the first rating session: the starting point the progress arrows measure from
+  prevRatings?: Ratings // old profiles only: the session before the last (read as the starting point; no longer written)
   heightCm?: number
   body?: BodyEntry[] // body weight (and body fat, if known) over time, oldest first; private, never on Team
   injuries?: Injury[] // told to the coach; private, never on Team (lib/injuries)

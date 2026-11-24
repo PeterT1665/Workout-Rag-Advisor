@@ -1,9 +1,12 @@
 import { useEffect, useRef, useState } from 'react'
 import { Button, Screen } from '../components/ui'
 import { PlayerCard, overall } from '../components/PlayerCard'
-import { TESTS, WARMUP, ratingsFrom, toCardStats, type Stat, type Test } from '../lib/testday'
+import { TESTS, WARMUP, looksOff, ratingsFrom, startingPoint, toCardStats, type Stat, type Test } from '../lib/testday'
 import { Demo3D } from '../components/Demo3D'
-import { getProfile, setProfile, type Profile } from '../lib/profile'
+import { ACCENTS, getProfile, setProfile, type Profile } from '../lib/profile'
+import { setDayPhoto, useDayPhotos } from '../lib/dayPhotos'
+import { ShareSheet } from './CalendarView'
+import { ratingShare } from '../lib/shareStats'
 import { beep, say, unlockAudio } from '../lib/audio'
 import { loadSettings } from '../lib/storage'
 import { usePersonalImage } from '../lib/personal'
@@ -17,12 +20,15 @@ export function TestDay({ onDone }: { onDone: () => void }) {
   const [warm, setWarm] = useState<number | null>(null) // warm-up step, before the tests
   const [raw, setRaw] = useState<Partial<Record<Stat, number>>>({})
   const [saved, setSaved] = useState<Profile | null>(null)
+  const [verify, setVerify] = useState(false)
+  const photos = useDayPhotos()
   const photo = usePersonalImage('card.jpg')
   const me = getProfile()
 
   const finish = () => {
     const r = ratingsFrom(raw)
-    const next = { ...me, prevRatings: me.ratings, ratings: r }
+    // the first session is the starting point; later ones are measured from it
+    const next = { ...me, baseRatings: startingPoint(me) ?? me.ratings, prevRatings: undefined, ratings: r }
     setProfile(next)
     setSaved(next)
     setI(TESTS.length)
@@ -53,7 +59,8 @@ export function TestDay({ onDone }: { onDone: () => void }) {
   }
 
   if (i === TESTS.length && saved) {
-    const stats = toCardStats(saved.ratings, saved.prevRatings)
+    const stats = toCardStats(saved.ratings)
+    const odd = saved.ratings ? looksOff(saved.ratings) : []
     const ovr = stats ? overall(stats) : null
     const tier = ovr === null ? null : ovr >= 75 ? t('Gold') : ovr >= 65 ? t('Silver') : 'Bronze'
     return (
@@ -64,7 +71,11 @@ export function TestDay({ onDone }: { onDone: () => void }) {
         <p className="mt-6 max-w-[34ch] text-muted">
           {stats ? t('Redo it every week, same day and same warm-up, so the card follows your real progress.') : t('Do at least 3 tests to get rated.')}
         </p>
-        <Button block className="mt-auto" onClick={onDone}>{t('Done')}</Button>
+        {stats && saved.ratings && <Proof date={saved.ratings.date} odd={odd.length > 0} added={!!saved.ratings.proof}
+          onAdded={() => { const next = { ...saved, ratings: { ...saved.ratings!, proof: true } }; setProfile(next); setSaved(next) }}
+          onVerify={() => setVerify(true)} />}
+        {verify && saved.ratings && <ShareSheet item={ratingShare(saved.ratings)} photo={photos[saved.ratings.date]} streak={0} accent={ACCENTS.find((a) => a.id === saved.accent)?.hex ?? '#e01b35'} onClose={() => setVerify(false)} />}
+        <Button block className="mt-6" onClick={onDone}>{t('Done')}</Button>
       </Screen>
     )
   }
@@ -177,5 +188,24 @@ function WarmUp({ step, onStep, onClose, onReady }: { step: number; onStep: (n: 
       </div>
       <Button block className="mt-6" onClick={() => (last ? onReady() : onStep(step + 1))}>{last ? t('Ready: start the tests') : t('Next')}</Button>
     </Screen>
+  )
+}
+
+// After a rating session: a photo of the setup or the result, and a friend to check it. Odd-looking results ask for it
+// more firmly. The photo stays on the phone; "Ask a friend" opens the share sheet with the results picture.
+function Proof({ date, odd, added, onAdded, onVerify }: { date: string; odd: boolean; added: boolean; onAdded: () => void; onVerify: () => void }) {
+  return (
+    <section className="mt-6 w-full max-w-[340px] rounded-[22px] bg-surface p-4 text-left" aria-label={t('Make it count')}>
+      <h2 className="m-0 font-display text-sm uppercase">{odd ? t('Some results look unusual') : t('Make it count')}</h2>
+      <p className="m-0 mt-1.5 text-sm text-muted">{odd ? t('Add a photo and ask a friend to check them, so your card is believed.') : t('A photo of your test and a friend who checks it make your card count with your friends.')}</p>
+      <div className="mt-3 flex gap-2">
+        <label className="flex min-h-11 flex-1 cursor-pointer items-center justify-center rounded-full bg-surface-2 px-3 text-center text-xs font-semibold active:scale-95">
+          {added ? t('Photo added ✓') : t('Add a photo')}
+          <input type="file" accept="image/*" capture="environment" className="sr-only" aria-label={t('Add a photo of your rating session')}
+            onChange={(e) => { const f = e.target.files?.[0]; if (f) void setDayPhoto(date, f).then(onAdded); e.target.value = '' }} />
+        </label>
+        <button onClick={onVerify} className="min-h-11 flex-1 rounded-full bg-red px-3 text-xs font-semibold text-on-red active:scale-95">{t('Ask a friend to verify')}</button>
+      </div>
+    </section>
   )
 }

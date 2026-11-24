@@ -18,13 +18,14 @@ export type Key = [t: number, pose: Pose]
 
 export type PropKind =
   | 'barbell' | 'barbell-back' | 'barbell-front' | 'barbell-hips' | 'dumbbell-hips' | 'dumbbells' | 'dumbbell-R' | 'kettlebell' | 'trapbar' | 'medball' | 'landmine'
-  | 'bench' | 'box' | 'bar' | 'wall' | 'cones' | 'hurdles' | 'hurdle' | 'incline' | 'cable' | 'handle' | 'post' | 'sofa' | 'table' | 'bike' | 'sled' | 'goal' | 'roller' | 'band' | 'step' | 'towel' | 'swissball'
+  | 'bench' | 'box' | 'bar' | 'wall' | 'cones' | 'hurdles' | 'hurdle' | 'incline' | 'cable' | 'handle' | 'post' | 'sofa' | 'table' | 'bike' | 'sled' | 'goal' | 'roller' | 'band' | 'step' | 'towel' | 'swissball' | 'rack'
 export type Prop = { kind: PropKind; at?: Vec; size?: Vec; yaw?: number; hand?: 'L' | 'R' } // hand: held in one hand (landmine); at: a landmine's pivot on the floor
 
 export type Move = {
   dur: number // seconds per loop
   keys: Key[]
   props?: Prop[]
+  still?: number // the card picture's moment in the loop (0–1); default: the most bent key (scripts/demo-stills.mjs)
   ball?: boolean | 'medball' // a football (or a med ball that can leave the hands: throws, slams)
   anchor?: 'feet' | 'L' | 'R' | 'hands' | 'none' // what stays put on the floor (default: both feet)
   contacts?: 'all' | 'feet' | 'back' | 'hands-feet' // which points touch the floor/support (default all)

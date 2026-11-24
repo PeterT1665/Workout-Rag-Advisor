@@ -1,11 +1,11 @@
 import { Button, Panel, SectionHead, Title } from '../components/ui'
 import { FlipCard } from '../components/FlipCard'
-import { nextRatingDue } from '../lib/testday'
+import { nextRatingDue, startingPoint } from '../lib/testday'
 import { cardStatsFor } from '../lib/cardStats'
 import { usePersonalImage } from '../lib/personal'
 import { setPhoto } from '../lib/photos'
 import { CropSheet } from '../components/CropSheet'
-import { useProfile } from '../lib/profile'
+import { setProfile, useProfile } from '../lib/profile'
 import { useState } from 'react'
 import { deleteHistory, loadHistory, type HistoryEntry } from '../lib/storage'
 import { counts, minFor } from '../lib/streak'
@@ -125,6 +125,12 @@ function PlayerSide({ wide, onTestDay }: { wide: boolean; onTestDay?: () => void
         </label>
       </p>
       {cropping && <CropSheet file={cropping} title={t('Your card photo')} onCancel={() => setCropping(null)} onDone={(b) => { setCropping(null); void setPhoto('card', b) }} />}
+      {!me.sample && me.ratings && startingPoint(me) && startingPoint(me)!.date !== me.ratings.date && (
+        <p className="mt-2 mb-0 text-center text-sm text-muted">
+          <button className="font-semibold text-ink underline decoration-red decoration-2 underline-offset-4"
+            onClick={() => setProfile({ ...me, baseRatings: me.ratings, prevRatings: undefined })}>{t('Make this my starting point')}</button>
+        </p>
+      )}
       {onTestDay && <Button block className="mt-4" onClick={onTestDay}>{!me.ratings ? t('Start rating session') : due && due <= todayIso ? t('Rating session due: start') : t('New rating session')}</Button>}
       <SectionHead title={t('Body')} /><BodyPanel />
 

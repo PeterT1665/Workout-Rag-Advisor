@@ -1,7 +1,7 @@
 import { useState, type CSSProperties } from 'react'
 import { motion, useReducedMotion } from 'motion/react'
 import { PlayerCard, SHIELD, finishFor, overall, type CardStats } from './PlayerCard'
-import { TESTS, nextRatingDue } from '../lib/testday'
+import { TESTS, nextRatingDue, startingPoint } from '../lib/testday'
 import type { Profile } from '../lib/profile'
 import { locale, t } from '../i18n'
 
@@ -29,7 +29,7 @@ export function FlipCard({ p, stats, photo }: { p: Profile; stats: CardStats | n
 // The back: every test from the last rating session, the raw result, the rating it gave and the change since the one before.
 export function CardBack({ p, stats }: { p: Profile; stats: CardStats | null }) {
   const f = finishFor(stats ? overall(stats) : null)
-  const r = p.ratings, prev = p.prevRatings
+  const r = p.ratings, prev = startingPoint(p)
   const due = nextRatingDue(r)
   return (
     <div className="@container relative aspect-[0.72] w-full text-left">
@@ -39,7 +39,7 @@ export function CardBack({ p, stats }: { p: Profile; stats: CardStats | null }) 
           <div className="absolute inset-0 bg-[repeating-linear-gradient(55deg,rgba(255,255,255,.18)_0_2px,transparent_2px_16px)] [mask-image:linear-gradient(135deg,#000_0%,transparent_45%)]" />
           <div className="absolute inset-x-[11%] top-[10%] flex flex-col items-center border-b pb-[1.2cqw] text-center" style={{ borderColor: f.line }}>
             <span className="w-full truncate font-display text-[5.2cqw] uppercase leading-none">{t('Rating session')}</span>
-            <span className="mt-[0.8cqw] whitespace-nowrap font-display text-[3.8cqw] opacity-75">{r ? fmtDay(r.date) : '--'}</span>
+            <span className="mt-[0.8cqw] whitespace-nowrap font-display text-[3.8cqw] opacity-75">{r ? fmtDay(r.date) : '--'}{r && prev && prev.date !== r.date ? ` · ${t('vs {date}', { date: fmtDay(prev.date) })}` : ''}</span>
           </div>
           {r && !p.sample ? (
             <div className="absolute inset-x-[11%] top-[21.5%]">
@@ -53,7 +53,7 @@ export function CardBack({ p, stats }: { p: Profile; stats: CardStats | null }) 
                       <span className="block truncate text-[3.7cqw] font-semibold">{test.name}</span>
                       <span className="block font-display text-[4.6cqw] tabular-nums">{raw !== undefined ? `${raw} ${test.unit}` : t('Skipped')}</span>
                     </span>
-                    {diff !== null && diff !== 0 && <span className="shrink-0 font-display text-[3.6cqw] tabular-nums opacity-75">{diff > 0 ? `▲${diff}` : `▼${-diff}`}</span>}
+                    {diff !== null && diff !== 0 && prev !== r && <span className="shrink-0 font-display text-[3.6cqw] tabular-nums opacity-75">{diff > 0 ? `▲${diff}` : `▼${-diff}`}</span>}
                     <span className="w-[9cqw] shrink-0 text-right font-display text-[6.6cqw] tabular-nums leading-none">{score ?? '--'}</span>
                   </div>
                 )

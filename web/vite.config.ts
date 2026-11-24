@@ -37,7 +37,9 @@ export default defineConfig({
       },
       // never cache the API or private photos in the offline cache
       // skipWaiting + clientsClaim: a new version takes over at once, so a reload always shows it
-      workbox: { importScripts: ['push-sw.js'], skipWaiting: true, clientsClaim: true, cleanupOutdatedCaches: true, globPatterns: ['**/*.{js,css,html,svg,png,jpg,woff2}'], globIgnores: ['personal/**', 'og.jpg', 'splash/**'], navigateFallbackDenylist: [/^\/api\//, /^\/personal\//] },
+      workbox: { importScripts: ['push-sw.js'], skipWaiting: true, clientsClaim: true, cleanupOutdatedCaches: true, globPatterns: ['**/*.{js,css,html,svg,png,jpg,woff2}'], globIgnores: ['personal/**', 'og.jpg', 'splash/**', 'demo-still/**'],
+        // card stills (1.3 MB in all): cached when first shown, not all up front
+        runtimeCaching: [{ urlPattern: /\/demo-still\//, handler: 'CacheFirst', options: { cacheName: 'demo-still', expiration: { maxEntries: 200 } } }], navigateFallbackDenylist: [/^\/api\//, /^\/personal\//] },
     }),
   ],
   server: { host: '0.0.0.0', proxy: { '/api': 'http://localhost:8788' } },

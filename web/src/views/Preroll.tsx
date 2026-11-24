@@ -47,6 +47,11 @@ export function Preroll({ session: mine, quote, original, applied, onGo: start, 
         </div>
       )}
 
+      {/* back out before starting (Peter 24/11); the blocked card has its own Back below */}
+      {phase === 'card' && !safe.blocked && (
+        <button onClick={onCancel} className="absolute top-[max(14px,var(--sat))] left-4 z-10 min-h-10 rounded-full bg-white/15 px-4 font-display text-xs uppercase backdrop-blur-md active:scale-95">{t('Back')}</button>
+      )}
+
       {phase === 'card' && safe.blocked && (
         <div className="stagger absolute inset-x-0 bottom-0 mx-auto flex max-w-xl flex-col gap-5 px-5 pb-[max(28px,env(safe-area-inset-bottom))]">
           <h1 style={{ '--i': 1 } as React.CSSProperties} className="m-0 font-display text-[clamp(2rem,9vw,2.8rem)] uppercase leading-[.92]">{t('No training today')}</h1>

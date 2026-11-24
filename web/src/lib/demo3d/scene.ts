@@ -180,6 +180,13 @@ function kitMesh(kind: Prop['kind'], p: Palette, size?: Vec): THREE.Object3D {
     case 'roller': { const r = add(cyl(0.075, 0.45, soft)); r.rotation.z = Math.PI / 2; r.position.y = 0.075; break }
     case 'band': { const b = add(cyl(0.008, 1.2, new THREE.MeshStandardMaterial({ color: p.accent }))); b.rotation.z = Math.PI / 2; break }
     case 'swissball': { const b = add(new THREE.Mesh(new THREE.SphereGeometry(0.33, 28, 20), soft)); b.position.y = 0.33; break }
+    case 'rack': { // a power rack around the bar: four uprights inside the plates, safety pins just above the bar (moved to it each frame)
+      for (const sx of [-1, 1]) for (const sz of [-1, 1]) { const up = add(box(0.06, 2.1, 0.06, metal)); up.position.set(sx * 0.64, 1.05, sz * 0.32) }
+      for (const sx of [-1, 1]) { const top = add(box(0.06, 0.06, 0.7, metal)); top.position.set(sx * 0.64, 2.1, 0) }
+      const pins = [-1, 1].map((sx) => { const pin = add(cyl(0.026, 0.9, metal)); pin.rotation.x = Math.PI / 2; pin.position.set(sx * 0.6, 1, 0); return pin })
+      g.userData.pins = pins
+      break
+    }
     case 'towel': { const t = add(box(0.35, 0.01, 0.25, new THREE.MeshStandardMaterial({ color: p.accent }))); t.position.y = 0.005; break }
   }
   return g
@@ -251,7 +258,7 @@ export function createDemo(canvas: HTMLCanvasElement, move: Move, pal: Palette, 
   const held: { obj: THREE.Object3D; kind: Prop['kind']; at?: Vec; hand?: 'L' | 'R' }[] = []
   for (const pr of move.props ?? []) {
     const obj = kitMesh(pr.kind, pal, pr.size)
-    if (['barbell', 'barbell-back', 'barbell-front', 'barbell-hips', 'dumbbell-hips', 'dumbbells', 'dumbbell-R', 'kettlebell', 'trapbar', 'medball', 'landmine', 'cable', 'handle'].includes(pr.kind)) {
+    if (['barbell', 'barbell-back', 'barbell-front', 'barbell-hips', 'dumbbell-hips', 'dumbbells', 'dumbbell-R', 'kettlebell', 'trapbar', 'medball', 'landmine', 'cable', 'handle', 'rack'].includes(pr.kind)) {
       if (pr.kind === 'dumbbells') { const other = kitMesh('dumbbells', pal); scene.add(other); held.push({ obj: other, kind: 'dumbbell-R' }); held.push({ obj, kind: 'dumbbell-L' as Prop['kind'] }) }
       else held.push({ obj, kind: pr.kind, at: pr.at, hand: pr.hand })
     } else {
@@ -343,6 +350,12 @@ export function createDemo(canvas: HTMLCanvasElement, move: Move, pal: Palette, 
       if (h.kind === 'cable') { // a cable from its pulley (prop `at`) to the hands
         const pivot = new THREE.Vector3(...(h.at ?? [0, 1, 1.2])), dir = mid.clone().sub(pivot)
         h.obj.position.copy(pivot); h.obj.quaternion.setFromUnitVectors(new THREE.Vector3(1, 0, 0), dir.clone().normalize()); h.obj.scale.set(dir.length(), 1, 1)
+        continue
+      }
+      if (h.kind === 'rack') { // stands on the floor around the bar; the pins sit on top of it, so the bar can't go up
+        const across = lh.clone().sub(rh).setY(0)
+        h.obj.position.set(mid.x, 0, mid.z); h.obj.rotation.set(0, Math.atan2(-across.z, across.x), 0)
+        for (const pin of h.obj.userData.pins as THREE.Object3D[]) pin.position.y = mid.y + 0.015 + 0.026
         continue
       }
       h.obj.position.copy(mid)

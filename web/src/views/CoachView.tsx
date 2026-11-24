@@ -52,7 +52,7 @@ export function CoachView({ ctx, ask: first, onBack, onSession, onGo }: {
   const block = drill ? exerciseBlock(drill) : undefined
 
   return (
-    <main className="fixed inset-0 flex flex-col bg-bg text-ink">
+    <main className="screen-in fixed inset-0 flex flex-col bg-bg text-ink">
       <header className="flex items-center gap-3 border-b border-white/5 px-4 pt-[max(14px,var(--sat))] pb-3">
         <Button variant="ghost" size="sm" onClick={onBack}>{t('Back')}</Button>
         <div className="min-w-0 flex-1">

@@ -10,8 +10,8 @@ import { positionTag, useProfile } from '../lib/profile'
 import credits from '../data/credits.json'
 import { t } from '../i18n'
 
-export function SettingsView({ settings: s, onChange, onMedia, onProfile, onInvite, onTour, onDone }: {
-  settings: Settings; onChange: (p: Partial<Settings>) => void; onMedia: () => void; onProfile: () => void; onInvite: () => void; onTour?: () => void; onDone: () => void
+export function SettingsView({ settings: s, onChange, onProfile, onInvite, onTour, onDone }: {
+  settings: Settings; onChange: (p: Partial<Settings>) => void; onProfile: () => void; onInvite: () => void; onTour?: () => void; onDone: () => void
 }) {
   const me = useProfile()
   return (
@@ -43,7 +43,6 @@ export function SettingsView({ settings: s, onChange, onMedia, onProfile, onInvi
       <h2 className="mt-8 mb-3 font-display text-lg uppercase">{t('Look')}</h2>
       <Panel className="flex flex-col gap-4">
         <Toggle id="cd" label={t('Quote cards before sessions and in rests')} checked={s.cards} onChange={(v) => onChange({ cards: v })} />
-        <Button variant="ghost" className="bg-surface-2" onClick={onMedia}>{t('Make it yours: photos, colour, quotes')}</Button>
         {onTour && <Button variant="ghost" className="bg-surface-2" onClick={onTour}>{t('Show the app tour')}</Button>}
       </Panel>
       {!syncEnabled() && (

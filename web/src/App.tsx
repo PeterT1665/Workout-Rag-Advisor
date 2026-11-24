@@ -33,6 +33,7 @@ import { clearActive, loadActive, saveActive } from './lib/activeSession'
 import { learn, withPrefs } from './lib/prefs'
 import { registerMine, sendRequests } from './lib/myExercises'
 import { CalendarView } from './views/CalendarView'
+import { ExerciseLibrary } from './views/ExerciseLibrary'
 import { activeInjuries, safestInstead } from './lib/injuries'
 import { beep, realAudio, unlockAudio } from './lib/audio'
 import { createPlayer, trainedMinutes, type Player, type Snapshot } from './lib/player'
@@ -52,6 +53,7 @@ const sessions = BUILTIN_SESSIONS // the week planner picks from the recommended
 // Full-screen views shown on top of the tabs.
 type Overlay =
   | { name: 'library' }
+  | { name: 'exercises' }
   | { name: 'detail'; session: Session; fromLibrary?: boolean }
   | { name: 'calendar' }
   | { name: 'preroll'; session: Session; quote: string | null; original?: Session; applied?: string[] }
@@ -270,7 +272,8 @@ export default function App({ onSignUp, onSignIn }: { onSignUp?: () => void; onS
   const fade = back && <div aria-hidden="true" className={`pointer-events-none fixed inset-0 z-[100] bg-bg transition-opacity duration-200 ease-out ${cover ? 'opacity-100' : 'opacity-0'}`} />
   if (overlay) {
     // full-screen moments (kick-off, player) bring their own entrance
-    if (overlay.name === 'preroll' || overlay.name === 'player') return renderOverlay(overlay)
+    // these position themselves (fixed, centred); the screen-in transform would make the wrapper their box mid-animation
+    if (overlay.name === 'preroll' || overlay.name === 'player' || overlay.name === 'calendar' || overlay.name === 'coach') return renderOverlay(overlay)
     return <div key={overlay.name} className={overlay === restored.current ? '' : 'screen-in'}>{renderOverlay(overlay)}{fade}</div>
   }
 
@@ -283,6 +286,8 @@ export default function App({ onSignUp, onSignIn }: { onSignUp?: () => void; onS
           onBack={() => { close(); setTab(overlay.from ?? 'week') }}
           onSession={(id) => { const s = library.find((x) => x.id === id); if (s) setOverlay({ name: 'detail', session: s }) }}
           onGo={(to) => { if (to === 'settings') setOverlay({ name: 'settings' }); else { close(); setTab(to === 'record' ? 'player' : to) } }} />
+      case 'exercises':
+        return <ExerciseLibrary onSessions={() => setOverlay({ name: 'library' })} onNew={() => build(null)} onBack={close} />
       case 'library':
         return <Library sessions={library} onOpen={openFromLibrary} onNew={() => build(null)} onBack={close} />
       case 'detail':
@@ -297,7 +302,7 @@ export default function App({ onSignUp, onSignIn }: { onSignUp?: () => void; onS
       case 'player':
         return <PlayerView key={overlay.player.getState().startedAt} session={overlay.session} player={overlay.player} settings={settings} onExit={() => { endRemote(); stopPersist.current(); void cancelRest(); clearActive(); setActive(null); close() }} />
       case 'settings':
-        return <SettingsView settings={settings} onChange={updateSettings} onMedia={() => setOverlay({ name: 'media', from: 'settings' })} onProfile={() => setOverlay({ name: 'profile' })} onInvite={() => setOverlay({ name: 'invite', back: { name: 'settings' } })} onTour={() => { close(); setTab('home'); setTour(true) }} onDone={close} />
+        return <SettingsView settings={settings} onChange={updateSettings} onProfile={() => setOverlay({ name: 'profile' })} onInvite={() => setOverlay({ name: 'invite', back: { name: 'settings' } })} onTour={() => { close(); setTab('home'); setTour(true) }} onDone={close} />
       case 'invite':
         return <Invite partner={overlay.partner} onDone={() => (overlay.back ? setOverlay(overlay.back) : close())} />
       case 'match':
@@ -328,6 +333,7 @@ export default function App({ onSignUp, onSignIn }: { onSignUp?: () => void; onS
           onOpen={open}
           onSettings={() => setOverlay({ name: 'settings' })}
           onAllSessions={() => setOverlay({ name: 'library' })}
+          onExercises={() => setOverlay({ name: 'exercises' })}
           onAddClips={() => setOverlay({ name: 'media', from: 'home' })}
           onPlayer={() => setOverlay({ name: 'calendar' })}
           onCoach={(ask) => setOverlay({ name: 'coach', from: 'home', ask })}

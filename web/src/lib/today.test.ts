@@ -49,6 +49,9 @@ describe('today', () => {
     const ids = (s: Session) => kitFor(s).map((k) => k.id)
     expect(ids(sessions.find((s) => s.id === 'fb-close-control-1v1')!)).toEqual(['boots', 'ball', 'discs', 'water'])
     expect(ids(sessions.find((s) => s.type === 'recovery')!)).toContain('mat')
+    // the gym: training shoes, and a medicine ball is not a football
+    const medGym = sessions.find((s) => s.type === 'gym' && [...s.needs, ...s.blocks.flatMap((b) => b.needs ?? [])].includes('medicine ball'))!
+    expect(ids(medGym)).toEqual(['shoes', 'medball', 'water'])
   })
   test('gym days get a recommended gym session', () => {
     const t = planToday(sessions, [{ day: 2, kind: 'competitive' }], monday)

@@ -21,7 +21,7 @@ export const homeTour = (): TourStep[] => [
   { target: 'week', title: t('Your week'), text: t('Tap your game days and the week plans itself around them. Change any day you like.') },
   { target: 'kickoff', title: t('Kick off'), text: t("Starts today's session. Turn the volume up: every drill is called out loud.") },
   { target: 'team', title: t('Team'), text: t("Add friends with your QR code and see who's training.") },
-  { target: 'settings', title: t('Settings'), text: t('Language, voice, notifications and your player.') },
+  { target: 'settings', title: t('More'), text: t('Make it yours, exercises, sessions and settings.') },
 ]
 
 const PAD = 6 // spotlight margin around the button

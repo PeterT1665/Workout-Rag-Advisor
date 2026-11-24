@@ -30,6 +30,8 @@ beforeEach(() => {
 afterEach(() => { cleanup(); vi.useRealTimers(); vi.unstubAllGlobals() })
 
 const click = (name: RegExp) => fireEvent.click(screen.getByRole('button', { name }))
+// the More menu in the Home header: its items are menuitems
+const more = (name: string | RegExp) => { fireEvent.click(screen.getAllByRole('button', { name: /^More$/ })[0]); fireEvent.click(screen.getByRole('menuitem', { name })) }
 const stepName = () => screen.getByTestId('step-name').textContent ?? ''
 const cues = () => spoken.filter((s) => s === 'left' || s === 'right')
 
@@ -160,7 +162,7 @@ describe('app', () => {
 
   test('clips opened from home: Done goes back home, not to settings', () => {
     render(<App />)
-    click(/^Make it yours$/)
+    more(/^Make it yours$/)
     expect(screen.getByRole('heading', { name: /^Make it yours$/i })).toBeTruthy()
     click(/^Green$/)
     expect(document.documentElement.dataset.accent).toBe('green')
@@ -210,9 +212,23 @@ describe('app', () => {
     expect(screen.getByText(/4 × 5 reps · 2:30 rest/)).toBeTruthy()
   })
 
+  test('More menu: Make it yours, Exercises, Sessions and Settings; Exercises opens an exercise and can build a session', () => {
+    render(<App />)
+    expect(screen.queryByRole('button', { name: /^Settings$/ })).toBeNull() // the gear and the brush are gone from the header
+    fireEvent.click(screen.getByRole('button', { name: /^More$/ }))
+    expect(screen.getAllByRole('menuitem').map((m) => m.textContent)).toEqual(['Make it yours', 'Exercises', 'Sessions', 'Settings'])
+    fireEvent.click(screen.getByRole('menuitem', { name: 'Exercises' }))
+    expect(screen.getByRole('heading', { name: /^Exercises$/i })).toBeTruthy()
+    fireEvent.click(screen.getAllByRole('button', { name: /Jog \+ dynamic leg swings/i })[0])
+    expect(screen.getByRole('dialog', { name: /Jog \+ dynamic leg swings/i })).toBeTruthy()
+    fireEvent.keyDown(document, { key: 'Escape' })
+    click(/\+ Build a session/)
+    expect(screen.getByText('Library')).toBeTruthy() // the session builder opens on its exercise picker
+  })
+
   test('settings: edit player changes name, positions and team colour', () => {
     render(<App />)
-    fireEvent.click(screen.getAllByRole('button', { name: /settings/i })[0])
+    more(/^Settings$/)
     click(/Edit player/)
     fireEvent.change(screen.getByLabelText('Name'), { target: { value: 'Jordan' } })
     click(/^Next$/)
@@ -236,8 +252,7 @@ describe('app', () => {
 
   test('photos: upload your own role model photo, it replaces the app photo, remove it again', async () => {
     render(<App />)
-    click(/^Settings$/)
-    click(/Make it yours: photos, colour, quotes/)
+    more(/^Make it yours$/)
     const input = screen.getByLabelText('Add Home hero photo')
     fireEvent.change(input, { target: { files: [new File(['x'], 'idol.jpg', { type: 'image/jpeg' })] } })
     const removeBtn = await screen.findByRole('button', { name: 'Remove Home hero photo' })
@@ -262,13 +277,13 @@ describe('app', () => {
     render(<App />)
     await new Promise((r) => setTimeout(r, 1100))
     expect(screen.queryByRole('dialog')).toBeNull() // seen: not again
-    click(/^Settings$/)
+    more(/^Settings$/)
     click(/Show the app tour/)
     for (const title of ['Your streak', 'Record', 'Your week', 'Kick off', 'Team']) {
       await showing(title)
       fireEvent.click(box().getByRole('button', { name: 'Next' }))
     }
-    await showing('Settings')
+    await showing('More')
     fireEvent.click(box().getByRole('button', { name: "Let's go" }))
     expect(screen.queryByRole('dialog')).toBeNull()
   })
@@ -303,7 +318,7 @@ describe('app', () => {
 
   test('invite: QR from Settings, and Train together on partner sessions', () => {
     render(<App />)
-    click(/^Settings$/)
+    more(/^Settings$/)
     click(/^Invite a friend$/)
     expect(screen.getByRole('img', { name: /QR code for .*invite=1/ })).toBeTruthy()
     click(/^Done$/)

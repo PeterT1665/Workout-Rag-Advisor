@@ -81,7 +81,6 @@
 html {
   -webkit-tap-highlight-color: transparent;
   -webkit-text-size-adjust: 100%;
-  overscroll-behavior: none;
   background: var(--bg);
 }
 body { margin: 0; background: var(--bg); color: var(--text); font-family: var(--font-sans); line-height: 1.5; }
@@ -139,6 +138,12 @@ img[data-fade].drift.is-loaded { animation: fade-in 320ms ease-out backwards, dr
   to { transform: none; opacity: 1; }
 }
 .pop { animation: pop 180ms var(--ease-out) backwards; }
+/* The More menu opens from its button in the corner */
+@keyframes more-in {
+  from { transform: scale(0.9); opacity: 0; }
+  to { transform: none; opacity: 1; }
+}
+.more-in { transform-origin: top right; animation: more-in 160ms var(--ease-out) backwards; }
 /* Slow drift on cinematic photos: constant motion = linear */
 @keyframes drift {
   from { transform: scale(1.02); }

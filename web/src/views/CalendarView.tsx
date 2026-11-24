@@ -8,6 +8,7 @@ import { latestBody } from '../lib/body'
 import { drawShare, sharePicture, type Look } from '../lib/share'
 import { matchShare, ratingShare, sessionShare, type ShareItem } from '../lib/shareStats'
 import { loadImage, setDayPhoto, useDayPhotos } from '../lib/dayPhotos'
+import { CropSheet } from '../components/CropSheet'
 import type { HistoryEntry } from '../lib/storage'
 import { locale, t } from '../i18n'
 
@@ -222,8 +223,14 @@ export function ShareSheet({ item, photo, streak, games, accent, onClose }: { it
   const [img, setImg] = useState<HTMLImageElement | null>(null)
   const [busy, setBusy] = useState(false)
   const [note, setNote] = useState('')
-  useEffect(() => { let on = true; if (photo) void loadImage(photo).then((i) => on && setImg(i)); else setImg(null); return () => { on = false } }, [photo])
-  useEffect(() => { if (canvas.current) void drawShare(canvas.current, item, { look, photo: img, streak, games, accent, dateLabel: longDate(item.date) }) }, [item, look, img, streak, games, accent])
+  const me = useProfile()
+  const player = useMemo(() => ({ name: me.name, number: me.number }), [me.name, me.number])
+  // a story-shaped crop of the day photo, for this picture only (the day photo itself stays as it is)
+  const [cropping, setCropping] = useState<Blob | null>(null)
+  const [cropped, setCropped] = useState<HTMLImageElement | null>(null)
+  useEffect(() => { let on = true; setCropped(null); if (photo) void loadImage(photo).then((i) => on && setImg(i)); else setImg(null); return () => { on = false } }, [photo])
+  const crop = async () => { if (photo) setCropping(await fetch(photo).then((r) => r.blob()).catch(() => null)) }
+  useEffect(() => { if (canvas.current) void drawShare(canvas.current, item, { look, photo: cropped ?? img, streak, games, accent, dateLabel: longDate(item.date), player }) }, [item, look, img, cropped, streak, games, accent, player])
   const looks: [Look, string][] = [['sticker', t('Sticker')], ['black', t('Black')], ['photo', t('On my photo')]]
   return (
     <div className="fixed inset-0 z-[60] flex flex-col bg-black text-white" role="dialog" aria-modal="true" aria-label={t('Share')}>
@@ -248,14 +255,19 @@ export function ShareSheet({ item, photo, streak, games, accent, onClose }: { it
         {look === 'photo' && !photo && (
           <label className="flex min-h-11 cursor-pointer items-center justify-center rounded-full bg-white/15 text-xs font-semibold">
             {t('Add a photo of this day')}
-            <input type="file" accept="image/*" className="sr-only" onChange={(e) => { const f = e.target.files?.[0]; if (f) void setDayPhoto(item.date, f) }} />
+            <input type="file" accept="image/*" className="sr-only" onChange={(e) => { const f = e.target.files?.[0]; if (f) { void setDayPhoto(item.date, f); setCropping(f) } }} />
           </label>
+        )}
+        {look === 'photo' && photo && (
+          <button onClick={() => void crop()} className="min-h-11 rounded-full bg-white/15 text-xs font-semibold">{t('Crop photo')}</button>
         )}
         <button disabled={busy} onClick={async () => { if (!canvas.current) return; setBusy(true); const r = await sharePicture(canvas.current, `football-coach-${item.date}`); setBusy(false); setNote(r === 'saved' ? t('Saved to your downloads.') : r === 'failed' ? t('Could not make the picture.') : '') }}
           className="min-h-14 rounded-full font-display text-sm uppercase tracking-wide text-white active:scale-[0.97] disabled:opacity-60" style={{ background: accent }}>{t('Share')}</button>
         {note && <p className="m-0 text-center text-xs text-white/70" role="status">{note}</p>}
         <p className="m-0 text-center text-[11px] text-white/50">{look === 'sticker' ? t('A see-through sticker: add it to your own story photo.') : t('Your photo stays on this phone unless you share the picture.')}</p>
       </div>
+      {cropping && <CropSheet file={cropping} aspect={9 / 16} size={1080} title={t('Crop photo')} onCancel={() => setCropping(null)}
+        onDone={(b) => { setCropping(null); void loadImage(URL.createObjectURL(b)).then(setCropped) }} />}
     </div>
   )
 }

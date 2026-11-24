@@ -396,3 +396,13 @@ Problems Peter hits while planning and training, and what was done about each.
     - **On a friend's card** (tap them on the leaderboard): "Message on" buttons. Instagram opens the DM (ig.me), WhatsApp and Zalo open the chat (wa.me, zalo.me), Messenger opens m.me.
     - Stored in `profiles.socials` (**migration 0014, Peter runs it**), readable only by you and friends, size-checked. Before the migration, Save says it couldn't save.
     - Chat later: threads of 2+ (friends only), live messages, push, block/report, rate limit, messages auto-deleted after 7–30 days. Peter to decide groups at launch and how long messages are kept.
+71. **Staging test fixes (Peter 24/11, from his phone).**
+    - **Share picture:** no best-set line, no red set bars, no app name until there's a brand. Time and calories, the streak big, then name and number. A **Crop photo** button (story-shaped crop, for that picture only).
+    - **Streak calendar glitch:** it opened offset because the screen-in transform made its wrapper the box for its fixed layer. Calendar and Coach now render outside that wrapper.
+    - **Week chips:** Casual / Comp shrink to fit, medium weight not bold.
+    - **Cards:** the exercise card picture is a still of its 3D demo (`npm run demo:stills`, public/demo-still, runtime-cached); the drill sheet drops the stock photo when there is a demo.
+    - **Kit check:** gym days show training shoes, a med ball (not a football) and water. Photos pending Peter's yes: Unsplash fS3tGOkp0xY (shoes), g6uG1yZ_gq0 (med ball), Kf6UgCx5mb8 (water bottle).
+    - **Mid-thigh pull demo** has a power rack with safety pins just above the bar.
+    - **Kick off** has a Back button once the card shows.
+    - **More menu** replaces the gear and brush on Home: a small window under the button, the page blurred behind it: Make it yours, Exercises, Sessions, Settings. "Make it yours" is gone from Settings. **Exercises** is a new page (by place and category, tap one for the how-to and 3D demo) with Sessions and + Build a session buttons.
+    - **Scroll bounce:** removed `overscroll-behavior: none` on html so the page rubber-bands like a normal app (check on the iPhone).

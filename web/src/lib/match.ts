@@ -116,7 +116,7 @@ export function matchForm(matches: MatchReview[], now = new Date()): Partial<Car
 }
 export function withForm(stats: CardStats, form: Partial<CardStats>): CardStats {
   const out = { ...stats }
-  for (const [k, d] of Object.entries(form) as [keyof CardStats, number][]) out[k] = clamp(out[k] + d, 1, 99)
+  for (const [k, d] of Object.entries(form) as [keyof CardStats, number][]) if (out[k] !== undefined) out[k] = clamp(out[k]! + d, 1, 99) // a blank stat stays blank
   return out
 }
 

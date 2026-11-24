@@ -1,4 +1,4 @@
-// Share pictures, Strava-style: the stats stacked in the middle, one graphic under them, the app's name and your streak.
+// Share pictures, Strava-style: the stats stacked in the middle, your streak big under them, then your name and number.
 // Three looks: a sticker (transparent, to drop on your own Instagram story photo), black, or on the day's photo.
 // Drawn on the phone; nothing is uploaded unless you share the picture.
 import type { Graphic, ShareItem } from './shareStats'
@@ -6,7 +6,7 @@ import { FIRE, type FlameTone } from '../components/icons'
 
 export type { ShareItem } from './shareStats'
 export type Look = 'sticker' | 'black' | 'photo'
-export type ShareOpts = { look: Look; photo?: HTMLImageElement | null; streak: number; games?: { wins: number; unbeaten: number }; accent: string; dateLabel: string }
+export type ShareOpts = { look: Look; photo?: HTMLImageElement | null; streak: number; games?: { wins: number; unbeaten: number }; accent: string; dateLabel: string; player?: { name: string; number: number } }
 
 export const W = 1080, H = 1920 // a phone story
 const FLAME = 'M12 1.8c.6 3.1-1 4.9-2.6 6.6C7.8 10.1 6 12 6 15a6 6 0 0 0 12 0c0-2.4-1.1-4.3-2.3-5.8-.2 1.3-.8 2.3-1.8 2.9.3-3.9-.9-7.6-1.9-10.3Z'
@@ -34,15 +34,7 @@ function fit(x: CanvasRenderingContext2D, text: string, max: number, px: number,
 const round = (x: CanvasRenderingContext2D, rx: number, ry: number, w: number, h: number, r: number) => { x.beginPath(); x.roundRect(rx, ry, w, h, Math.min(r, w / 2, h / 2)); x.fill() }
 
 function drawGraphic(x: CanvasRenderingContext2D, g: Graphic, cx: number, top: number, accent: string, ink: string) {
-  const w = 620, h = 300
-  if (g.type === 'sets') {
-    // every set of the session, in order: bar height is the weight moved
-    const bars = g.bars.slice(0, 40), max = Math.max(...bars)
-    const gap = 10, bw = Math.min(46, (w - gap * (bars.length - 1)) / bars.length)
-    const total = bars.length * bw + (bars.length - 1) * gap
-    x.fillStyle = accent
-    bars.forEach((v, i) => { const bh = Math.max(14, (v / max) * h); round(x, cx - total / 2 + i * (bw + gap), top + h - bh, bw, bh, bw / 2) })
-  } else if (g.type === 'shots') {
+  if (g.type === 'shots') {
     // the goal: goals in the net (filled), saved shots on target (rings), misses outside the frame (faded)
     const gw = 560, gh = 220, gx = cx - gw / 2, gy = top + 40
     x.strokeStyle = ink; x.lineWidth = 12; x.lineCap = 'round'
@@ -65,7 +57,7 @@ function drawGraphic(x: CanvasRenderingContext2D, g: Graphic, cx: number, top: n
       x.fillStyle = accent; round(x, cx - 200, y + 10, (420 * row.value) / 99, 22, 11)
       x.fillStyle = ink; x.textAlign = 'right'; x.fillText(String(row.value), cx + 300, y + 30)
     })
-  } else flame(x, cx, top, 300, g.tone ?? 'plan')
+  }
 }
 
 export async function drawShare(c: HTMLCanvasElement, item: ShareItem, o: ShareOpts) {
@@ -94,30 +86,31 @@ export async function drawShare(c: HTMLCanvasElement, item: ShareItem, o: ShareO
     x.fillText(s.value, cx, y + size + 4)
     y += size + 120
   }
-  // one graphic, then the name
+  // the streak is the highlight: big when there's no other graphic, under it when there is (shot map, card);
+  // then the player's name and number. No app name until there's a proper brand (Peter 24/11).
+  const g = o.games ?? { wins: 0, unbeaten: 0 }
+  const [n, tone] = item.kind === 'match' && o.games ? (g.wins > 1 ? [g.wins, 'wins' as const] : [g.unbeaten, 'unbeaten' as const]) : [o.streak, item.graphic.type === 'flame' && item.graphic.tone === 'off' ? 'off' as const : 'plan' as const]
   x.shadowBlur = o.look === 'black' ? 0 : 8
-  drawGraphic(x, item.graphic, cx, Math.max(y + 20, 1010), o.accent, ink)
+  const big = item.graphic.type === 'flame'
+  if (!big) drawGraphic(x, item.graphic, cx, Math.max(y + 20, 900), o.accent, ink)
   x.shadowBlur = o.look === 'black' ? 0 : 16
-  brand(x, cx, 1640, ink, item.kind === 'match' ? o.games : undefined, o.streak)
+  if (n > 0) streakMark(x, cx, big ? Math.max(y + 60, 1000) : 1470, big ? 1.3 : 0.55, n, tone, ink)
+  if (o.player) {
+    const who = `${o.player.name.toUpperCase()}  #${o.player.number}`
+    fit(x, who, W - 200, 72, 800, FONT); x.textAlign = 'center'; x.fillStyle = ink
+    x.fillText(who, cx, 1700)
+  }
 }
 
-// FOOTBALL COACH, with the streak flame and number in front: the only branding.
-function brand(x: CanvasRenderingContext2D, cx: number, y: number, ink: string, games: ShareOpts['games'], streak: number) {
-  const g = games ?? { wins: 0, unbeaten: 0 }
-  const [n, tone] = games ? (g.wins > 1 ? [g.wins, 'wins' as const] : [g.unbeaten, 'unbeaten' as const]) : [streak, 'plan' as const]
-  x.font = `800 58px ${FONT}`
-  const word = 'FOOTBALL COACH', ww = x.measureText(word).width
-  const num = n > 0 ? String(n) : ''
-  x.font = `800 50px ${FONT}`
-  const nw = num ? x.measureText(num).width + 56 + 26 : 0
-  let left = cx - (ww + nw) / 2
-  if (num) {
-    flame(x, left + 24, y - 54, 52, tone)
-    x.fillStyle = ink; x.textAlign = 'left'; x.fillText(num, left + 54, y - 4)
-    left += nw
-  }
-  x.font = `800 58px ${FONT}`; x.textAlign = 'left'; x.fillStyle = ink
-  x.fillText(word, left, y)
+// The streak: a flame with the number beside it, scaled (1 = the big one).
+function streakMark(x: CanvasRenderingContext2D, cx: number, top: number, k: number, n: number, tone: FlameTone | 'off', ink: string) {
+  const fs = 300 * k, num = String(n)
+  x.font = `800 ${240 * k}px ${FONT}`
+  const nw = x.measureText(num).width, gap = 24 * k
+  const left = cx - (fs * 0.62 + gap + nw) / 2
+  flame(x, left + fs * 0.31, top, fs, tone)
+  x.fillStyle = ink; x.textAlign = 'left'
+  x.fillText(num, left + fs * 0.62 + gap, top + fs * 0.86)
   x.textAlign = 'center'
 }
 

@@ -73,16 +73,37 @@ export function score(test: Test, result: number): number {
   return Math.round(Math.max(30, Math.min(99, r)))
 }
 
-export type Ratings = { date: string; raw: Partial<Record<Stat, number>>; stats: Partial<CardStats> }
+export type Ratings = { date: string; raw: Partial<Record<Stat, number>>; stats: Partial<CardStats>; proof?: boolean } // proof: a photo was added for this session
 
-// A card needs at least 3 tests; missing stats are taken from the previous test day if there is one.
-export function toCardStats(r: Ratings | undefined, prev?: Ratings): CardStats | null {
+// A card needs at least 3 tests. A test you skipped stays blank (it is never filled in from an older session).
+export function toCardStats(r: Ratings | undefined): CardStats | null {
   if (!r) return null
-  const merged = { ...(prev?.stats ?? {}), ...r.stats }
-  if (Object.keys(merged).length < 3) return null
-  const known = Object.values(merged) as number[]
-  const fill = Math.round(known.reduce((a, b) => a + b, 0) / known.length)
-  return Object.fromEntries(CARD_STATS.map((k) => [k, merged[k] ?? fill])) as CardStats
+  const stats: CardStats = {}
+  for (const k of CARD_STATS) if (r.stats[k] !== undefined) stats[k] = r.stats[k]
+  return Object.keys(stats).length >= 3 ? stats : null
+}
+
+// The first rating session is the starting point: progress is measured from it. (Older profiles kept `prevRatings`, the
+// session before the last, which is the same thing until the third session.)
+export const startingPoint = (p: { ratings?: Ratings; baseRatings?: Ratings; prevRatings?: Ratings }) => p.baseRatings ?? p.prevRatings
+
+// Results that look off, so the player is asked for a photo and a friend to check them. PROVISIONAL limits (what a person
+// can physically do in each test) until the FIFA-rating research sets them properly: lib/testday.ts is the one place to tune.
+export const PLAUSIBLE: Record<Stat, [number, number]> = { PAC: [2.7, 9], DRI: [5.5, 60], SHO: [0, 10], PAS: [0, 45], DEF: [3.8, 14], PHY: [100, 330] }
+export type Odd = { stat: Stat; why: 'impossible' | 'out of line' }
+export function looksOff(r: Ratings): Odd[] {
+  const out: Odd[] = []
+  const scores = TESTS.map((x) => r.stats[x.stat]).filter((v): v is number => v !== undefined).sort((a, b) => a - b)
+  for (const x of TESTS) {
+    const v = r.raw[x.stat], sc = r.stats[x.stat]
+    if (v === undefined || sc === undefined) continue
+    const [lo, hi] = PLAUSIBLE[x.stat]
+    if (v < lo || v > hi) { out.push({ stat: x.stat, why: 'impossible' }); continue }
+    // far from the player's other results (needs four or more tests to compare)
+    const others = TESTS.filter((y) => y.stat !== x.stat).map((y) => r.stats[y.stat]).filter((n): n is number => n !== undefined).sort((a, b) => a - b)
+    if (scores.length >= 4 && others.length >= 3) { const med = others[Math.floor(others.length / 2)]; if (Math.abs(sc - med) > 35) out.push({ stat: x.stat, why: 'out of line' }) }
+  }
+  return out
 }
 
 export function ratingsFrom(raw: Partial<Record<Stat, number>>, date = new Date().toLocaleDateString('en-CA')): Ratings {

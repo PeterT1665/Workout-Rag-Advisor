@@ -30,18 +30,18 @@ export function TabBar({ tab, onTab, onKickOff, review = false }: { tab: Tab; on
   )
 }
 
-// A tab label at 10px, shrunk just enough to fit its column (long words in some languages, small phones).
-function FitLabel({ text }: { text: string }) {
+// A label at `base` px, shrunk just enough to fit its column (long words in some languages, small phones).
+export function FitLabel({ text, base = 10, className = '' }: { text: string, base?: number, className?: string }) {
   const ref = useRef<HTMLSpanElement>(null)
-  const [size, setSize] = useState(10)
+  const [size, setSize] = useState(base)
   useLayoutEffect(() => {
     const el = ref.current
     if (!el?.parentElement) return
     const fit = () => {
-      el.style.fontSize = '10px'
+      el.style.fontSize = `${base}px`
       const room = el.parentElement!.clientWidth - 4
       const need = el.scrollWidth
-      const next = need > room && need > 0 ? Math.max(6.5, Math.floor((10 * room) / need * 10) / 10) : 10
+      const next = need > room && need > 0 ? Math.max(6.5, Math.floor((base * room) / need * 10) / 10) : base
       el.style.fontSize = `${next}px` // set here too: React skips it when the size didn't change
       setSize(next)
     }
@@ -51,6 +51,6 @@ function FitLabel({ text }: { text: string }) {
     const ro = new ResizeObserver(fit)
     ro.observe(el.parentElement)
     return () => ro.disconnect()
-  }, [text])
-  return <span ref={ref} className="inline-block whitespace-nowrap" style={{ fontSize: size, letterSpacing: size < 10 ? '0' : undefined }}>{text}</span>
+  }, [text, base])
+  return <span ref={ref} className={`inline-block whitespace-nowrap ${className}`} style={{ fontSize: size, letterSpacing: size < base ? '0' : undefined }}>{text}</span>
 }

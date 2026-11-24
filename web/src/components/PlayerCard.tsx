@@ -5,7 +5,8 @@ import { t } from '../i18n'
 // Our own game-style player card (inspired by football game cards, not a copy: no club badges or game branding).
 // Finish follows the overall rating: gold 75+, silver 65-74, bronze below; unrated players get their team colour.
 export const CARD_STATS = ['PAC', 'SHO', 'PAS', 'DRI', 'DEF', 'PHY'] as const
-export type CardStats = Record<(typeof CARD_STATS)[number], number>
+// A test you skipped stays blank: it has no number, and the overall averages the ones you did.
+export type CardStats = Partial<Record<(typeof CARD_STATS)[number], number>>
 
 export const SHIELD = 'polygon(0% 9%, 9% 9%, 15% 3%, 85% 3%, 91% 9%, 100% 9%, 100% 88%, 50% 100%, 0% 88%)'
 
@@ -16,7 +17,10 @@ export const FINISH = {
   team: { outer: 'linear-gradient(160deg,color-mix(in srgb,var(--red) 55%,#000),var(--red) 45%,color-mix(in srgb,var(--red) 55%,#000))', inner: 'linear-gradient(160deg,color-mix(in srgb,var(--red) 70%,#fff) 0%,var(--red) 45%,color-mix(in srgb,var(--red) 60%,#000) 100%)', ink: '#ffffff', line: 'rgba(255,255,255,.22)' },
 }
 
-export const overall = (s: CardStats) => Math.round(CARD_STATS.reduce((a, k) => a + s[k], 0) / CARD_STATS.length)
+export function overall(s: CardStats) {
+  const v = CARD_STATS.map((k) => s[k]).filter((x): x is number => typeof x === 'number')
+  return v.length ? Math.round(v.reduce((a, b) => a + b, 0) / v.length) : 0
+}
 
 export const finishFor = (ovr: number | null) => FINISH[ovr === null ? 'team' : ovr >= 75 ? 'gold' : ovr >= 65 ? 'silver' : 'bronze']
 
@@ -59,7 +63,7 @@ export function PlayerCard({ p, stats, photo, className = '' }: { p: Profile; st
               <div key={col}>
                 {CARD_STATS.slice(col * 3, col * 3 + 3).map((k, i) => (
                   <div key={k} className="flex items-baseline gap-[2cqw] py-[0.5cqw]" style={{ borderTop: i ? `1px solid ${f.line}` : undefined }}>
-                    <span className="w-[10cqw] text-right font-display text-[6.6cqw] tabular-nums">{stats ? stats[k] : '--'}</span>
+                    <span className="w-[10cqw] text-right font-display text-[6.6cqw] tabular-nums">{stats?.[k] ?? '--'}</span>
                     <span className="font-display text-[5.6cqw] opacity-80">{k}</span>
                   </div>
                 ))}

@@ -1,4 +1,5 @@
 import { Pill, SectionHead, Title } from '../components/ui'
+import { FitLabel } from '../components/TabBar'
 import { DAY_ABBR, DAYS, DAY_SHORT, DEFAULT_GYM, FOCUS_SHORT, kindLabel, matchdayLabel, todayIndex, type Game } from '../lib/weekplan'
 import { locale, t } from '../i18n'
 import { changeFor, changedSession, type DayChange, type WeekChanges } from '../lib/weekChanges'
@@ -108,7 +109,7 @@ export function WeekView({ today, games, sessions, library, changes, onChange, o
             <button key={day} onClick={() => cycle(day)} aria-label={`${DAYS[day]}: ${k === 'none' ? t('no game') : k === 'casual' ? t('casual game') : t('competitive game')}`}
               className={`grid h-16 place-items-center rounded-[14px] font-display text-[9px] uppercase transition-transform duration-150 ease-snap active:scale-95 ${k === 'none' ? 'bg-surface text-muted' : 'bg-red text-white'}`}>
               <span className="text-sm">{d}</span>
-              <span>{k === 'none' ? '—' : k === 'casual' ? t('Casual|strip') : t('Comp')}</span>
+              <span className="w-full overflow-hidden text-center"><FitLabel base={9} className="font-medium [font-stretch:100%]" text={k === 'none' ? '—' : k === 'casual' ? t('Casual|strip') : t('Comp')} /></span>
             </button>
           )
         })}

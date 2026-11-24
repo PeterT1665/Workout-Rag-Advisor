@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { Button, Pill, SectionHead } from '../components/ui'
-import { BallIcon, BrushIcon, FlameIcon, GearIcon, KitGlyph } from '../components/icons'
+import { BallIcon, FlameIcon, KitGlyph, MoreIcon } from '../components/icons'
+import { MoreMenu } from '../components/MoreMenu'
 import type { Streak } from '../lib/streak'
 import { NotifyPrompt } from '../components/Notifications'
 import { usePersonalImage } from '../lib/personal'
@@ -11,7 +12,7 @@ import { fmtDose, fmtDuration, sessionMinutes } from '../lib/logic'
 import { InstallButton } from '../components/InstallButton'
 import { DrillSheet } from '../components/DrillSheet'
 import { canInstall } from '../lib/install'
-import { CATEGORY_LABELS, drillPhoto } from '../lib/library'
+import { CATEGORY_LABELS, drillPhoto, drillStill } from '../lib/library'
 import { DAY_ABBR, DAY_SHORT, FOCUS_LABEL, type SlotKind } from '../lib/weekplan'
 import { locale, t } from '../i18n'
 import type { Today } from '../lib/today'
@@ -26,6 +27,7 @@ type Props = {
   onOpen: (s: Session) => void
   onSettings: () => void
   onAllSessions: () => void
+  onExercises: () => void
   onAddClips: () => void
   onPlayer: () => void
   active?: { title: string; onResume: () => void; onDiscard: () => void } | null // unfinished session
@@ -42,7 +44,7 @@ const dateKey = () => new Date().toISOString().slice(0, 10)
 // The hero's text slides in once per app open, not every time Home is shown again.
 let heroIntroDone = false
 
-export function Hero({ today, onKickOff, onOpen, onSettings, onCustomise, streak, onStreak, desktop = false }: Pick<Props, 'today' | 'onKickOff' | 'onOpen' | 'onSettings' | 'streak'> & { onCustomise?: () => void; onStreak?: () => void; desktop?: boolean }) {
+export function Hero({ today, onKickOff, onOpen, onMore, streak, onStreak, desktop = false }: Pick<Props, 'today' | 'onKickOff' | 'onOpen' | 'streak'> & { onMore?: () => void; onStreak?: () => void; desktop?: boolean }) {
   const hero = usePersonalImage('hero.jpg')
   const [entrance] = useState(() => { const first = !heroIntroDone; heroIntroDone = true; return first })
   const s = today.session
@@ -77,12 +79,9 @@ export function Hero({ today, onKickOff, onOpen, onSettings, onCustomise, streak
         ) : <span />}
         <span className="flex items-center gap-2">
           {canInstall() ? <InstallButton /> : <Pill tone="glass">{sample ? t('Sample data') : date}</Pill>}
-          {onCustomise && <button onClick={onCustomise} aria-label={t('Make it yours')} className="grid h-10 w-10 place-items-center rounded-full bg-white/15 text-white backdrop-blur-md active:scale-95">
-            <BrushIcon />
+          {onMore && <button onClick={onMore} data-tour="settings" aria-label={t('More')} aria-haspopup="menu" className="grid h-10 w-10 place-items-center rounded-full bg-white/15 text-white backdrop-blur-md active:scale-95">
+            <MoreIcon />
           </button>}
-          <button onClick={onSettings} data-tour="settings" aria-label={t('Settings')} className="grid h-10 w-10 place-items-center rounded-full bg-white/15 text-white backdrop-blur-md active:scale-95">
-            <GearIcon />
-          </button>
         </span>
       </div>}
       <div className={`${desktop ? 'absolute bottom-8 left-8 max-w-[64%]' : 'absolute inset-x-4 bottom-5'} ${entrance ? 'rise' : ''}`}>
@@ -150,11 +149,14 @@ export function KitCheck({ session }: { session: Session }) {
 }
 
 // ---------- today's drills ----------
-export function DrillCard({ name, meta, cue, category, onOpen, fluid = false }: { i?: number; name: string; meta: string; cue: boolean; category?: string; onOpen: () => void; fluid?: boolean; football?: boolean }) {
+export function DrillCard({ name, ex, meta, cue, category, onOpen, fluid = false }: { i?: number; name: string; ex?: string; meta: string; cue: boolean; category?: string; onOpen: () => void; fluid?: boolean; football?: boolean }) {
   const label = category ? CATEGORY_LABELS[category] ?? category : null
+  const still = drillStill(ex ?? name)
   return (
     <button onClick={onOpen} className={`${fluid ? 'w-full' : 'w-[200px] shrink-0 snap-start'} relative block aspect-[3/4] overflow-hidden rounded-[22px] bg-surface text-left transition-transform duration-150 ease-snap active:scale-[0.98]`}>
-      <img src={drillPhoto(category)} alt="" data-fade loading="lazy" className="absolute inset-0 h-full w-full object-cover" />
+      {/* the 3D demo's still (Peter 24/11), the category photo for exercises without one or offline before it's cached */}
+      <img src={still ?? drillPhoto(category)} alt="" data-fade loading="lazy" className="absolute inset-0 h-full w-full object-cover"
+        onError={(e) => { const fb = drillPhoto(category); if (still && !e.currentTarget.src.endsWith(fb)) e.currentTarget.src = fb }} />
       <div className="absolute inset-0 bg-[linear-gradient(to_bottom,rgba(0,0,0,.35)_0%,rgba(0,0,0,0)_30%,rgba(0,0,0,.15)_50%,rgba(0,0,0,.9)_100%)]" />
       <div className="absolute top-2.5 left-2.5 flex flex-wrap gap-1.5">
         {label && <Pill tone="glass">{label}</Pill>}
@@ -221,9 +223,12 @@ export function Home(p: Props) {
   const drills = s.blocks.filter((b) => b.kind === 'drill')
   const games = p.today.plan.slots.filter((x) => x.kind === 'game').length
   const [drill, setDrill] = useState<Block | null>(null)
+  const [more, setMore] = useState(false)
+  const from = (go: () => void) => () => { setMore(false); go() }
   return (
     <main className="mx-auto max-w-xl px-4 pb-32">
-      <Hero today={p.today} onKickOff={p.onKickOff} onOpen={p.onOpen} onSettings={p.onSettings} onCustomise={p.onAddClips} streak={p.streak} onStreak={p.onPlayer} />
+      <Hero today={p.today} onKickOff={p.onKickOff} onOpen={p.onOpen} onMore={() => setMore(true)} streak={p.streak} onStreak={p.onPlayer} />
+      {more && <MoreMenu onClose={() => setMore(false)} onMedia={from(p.onAddClips)} onExercises={from(p.onExercises)} onSessions={from(p.onAllSessions)} onSettings={from(p.onSettings)} />}
       {p.match && <MatchDayBox key={`${p.match.day.date}-${p.match.day.state}`} day={p.match.day} onReview={p.match.onReview} onChanged={p.match.onChanged} />}
       {p.active && (
         <section aria-label={t('Unfinished session')} className="rise mt-6 flex items-center gap-3 rounded-[22px] border border-red/50 bg-surface p-4">
@@ -259,7 +264,7 @@ export function Home(p: Props) {
       <SectionHead title={t("Today's drills")} right={<button onClick={p.onAllSessions} className="text-sm font-semibold text-muted">{t('All sessions')}</button>} />
       <div className="no-scrollbar -mx-4 flex snap-x scroll-px-4 gap-3 overflow-x-auto px-4">
         {drills.slice(0, 5).map((b, i) => (
-          <DrillCard key={b.name} i={i} category={b.category} name={b.name.replace(/\s*\([^)]*\)/g, '')} cue={!!b.cue}
+          <DrillCard key={b.name} i={i} category={b.category} ex={b.name} name={b.name.replace(/\s*\([^)]*\)/g, '')} cue={!!b.cue}
             meta={`${fmtDose(b)}${b.rest ? ` · ${t('rest {time}', { time: fmtDuration(b.rest) })}` : ''}`} football={s.type === 'football'} onOpen={() => setDrill(b)} />
         ))}
       </div>

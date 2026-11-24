@@ -1,6 +1,6 @@
 import { Button, Pill } from './ui'
 import { useSheet } from '../lib/useSheet'
-import { CATEGORY_LABELS, drillPhoto } from '../lib/library'
+import { CATEGORY_LABELS, drillPhoto, drillStill } from '../lib/library'
 import { fmtReps } from '../lib/logic'
 import type { Block } from '../lib/types'
 import { VideoBox } from './VideoBox'
@@ -17,14 +17,22 @@ export function DrillSheet({ block: b, onClose, onSession }: { block: Block; onC
     <div className="fixed inset-0 z-50 flex items-end justify-center" role="dialog" aria-modal="true" aria-label={name}>
       <button aria-label={t('Close')} className="absolute inset-0 bg-black/60" onClick={onClose} />
       <div className="rise relative max-h-[88dvh] w-full max-w-xl overflow-y-auto overscroll-contain rounded-t-[28px] bg-surface pb-[max(20px,env(safe-area-inset-bottom))]">
-        <div className="relative h-52 overflow-hidden rounded-t-[28px]">
-          <img src={drillPhoto(b.category)} alt="" data-fade className="h-full w-full object-cover" />
-          <div className="absolute inset-0 bg-[linear-gradient(to_bottom,rgba(0,0,0,0)_40%,var(--surface)_100%)]" />
-          <div className="absolute top-3 left-4 flex gap-1.5">
-            {label && <Pill tone="glass">{label}</Pill>}
+        {/* with a 3D demo (it plays further down), no stock photo on top: the pills, then the name */}
+        {drillStill(b.name) ? (
+          <div className="flex gap-1.5 px-5 pt-5 pb-6">
+            {label && <Pill>{label}</Pill>}
             {b.cue && <Pill tone="red">{t('Voice cues')}</Pill>}
           </div>
-        </div>
+        ) : (
+          <div className="relative h-52 overflow-hidden rounded-t-[28px]">
+            <img src={drillPhoto(b.category)} alt="" data-fade className="h-full w-full object-cover" />
+            <div className="absolute inset-0 bg-[linear-gradient(to_bottom,rgba(0,0,0,0)_40%,var(--surface)_100%)]" />
+            <div className="absolute top-3 left-4 flex gap-1.5">
+              {label && <Pill tone="glass">{label}</Pill>}
+              {b.cue && <Pill tone="red">{t('Voice cues')}</Pill>}
+            </div>
+          </div>
+        )}
         <div className="px-5">
           <h2 className="m-0 -mt-4 font-display text-2xl uppercase leading-tight">{name}</h2>
           <div className="mt-4 grid grid-cols-3 gap-2 text-center">

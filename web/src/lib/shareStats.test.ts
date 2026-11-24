@@ -11,12 +11,10 @@ test('calories: an estimate from minutes, effort and body weight, harder means m
   expect(kcal('football', 60, 8, 70)).toBeGreaterThan(kcal('gym', 60, 8, 70))
   expect(kcal('recovery', 30, 3, 70)).toBeLessThan(kcal('gym', 30, 3, 70))
 })
-test('gym card: time, calories, best lift (New best when it beats the earlier ones); every set is a bar when it beats the earlier ones', () => {
+test('gym card: time and calories only, the streak flame is the picture (no best set, no set bars)', () => {
   const s = sessionShare(gym, [prev, gym], 72)
-  expect(s.stats.map((x) => x.value)).toEqual(['52 min', expect.stringMatching(/^~\d+/), '80 kg × 5'])
-  expect(s.stats[2].label).toBe('Bench press · New best')
-  expect(s.graphic).toEqual({ type: 'sets', bars: [60, 80] })
-  expect(sessionShare({ ...gym, lifts: [{ ex: 'bench-press', name: 'Bench press', sets: [set(60, 5)] }] }, [prev, gym], 72).stats[2].label).toBe('Bench press')
+  expect(s.stats.map((x) => x.value)).toEqual(['52 min', expect.stringMatching(/^~\d+/)])
+  expect(s.graphic).toEqual({ type: 'flame' })
 })
 test('football card: shots on target and goals from the Full time tally, with the shot map', () => {
   const fb: HistoryEntry = { id: 'f', title: 'Finishing', type: 'football', date: '2026-11-21', minutes: 45, drills: 6, tally: { shots: 24, onTarget: 17, goals: 9 } }

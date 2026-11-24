@@ -7,6 +7,6 @@ import { loadMatches, matchForm, withForm } from './match'
 // Recent match reviews move the stats a little (match form, lib/match.ts).
 export function cardStatsFor(p: Profile): CardStats | null {
   if (p.sample) return SAMPLE_STATS
-  const base = toCardStats(p.ratings, p.prevRatings)
+  const base = toCardStats(p.ratings)
   return base ? withForm(base, matchForm(loadMatches())) : null
 }
