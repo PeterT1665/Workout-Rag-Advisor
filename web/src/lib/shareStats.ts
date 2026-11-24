@@ -3,7 +3,7 @@
 // a rating session.
 import { t } from '../i18n'
 import { gameLength, resultOf, type MatchReview } from './match'
-import { TESTS, type Ratings } from './testday'
+import { TESTS, rescored, type Ratings } from './testday'
 import type { HistoryEntry } from './storage'
 
 export type ShareStat = { label: string; value: string; tag?: string }
@@ -52,7 +52,8 @@ export function matchShare(m: MatchReview): ShareItem {
   return { kind: 'match', title: t('Match'), date: m.date, stats, graphic: { type: 'flame', tone: r === 'W' ? 'wins' : r === 'D' ? 'unbeaten' : 'off' } }
 }
 
-export function ratingShare(r: Ratings): ShareItem {
+export function ratingShare(saved: Ratings): ShareItem {
+  const r = rescored(saved)!
   const done = TESTS.filter((x) => r.raw[x.stat] !== undefined)
   return {
     kind: 'rating', title: t('Rating session'), date: r.date,

@@ -239,7 +239,7 @@ export default function App({ onSignUp, onSignIn }: { onSignUp?: () => void; onS
     if (!syncEnabled()) return
     const publish = () => {
       const card = cardStatsFor(me)
-      void publishStats(me, { card, rating: card ? overall(card) : null, streak: streak.days, trainedToday: streak.today })
+      void publishStats(me, { card, rating: card ? overall(card, me.positions) : null, streak: streak.days, trainedToday: streak.today })
     }
     publish()
     const every = setInterval(() => { if (document.visibilityState === 'visible') publish() }, 180000)

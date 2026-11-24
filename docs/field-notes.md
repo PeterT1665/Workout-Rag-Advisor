@@ -406,3 +406,12 @@ Problems Peter hits while planning and training, and what was done about each.
     - **Kick off** has a Back button once the card shows.
     - **More menu** replaces the gear and brush on Home: a small window under the button, the page blurred behind it: Make it yours, Exercises, Sessions, Settings. "Make it yours" is gone from Settings. **Exercises** is a new page (by place and category, tap one for the how-to and 3D demo) with Sessions and + Build a session buttons.
     - **Scroll bounce:** removed `overscroll-behavior: none` on html so the page rubber-bands like a normal app (check on the iPhone).
+72. **Rating rebuilt from the FIFA research (Peter 24/11: yes to all four).** Source: `~/Downloads/training-clips/rating-research.md` (not in the repo).
+    - **Scale:** 75 = an average pro in that quality, 85 = top-flight standout, 95 = among the best. Sprint, jump and shuttle anchors from pro studies (gate-timed); **dribbling, shooting and passing anchors are judgment** (no norms for these tests), to be re-fitted to real users' results (~50–100 rated players).
+    - **Re-scored from raw** every time (`rescored`), so saved sessions follow the current anchors. Old sessions keep the full-goal shooting scale (cap 80); new ones use `v: 2`.
+    - **Corner shots** replaces shots on target (two 1 m zones inside the posts). The shuttle is named an agility test (still the DEF stat).
+    - **Limits:** impossible results are refused (Next disabled); world-class ones need a photo and a friend (shown at the end). A result far from the player's others is flagged too.
+    - **Overall is position-weighted** (first position; plain average for a goalkeeper or none), missing tests left out. Gold 75 / silver 65 unchanged.
+    - **First session = starting point**; skipped tests stay blank; "Make this my starting point" under the card; **Ask a friend to verify** opens the share sheet (no verified badge yet).
+    - Not done: scoring dribbling on the "deficit" (time with the ball minus without): the research gave no anchors for it.
+    - Peter's own card: 76 gold → about 67 silver with the new scale (sprint timed by phone is the weakest input; weave 6.19 s is flagged as needs-proof).

@@ -17,15 +17,26 @@ export const FINISH = {
   team: { outer: 'linear-gradient(160deg,color-mix(in srgb,var(--red) 55%,#000),var(--red) 45%,color-mix(in srgb,var(--red) 55%,#000))', inner: 'linear-gradient(160deg,color-mix(in srgb,var(--red) 70%,#fff) 0%,var(--red) 45%,color-mix(in srgb,var(--red) 60%,#000) 100%)', ink: '#ffffff', line: 'rgba(255,255,255,.22)' },
 }
 
-export function overall(s: CardStats) {
-  const v = CARD_STATS.map((k) => s[k]).filter((x): x is number => typeof x === 'number')
-  return v.length ? Math.round(v.reduce((a, b) => a + b, 0) / v.length) : 0
+// The overall is weighted for the player's position (first one listed), like FIFA's position formulas but with a floor for the
+// athletic stats (the app's tests are mostly athletic). Missing stats are left out and the rest renormalised. No weights
+// for a goalkeeper or without a position: a plain average. Weights: research 24/11 (rating-research.md, section 4).
+export const OVERALL_WEIGHTS: Record<string, Record<(typeof CARD_STATS)[number], number>> = {
+  striker: { PAC: .20, SHO: .30, PAS: .10, DRI: .20, DEF: .05, PHY: .15 },
+  winger: { PAC: .25, SHO: .15, PAS: .20, DRI: .25, DEF: .05, PHY: .10 },
+  midfielder: { PAC: .10, SHO: .10, PAS: .30, DRI: .20, DEF: .15, PHY: .15 },
+  defender: { PAC: .20, SHO: .05, PAS: .15, DRI: .05, DEF: .30, PHY: .25 },
 }
-
+const GROUP: Record<string, string> = { striker: 'striker', winger: 'winger', am: 'midfielder', cm: 'midfielder', dm: 'midfielder', midfielder: 'midfielder', cb: 'defender', fb: 'defender', defender: 'defender' }
+export function overall(s: CardStats, positions?: readonly string[]) {
+  const w = OVERALL_WEIGHTS[GROUP[positions?.[0] ?? ''] ?? '']
+  let sum = 0, total = 0
+  for (const k of CARD_STATS) { const v = s[k]; if (typeof v === 'number') { const x = w ? w[k] : 1; sum += v * x; total += x } }
+  return total ? Math.round(sum / total) : 0
+}
 export const finishFor = (ovr: number | null) => FINISH[ovr === null ? 'team' : ovr >= 75 ? 'gold' : ovr >= 65 ? 'silver' : 'bronze']
 
 export function PlayerCard({ p, stats, photo, className = '' }: { p: Profile; stats: CardStats | null; photo?: string | null; className?: string }) {
-  const ovr = stats ? overall(stats) : null
+  const ovr = stats ? overall(stats, p.positions) : null
   const f = finishFor(ovr)
   const pos = POSITIONS.find((x) => x.id === roleOf(p.positions[0] ?? 'cm'))?.short ?? ''
   const foot = p.foot === 'both' ? t('Both feet') : p.foot === 'left' ? t('Left foot') : t('Right foot')

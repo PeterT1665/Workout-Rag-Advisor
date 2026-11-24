@@ -1,7 +1,7 @@
 import { useState, type CSSProperties } from 'react'
 import { motion, useReducedMotion } from 'motion/react'
 import { PlayerCard, SHIELD, finishFor, overall, type CardStats } from './PlayerCard'
-import { TESTS, nextRatingDue, startingPoint } from '../lib/testday'
+import { TESTS, nextRatingDue, rescored, startingPoint } from '../lib/testday'
 import type { Profile } from '../lib/profile'
 import { locale, t } from '../i18n'
 
@@ -28,8 +28,8 @@ export function FlipCard({ p, stats, photo }: { p: Profile; stats: CardStats | n
 
 // The back: every test from the last rating session, the raw result, the rating it gave and the change since the one before.
 export function CardBack({ p, stats }: { p: Profile; stats: CardStats | null }) {
-  const f = finishFor(stats ? overall(stats) : null)
-  const r = p.ratings, prev = startingPoint(p)
+  const f = finishFor(stats ? overall(stats, p.positions) : null)
+  const r = rescored(p.ratings), prev = rescored(startingPoint(p))
   const due = nextRatingDue(r)
   return (
     <div className="@container relative aspect-[0.72] w-full text-left">
@@ -53,7 +53,7 @@ export function CardBack({ p, stats }: { p: Profile; stats: CardStats | null }) 
                       <span className="block truncate text-[3.7cqw] font-semibold">{test.name}</span>
                       <span className="block font-display text-[4.6cqw] tabular-nums">{raw !== undefined ? `${raw} ${test.unit}` : t('Skipped')}</span>
                     </span>
-                    {diff !== null && diff !== 0 && prev !== r && <span className="shrink-0 font-display text-[3.6cqw] tabular-nums opacity-75">{diff > 0 ? `▲${diff}` : `▼${-diff}`}</span>}
+                    {diff !== null && diff !== 0 && prev?.date !== r?.date && <span className="shrink-0 font-display text-[3.6cqw] tabular-nums opacity-75">{diff > 0 ? `▲${diff}` : `▼${-diff}`}</span>}
                     <span className="w-[9cqw] shrink-0 text-right font-display text-[6.6cqw] tabular-nums leading-none">{score ?? '--'}</span>
                   </div>
                 )

@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { Button, Screen } from '../components/ui'
 import { PlayerCard, overall } from '../components/PlayerCard'
-import { TESTS, WARMUP, looksOff, ratingsFrom, startingPoint, toCardStats, type Stat, type Test } from '../lib/testday'
+import { TESTS, WARMUP, checkResult, looksOff, ratingsFrom, startingPoint, toCardStats, type Stat, type Test } from '../lib/testday'
 import { Demo3D } from '../components/Demo3D'
 import { ACCENTS, getProfile, setProfile, type Profile } from '../lib/profile'
 import { setDayPhoto, useDayPhotos } from '../lib/dayPhotos'
@@ -61,7 +61,7 @@ export function TestDay({ onDone }: { onDone: () => void }) {
   if (i === TESTS.length && saved) {
     const stats = toCardStats(saved.ratings)
     const odd = saved.ratings ? looksOff(saved.ratings) : []
-    const ovr = stats ? overall(stats) : null
+    const ovr = stats ? overall(stats, saved.positions) : null
     const tier = ovr === null ? null : ovr >= 75 ? t('Gold') : ovr >= 65 ? t('Silver') : 'Bronze'
     return (
       <Screen className="flex flex-col items-center text-center">
@@ -92,7 +92,7 @@ export function TestDay({ onDone }: { onDone: () => void }) {
       <TestStep key={test.stat} test={test} value={raw[test.stat]} onValue={(v) => setRaw((r) => ({ ...r, [test.stat]: v }))} />
       <div className="mt-6 flex gap-3">
         <Button variant="ghost" className="flex-1" onClick={() => { setRaw((r) => { const n = { ...r }; delete n[test.stat]; return n }); i === TESTS.length - 1 ? finish() : setI(i + 1) }}>{t('Skip')}</Button>
-        <Button className="flex-[2]" disabled={!raw[test.stat]} onClick={() => (i === TESTS.length - 1 ? finish() : setI(i + 1))}>
+        <Button className="flex-[2]" disabled={!raw[test.stat] || checkResult(test.stat, raw[test.stat]!) === 'impossible'} onClick={() => (i === TESTS.length - 1 ? finish() : setI(i + 1))}>
           {i === TESTS.length - 1 ? t('See my card') : t('Next test')}
         </Button>
       </div>
@@ -101,6 +101,7 @@ export function TestDay({ onDone }: { onDone: () => void }) {
 }
 
 function TestStep({ test, value, onValue }: { test: Test; value?: number; onValue: (v: number) => void }) {
+  const check = value ? checkResult(test.stat, value) : null
   return (
     <div className="rise flex-1">
       <p className="m-0 font-display text-sm uppercase text-red-ink">{test.stat}</p>
@@ -116,6 +117,8 @@ function TestStep({ test, value, onValue }: { test: Test; value?: number; onValu
           className="block min-h-14 w-32 rounded-2xl bg-surface px-4 text-center font-display text-2xl text-ink placeholder:text-muted" />
         <span className="font-display text-lg text-muted">{test.unit}</span>
       </div>
+      {check === 'impossible' && <p role="alert" className="m-0 mt-3 text-sm font-semibold text-red-ink">{t("That result isn't possible. Check it and enter it again.")}</p>}
+      {check === 'proof' && <p className="m-0 mt-3 text-sm text-muted">{t('A world-class result. At the end you will be asked for a photo and a friend to check it.')}</p>}
     </div>
   )
 }

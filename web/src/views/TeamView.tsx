@@ -41,7 +41,7 @@ function TeamGuest({ streak, onSignUp, onSignIn }: { streak: Streak; onSignUp?: 
       <p className="m-0 mt-2 text-muted">{t("Add your friends, see who's training, and compete on streaks and ratings.")}</p>
       <section className="mt-6 rounded-[24px] bg-surface p-4" aria-label={t('Leaderboard')}>
         <h2 className="m-0 mb-3 font-display text-base uppercase">{t('Leaderboard')}</h2>
-        <Row rank={1} name={me.name || t('You')} number={me.number} sub={t('You')} streak={streak.days} lit={streak.today} rating={stats ? overall(stats) : null} />
+        <Row rank={1} name={me.name || t('You')} number={me.number} sub={t('You')} streak={streak.days} lit={streak.today} rating={stats ? overall(stats, me.positions) : null} />
       </section>
       <section className="mt-4 rounded-[24px] bg-surface p-4">
         <h2 className="m-0 font-display text-base uppercase">{t('Play with friends')}</h2>

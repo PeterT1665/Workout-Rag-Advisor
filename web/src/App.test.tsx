@@ -305,7 +305,7 @@ describe('app', () => {
     click(/^Skip$/) // DEF
     click(/^Skip$/) // PHY: last one finishes
     expect(screen.getByRole('heading', { name: /Gold card/ })).toBeTruthy()
-    expect(getProfile().ratings?.stats).toEqual({ PAC: 82, SHO: 83, PAS: 85 })
+    expect(getProfile().ratings?.stats).toEqual({ PAC: 62, SHO: 91, PAS: 88 })
     click(/^Done$/)
     expect(screen.getByText(/New rating session/)).toBeTruthy()
     // the card turns over to show every result of that session
