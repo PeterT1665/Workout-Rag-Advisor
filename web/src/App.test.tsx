@@ -102,9 +102,9 @@ describe('app', () => {
   test('week: tapping game days rebuilds the plan', () => {
     render(<App />)
     click(/^Week$/)
-    expect(screen.getByRole('button', { name: /How your week works/ }).textContent).toMatch(/1 game · 2 football/)
+    expect(screen.getByRole('button', { name: /How your week works/ }).textContent).toMatch(/1 game · 4 football/)
     fireEvent.click(screen.getByRole('button', { name: /Monday: no game/ }))
-    expect(screen.getByRole('button', { name: /How your week works/ }).textContent).toMatch(/2 games · 1 football/)
+    expect(screen.getByRole('button', { name: /How your week works/ }).textContent).toMatch(/2 games · 3 football/)
     click(/How your week works/)
     expect(within(screen.getByRole('dialog', { name: 'How your week works' })).getByText('Hard days hard, easy days easy')).toBeTruthy()
     const saved = JSON.parse(localStorage.getItem('games')!)
@@ -114,10 +114,23 @@ describe('app', () => {
   test('week: the gym stepper changes how many gym sessions are planned', () => {
     render(<App />)
     fireEvent.click(screen.getByRole('button', { name: /^Week$/ }))
-    expect(screen.getByText(/3 gym/)).toBeTruthy()
+    expect(screen.getByText(/2 gym/)).toBeTruthy() // in season: gym 1 to 2
     click(/More gym sessions/)
-    expect(screen.getByText(/4 gym/)).toBeTruthy()
-    expect(getProfile().gym).toBe(4)
+    expect(screen.getByText(/3 gym/)).toBeTruthy()
+    expect(getProfile().gym).toBe(3)
+  })
+
+  test('week: season, football a week and same-day training are the player\'s to set', () => {
+    render(<App />)
+    fireEvent.click(screen.getByRole('button', { name: /^Week$/ }))
+    expect(screen.getByRole('button', { name: /How your week works/ }).textContent).toMatch(/4 football/)
+    click(/More football sessions/)
+    expect(screen.getByRole('button', { name: /How your week works/ }).textContent).toMatch(/5 football/)
+    fireEvent.click(screen.getByRole('radio', { name: 'Off season' }))
+    expect(getProfile().season).toBe('off'); expect(getProfile().footballPerWeek).toBeUndefined() // a new season starts from its own numbers
+    expect(screen.getByRole('button', { name: /How your week works/ }).textContent).toMatch(/3 football · 3 gym/)
+    fireEvent.click(screen.getByRole('checkbox', { name: /Football and gym on the same day/ }))
+    expect(getProfile().doubleDays).toBe(false)
   })
 
   test('a rest books the call-back when it starts, again when you leave, and drops it if you stay to the end', () => {
@@ -240,6 +253,8 @@ describe('app', () => {
     click(/^Next$/) // card goal
     click(/^Next$/) // games
     click(/^Saturday$/)
+    click(/^Next$/) // season
+    click(/^Next$/) // same day
     click(/^Next$/) // gym
     click(/^Next$/) // where you train
     click(/^Next$/)

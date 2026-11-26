@@ -24,7 +24,11 @@ export type Profile = {
   foot: Foot
   accent: Accent
   idol: string // role model (profile info; never shown under quotes: we can't verify who said what)
-  gym?: number // gym sessions a week (default 3)
+  gym?: number // gym sessions a week (unset: the season's default, lib/weekplan)
+  footballPerWeek?: number // football sessions a week (unset: the season's default)
+  season?: 'in' | 'off' // in season (football most days, gym 1 to 2) or off season (gym 3 to 4, football 3 to 4); unset counts as in season
+  showcase?: string[] // the stats shown to friends (lib/showcase): 3 to 6 keys
+  doubleDays?: boolean // can do football and gym on the same day (unset: yes, as before)
   sample?: boolean // the demo's sample player: history is reseeded daily
   ratings?: Ratings // latest rating session (test day)
   goal?: number // the overall rating the player is working toward (default 75: gold)

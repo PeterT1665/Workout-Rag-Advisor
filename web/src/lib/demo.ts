@@ -1,7 +1,7 @@
 // Public demo mode (build flag VITE_DEMO=1): no login, no sync, sample data, only licensed photos.
 // The private build never seeds anything. Dates are relative to "today" so the demo always looks current.
 import { DEFAULT_SETTINGS, save, type HistoryEntry } from './storage'
-import { DEFAULT_GYM, buildWeek, type Game } from './weekplan'
+import { buildWeek, type Game } from './weekplan'
 import { BUILTIN_SESSIONS as sessions } from './library'
 import { mark } from '../i18n'
 import type { LiftLog } from './lifts'
@@ -55,7 +55,7 @@ export function buildDemoHistory(now = new Date()): HistoryEntry[] {
   const weekday = (now.getDay() + 6) % 7
   if (weekday <= 1) rows.push([weekday === 0 ? 0 : -1, 'fb-wall-weakfoot-shooting', 58, 6, 'ok', [], 9, 0])
   // the sample player sticks to the plan (so the streak flame has a number): fill planned training days of the last 9
-  const plan = buildWeek([{ day: 2, kind: 'competitive' }], { gym: DEFAULT_GYM }).slots
+  const plan = buildWeek([{ day: 2, kind: 'competitive' }], { gym: 3 }).slots
   const FILL: Record<string, [string, number, number]> = { football: ['fb-close-control-1v1', 40, 5], gym: ['gym-full-light', 45, 6], recovery: ['recovery-hips', 20, 2] }
   for (let off = -1; off >= -9; off--) {
     if (rows.some((r) => r[0] === off) || GYM.some((g) => g[0] === off)) continue

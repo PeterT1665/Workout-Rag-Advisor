@@ -1,6 +1,6 @@
 import { Pill, SectionHead, Title } from '../components/ui'
 import { FitLabel } from '../components/TabBar'
-import { DAY_ABBR, DAYS, DAY_SHORT, DEFAULT_GYM, FOCUS_SHORT, kindLabel, matchdayLabel, todayIndex, type Game } from '../lib/weekplan'
+import { DAY_ABBR, DAYS, DAY_SHORT, FOCUS_SHORT, defaultFootball, defaultGymFor, kindLabel, matchdayLabel, todayIndex, type Game } from '../lib/weekplan'
 import { locale, t } from '../i18n'
 import { changeFor, changedSession, type DayChange, type WeekChanges } from '../lib/weekChanges'
 import { DayPicker } from '../components/DayPicker'
@@ -28,8 +28,13 @@ export function WeekView({ today, games, sessions, library, changes, onChange, o
   const nextMonday = new Date(Date.now() + 864e5).toLocaleDateString(locale(), { weekday: 'short', day: 'numeric', month: 'short' })
   const [editing, setEditing] = useState(false) // Edit: tap any day to change it
   const me = useProfile()
-  const gym = me.gym ?? DEFAULT_GYM
+  const season = me.season ?? 'in'
+  const gym = me.gym ?? defaultGymFor(season, games.length)
+  const football = me.footballPerWeek ?? defaultFootball(games.length, season)
   const setGym = (n: number) => setProfile({ ...me, gym: Math.max(0, Math.min(5, n)) })
+  const setFootball = (n: number) => setProfile({ ...me, footballPerWeek: Math.max(0, Math.min(6, n)) })
+  // a new season starts from that season's numbers: the player's own counts are cleared
+  const setSeason = (x: 'in' | 'off') => setProfile({ ...me, season: x, gym: undefined, footballPerWeek: undefined })
   const kindOn = (day: number) => games.find((g) => g.day === day)?.kind ?? 'none'
   const cycle = (day: number) => {
     const next = NEXT[kindOn(day)]
@@ -115,14 +120,18 @@ export function WeekView({ today, games, sessions, library, changes, onChange, o
         })}
       </div>
 
-      <div className="mt-4 flex items-center justify-between rounded-[16px] bg-surface px-4 py-2">
-        <span className="font-semibold">{t('Gym sessions a week')}</span>
-        <span className="flex items-center gap-1">
-          <button aria-label={t('Fewer gym sessions')} onClick={() => setGym(gym - 1)} disabled={gym <= 0} className="h-10 w-10 rounded-full bg-surface-2 text-lg disabled:opacity-30">−</button>
-          <span className="w-8 text-center font-display text-lg tabular-nums" aria-live="polite">{gym}</span>
-          <button aria-label={t('More gym sessions')} onClick={() => setGym(gym + 1)} disabled={gym >= 5} className="h-10 w-10 rounded-full bg-surface-2 text-lg disabled:opacity-30">+</button>
-        </span>
+      <div role="radiogroup" aria-label={t('Season')} className="mt-4 grid grid-cols-2 gap-1 rounded-full bg-surface p-1">
+        {([['in', t('In season')], ['off', t('Off season')]] as const).map(([id, label]) => (
+          <button key={id} role="radio" aria-checked={season === id} onClick={() => setSeason(id)}
+            className={`min-h-10 rounded-full font-display text-xs uppercase ${season === id ? 'bg-red text-on-red' : 'text-muted'}`}>{label}</button>
+        ))}
       </div>
+      <Counter label={t('Football a week')} value={football} min={0} max={6} onChange={setFootball} less={t('Fewer football sessions')} more={t('More football sessions')} />
+      <Counter label={t('Gym a week')} value={gym} min={0} max={5} onChange={setGym} less={t('Fewer gym sessions')} more={t('More gym sessions')} />
+      <label className="mt-2 flex items-center justify-between gap-3 rounded-[16px] bg-surface px-4 py-3">
+        <span className="font-semibold">{t('Football and gym on the same day')}</span>
+        <input type="checkbox" checked={me.doubleDays !== false} onChange={(e) => setProfile({ ...me, doubleDays: e.target.checked })} className="h-6 w-6 accent-[var(--red)]" />
+      </label>
 
       <WeekGuide plan={today.plan} games={games} />
 
@@ -143,5 +152,18 @@ export function WeekView({ today, games, sessions, library, changes, onChange, o
       </div>
       </div>
     </main>
+  )
+}
+
+function Counter({ label, value, min, max, onChange, less, more }: { label: string; value: number; min: number; max: number; onChange: (n: number) => void; less: string; more: string }) {
+  return (
+    <div className="mt-2 flex items-center justify-between rounded-[16px] bg-surface px-4 py-2">
+      <span className="font-semibold">{label}</span>
+      <span className="flex items-center gap-1">
+        <button aria-label={less} onClick={() => onChange(value - 1)} disabled={value <= min} className="h-10 w-10 rounded-full bg-surface-2 text-lg disabled:opacity-30">−</button>
+        <span className="w-8 text-center font-display text-lg tabular-nums" aria-live="polite">{value}</span>
+        <button aria-label={more} onClick={() => onChange(value + 1)} disabled={value >= max} className="h-10 w-10 rounded-full bg-surface-2 text-lg disabled:opacity-30">+</button>
+      </span>
+    </div>
   )
 }

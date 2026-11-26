@@ -6,7 +6,7 @@ import { ShareSheet } from './CalendarView'
 import { planStreak } from '../lib/streak'
 import { loadGames } from '../lib/today'
 import { loadWeekChanges } from '../lib/weekChanges'
-import { DEFAULT_GYM } from '../lib/weekplan'
+import { planOptsOf } from '../lib/weekplan'
 import { ACCENTS, getProfile } from '../lib/profile'
 import { latestBody } from '../lib/body'
 import { clearLiveLifts, liveLifts, withLive } from '../lib/liveLifts'
@@ -211,7 +211,7 @@ export function FullTime({ session, st, onExit }: { session: Session; st: Player
         )}
       </div>
       {sharing && <ShareSheet item={sharing} photo={photo} accent={ACCENTS.find((a) => a.id === getProfile().accent)?.hex ?? '#e01b35'}
-        streak={planStreak(loadHistory(), loadGames(), getProfile().gym ?? DEFAULT_GYM, loadWeekChanges()).days} onClose={() => setSharing(null)} />}
+        streak={planStreak(loadHistory(), loadGames(), planOptsOf(getProfile()), loadWeekChanges()).days} onClose={() => setSharing(null)} />}
     </div>
   )
 }

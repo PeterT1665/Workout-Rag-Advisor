@@ -36,6 +36,10 @@ test('new player: tour, one question per screen, building your week, the plan', 
   click(/^Next$/)
   click(/^Wednesday$/); click(/^Sunday$/); click(/^Sunday/) // second tap: casual
   click(/^Next$/)
+  click(/Off season/) // season
+  click(/^Next$/)
+  click(/^No/) // football and gym on the same day?
+  click(/^Next$/)
   click(/^New/) // gym experience
   click(/^Next$/)
   click(/^Next$/) // where you train: defaults
@@ -45,7 +49,7 @@ test('new player: tour, one question per screen, building your week, the plan', 
   act(() => { vi.advanceTimersByTime(6000) })
   click(/Let's train/)
   expect(onDone).toHaveBeenCalledWith(
-    expect.objectContaining({ name: 'Alex', number: 9, positions: ['striker', 'cm'], foot: 'right', goals: ['strength', 'injury-free'], goal: 85, gymExp: 'new', sample: false,
+    expect.objectContaining({ name: 'Alex', number: 9, positions: ['striker', 'cm'], foot: 'right', goals: ['strength', 'injury-free'], goal: 85, season: 'off', doubleDays: false, gymExp: 'new', sample: false,
       injuries: [expect.objectContaining({ part: 'hamstrings', severity: 'moderate', tissue: 'muscle' })] }),
     [{ day: 2, kind: 'competitive' }, { day: 6, kind: 'casual' }],
   )
@@ -66,7 +70,7 @@ test('answers are kept after every step: a closed app picks up where it stopped'
 test('edit player: no tour or injuries, colours at the end', () => {
   const onDone = vi.fn()
   render(<Onboarding initial={{ name: 'Peter', number: 7, positions: ['defender'], foot: 'left', accent: 'red', idol: '' }} onDone={onDone} onCancel={vi.fn()} />)
-  for (let i = 0; i < 9; i++) click(/^Next$/)
+  for (let i = 0; i < 11; i++) click(/^Next$/)
   expect(screen.getByText('Your colours')).toBeTruthy()
   click(/^Done/)
   expect(onDone.mock.calls[0][0]).not.toHaveProperty('injuries')

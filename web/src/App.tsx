@@ -16,10 +16,11 @@ import { TestDay } from './views/TestDay'
 import { Invite } from './views/Invite'
 import { CoachView } from './views/CoachView'
 import { TeamView } from './views/TeamView'
-import { publishStats } from './lib/team'
+import { publishShowcase, publishStats } from './lib/team'
 import { cancelRest, refreshPush, scheduleRest } from './lib/push'
 import { syncEnabled } from './lib/sync'
 import { cardStatsFor } from './lib/cardStats'
+import { resolveShowcase } from './lib/showcase'
 import { overall } from './components/PlayerCard'
 import { TabBar, type Tab } from './components/TabBar'
 import { MatchReport, MatchReview } from './views/MatchReview'
@@ -42,7 +43,7 @@ import { addHistory, loadHistory, loadSettings, save } from './lib/storage'
 import { loadGames, planToday, saveGames, setPlanGoals, withChange } from './lib/today'
 import { fitSession } from './lib/fit'
 import { planStreak, counts } from './lib/streak'
-import { DEFAULT_GYM } from './lib/weekplan'
+import { planOptsOf } from './lib/weekplan'
 import { changeFor, changedSession, loadWeekChanges, saveWeekChange, type DayChange } from './lib/weekChanges'
 import type { Game } from './lib/weekplan'
 import type { Session, Settings } from './lib/types'
@@ -103,13 +104,12 @@ export default function App({ onSignUp, onSignIn }: { onSignUp?: () => void; onS
   const stopPersist = useRef<() => void>(() => {})
   const [active, setActive] = useState(loadActive) // a session left unfinished (app closed or reloaded)
   const profile = useProfile()
-  const gymPerWeek = profile.gym
   const [changes, setChanges] = useState(loadWeekChanges)
   const [prefsRev, setPrefsRev] = useState(0) // bumped when a finished session teaches the app your way of doing it
   // what's already in today's log (football, gym, recovery), so Kick off moves on to the next one
   const doneToday = [...new Set(loadHistory().filter((h) => h.date === new Date().toLocaleDateString('en-CA') && counts(h))
     .map((h) => (h.type === 'gym' || h.type === 'home' ? 'gym' : h.type === 'recovery' ? 'recovery' : 'football')))].sort().join(',')
-  const planned = useMemo(() => { setPlanGoals(profile.goals); return planToday(sessions, games, new Date(), gymPerWeek, doneToday ? doneToday.split(',') : []) }, [games, gymPerWeek, doneToday, profile.goals])
+  const planned = useMemo(() => { setPlanGoals(profile.goals); return planToday(sessions, games, new Date(), planOptsOf(profile), doneToday ? doneToday.split(',') : []) }, [games, profile.gym, profile.footballPerWeek, profile.season, profile.doubleDays, doneToday, profile.goals])
   const [library, setLibrary] = useState(allSessions) // recommended + the user's own
   // your way of doing it (what you changed last time), inside the match-day rules
   // and an injury that guts a leg day turns it into the gym session it leaves most of (lib/injuries)
@@ -232,7 +232,7 @@ export default function App({ onSignUp, onSignIn }: { onSignUp?: () => void; onS
   const deleteBuilt = (id: string) => { deleteMySession(id); setLibrary(allSessions()); setOverlay({ name: 'library' }) }
 
   // plan streak, and a missed day that can still be made up (Home shows ready-made sessions for it)
-  const streak = planStreak(loadHistory(), games, gymPerWeek ?? DEFAULT_GYM, changes)
+  const streak = planStreak(loadHistory(), games, planOptsOf(profile), changes)
   // signed in: friends see your streak, rating and when you were last on (on open, on changes, every 3 min while open)
   const me = useProfile()
   useEffect(() => {
@@ -240,6 +240,8 @@ export default function App({ onSignUp, onSignIn }: { onSignUp?: () => void; onS
     const publish = () => {
       const card = cardStatsFor(me)
       void publishStats(me, { card, rating: card ? overall(card, me.positions) : null, streak: streak.days, trainedToday: streak.today })
+      // the stats the player picked to show friends (values come from what the app logged)
+      if (me.showcase) void publishShowcase(resolveShowcase(me.showcase, loadHistory(), loadMatches(), me))
     }
     publish()
     const every = setInterval(() => { if (document.visibilityState === 'visible') publish() }, 180000)

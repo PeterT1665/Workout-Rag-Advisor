@@ -1,5 +1,5 @@
 // What today looks like: the week plan's slot for today, its session, and the matchday label.
-import { DEFAULT_GYM, buildWeek, matchdayLabel, todayIndex, type Game, type GymFocus, type Slot, type WeekPlan } from './weekplan'
+import { buildWeek, type PlanOpts, matchdayLabel, todayIndex, type Game, type GymFocus, type Slot, type WeekPlan } from './weekplan'
 import { load, save } from './storage'
 import type { Session } from './types'
 import { changedSession, type DayChange } from './weekChanges'
@@ -58,9 +58,9 @@ export function sessionForSlot(slot: Slot, plan: WeekPlan, all: Session[]): Sess
 
 // `doneKinds`: what you've already trained today (football, gym, recovery). A day with football and gym
 // moves on to the gym once the football is in the log.
-export function planToday(all: Session[], games: Game[], now = new Date(), gym = DEFAULT_GYM, doneKinds: string[] = []): Today {
+export function planToday(all: Session[], games: Game[], now = new Date(), gym?: number | PlanOpts, doneKinds: string[] = []): Today {
   const day = todayIndex(now)
-  const plan = buildWeek(games, { gym })
+  const plan = buildWeek(games, typeof gym === 'number' ? { gym } : gym)
   const slots = plan.slots.filter((s) => s.day === day)
   const work = slots.filter((s) => s.kind !== 'game')
   const pending = work.find((s) => !doneKinds.includes(s.kind))

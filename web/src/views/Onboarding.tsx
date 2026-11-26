@@ -4,7 +4,7 @@ import { Button, Screen } from '../components/ui'
 import { FlameIcon } from '../components/icons'
 import { Demo3D } from '../components/Demo3D'
 import { ACCENTS, POSITIONS, applyAccent, positionTag, roleOf, type Foot, type Goal, type GymExp, type Injury, type KitItem, type Level, type Position, type Profile, type TrainAt } from '../lib/profile'
-import { DAYS, DAY_ABBR, FOCUS_SHORT, buildWeek, kindLabel, todayIndex, type Game } from '../lib/weekplan'
+import { DAYS, DAY_ABBR, FOCUS_SHORT, buildWeek, kindLabel, planOptsOf, todayIndex, type Game } from '../lib/weekplan'
 import { usePersonalImage } from '../lib/personal'
 import { InstallButton } from '../components/InstallButton'
 import { injurySafe, partLabel, safestInstead, seriousInjury, type Part, type Severity } from '../lib/injuries'
@@ -18,8 +18,8 @@ import { tr } from '../i18n/rich'
 // Make your player. New players: a 3-screen tour, then one question per screen (what the planner needs), a short
 // "Building your week" moment and the plan it made. Edit player: the same questions plus colours and role model.
 // Answers are kept on the phone after every step, so a closed app picks up where it stopped.
-const NEW_STEPS = ['tour', 'name', 'position', 'foot', 'level', 'goals', 'card', 'week', 'gym', 'train', 'injuries'] as const
-const EDIT_STEPS = ['name', 'position', 'foot', 'level', 'goals', 'card', 'week', 'gym', 'train', 'style'] as const
+const NEW_STEPS = ['tour', 'name', 'position', 'foot', 'level', 'goals', 'card', 'week', 'season', 'doubles', 'gym', 'train', 'injuries'] as const
+const EDIT_STEPS = ['name', 'position', 'foot', 'level', 'goals', 'card', 'week', 'season', 'doubles', 'gym', 'train', 'style'] as const
 type StepId = (typeof NEW_STEPS)[number] | (typeof EDIT_STEPS)[number]
 type InjuryRow = { part: Part; sev: Severity; now: boolean }
 const DRAFT = 'onboarding:draft'
@@ -195,6 +195,22 @@ export function Onboarding({ initial, initialGames = [], welcome = false, fresh 
             </div>
           </Step>
         )}
+        {id === 'season' && (
+          <Step title={t('Your season')}>
+            <div className="flex flex-col gap-2">
+              <Row on={(p.season ?? 'in') === 'in'} onClick={() => set({ season: 'in', gym: undefined, footballPerWeek: undefined })} title={t('In season')} hint={t('Football most days, gym 1 to 2 times')} />
+              <Row on={p.season === 'off'} onClick={() => set({ season: 'off', gym: undefined, footballPerWeek: undefined })} title={t('Off season')} hint={t('Gym 3 to 4 times, football 3 to 4')} />
+            </div>
+          </Step>
+        )}
+        {id === 'doubles' && (
+          <Step title={t('Football and gym on the same day?')} hint={t('For example, a gym next to the pitch.')}>
+            <div className="flex flex-col gap-2">
+              <Row on={p.doubleDays !== false} onClick={() => set({ doubleDays: true })} title={t('Yes')} hint={t('Football first, then gym')} />
+              <Row on={p.doubleDays === false} onClick={() => set({ doubleDays: false })} title={t('No')} hint={t('One a day')} />
+            </div>
+          </Step>
+        )}
         {id === 'week' && (
           <Step title={t('Your games')} hint={t('Tap the days you play. Tap again for a casual game, a third time to clear it.')}>
             <div className="grid grid-cols-[repeat(7,minmax(0,1fr))] gap-1.5">
@@ -300,7 +316,7 @@ export function Onboarding({ initial, initialGames = [], welcome = false, fresh 
 // Three screens before the questions: what the app does, shown with the app itself. Skippable.
 function Tour({ onDone, onBack }: { onDone: () => void; onBack?: () => void }) {
   const [i, setI] = useState(0)
-  const week = buildWeek([{ day: 2, kind: 'competitive' }], { gym: 3 }).slots
+  const week = buildWeek([{ day: 2, kind: 'competitive' }]).slots
   const slides = [
     { title: t('Your week, planned around game day'), body: t('Tell it when you play. Hard days stay away from games, recovery comes after them.'),
       art: (
@@ -374,6 +390,8 @@ export function buildingLines(p: Profile, games: Game[]): string[] {
     speed: t('Faster: speed and jump work comes first.'), strength: t('Stronger: heavy strength days come first.'), stamina: t('More stamina: interval sessions come first.'),
     skills: t('Better on the ball: dribbling and first-touch sessions come first.'), 'injury-free': t('Injury-free: Nordics, Copenhagen planks and core come first.'),
   }
+  out.push(p.season === 'off' ? t('Off season: gym 3 to 4 times, football 3 to 4.') : t('In season: football most days, gym 1 to 2 times.'))
+  if (p.doubleDays === false) out.push(t('One session a day, no football and gym together.'))
   for (const g of p.goals ?? []) out.push(goalLine[g])
   if (p.gymExp === 'new') out.push(t('New to the gym: technique first, no Olympic lifts yet.'))
   if (p.trainAt?.length && !p.trainAt.includes('gym')) out.push(t('No gym: home versions on gym days.'))
@@ -409,7 +427,7 @@ function Building({ p, games, onDone }: { p: Profile; games: Game[]; onDone: () 
 
 // The plan it made: the week, today's session and why, one button.
 function Reveal({ p, games, onGo }: { p: Profile; games: Game[]; onGo: () => void }) {
-  const td = useMemo(() => { setPlanGoals(p.goals); return planToday(BUILTIN_SESSIONS, games, new Date(), p.gym ?? 3) }, [p, games])
+  const td = useMemo(() => { setPlanGoals(p.goals); return planToday(BUILTIN_SESSIONS, games, new Date(), planOptsOf(p)) }, [p, games])
   const injuries = (p.injuries ?? []).filter((i) => !i.healed)
   const session = injurySafe(fitSession(safestInstead(td.session, BUILTIN_SESSIONS, injuries) ?? td.session, p).session, injuries).session
   const off = seriousInjury(injuries)

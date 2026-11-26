@@ -6,7 +6,7 @@
 //   on top of that day's own plan (or on a rest day). Each extra session makes up one missed day.
 //   Until the deadline the streak isn't broken; Home asks for the make-up.
 // - Today only adds once it's kept; an unfinished training day today doesn't break the streak.
-import { buildWeek, todayIndex, type Game, type SlotKind } from './weekplan'
+import { buildWeek, todayIndex, type Game, type PlanOpts, type SlotKind } from './weekplan'
 import type { HistoryEntry } from './storage'
 import type { WeekChanges } from './weekChanges'
 
@@ -25,10 +25,10 @@ export type Streak = { days: number; today: boolean; makeup?: MakeUp; status?: R
 // each day since the first log: kept (trained, or rested on a rest day), made up later, missed, or today still to do
 export type DayStatus = 'kept' | 'made-up' | 'missed' | 'pending'
 
-export function planStreak(history: HistoryEntry[], games: Game[], gym: number, changes: WeekChanges, now = new Date()): Streak {
+export function planStreak(history: HistoryEntry[], games: Game[], gym: number | PlanOpts | undefined, changes: WeekChanges, now = new Date()): Streak {
   if (!history.length) return { days: 0, today: false }
   const first = history.reduce((a, h) => (h.date < a ? h.date : a), history[0].date)
-  const slots = buildWeek(games, { gym }).slots
+  const slots = buildWeek(games, typeof gym === 'number' ? { gym } : gym).slots
   const byDate = new Map<string, HistoryEntry[]>()
   for (const h of history) byDate.set(h.date, [...(byDate.get(h.date) ?? []), h])
 

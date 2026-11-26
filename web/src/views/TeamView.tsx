@@ -1,5 +1,7 @@
 import { useCallback, useEffect, useState } from 'react'
 import { SocialButtons, SocialsSheet } from '../components/SocialsSheet'
+import { ShowcaseSheet } from '../components/ShowcaseSheet'
+import { showcaseLabel } from '../lib/showcase'
 import { SOCIALS, hasSocials } from '../lib/socials'
 import { Button, Title } from '../components/ui'
 import { FlameIcon } from '../components/icons'
@@ -71,6 +73,7 @@ function TeamSignedIn({ streak, onInvite }: { streak: Streak; onInvite?: () => v
   const [open, setOpen] = useState<TeamProfile | null>(null)
   const [renaming, setRenaming] = useState(false)
   const [socials, setSocials] = useState(false)
+  const [showcase, setShowcase] = useState(false)
   const [offline, setOffline] = useState(false)
 
   const refresh = useCallback(async () => {
@@ -116,6 +119,11 @@ function TeamSignedIn({ streak, onInvite }: { streak: Streak; onInvite?: () => v
         <span><span className="font-semibold">{t('Your socials')}</span> <span className="text-muted">{hasSocials(mine.socials) ? Object.keys(mine.socials ?? {}).map((k) => SOCIALS.find((x) => x.id === k)?.label).filter(Boolean).join(', ') : t('Add Instagram, WhatsApp and more so friends can message you')}</span></span>
         <span aria-hidden="true" className="text-muted">›</span>
       </button>
+      <button onClick={() => setShowcase(true)} className="mt-2 flex min-h-11 w-full items-center justify-between rounded-2xl bg-surface px-4 text-left text-sm active:scale-[0.99]">
+        <span><span className="font-semibold">{t('Your showcase')}</span> <span className="text-muted">{me.showcase?.length ? t('{n} stats', { n: me.showcase.length }) : ''}</span></span>
+        <span aria-hidden="true" className="text-muted">›</span>
+      </button>
+      {showcase && <ShowcaseSheet onClose={() => setShowcase(false)} onSaved={() => { setShowcase(false); void refresh() }} />}
       {socials && <SocialsSheet current={mine.socials ?? {}} onClose={() => setSocials(false)} onSaved={() => { setSocials(false); void refresh() }} />}
 
       {newFriend !== null && (
@@ -359,11 +367,21 @@ function FriendSheet({ p, photo, you, onClose, onRemove }: { p: TeamProfile; pho
   return (
     <Sheet label={`${profile.name}'s card`} onClose={onClose}>
         <div className="mx-auto w-full max-w-[260px]"><PlayerCard p={profile} stats={p.card} photo={photo} /></div>
-        <div className="mt-4 grid grid-cols-3 gap-2 text-center">
+        <div className="mt-4 grid grid-cols-2 gap-2 text-center">
           <Stat label={t('Streak')} value={`${p.streak}`} />
           <Stat label={t('Best')} value={`${p.best_streak}`} />
-          <Stat label={you ? t('You') : a.online ? t('Online') : t('Seen')} value={you ? '—' : a.online ? '●' : a.label} />
         </div>
+        {!!p.showcase?.length && (
+          <ul className="m-0 mt-3 grid list-none grid-cols-3 gap-2 p-0 text-center" aria-label={t('Showcase')}>
+            {p.showcase.slice(0, 6).map((x) => (
+              <li key={x.k} className="rounded-2xl bg-surface-2 px-2 py-2.5">
+                <span className="block font-display text-base tabular-nums leading-tight">{x.v}</span>
+                <span className="block text-[11px] leading-tight text-muted">{showcaseLabel(x.k)}</span>
+              </li>
+            ))}
+          </ul>
+        )}
+        {!you && <p className="m-0 mt-3 text-center text-sm text-muted">{a.online ? t('Online now') : t('Last seen {when}', { when: a.label })}</p>}
         {!p.card && <p className="m-0 mt-3 text-center text-sm text-muted">{t('Not rated yet.')}</p>}
         {!you && <SocialButtons socials={p.socials} />}
         <div className="mt-5 flex gap-3">

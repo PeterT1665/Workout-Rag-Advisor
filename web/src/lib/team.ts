@@ -14,6 +14,7 @@ export type TeamProfile = {
   card: CardStats | null; rating: number | null
   streak: number; best_streak: number; trained_today: boolean; last_active: string | null
   socials?: Socials | null // migration 0014; friends only, like the rest
+  showcase?: { k: string; v: string }[] | null // migration 0015: the stats a player picked to show, friends only
 }
 export type FoundPlayer = { user_id: string; username: string; display_name: string; number: number; avatar_path: string | null; friendship: 'friends' | 'requested' | 'asked-you' | null }
 export type FriendRequest = { user_id: string; username: string; display_name: string; number: number; avatar_path: string | null; incoming: boolean }
@@ -70,6 +71,16 @@ export async function leaderboard(): Promise<TeamProfile[]> {
   const sb = await supabase()
   const { data } = await sb.from('profiles').select('*')
   return ((data as TeamProfile[] | null) ?? []).sort((a, b) => b.streak - a.streak || (b.rating ?? 0) - (a.rating ?? 0) || a.username.localeCompare(b.username))
+}
+
+// The stats you picked to show friends. False when it didn't save (offline, or before migration 0015): the card works without it.
+export async function publishShowcase(items: { k: string; v: string }[]): Promise<boolean> {
+  try {
+    const sb = await supabase()
+    const id = await me()
+    const { error } = await sb.from('profiles').update({ showcase: items }).eq('user_id', id)
+    return !error
+  } catch { return false }
 }
 
 // Your social links (cleaned in lib/socials). False when it didn't save (offline, or before migration 0014).

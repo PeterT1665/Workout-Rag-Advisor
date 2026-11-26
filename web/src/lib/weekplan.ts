@@ -15,7 +15,16 @@ export const DAY_ABBR = dayNames('short').map((d) => cap(d.replace(/\.$/, '')))
 // v3 (2026-11-09, D33): footballers also lift 3-4 times a week. v4 (2026-11-16): gym days get a job by matchday
 // distance (see gymFor), modelled on a pro footballer's week; recovery can share a game day.
 // The Python weekplan.py keeps the original v2 rules for the CLI; this file is the app's source of truth.
-export const FOOTBALL_BY_GAMES: Record<number, number> = { 0: 3, 1: 2, 2: 1, 3: 0 }
+// Football is a real part of every week (pros are on the pitch almost daily, gym added on the same day). By games in the week:
+// in season football most days and gym 1 to 2 times; off season gym 3 to 4 and football 3 to 4. The player can set either number.
+export type Season = 'in' | 'off'
+export const FOOTBALL_IN_SEASON: Record<number, number> = { 0: 5, 1: 4, 2: 3, 3: 2 }
+export const FOOTBALL_OFF_SEASON: Record<number, number> = { 0: 4, 1: 3, 2: 3, 3: 2 }
+export const defaultFootball = (games: number, season: Season = 'in') => (season === 'in' ? FOOTBALL_IN_SEASON : FOOTBALL_OFF_SEASON)[Math.min(games, 3)]
+export const defaultGymFor = (season: Season = 'in', games = 1) => (season === 'in' ? 2 : games === 0 ? 4 : 3)
+// What the planner takes from the player: unset means "the season's default"; doubles unset means yes (older players keep their weeks).
+export type PlanOpts = { gym?: number; football?: number; season?: Season; doubles?: boolean }
+export const planOptsOf = (p: { gym?: number; footballPerWeek?: number; season?: Season; doubleDays?: boolean }): PlanOpts => ({ gym: p.gym, football: p.footballPerWeek, season: p.season, doubles: p.doubleDays })
 export const RECOVERY_BY_GAMES: Record<number, number> = { 0: 1, 1: 1, 2: 1, 3: 2 }
 export const DEFAULT_GYM = 3
 
@@ -59,10 +68,12 @@ function gymFor(day: number, games: Game[]): { focus: GymFocus; score: number } 
   return { focus: 'strength', score: 1 }
 }
 
-export function buildWeek(games: Game[], opts: { gym?: number } = {}): WeekPlan {
+export function buildWeek(games: Game[], opts: PlanOpts = {}): WeekPlan {
   const n = Math.min(games.length, 3)
-  const footballCount = FOOTBALL_BY_GAMES[n]
-  const gymCount = Math.max(0, Math.min(5, opts.gym ?? DEFAULT_GYM))
+  const season = opts.season ?? 'in'
+  const footballCount = Math.max(0, Math.min(6, opts.football ?? defaultFootball(n, season)))
+  const gymCount = Math.max(0, Math.min(5, opts.gym ?? defaultGymFor(season, n)))
+  const doubles = opts.doubles !== false
   const slots: Slot[] = []
   const reasons: string[] = []
   const gameDays = new Set(games.map((g) => g.day))
@@ -109,8 +120,11 @@ export function buildWeek(games: Game[], opts: { gym?: number } = {}): WeekPlan 
   }
   let doubled = 0
   for (let i = 0; i < footballCount; i++) {
-    const cands = week.filter((d) => !gameDays.has(d) && !on(d, 'football'))
-    if (!cands.length) { reasons.push(t('No free day for a football session; skipped to protect recovery.')); continue }
+    // not the day before a game (activation) or the day after it (recovery) unless nothing else is free; a gym day only if doubles are on
+    const open = week.filter((d) => !gameDays.has(d) && !on(d, 'football') && (doubles || !on(d, 'gym')))
+    const clean = open.filter((d) => { const { ahead, behind } = matchDistance(d, games); return !(n > 0 && (ahead === 1 || behind === 1)) })
+    const cands = clean.length ? clean : open
+    if (!cands.length) { reasons.push(doubles ? t('No free day for a football session; skipped to protect recovery.') : t('No free day for a football session without sharing a day with the gym.')); continue }
     const best = cands.reduce((a, b) => (footballCost(b) < footballCost(a) ? b : a))
     if (footballCost(best) >= 6) reasons.push(t('Football on {day} is close to a game: no cleaner day was free.', { day: DAYS[best] }))
     if (on(best, 'gym')) doubled++
@@ -121,7 +135,8 @@ export function buildWeek(games: Game[], opts: { gym?: number } = {}): WeekPlan 
 
   slots.sort((a, b) => a.day - b.day || order(a.kind) - order(b.kind))
   const label = n === 1 ? t('1 game') : n < 3 ? t('{n} games', { n }) : t('3+ games')
-  let why = t('{games} this week: {football} football, {gym} gym, {recovery} recovery.', { games: label, football: footballCount, gym: gymCount, recovery: RECOVERY_BY_GAMES[n] })
+  const placed = slots.filter((x) => x.kind === 'football').length
+  let why = t('{games} this week: {football} football, {gym} gym, {recovery} recovery.', { games: label, football: placed, gym: slots.filter((x) => x.kind === 'gym').length, recovery: slots.filter((x) => x.kind === 'recovery').length })
   if (n) why += ' ' + t('Each gym day has a job set by how far it is from the game: legs early in the week, then core, upper body, and a short activation the day before. Hard days are hard (football, legs and speed together at MD-4), easy days are easy.')
   if (n >= 3) why += ' ' + t('Games carry the football load, so the focus is gym and recovery.')
   if (doubled) why += ' ' + (doubled > 1 ? t('{n} football sessions share a day with the gym: ball work first, gym after.', { n: doubled }) : t('1 football session shares a day with the gym: ball work first, gym after.'))
