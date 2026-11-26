@@ -1,19 +1,14 @@
 import { expect, test } from 'vitest'
-import { kcal, sessionShare } from './shareStats'
+import { sessionShare } from './shareStats'
 import type { HistoryEntry } from './storage'
 
 const set = (kg: number, reps: number) => ({ kg, reps })
 const prev: HistoryEntry = { id: 'g', title: 'Gym', type: 'gym', date: '2026-11-10', minutes: 50, rpe: 7, lifts: [{ ex: 'bench-press', name: 'Bench press', sets: [set(70, 5)] }] }
 const gym: HistoryEntry = { id: 'g', title: 'Gym', type: 'gym', date: '2026-11-20', minutes: 52, rpe: 8, effort: 8, lifts: [{ ex: 'bench-press', name: 'Bench press', sets: [set(60, 8), set(80, 5)] }] }
 
-test('calories: an estimate from minutes, effort and body weight, harder means more', () => {
-  expect(kcal('gym', 60, 8, 70)).toBe(Math.round((6.2 * 70) / 10) * 10)
-  expect(kcal('football', 60, 8, 70)).toBeGreaterThan(kcal('gym', 60, 8, 70))
-  expect(kcal('recovery', 30, 3, 70)).toBeLessThan(kcal('gym', 30, 3, 70))
-})
 test('gym card: time and calories only, the streak flame is the picture (no best set, no set bars)', () => {
   const s = sessionShare(gym, [prev, gym], 72)
-  expect(s.stats.map((x) => x.value)).toEqual(['52 min', expect.stringMatching(/^~\d+/)])
+  expect(s.stats.map((x) => x.value)).toEqual(['52 min', expect.stringMatching(/^~\d+–\d+$/)]) // calories: a range
   expect(s.graphic).toEqual({ type: 'flame' })
 })
 test('football card: shots on target and goals from the Full time tally, with the shot map', () => {

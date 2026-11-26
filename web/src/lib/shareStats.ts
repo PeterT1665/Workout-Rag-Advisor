@@ -2,6 +2,8 @@
 // (the "route line" of a Strava card): the streak flame for most, a shot map on a goal for finishing, the card for
 // a rating session.
 import { t } from '../i18n'
+import { estimateKcal, kcalText } from './kcal'
+import { allSessions } from './library'
 import { gameLength, resultOf, type MatchReview } from './match'
 import { TESTS, rescored, type Ratings } from './testday'
 import type { HistoryEntry } from './storage'
@@ -13,19 +15,12 @@ export type Graphic =
   | { type: 'flame'; tone?: 'plan' | 'unbeaten' | 'wins' | 'off' }
 export type ShareItem = { kind: 'gym' | 'football' | 'recovery' | 'match' | 'rating'; title: string; date: string; stats: ShareStat[]; graphic: Graphic }
 
-// Calories, estimated (MET × body weight × hours): the effort of the session moves the MET within the sport's range.
-// Shown with "est.": a heart-rate watch knows better.
-export function kcal(type: string | undefined, minutes: number, effort: number | undefined, kg: number) {
-  const e = effort ?? 6
-  const met = type === 'recovery' ? 2.5 : type === 'football' ? 4 + 0.55 * e : 3 + 0.4 * e // gym and home: 3.4–7, football: 4.5–9.5
-  return Math.round((met * kg * minutes) / 60 / 10) * 10
-}
-
 const fmtMin = (m: number) => t('{n} min', { n: m })
 
 export function sessionShare(h: HistoryEntry, _all: HistoryEntry[], kg: number): ShareItem {
   const type = h.type === 'gym' || h.type === 'home' ? 'gym' : h.type === 'football' ? 'football' : 'recovery'
-  const cal = { label: t('Calories'), value: `~${kcal(h.type, h.minutes, h.effort ?? h.rpe, h.bw ?? kg)}` } // ~: an estimate
+  // a range, summed per exercise when the session is known (lib/kcal.ts): a watch reads lifting higher
+  const cal = { label: t('Calories'), value: kcalText(estimateKcal({ session: allSessions().find((x) => x.id === h.id), type: h.type, minutes: h.minutes, effort: h.effort ?? h.rpe, kg: h.bw ?? kg })) }
   const stats: ShareStat[] = []
   let graphic: Graphic = { type: 'flame' }
   if (type === 'gym') {

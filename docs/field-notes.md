@@ -421,3 +421,8 @@ Problems Peter hits while planning and training, and what was done about each.
     - **Goal:** `profile.goal`, default 75 (gold: everyone works toward gold). Asked in the player survey (new step "Your card goal": Silver 65, **Gold 75**, Top 85) and in Edit player; changeable in the window.
     - **How your week works:** the references ("Learned from", the Ref pills) are removed; the five rules stay. Peter may cut the rest down later.
     - Peter's saved cone weave (6.19 s) was one way only; the real course time is about 11.6 s, which would score about 71. His saved session can't be edited by Claude (read-only access); his next rating session fixes it.
+74. **Calories rebuilt (Peter 24/11; research `~/Downloads/training-clips/calorie-research.md`).**
+    - Shown as a **range** (e.g. ~130–170): honest error is about ±20%, and a watch reads lifting higher (a note says so in the Record day card).
+    - **Summed per exercise** when the session is known (`lib/kcal.ts`): a max sprint, max jump or max isometric hold costs a fixed amount however fresh you felt after; rests count at a low MET; strength and football blocks use a MET set by the session effort; scaled to the minutes you trained. Otherwise whole-session MET by type and effort (gym 3 + 0.3×effort, football 4 + 0.5×effort, home 2.5 + 0.4×effort, recovery 2.3).
+    - Peter's activation session (effort 4) is about 110–145 kcal, not 160-300: the research says the old figure wasn't low. Anchors for per-rep costs are judgment (the max isometric hold is the weakest).
+    - **Check-in:** the load question stays "How hard was the whole session?" (a light activation day SHOULD count as low load); a line under it says to think of the whole session.

@@ -138,6 +138,7 @@ export function FullTime({ session, st, onExit }: { session: Session; st: Player
             </>}
 
             <h3 className="m-0 mt-6 mb-2 font-semibold">{lifts.length ? t('How hard was the whole session?') : t('How hard was it?')}{rpe ? <span className="ml-2 font-normal text-white/60">{EFFORT_WORDS()[rpe]}</span> : null}</h3>
+            <p className="m-0 mb-2 -mt-1 text-sm text-white/60">{t('Think of the whole session, not just the hardest exercise.')}</p>
             <div className="grid grid-cols-5 gap-2">
               {Array.from({ length: 10 }, (_, i) => i + 1).map((n) => (
                 <button key={n} onClick={() => setRpe(n)} aria-pressed={rpe === n} aria-label={t('Effort {n}', { n })}

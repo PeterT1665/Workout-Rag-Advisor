@@ -200,6 +200,7 @@ function DayDetail({ day, items, photo, kept, trained, onBack, onShare }: { day:
         </label>
       )}
       {!items.length && <p className="m-0 mt-3 rounded-[18px] bg-white/[.06] p-4 text-sm text-white/70">{kept ? t('Rest day: the plan said rest, so it counts.') : t('Nothing logged this day.')}</p>}
+      {items.some((it) => it.stats.some((s) => s.label === t('Calories'))) && <p className="m-0 mt-2 text-xs text-white/50">{t('Calories are an estimate. Watches usually read lifting higher: they use heart rate, which stays up between sets.')}</p>}
       <div className="mt-3 flex flex-col gap-2">
         {items.map((it, i) => (
           <div key={i} className="flex items-center gap-3 rounded-[18px] bg-white/[.06] p-3.5">
