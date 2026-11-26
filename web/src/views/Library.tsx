@@ -47,7 +47,6 @@ export function Library({ sessions, onOpen, onNew, onBack, wide = false }: {
 
       {!!home.length && <>
         <SectionHead title={t('Home workouts')} />
-        <p className="m-0 mb-3 text-sm text-muted">{t('No gym needed: bodyweight, a sofa, a table, a towel and a wall.')}</p>
         <ul className={grid}>{home.map(card)}</ul>
       </>}
     </Screen>

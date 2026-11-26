@@ -22,7 +22,6 @@ export function NextSteps({ name, onSignUp, onDone }: { name: string; onSignUp?:
       {install && (
         <section className="rise mt-4 rounded-[22px] border border-red/40 bg-surface p-4">
           <h2 className="m-0 font-display text-lg uppercase">{t('Add to Home Screen')}</h2>
-          <p className="m-0 mt-1 mb-3 text-sm text-muted">{t('Full screen, works offline at the field.')}</p>
           {ios
             ? <ol className="m-0 flex list-none flex-col gap-2.5 p-0 text-sm">
                 {[t('Tap Share (square with an arrow) in Safari.'), t('Tap Add to Home Screen.'), t('Tap Add, then open the app from your Home Screen.')].map((t, i) => (

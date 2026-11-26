@@ -57,7 +57,6 @@ export function CoachView({ ctx, ask: first, onBack, onSession, onGo }: {
         <Button variant="ghost" size="sm" onClick={onBack}>{t('Back')}</Button>
         <div className="min-w-0 flex-1">
           <h1 className="m-0 font-display text-xl uppercase leading-none">{t('AI coach')}</h1>
-          <p className="m-0 mt-0.5 truncate text-xs text-muted">{t('Knows your plan, your log and every exercise. Works offline.')}</p>
         </div>
         {msgs.length > 0 && <button onClick={() => { if (confirm(t('Clear this chat?'))) setMsgs([]) }} className="min-h-10 px-2 text-sm font-semibold text-muted">{t('Clear')}</button>}
       </header>

@@ -40,7 +40,6 @@ function TeamGuest({ streak, onSignUp, onSignIn }: { streak: Streak; onSignUp?: 
   const stats = cardStatsFor(me)
   return (
     <Shell>
-      <p className="m-0 mt-2 text-muted">{t("Add your friends, see who's training, and compete on streaks and ratings.")}</p>
       <section className="mt-6 rounded-[24px] bg-surface p-4" aria-label={t('Leaderboard')}>
         <h2 className="m-0 mb-3 font-display text-base uppercase">{t('Leaderboard')}</h2>
         <Row rank={1} name={me.name || t('You')} number={me.number} sub={t('You')} streak={streak.days} lit={streak.today} rating={stats ? overall(stats, me.positions) : null} />
@@ -111,7 +110,6 @@ function TeamSignedIn({ streak, onInvite }: { streak: Streak; onInvite?: () => v
         <AvatarPicker url={mine.avatar_path ? urls[mine.avatar_path] : undefined} name={mine.display_name || mine.username} onChanged={refresh} />
         <div className="min-w-0 flex-1">
           <p className="m-0 truncate font-semibold">@{mine.username} <span className="text-muted">#{mine.number}</span></p>
-          <p className="m-0 text-sm text-muted">{t('Friends find you with your username and shirt number.')}</p>
         </div>
         <button onClick={() => setRenaming(true)} className="min-h-10 shrink-0 rounded-full bg-surface-2 px-3 text-xs font-semibold">{t('Edit')}</button>
       </div>

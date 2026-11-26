@@ -189,7 +189,7 @@ export function Onboarding({ initial, initialGames = [], welcome = false, fresh 
           </Step>
         )}
         {id === 'card' && (
-          <Step title={t('Your card goal')} hint={t('Where do you want your card? You can change it any time in Record, How rating works.')}>
+          <Step title={t('Your card goal')}>
             <div className="flex flex-col gap-2">
               {([[65, t('Silver · 65'), t('A solid club player')], [75, t('Gold · 75'), t('An average pro. Recommended.')], [85, t('Top · 85'), t('A top-flight standout')]] as [number, string, string][]).map(([g, label, hint]) => (
                 <Row key={g} on={(p.goal ?? 75) === g} onClick={() => set({ goal: g })} title={label} hint={hint} />

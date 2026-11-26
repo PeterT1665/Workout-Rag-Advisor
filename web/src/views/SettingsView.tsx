@@ -35,7 +35,6 @@ export function SettingsView({ settings: s, onChange, onProfile, onInvite, onTou
         <Slider id="cmax" label={t('Longest gap between cues (s)')} min={3} max={15} step={1} value={s.cueMax} onChange={(v) => onChange({ cueMax: v })} />
         <Button variant="ghost" className="bg-surface-2" onClick={() => { say(s, t('left'), true); setTimeout(() => say(s, t('right'), true), 900) }}>{t('Test voice')}</Button>
       </Panel>
-      <p className="text-sm text-muted">{t('Cues come at random times in the 1v1 drills (left/right: the defender commits that way, go the other way) and in the number-call wall passes (even: pass it back first time, odd: turn).')}</p>
 
       <h2 className="mt-8 mb-3 font-display text-lg uppercase">{t('Notifications')}</h2>
       <NotificationSettings />

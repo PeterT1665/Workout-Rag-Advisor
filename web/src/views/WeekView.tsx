@@ -106,7 +106,6 @@ export function WeekView({ today, games, sessions, library, changes, onChange, o
       </div>
       <div className={wide ? 'mt-2 grid grid-cols-[minmax(0,1fr)_minmax(0,1.2fr)] gap-10' : ''}>
       <div>
-      <p className="mt-2 text-muted">{t('Tap the days you play.')}</p>
       <div className="mt-4 grid grid-cols-[repeat(7,minmax(0,1fr))] gap-1.5">
         {DAY_SHORT.map((d, day) => {
           const k = kindOn(day)
@@ -140,12 +139,10 @@ export function WeekView({ today, games, sessions, library, changes, onChange, o
       <SectionHead title={t('The plan')} right={
         <button onClick={() => { setEditing(!editing); setPicking(null) }} aria-pressed={editing}
           className={`min-h-9 rounded-full px-4 text-sm font-semibold ${editing ? 'bg-red text-on-red' : 'bg-surface-2 text-ink'}`}>{editing ? t('Done') : t('Edit')}</button>} />
-      {editing && <p className="m-0 mb-3 text-sm text-muted">{t('Tap a day to change it.')}</p>}
       {planList(0)}
       {showNext && (
         <section aria-label={t('Next week')}>
           <SectionHead title={t('Next week')} right={<span className="text-sm text-muted">{t('from {date}', { date: nextMonday })}</span>} />
-          <p className="m-0 mb-3 text-sm text-muted">{t('Plan it tonight: tap Edit to change any day.')}</p>
           {planList(1)}
         </section>
       )}

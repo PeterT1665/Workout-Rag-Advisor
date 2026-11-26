@@ -92,7 +92,6 @@ export function WeekChart({ history }: { history: HistoryEntry[] }) {
       <div className="mt-2 grid grid-cols-[repeat(7,minmax(0,1fr))] gap-2 text-center font-display text-[11px] text-muted">
         {DAY_SHORT.map((s, i) => <span key={i} className={i === today ? 'text-ink' : ''}>{s}</span>)}
       </div>
-      {week === 0 && <p className="m-0 mt-3 text-sm text-muted">{t('Finish a session and it shows up here, coloured by kind.')}</p>}
     </figure>
   )
 }
