@@ -17,6 +17,19 @@ export function isInstalled() {
     (typeof matchMedia === 'function' && matchMedia('(display-mode: standalone)').matches)
 }
 
+// The browser inside another app (TikTok, Instagram...): it can't add to the Home Screen, so the player has to open the page in
+// Safari first. Returns the app's name, or null in a normal browser.
+export function inAppBrowser(ua = typeof navigator === 'undefined' ? '' : navigator.userAgent): string | null {
+  if (/musical_ly|BytedanceWebview|TikTok|trill/i.test(ua)) return 'TikTok'
+  if (/Instagram/i.test(ua)) return 'Instagram'
+  if (/FBAN|FBAV|FB_IAB/i.test(ua)) return 'Facebook'
+  if (/Snapchat/i.test(ua)) return 'Snapchat'
+  if (/LinkedInApp/i.test(ua)) return 'LinkedIn'
+  if (/\bLine\//i.test(ua)) return 'LINE'
+  if (/Zalo/i.test(ua)) return 'Zalo'
+  return null
+}
+
 // Phones and tablets that are not running the installed app yet.
 export const canInstall = () => !isInstalled() && (isIOS() || /Android/.test(navigator.userAgent) || deferred !== null)
 

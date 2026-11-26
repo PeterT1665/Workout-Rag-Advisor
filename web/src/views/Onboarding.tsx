@@ -6,6 +6,7 @@ import { Demo3D } from '../components/Demo3D'
 import { ACCENTS, POSITIONS, applyAccent, positionTag, roleOf, type Foot, type Goal, type GymExp, type Injury, type KitItem, type Level, type Position, type Profile, type TrainAt } from '../lib/profile'
 import { DAYS, DAY_ABBR, FOCUS_SHORT, buildWeek, kindLabel, planOptsOf, todayIndex, type Game } from '../lib/weekplan'
 import { usePersonalImage } from '../lib/personal'
+import { InAppNotice } from '../components/InAppNotice'
 import { InstallButton } from '../components/InstallButton'
 import { injurySafe, partLabel, safestInstead, seriousInjury, type Part, type Severity } from '../lib/injuries'
 import { BUILTIN_SESSIONS } from '../lib/library'
@@ -86,6 +87,7 @@ export function Onboarding({ initial, initialGames = [], welcome = false, fresh 
         </>}
         <div className="absolute top-[max(16px,var(--sat))] left-4 z-20"><LanguagePicker compact /></div>
         <InstallButton className="absolute top-[max(16px,var(--sat))] right-4 z-20" />
+        <InAppNotice className="absolute top-[calc(max(16px,var(--sat))+52px)] inset-x-4 z-20" />
         <div className="stagger relative z-10">
           <p style={{ '--i': 0 } as React.CSSProperties} className="m-0 font-display text-sm uppercase text-red-ink">{t('Football Personal Coach')}</p>
           <h1 style={{ '--i': 1 } as React.CSSProperties} className="m-0 mt-2 font-display text-[clamp(2.6rem,12vw,3.8rem)] uppercase leading-[.88]">{tr('Train like{br}a pro.', { br: <br /> })}</h1>

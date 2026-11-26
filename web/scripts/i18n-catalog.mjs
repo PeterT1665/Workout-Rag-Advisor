@@ -24,6 +24,8 @@ export function catalog() {
   for (const e of lib.exercises) {
     if (e.how) out.add(e.how)
     if (e.safe) out.add(e.safe)
+    if (e.mistake) out.add(e.mistake)
+    if (e.fix) out.add(e.fix)
     if (e.reps && !/^\d+(-\d+)?$/.test(e.reps)) out.add(e.reps)
     for (const n of e.needs ?? []) out.add(n)
   }

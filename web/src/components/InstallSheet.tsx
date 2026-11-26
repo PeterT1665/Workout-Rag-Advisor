@@ -1,12 +1,17 @@
 import { Button } from './ui'
-import { isIOS } from '../lib/install'
+import { useState } from 'react'
+import { inAppBrowser, isIOS } from '../lib/install'
 import { t } from '../i18n'
 import { tr } from '../i18n/rich'
 
 // Bottom sheet with the Add to Home Screen steps.
 export function InstallSheet({ onClose }: { onClose: () => void }) {
   const ios = isIOS()
-  const steps = ios
+  const inApp = inAppBrowser() !== null
+  const [copied, setCopied] = useState(false)
+  const steps = inApp
+    ? [tr('Tap the <b>•••</b> menu in this app.'), tr('Tap <b>Open in Safari</b> (or <b>Open in browser</b>).'), tr('In Safari, tap {icon} <b>Share</b>, then <b>Add to Home Screen</b>.', { icon: <ShareGlyph /> })]
+    : ios
     ? [tr('Tap {icon} <b>Share</b> in Safari. No button? Tap <b>•••</b> next to the address, then Share.', { icon: <ShareGlyph /> }),
        tr('Scroll down, tap <b>Add to Home Screen</b>. Not there? Tap <b>More</b>.'),
        tr('Tap <b>Add</b>, then open the app from your Home Screen.')]
@@ -16,8 +21,8 @@ export function InstallSheet({ onClose }: { onClose: () => void }) {
       <button aria-label={t('Close')} className="absolute inset-0 bg-black/60" onClick={onClose} />
       <div className="rise relative w-full max-w-xl rounded-t-[28px] bg-surface px-5 pt-3 pb-[max(20px,env(safe-area-inset-bottom))]">
         <div className="mx-auto mb-4 h-1.5 w-10 rounded-full bg-surface-2" aria-hidden="true" />
-        <h2 className="m-0 font-display text-2xl uppercase leading-none">{t('Add to Home Screen')}</h2>
-        <p className="m-0 mt-2 text-sm text-muted">{t('Full screen, works offline at the field.')}</p>
+        <h2 className="m-0 font-display text-2xl uppercase leading-none">{inApp ? t('Open in Safari first') : t('Add to Home Screen')}</h2>
+        <p className="m-0 mt-2 text-sm text-muted">{inApp ? t("This app's browser can't install it.") : t('Full screen, works offline at the field.')}</p>
         <ol className="m-0 mt-5 flex list-none flex-col gap-4 p-0">
           {steps.map((s, i) => (
             <li key={i} className="flex gap-3">
@@ -26,7 +31,8 @@ export function InstallSheet({ onClose }: { onClose: () => void }) {
             </li>
           ))}
         </ol>
-        <Button block variant="ghost" className="mt-6 bg-surface-2" onClick={onClose}>{t('Got it')}</Button>
+        {inApp && <Button block className="mt-5" onClick={async () => { try { await navigator.clipboard.writeText(location.href); setCopied(true) } catch { /* no clipboard: the steps still work */ } }}>{copied ? t('Link copied. Paste it in Safari.') : t('Copy link')}</Button>}
+        <Button block variant="ghost" className="mt-3 bg-surface-2" onClick={onClose}>{t('Got it')}</Button>
 
       </div>
     </div>

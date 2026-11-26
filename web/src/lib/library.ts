@@ -7,7 +7,7 @@ import { mark, t } from '../i18n'
 import { demoFor } from './demo3d/catalog'
 
 export type Sport = 'football' | 'gym' | 'home' | 'mobility'
-export type Exercise = Block & { id: string; sport: Sport; category: string; positions?: string[]; mine?: boolean } // mine: the player's own (lib/myExercises)
+export type Exercise = Block & { id: string; sport: Sport; category: string; positions?: string[]; mine?: boolean; mistake?: string; fix?: string } // mistake + fix: a text line for exercises without a Form check in the 3D demo // mine: the player's own (lib/myExercises)
 export type Item = { ex: string; work?: number; rest?: number; rounds?: number; how?: string; superset?: boolean }
 export type Template = { id: string; title: string; type: string; summary: string; needs: string[]; items: Item[] }
 export type MySession = Template & { mine: true; updated: string }
@@ -15,7 +15,7 @@ export type MySession = Template & { mine: true; updated: string }
 // Instructions and descriptive reps ("8 each leg") in the app's language; names stay English, and "needs"
 // stay English data (the kit check reads them) and are translated where they're shown.
 const tReps = (r?: string) => (r && !/^\d+(-\d+)?$/.test(r) ? t(r) : r)
-export const EXERCISES = (data.exercises as Exercise[]).map((e) => ({ ...e, how: e.how && t(e.how), safe: e.safe && t(e.safe), reps: tReps(e.reps) }))
+export const EXERCISES = (data.exercises as Exercise[]).map((e) => ({ ...e, how: e.how && t(e.how), safe: e.safe && t(e.safe), mistake: e.mistake && t(e.mistake), fix: e.fix && t(e.fix), reps: tReps(e.reps) }))
 export const TEMPLATES = data.templates as Template[]
 const byId = new Map(EXERCISES.map((e) => [e.id, e]))
 export const exercise = (id: string) => byId.get(id)
@@ -28,7 +28,7 @@ export function registerExercises(list: Exercise[]) {
   for (let i = EXERCISES.length - 1; i >= 0; i--) if (EXERCISES[i].mine) { byId.delete(EXERCISES[i].id); byLowerName.delete(EXERCISES[i].name.toLowerCase()); EXERCISES.splice(i, 1) }
   for (const e of list) {
     if (byLowerName.has(e.name.toLowerCase())) continue // same name as a library exercise: use that one
-    const x = { ...e, how: e.how, safe: undefined, reps: e.reps }
+    const x = { ...e, how: e.how, safe: undefined, mistake: undefined, fix: undefined, reps: e.reps }
     EXERCISES.push(x); byId.set(x.id, x); byLowerName.set(x.name.toLowerCase(), x)
   }
   version++
