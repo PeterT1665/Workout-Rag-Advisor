@@ -17,6 +17,12 @@ describe('showcase stats', () => {
     expect(o.find((x) => x.k === 'sprint')!.value).toBe('3.45 s')
     expect(o.find((x) => x.k === 'pr:bench-press')!.value).toBe('80 kg × 3') // the set with the highest estimated max
   })
+  test('the card stats and overall can be picked once the card exists', () => {
+    const o = showcaseOptions([], [], { ratings: ratingsFrom({ PAC: 3.45, DRI: 6, PAS: 40 }) })
+    const keys = o.map((x) => x.k)
+    expect(keys).toContain('card:OVR'); expect(keys).toContain('card:PAC'); expect(keys).not.toContain('card:SHO')
+    expect(Number(o.find((x) => x.k === 'card:OVR')!.value)).toBeGreaterThan(0)
+  })
   test('a picked key with no data any more is dropped, order kept, six at most', () => {
     const items = resolveShowcase(['assists', 'sprint', 'goals'], [], [m(2, 1)], {})
     expect(items).toEqual([{ k: 'assists', v: '1' }, { k: 'goals', v: '2' }])
