@@ -88,7 +88,8 @@ function footballWeek(plan: WeekPlan, all: Session[]): Map<number, Session> {
   // every week needs a true max-speed run (the gym doesn't build top speed): swap one in on the hardest football day
   if (picks.size && ![...picks.values()].some(hasMaxSpeed)) {
     const speed = pool.find((s) => hasMaxSpeed(s) && !hasHeading(s)) ?? all.find((s) => s.id === 'fb-speed-acceleration' && hasMaxSpeed(s))
-    const hard = [...slots].reverse().find((s) => !gameDays.has((s.day + 1) % 7) && picks.get(s.day) && !hasHeading(picks.get(s.day)!))
+    const open = [...slots].reverse().filter((s) => !gameDays.has((s.day + 1) % 7) && picks.get(s.day))
+    const hard = open.find((s) => !hasHeading(picks.get(s.day)!)) ?? open[0] // another day first; a heading session may give way if it is the only one
     if (speed && hard) picks.set(hard.day, speed)
   }
   return picks

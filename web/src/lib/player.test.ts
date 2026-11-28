@@ -196,3 +196,40 @@ describe('changing sets mid-exercise', () => {
     p.stop()
   })
 })
+
+describe('word cues (lib/cues.ts)', () => {
+  const run = (cue: NonNullable<Session['blocks'][number]['cue']>, moves?: string[]) => {
+    const s: Session = { id: 'c', title: 'C', type: 'football', summary: '', needs: [], blocks: [{ name: 'Drill', kind: 'drill', work: 120, cue }] }
+    const { deps, log } = fakeAudio()
+    const seen: unknown[] = []
+    const p = createPlayer(s, { audio: deps, getSettings: settings(), moves })
+    p.subscribe(() => { const c = p.getState().cue; if (c !== null && seen[seen.length - 1] !== c) seen.push(c) })
+    p.start()
+    vi.advanceTimersByTime(118000)
+    return { said: said(log).filter((x) => x !== 'Drill'), seen }
+  }
+  test('touches: the app calls One or Two, spoken and shown, never the same one twice in a row', () => {
+    const r = run('touches')
+    const words = r.said.filter((x) => x === 'One' || x === 'Two')
+    expect(words.length).toBeGreaterThan(10)
+    for (let i = 1; i < words.length; i++) expect(words[i]).not.toBe(words[i - 1])
+    expect(r.seen.every((c) => c === 'one' || c === 'two')).toBe(true)
+  })
+  test('target, corner, run, scan and colours call only their own words', () => {
+    const ok: Record<string, string[]> = { target: ['Left', 'Middle', 'Right'], corner: ['Left corner', 'Right corner', 'Low', 'High'], run: ['Near', 'Far'], scan: ['Space behind', 'Man on'], colours: ['Red', 'Blue', 'Yellow', 'White'] }
+    for (const [kind, words] of Object.entries(ok)) {
+      const r = run(kind as 'target')
+      expect(r.said.length, kind).toBeGreaterThan(5)
+      expect(r.said.every((x) => words.includes(x)), `${kind}: ${[...new Set(r.said)]}`).toBe(true)
+    }
+  })
+  test('a called move is one of the player\'s signature moves', () => {
+    const r = run('move', ['Puskas', 'Lift'])
+    expect(r.said.every((x) => x === 'Puskas' || x === 'Lift')).toBe(true)
+    expect(new Set(r.said).size).toBe(2)
+  })
+  test('LEFT/RIGHT (cue true) and numbers still work as before', () => {
+    expect(new Set(run(true).said).size).toBeGreaterThan(0)
+    expect(run('numbers').said.every((x) => /^[1-9]$/.test(x))).toBe(true)
+  })
+})
