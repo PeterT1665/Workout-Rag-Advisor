@@ -11,11 +11,11 @@ export const setupLabel = (s?: string) => (s === 'partner' ? t('Partner') : s ==
 
 // One drill family: its levels, easiest first. Tap a level for its how-to and 3D demo.
 export function FamilySheet({ family, onLevel, onClose }: { family: string; onLevel: (exerciseId: string) => void; onClose: () => void }) {
+  const me = useProfile()
+  const [pbs, setPbs] = useState(() => load<Record<string, number>>('pbs', {}))
   const f = FAMILIES.find((x) => x.id === family)
   if (!f) return null
   const levels = EXERCISES.filter((e) => e.family === family).sort((a, b) => (a.level ?? 0) - (b.level ?? 0))
-  const me = useProfile()
-  const [pbs, setPbs] = useState(() => load<Record<string, number>>('pbs', {}))
   const setBest = (id: string, v: number) => { const next = { ...pbs, [id]: v }; setPbs(next); save('pbs', next) }
   const moveOf = (name: string) => name.slice(f.name.length + 2).replace(/\s*\([^)]*\)/, '') // "Puskas (defender reaches in)" -> "Puskas"
   const sig = me.signatureMoves ?? []
