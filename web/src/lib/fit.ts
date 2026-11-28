@@ -35,7 +35,7 @@ const ADVANCED = /clean|snatch|jerk|depth-jump|skater-snap|single-leg-rdl-box-ju
 const KIT_NEEDS: Record<'wall' | 'cones' | 'ball', RegExp> = { wall: /wall/, cones: /marker|cone|hurdle/, ball: /^ball$/ }
 
 export type Fitted = { session: Session; changes: string[] }
-export function fitSession(s: Session, p: Pick<Profile, 'gymExp' | 'level' | 'trainAt' | 'kit'>): Fitted {
+export function fitSession(s: Session, p: Pick<Profile, 'gymExp' | 'level' | 'trainAt' | 'kit'> & { weakFootFocus?: boolean }): Fitted {
   const changes: string[] = []
   // no gym: the home version
   if (s.type === 'gym' && p.trainAt?.length && !p.trainAt.includes('gym')) {
@@ -60,7 +60,7 @@ export function fitSession(s: Session, p: Pick<Profile, 'gymExp' | 'level' | 'tr
     if (tooHard(id, cat) || lacking) {
       // same kind (Olympic lifts: an explosive one), that's fine for them, not in the session already
       const want = cat === 'olympic' ? 'explosive' : cat
-      const pick = EXERCISES.find((e) => e.kind === 'drill' && e.category === want && e.sport === (me?.sport ?? e.sport) && !used.has(e.name) && !tooHard(e.id, e.category) && !needsMissing(e.needs))
+      const pick = EXERCISES.find((e) => e.kind === 'drill' && !e.heading && e.category === want && e.sport === (me?.sport ?? e.sport) && !used.has(e.name) && !tooHard(e.id, e.category) && !needsMissing(e.needs))
       const why = lacking ? t('no {kit}', { kit: { wall: t('wall'), cones: t('cones'), ball: t('ball') }[lacking] }) : t('new to the gym')
       if (pick) {
         const blk = exerciseBlock(pick.id)!
@@ -82,5 +82,13 @@ export function fitSession(s: Session, p: Pick<Profile, 'gymExp' | 'level' | 'tr
     return x
   })
   if (cap && out.some((b, k) => b.rounds !== blocks[k].rounds)) changes.push(newToGym ? t('New to the gym: 3 sets at most') : t('3 sets at most'))
+  // weak foot focus: every ball drill asks for at least half the reps with the weaker foot
+  if (p.weakFootFocus) {
+    const ball = new Set(['ball-mastery', 'first-touch', 'passing', 'finishing', '1v1', 'crossing'])
+    const note = t('Weak foot focus: at least half the reps with your weaker foot.')
+    const withNote = out.map((b) => (b.kind === 'drill' && ball.has(b.category ?? '') ? { ...b, how: `${b.how ?? ''} ${note}`.trim() } : b))
+    if (withNote.some((b, k) => b !== out[k])) changes.push(t('Weak foot focus on'))
+    return { session: { ...s, blocks: withNote }, changes }
+  }
   return { session: { ...s, blocks: out }, changes }
 }

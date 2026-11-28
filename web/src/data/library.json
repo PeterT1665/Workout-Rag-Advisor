@@ -5313,6 +5313,10 @@
           "ex": "backpedal-hip-turn"
         },
         {
+          "ex": "sprint-layouts-6",
+          "rounds": 4
+        },
+        {
           "ex": "cool-down-hips-quads-hamstrings-it-band"
         }
       ]
@@ -5415,6 +5419,10 @@
           "rounds": 3
         },
         {
+          "ex": "sprint-layouts-6",
+          "rounds": 4
+        },
+        {
           "ex": "cool-down-hips-quads-hamstrings-it-band"
         }
       ]
@@ -5473,6 +5481,10 @@
         },
         {
           "ex": "one-v-one-2",
+          "rounds": 4
+        },
+        {
+          "ex": "sprint-layouts-6",
           "rounds": 4
         },
         {
@@ -5635,6 +5647,130 @@
         },
         {
           "ex": "crossing-4",
+          "rounds": 3
+        },
+        {
+          "ex": "long-pass-1",
+          "rounds": 3
+        },
+        {
+          "ex": "sprint-layouts-6",
+          "rounds": 4
+        },
+        {
+          "ex": "cool-down-hips-quads-hamstrings-it-band"
+        }
+      ]
+    },
+    {
+      "id": "fb-sharp-session",
+      "title": "Sharp: the day before a game",
+      "summary": "Short and sharp: fast feet, a few starts, reactive footwork, 8 quality shots and one-touch wall work. No volume, no fatigue.",
+      "type": "football",
+      "needs": [
+        "ball",
+        "wall",
+        "4-6 markers (bottles/shoes/bags)",
+        "goal or target"
+      ],
+      "items": [
+        {
+          "ex": "jog-dynamic-leg-swings"
+        },
+        {
+          "ex": "fast-feet-1",
+          "rounds": 2
+        },
+        {
+          "ex": "sprint-starts-2",
+          "rounds": 3
+        },
+        {
+          "ex": "mirror-shuffle-1",
+          "rounds": 2
+        },
+        {
+          "ex": "snapshot-1",
+          "rounds": 2
+        },
+        {
+          "ex": "wall-ladder-2",
+          "rounds": 2
+        },
+        {
+          "ex": "cool-down-hips-quads-hamstrings-it-band"
+        }
+      ]
+    },
+    {
+      "id": "recovery-touch",
+      "title": "Recovery: touch and mobility",
+      "summary": "Ball mastery, easy wall work and juggling. No sprints, no jumps.",
+      "type": "recovery",
+      "needs": [
+        "ball",
+        "wall"
+      ],
+      "items": [
+        {
+          "ex": "90-90-hip-switches"
+        },
+        {
+          "ex": "sole-skills-1",
+          "rounds": 2
+        },
+        {
+          "ex": "sole-skills-2",
+          "rounds": 2
+        },
+        {
+          "ex": "juggling-ladder-1",
+          "rounds": 2
+        },
+        {
+          "ex": "juggling-ladder-2",
+          "rounds": 2
+        },
+        {
+          "ex": "wall-ladder-1",
+          "rounds": 2
+        },
+        {
+          "ex": "wall-ladder-2",
+          "rounds": 2
+        },
+        {
+          "ex": "cool-down-hips-quads-hamstrings-it-band"
+        }
+      ]
+    },
+    {
+      "id": "fb-heading-session",
+      "title": "Heading session",
+      "summary": "Defensive heading technique (9 headers) with footwork and long passing. One heading session a week at most.",
+      "type": "football",
+      "needs": [
+        "ball",
+        "wall",
+        "4-6 markers (bottles/shoes/bags)"
+      ],
+      "positions": [
+        "cb",
+        "striker"
+      ],
+      "items": [
+        {
+          "ex": "jog-dynamic-leg-swings"
+        },
+        {
+          "ex": "hip-openers-glute-activation"
+        },
+        {
+          "ex": "defender-footwork-3",
+          "rounds": 3
+        },
+        {
+          "ex": "heading-1",
           "rounds": 3
         },
         {

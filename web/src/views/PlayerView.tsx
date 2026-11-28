@@ -1,3 +1,5 @@
+import { getProfile } from '../lib/profile'
+import { isWordCue, wordFor } from '../lib/cues'
 import { useEffect, useMemo, useState, useSyncExternalStore } from 'react'
 import { Sheet } from '../components/Sheet'
 import { PlanSheet } from '../components/PlanSheet'
@@ -31,6 +33,7 @@ function useWakeLock(active: boolean) {
 }
 
 export function PlayerView({ session: planned, player, settings, onExit }: { session: Session; player: Player; settings: Settings; onExit: () => void }) {
+  const moves = getProfile().signatureMoves
   // the plan as it is now: exercises added, swapped, moved or paired in the Plan sheet count (step indexes point into it)
   const session = player.getSession() ?? planned
   const st = useSyncExternalStore(player.subscribe, player.getState)
@@ -195,6 +198,15 @@ export function PlayerView({ session: planned, player, settings, onExit }: { ses
             <div className="mt-6 font-display text-sm uppercase tracking-wider opacity-90">{st.cue % 2 === 0 ? t('Even · pass it back first time') : t('Odd · turn and go')}</div>
           </div>
         )}
+        {typeof st.cue === 'string' && st.cue !== 'left' && st.cue !== 'right' && isWordCue(step.cueKind) && (() => {
+          const w = wordFor(st.cue, step.cueKind, moves)
+          return w ? (
+            <div key={st.cueKey} className="slam flex flex-1 flex-col items-center justify-center text-center">
+              <div className="font-display text-[clamp(3.5rem,19vw,7rem)] uppercase leading-[.9]">{w.word}</div>
+              {w.hint && <div className="mt-6 font-display text-sm uppercase tracking-wider opacity-90">{w.hint}</div>}
+            </div>
+          ) : null
+        })()}
         {(st.cue === 'left' || st.cue === 'right') && (
           <div key={st.cueKey} className="slam flex flex-1 flex-col items-center justify-center text-center">
             <svg viewBox="0 0 24 24" className="h-[min(70vw,300px)] w-[min(70vw,300px)]" fill="none" stroke="#fff" strokeWidth="3.2" strokeLinecap="round" strokeLinejoin="round"

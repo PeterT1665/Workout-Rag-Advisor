@@ -27,6 +27,9 @@ export type Profile = {
   gym?: number // gym sessions a week (unset: the season's default, lib/weekplan)
   footballPerWeek?: number // football sessions a week (unset: the season's default)
   season?: 'in' | 'off' // in season (football most days, gym 1 to 2) or off season (gym 3 to 4, football 3 to 4); unset counts as in season
+  weakFootFocus?: boolean // ball drills ask for at least half the reps with the weaker foot
+  signatureMoves?: string[] // your 2 to 3 skill moves: the app calls one of them in the called-move drill
+  noHeading?: boolean // not cleared to head the ball (a recent head injury): heading drills are hidden
   showcase?: string[] // the stats shown to friends (lib/showcase): 3 to 6 keys
   doubleDays?: boolean // can do football and gym on the same day (unset: yes, as before)
   sample?: boolean // the demo's sample player: history is reseeded daily

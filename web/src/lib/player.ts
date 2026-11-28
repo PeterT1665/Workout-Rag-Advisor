@@ -1,4 +1,5 @@
 // Session player engine: timing, cues and clips, no React. Views subscribe to its state.
+import { isWordCue, pickWord } from './cues'
 import { flattenSession, pickCue, planCues, selfPaced, totalSeconds, type Rng } from './logic'
 import { t } from '../i18n'
 import type { AudioDeps } from './audio'
@@ -13,7 +14,7 @@ export type PlayerState = {
   elapsed: number // seconds of planned time already covered (skipped steps included)
   trained: number // seconds the session actually ran (not paused): what the log saves, so skipping through isn't training
   total: number
-  cue: Direction | number | null // a number: the number drill (even: pass back, odd: turn)
+  cue: Direction | number | string | null // a number: the number drill (even: pass back, odd: turn); other strings: a word from lib/cues.ts (its id)
   cueKey: number
   finished: boolean
   startedAt: number
@@ -29,6 +30,7 @@ export type PlayerOptions = {
   rng?: Rng
   onFinish?: (s: PlayerState) => void
   resume?: Snapshot // continue a session saved before the app was closed or reloaded
+  moves?: string[] // the player's signature skill moves, for drills where the app calls a move
 }
 
 // Enough to pick a session up again after a reload (see lib/activeSession.ts).
@@ -60,6 +62,7 @@ export function createPlayer(session: Session, opts: PlayerOptions) {
   let timers: ReturnType<typeof setTimeout>[] = []
   const cueHistory: Direction[] = []
   let lastNumber = 0
+  let lastWord: string | null = null
   const drillsSeen = new Set<number>(opts.resume?.drills ?? [])
   // real training time: counts while running, stops on pause
   let trainedMs = opts.resume?.trainedMs ?? 0
@@ -96,6 +99,16 @@ export function createPlayer(session: Session, opts: PlayerOptions) {
       const key = state.cueKey + 1
       set({ cue: n, cueKey: key, cuesCalled: state.cuesCalled + 1 })
       audio.say(String(n))
+      setTimeout(() => { if (state.cueKey === key) set({ cue: null }) }, CUE_SHOW_MS)
+      return
+    }
+    const kind = state.steps[state.i]?.cueKind
+    if (isWordCue(kind)) {
+      const w = pickWord(kind, lastWord, rng, opts.moves)
+      lastWord = w.id
+      const key = state.cueKey + 1
+      set({ cue: w.id, cueKey: key, cuesCalled: state.cuesCalled + 1 })
+      audio.say(w.word)
       setTimeout(() => { if (state.cueKey === key) set({ cue: null }) }, CUE_SHOW_MS)
       return
     }

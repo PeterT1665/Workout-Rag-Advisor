@@ -35,12 +35,13 @@ import { learn, withPrefs } from './lib/prefs'
 import { registerMine, sendRequests } from './lib/myExercises'
 import { CalendarView } from './views/CalendarView'
 import { ExerciseLibrary } from './views/ExerciseLibrary'
+import { DailyPlay } from './views/DailyPlay'
 import { activeInjuries, safestInstead } from './lib/injuries'
 import { beep, realAudio, unlockAudio } from './lib/audio'
 import { createPlayer, trainedMinutes, type Player, type Snapshot } from './lib/player'
 import { nextQuote } from './lib/quotes'
 import { addHistory, loadHistory, loadSettings, save } from './lib/storage'
-import { loadGames, planToday, saveGames, setPlanGoals, setPlanPositions, withChange } from './lib/today'
+import { headingAllowed, loadGames, planToday, saveGames, setPlanGoals, setPlanHeading, setPlanPositions, withChange } from './lib/today'
 import { fitSession } from './lib/fit'
 import { planStreak, counts } from './lib/streak'
 import { planOptsOf } from './lib/weekplan'
@@ -55,6 +56,7 @@ const sessions = BUILTIN_SESSIONS // the week planner picks from the recommended
 type Overlay =
   | { name: 'library' }
   | { name: 'exercises' }
+  | { name: 'daily' }
   | { name: 'detail'; session: Session; fromLibrary?: boolean }
   | { name: 'calendar' }
   | { name: 'preroll'; session: Session; quote: string | null; original?: Session; applied?: string[] }
@@ -109,7 +111,7 @@ export default function App({ onSignUp, onSignIn }: { onSignUp?: () => void; onS
   // what's already in today's log (football, gym, recovery), so Kick off moves on to the next one
   const doneToday = [...new Set(loadHistory().filter((h) => h.date === new Date().toLocaleDateString('en-CA') && counts(h))
     .map((h) => (h.type === 'gym' || h.type === 'home' ? 'gym' : h.type === 'recovery' ? 'recovery' : 'football')))].sort().join(',')
-  const planned = useMemo(() => { setPlanGoals(profile.goals); setPlanPositions(profile.positions); return planToday(sessions, games, new Date(), planOptsOf(profile), doneToday ? doneToday.split(',') : []) }, [games, profile.gym, profile.footballPerWeek, profile.season, profile.doubleDays, profile.positions, doneToday, profile.goals])
+  const planned = useMemo(() => { setPlanGoals(profile.goals); setPlanPositions(profile.positions); setPlanHeading(headingAllowed(profile.noHeading, sessions)); return planToday(sessions, games, new Date(), planOptsOf(profile), doneToday ? doneToday.split(',') : []) }, [games, profile.gym, profile.footballPerWeek, profile.season, profile.doubleDays, profile.positions, doneToday, profile.goals])
   const [library, setLibrary] = useState(allSessions) // recommended + the user's own
   // your way of doing it (what you changed last time), inside the match-day rules
   // and an injury that guts a leg day turns it into the gym session it leaves most of (lib/injuries)
@@ -157,6 +159,7 @@ export default function App({ onSignUp, onSignIn }: { onSignUp?: () => void; onS
     const player = createPlayer(session, {
       audio: realAudio(() => settingsRef.current),
       getSettings: () => settingsRef.current,
+      moves: profile.signatureMoves,
       resume,
       onFinish: (st) => {
         learn(base, player.getSession() ?? session)
@@ -288,6 +291,8 @@ export default function App({ onSignUp, onSignIn }: { onSignUp?: () => void; onS
           onBack={() => { close(); setTab(overlay.from ?? 'week') }}
           onSession={(id) => { const s = library.find((x) => x.id === id); if (s) setOverlay({ name: 'detail', session: s }) }}
           onGo={(to) => { if (to === 'settings') setOverlay({ name: 'settings' }); else { close(); setTab(to === 'record' ? 'player' : to) } }} />
+      case 'daily':
+        return <DailyPlay onBack={close} />
       case 'exercises':
         return <ExerciseLibrary onSessions={() => setOverlay({ name: 'library' })} onNew={() => build(null)} onBack={close} />
       case 'library':
@@ -336,6 +341,7 @@ export default function App({ onSignUp, onSignIn }: { onSignUp?: () => void; onS
           onSettings={() => setOverlay({ name: 'settings' })}
           onAllSessions={() => setOverlay({ name: 'library' })}
           onExercises={() => setOverlay({ name: 'exercises' })}
+          onDaily={() => setOverlay({ name: 'daily' })}
           onAddClips={() => setOverlay({ name: 'media', from: 'home' })}
           onPlayer={() => setOverlay({ name: 'calendar' })}
           onCoach={(ask) => setOverlay({ name: 'coach', from: 'home', ask })}

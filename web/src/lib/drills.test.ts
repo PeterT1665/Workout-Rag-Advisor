@@ -26,7 +26,7 @@ describe('drill families', () => {
   })
   test('position sessions use the families and the football picker prefers the player\'s position', () => {
     const fb = BUILTIN_SESSIONS.filter((s) => s.positions)
-    expect(fb.map((s) => s.id).sort()).toEqual(['fb-defender-session', 'fb-fullback-session', 'fb-midfielder-session', 'fb-striker-session', 'fb-winger-session'])
+    expect(fb.map((s) => s.id).sort()).toEqual(['fb-defender-session', 'fb-fullback-session', 'fb-heading-session', 'fb-midfielder-session', 'fb-striker-session', 'fb-winger-session'])
     const wednesdayGame = [{ day: 2, kind: 'competitive' as const }]
     const monday = new Date(2026, 10, 23, 9) // a football day in season
     setPlanPositions(['striker'])

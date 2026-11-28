@@ -1,11 +1,19 @@
 // What today looks like: the week plan's slot for today, its session, and the matchday label.
 import { buildWeek, type PlanOpts, matchdayLabel, todayIndex, type Game, type GymFocus, type Slot, type WeekPlan } from './weekplan'
-import { load, save } from './storage'
+import { load, loadHistory, save } from './storage'
 import type { Session } from './types'
 import { changedSession, type DayChange } from './weekChanges'
 import { dayKindOf } from './library'
 import { byGoals } from './fit'
+import { MAX_HEADING_SESSIONS_PER_WEEK, MAX_HIGH_VOLUME_SHOOTING_DAYS, hasHeading, hasMaxSpeed, isHighVolumeShooting } from './dayrules'
 import type { Goal } from './profile'
+
+// A heading session is allowed when you are cleared and had none in the last 7 days (history is read here, sessions say which had headers).
+export function headingAllowed(noHeading: boolean | undefined, all: Session[], history = loadHistory(), now = new Date()) {
+  if (noHeading) return false
+  const from = new Date(now.getTime() - 7 * 86400000).toLocaleDateString('en-CA')
+  return !history.some((h) => h.date >= from && !h.deleted && hasHeading(all.find((s) => s.id === h.id) ?? { blocks: [] } as unknown as Session))
+}
 
 // The player's goals (onboarding): sessions that train them come first in each rotation. Set by the app from the profile.
 let goals: Goal[] = []
@@ -38,20 +46,64 @@ export type Today = {
   changed?: 'session' | 'rest' // the player changed today by hand (Week screen or a session's Do it today)
 }
 
+// Whether a heading session may be picked this week (set by the app: not cleared, or one in the last 7 days, means no) and the
+// week number, so the recovery day alternates between its sessions.
+let headingOk = true
+export const setPlanHeading = (ok: boolean) => { headingOk = ok }
+let planWeek = 0
 const soloFootball = (all: Session[]) => {
-  const solo = all.filter((s) => s.type === 'football' && !s.id.includes('partner'))
+  const solo = all.filter((s) => s.type === 'football' && !s.id.includes('partner') && !isSharpOnly(s))
   const mine = solo.filter((s) => s.positions?.some((p) => positions.includes(p)))
-  return [...byGoals(mine, goals), ...byGoals(solo.filter((s) => !s.positions), goals)]
+  const general = solo.filter((s) => !s.positions)
+  // position sessions first (heading sessions after the others), then the general ones
+  return [...byGoals(mine.filter((s) => !hasHeading(s)), goals), ...byGoals(mine.filter(hasHeading), goals), ...byGoals(general, goals)].filter((s) => headingOk || !hasHeading(s))
+}
+// the sharp session for the day before a game is only for that day
+const isSharpOnly = (s: Session) => s.id === 'fb-sharp-session'
+
+// The week's football sessions in day order: position first, then the rules (dayrules.ts): the day before a game gets the sharp
+// session, at most 3 high-volume shooting days, one heading session, and at least one true max-speed run.
+function footballWeek(plan: WeekPlan, all: Session[]): Map<number, Session> {
+  const slots = plan.slots.filter((s) => s.kind === 'football').sort((a, b) => a.day - b.day)
+  const gameDays = new Set(plan.slots.filter((s) => s.kind === 'game').map((s) => s.day))
+  const pool = soloFootball(all)
+  const sharp = all.filter(isSharpOnly)
+  const picks = new Map<number, Session>()
+  let volume = 0, heading = 0
+  slots.forEach((slot, k) => {
+    if (gameDays.has((slot.day + 1) % 7) && sharp.length) { picks.set(slot.day, sharp[0]); return }
+    let pick: Session | undefined
+    for (let i = 0; i < pool.length && !pick; i++) {
+      const c = pool[(k + i) % pool.length]
+      if (isHighVolumeShooting(c) && volume >= MAX_HIGH_VOLUME_SHOOTING_DAYS) continue
+      if (hasHeading(c) && heading >= MAX_HEADING_SESSIONS_PER_WEEK) continue
+      pick = c
+    }
+    pick ??= pool[k % pool.length]
+    if (!pick) return
+    if (isHighVolumeShooting(pick)) volume++
+    if (hasHeading(pick)) heading++
+    picks.set(slot.day, pick)
+  })
+  // every week needs a true max-speed run (the gym doesn't build top speed): swap one in on the hardest football day
+  if (picks.size && ![...picks.values()].some(hasMaxSpeed)) {
+    const speed = pool.find((s) => hasMaxSpeed(s) && !hasHeading(s)) ?? all.find((s) => s.id === 'fb-speed-acceleration' && hasMaxSpeed(s))
+    const hard = [...slots].reverse().find((s) => !gameDays.has((s.day + 1) % 7) && picks.get(s.day) && !hasHeading(picks.get(s.day)!))
+    if (speed && hard) picks.set(hard.day, speed)
+  }
+  return picks
 }
 
 export function sessionForSlot(slot: Slot, plan: WeekPlan, all: Session[]): Session | null {
-  if (slot.kind === 'recovery') return all.find((s) => s.type === 'recovery') ?? null
+  if (slot.kind === 'recovery') {
+    // ball mastery, easy wall work and juggling alternate with the mobility session, week by week
+    const rest = all.filter((s) => s.type === 'recovery')
+    const nthRec = plan.slots.filter((x) => x.kind === 'recovery' && x.day < slot.day).length
+    return rest[(nthRec + planWeek) % rest.length] ?? null
+  }
   // rotate so the week's sessions differ (gym: among days with the same job)
   const nth = plan.slots.filter((s) => s.kind === slot.kind && s.day < slot.day && s.focus === slot.focus).length
-  if (slot.kind === 'football') {
-    const pool = soloFootball(all)
-    return pool[nth % pool.length] ?? null
-  }
+  if (slot.kind === 'football') return footballWeek(plan, all).get(slot.day) ?? null
   if (slot.kind === 'gym') {
     const gym = all.filter((s) => s.type === 'gym')
     // in the listed order: the first is the main session for that job
@@ -67,6 +119,7 @@ export function sessionForSlot(slot: Slot, plan: WeekPlan, all: Session[]): Sess
 // moves on to the gym once the football is in the log.
 export function planToday(all: Session[], games: Game[], now = new Date(), gym?: number | PlanOpts, doneKinds: string[] = []): Today {
   const day = todayIndex(now)
+  planWeek = Math.floor(now.getTime() / (7 * 86400000)) // alternates the recovery session week by week
   const plan = buildWeek(games, typeof gym === 'number' ? { gym } : gym)
   const slots = plan.slots.filter((s) => s.day === day)
   const work = slots.filter((s) => s.kind !== 'game')

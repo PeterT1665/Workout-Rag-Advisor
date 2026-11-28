@@ -31,10 +31,14 @@ export function catalog() {
   }
   // drill families (data/drills.json): every level's how-to, mistake and fix, and its descriptive reps
   const drills = JSON.parse(readFileSync(join(SRC, 'data/drills.json'), 'utf8'))
+  for (const f of drills.families) { if (f.note) out.add(f.note) }
   for (const f of drills.families) for (const l of f.levels) {
     out.add(l.how); out.add(l.mistake); out.add(l.fix)
     if (l.reps && !/^\d+(-\d+)?$/.test(l.reps)) out.add(l.reps)
   }
+  // daily play scenarios (data/scenarios.json): titles, setups, options and their explanations
+  const scen = JSON.parse(readFileSync(join(SRC, 'data/scenarios.json'), 'utf8'))
+  for (const s of scen.scenarios) { out.add(s.title); out.add(s.setup); for (const o of s.options) { out.add(o.label); out.add(o.why) } }
   for (const tpl of lib.templates) {
     out.add(tpl.title); out.add(tpl.summary)
     for (const n of tpl.needs ?? []) out.add(n)

@@ -6,7 +6,7 @@ import { deleteAccount, signOut, syncEnabled } from '../lib/sync'
 import { NotificationSettings } from '../components/Notifications'
 import { safeAreaInfo } from '../lib/safeArea'
 import { seedDemo, startOverDemo } from '../lib/demo'
-import { positionTag, useProfile } from '../lib/profile'
+import { positionTag, setProfile, useProfile } from '../lib/profile'
 import credits from '../data/credits.json'
 import { t } from '../i18n'
 
@@ -43,6 +43,11 @@ export function SettingsView({ settings: s, onChange, onProfile, onInvite, onTou
       <Panel className="flex flex-col gap-4">
         <Toggle id="cd" label={t('Quote cards before sessions and in rests')} checked={s.cards} onChange={(v) => onChange({ cards: v })} />
         {onTour && <Button variant="ghost" className="bg-surface-2" onClick={onTour}>{t('Show the app tour')}</Button>}
+      </Panel>
+      <h2 className="mt-8 mb-3 font-display text-lg uppercase">{t('Training')}</h2>
+      <Panel className="flex flex-col gap-4">
+        <Toggle id="wf" label={t('Weak foot focus')} checked={!!me.weakFootFocus} onChange={(v) => setProfile({ ...me, weakFootFocus: v })} />
+        <Toggle id="nh" label={t("I'm not cleared to head the ball")} checked={!!me.noHeading} onChange={(v) => setProfile({ ...me, noHeading: v })} />
       </Panel>
       {!syncEnabled() && (
           <Panel className="mt-8 flex items-center justify-between gap-4">

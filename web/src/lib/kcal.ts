@@ -21,7 +21,7 @@ export function sessionMet(type: string | undefined, effort: number | undefined,
 const num = (s: string | undefined) => { const m = s?.match(/\d+(?:\.\d+)?/g); return m ? m.reduce((a, b) => a + Number(b), 0) / m.length : undefined }
 const BALL = new Set(['ball-mastery', 'first-touch', 'passing', 'finishing', '1v1', 'crossing', 'defending'])
 const STRENGTH = new Set(['lower-strength', 'upper-strength', 'single-limb', 'core', 'gym-conditioning'])
-const SPRINT = new Set(['sprints', 'speed', 'conditioning'])
+const SPRINT = new Set(['sprints', 'speed', 'conditioning', 'off-ball'])
 const CONTINUOUS_JUMPS = /pogo|bound|hurdle|skater|hops|squat jump|split jump|burpee/i
 
 // kcal for one block: its work, its rests, at the intensity of what it is.

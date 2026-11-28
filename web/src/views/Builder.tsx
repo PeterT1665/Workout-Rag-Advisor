@@ -1,3 +1,4 @@
+import { getProfile } from '../lib/profile'
 import { useState } from 'react'
 import { DragList, type GripProps } from '../components/DragList'
 import { moveUnit, unitsOf } from '../lib/units'
@@ -162,7 +163,7 @@ export function Picker({ items, onAdd, onRemove, onDone }: { items: Item[]; onAd
   const [cat, setCat] = useState<string>('all')
   const [open, setOpen] = useState<Exercise | null>(null)
   const [adding, setAdding] = useState(false)
-  const list = EXERCISES.filter((e) => e.sport === sport && (cat === 'all' || e.category === cat))
+  const list = EXERCISES.filter((e) => e.sport === sport && (cat === 'all' || e.category === cat) && !(getProfile().noHeading && e.heading))
     .sort((a, b) => cats.indexOf(a.category) - cats.indexOf(b.category)) // 'All' reads in category order
   const count = (id: string) => items.filter((i) => i.ex === id).length
 

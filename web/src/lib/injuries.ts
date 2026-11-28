@@ -126,7 +126,7 @@ export function injurySafe(s: Session, injuries: Injury[] = activeInjuries()): {
     const part = b.kind === 'drill' ? hurts(b) : undefined
     if (!part) { blocks.push(b); continue }
     const me = exOf(b.name)
-    const pick = EXERCISES.find((e) => e.kind === 'drill' && e.category === (me?.category ?? b.category) && e.sport === (me?.sport ?? e.sport) && !used.has(e.name) && !hurts(e))
+    const pick = EXERCISES.find((e) => e.kind === 'drill' && !e.heading && e.category === (me?.category ?? b.category) && e.sport === (me?.sport ?? e.sport) && !used.has(e.name) && !hurts(e))
     if (pick) {
       const blk = exerciseBlock(pick.id)!
       used.add(pick.name)
@@ -139,6 +139,15 @@ export function injurySafe(s: Session, injuries: Injury[] = activeInjuries()): {
   }
   // tidy supersets: a superset flag needs an exercise right before it
   const tidy = blocks.map((b, k) => (b.superset && (k === 0 || blocks[k - 1].kind !== 'drill') ? { ...b, superset: undefined } : b))
+  // an ankle or knee injury on file: the full 11+ style warm-up instead of the usual one (it cuts ankle injuries)
+  const warm = injuries.find((i) => i.part === 'ankles' || i.part === 'knees')
+  const w11 = warm ? exerciseBlock('warmup-11-1') : undefined
+  if (warm && w11 && tidy.some((b) => b.kind === 'warmup' || b.category === 'warmup') && !tidy.some((b) => b.name.startsWith('Warm-up 11+'))) {
+    let placed = false
+    const withWarm = tidy.flatMap((b) => (b.kind === 'warmup' || b.category === 'warmup' ? (placed ? [] : ((placed = true), [w11])) : [b]))
+    swaps.push({ from: t('Warm-up'), to: w11.name, part: warm.part })
+    return { session: { ...s, blocks: withWarm }, swaps, blocked }
+  }
   return { session: { ...s, blocks: tidy }, swaps, blocked }
 }
 

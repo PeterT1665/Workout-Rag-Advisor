@@ -357,9 +357,9 @@ const CATEGORY_WHY = (): Record<string, string> => ({
 function altReply(ex: Exercise | null, q: string): Reply {
   if (!ex) return { text: [t('Which exercise do you want to swap? For example: "alternative to back squat".')] }
   const noKit = has(q, ['no gym', 'no equipment', 'home', 'at home', 'nha', 'casa', 'maison', 'rumah', 'barbell', 'without'])
-  const alts = EXERCISES.filter((e) => e.category === ex.category && e.id !== ex.id && e.kind === ex.kind)
+  const alts = EXERCISES.filter((e) => e.category === ex.category && e.id !== ex.id && e.kind === ex.kind && !e.heading)
     .filter((e) => !noKit || e.id.startsWith('home-') || !e.needs?.length && e.sport !== 'gym')
-  const pick = (alts.length ? alts : EXERCISES.filter((e) => e.category === ex.category && e.id !== ex.id)).slice(0, 4)
+  const pick = (alts.length ? alts : EXERCISES.filter((e) => e.category === ex.category && e.id !== ex.id && !e.heading)).slice(0, 4)
   if (!pick.length) return { text: [t('No close swap for {name} in the library yet.', { name: t(ex.name) })] }
   return { text: [t('Same job as {name}:', { name: t(ex.name) })], cards: pick.map(exCard), chips: [t('How do I do {name}?', { name: t(pick[0].name).toLowerCase() })] }
 }

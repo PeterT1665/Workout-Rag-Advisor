@@ -1,10 +1,11 @@
+import type { CueKind } from './cues'
 export type Block = {
   name: string
   kind: 'warmup' | 'drill' | 'cooldown' | string
   work: number
   rest?: number
   rounds?: number
-  cue?: boolean | 'numbers' // voice cues in the drill: left/right (1v1), or random numbers (even: pass back, odd: turn)
+  cue?: boolean | CueKind // voice cues in the drill: true = left/right (1v1), 'numbers' = random numbers (even: pass back, odd: turn), or another word set (lib/cues.ts)
   how?: string
   needs?: string[]
   reps?: string // gym: reps per set; work is then an estimated set time
@@ -13,6 +14,8 @@ export type Block = {
   works?: string[] // muscles and joints it mainly works (library exercises)
   also?: string[] // ...and the ones it also loads
   safe?: string // how not to get hurt doing it (big lifts)
+  headers?: number // headers this drill has you do in total (the heading cap counts them)
+  heading?: boolean // a heading drill: hidden when you are not cleared to head the ball, and never picked as a swap
 }
 
 export type Session = {
@@ -34,7 +37,7 @@ export type Step = {
   rounds: number
   seconds: number
   cue: boolean
-  cueKind?: 'numbers'
+  cueKind?: CueKind
   how: string
   reps?: string
   category?: string

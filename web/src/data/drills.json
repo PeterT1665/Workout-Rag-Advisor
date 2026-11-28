@@ -85,6 +85,17 @@
      "rest": 45,
      "rounds": 4,
      "reps": "10 each foot"
+    },
+    {
+     "name": "Called touches",
+     "how": "The app calls ONE or TWO: use that many touches before passing back.",
+     "mistake": "Using the wrong number of touches",
+     "fix": "Listen, then play exactly that many",
+     "work": 60,
+     "rest": 30,
+     "rounds": 4,
+     "reps": "20 calls",
+     "cue": "touches"
     }
    ],
    "source": {
@@ -497,6 +508,17 @@
      "rest": 30,
      "rounds": 4,
      "reps": "8 each foot"
+    },
+    {
+     "name": "Called turn",
+     "how": "Scan, and the app calls SPACE BEHIND (dummy or half turn) or MAN ON (play it back, or De Jong or Cruyff the other way).",
+     "mistake": "Choosing the turn before the call",
+     "fix": "Scan first, then pick the turn the call asks for",
+     "work": 60,
+     "rest": 30,
+     "rounds": 4,
+     "reps": "10 calls",
+     "cue": "scan"
     }
    ],
    "positions": [
@@ -838,13 +860,14 @@
     },
     {
      "name": "Reactive start",
-     "how": "Stand ready and start on a partner's GO (or a random beep). React, do not anticipate.",
+     "how": "Stand ready. The app calls GO at a random moment. React, do not anticipate.",
      "mistake": "Guessing the cue",
      "fix": "Wait for the call, then go",
      "work": 10,
      "rest": 90,
      "rounds": 6,
-     "reps": "10 m"
+     "reps": "10 m",
+     "cue": "go"
     }
    ],
    "source": {
@@ -1027,13 +1050,14 @@
     },
     {
      "name": "Recovery run",
-     "how": "Start facing upfield 20 m from a cone goal. On a TURN call (a partner, or a random beep), turn, sprint back on a curve to the goal side of an imaginary attacker, then brake into a jockey stance.",
+     "how": "Start facing upfield 20 m from a cone goal. On the app's TURN call, turn, sprint back on a curve to the goal side of an imaginary attacker, then brake into a jockey stance.",
      "mistake": "Running straight back",
      "fix": "Curve to the goal side, then brake",
      "work": 25,
      "rest": 60,
      "rounds": 6,
-     "reps": "6 reps"
+     "reps": "6 reps",
+     "cue": "turn"
     }
    ],
    "positions": [
@@ -1344,6 +1368,17 @@
      "rest": 30,
      "rounds": 4,
      "reps": "15 passes"
+    },
+    {
+     "name": "Called target",
+     "how": "As the ball comes back off the wall, the app calls LEFT, MIDDLE or RIGHT. Pick that target and play the long pass.",
+     "mistake": "Choosing the target early",
+     "fix": "Wait for the call, then pick",
+     "work": 90,
+     "rest": 30,
+     "rounds": 4,
+     "reps": "15 passes",
+     "cue": "target"
     }
    ],
    "positions": [
@@ -1437,7 +1472,8 @@
      "work": 40,
      "rest": 45,
      "rounds": 8,
-     "reps": "8 reps"
+     "reps": "8 reps",
+     "cue": true
     },
     {
      "name": "Partner, passive defender",
@@ -1468,6 +1504,17 @@
      "rest": 60,
      "rounds": 6,
      "reps": "6 races"
+    },
+    {
+     "name": "Called move",
+     "how": "Run at a cone. The app calls one of your signature moves (pick 2 or 3 on the Skill moves card). Do it at the cone and accelerate away.",
+     "mistake": "Doing a move you have not practised",
+     "fix": "Stick to your 2 or 3 best moves",
+     "work": 40,
+     "rest": 45,
+     "rounds": 8,
+     "reps": "8 reps",
+     "cue": "move"
     }
    ],
    "positions": [
@@ -1809,6 +1856,17 @@
      "rest": 60,
      "rounds": 6,
      "reps": "6 runs"
+    },
+    {
+     "name": "Called run",
+     "how": "The app calls NEAR or FAR as you start the run. Alternating the two confuses defenders.",
+     "mistake": "Running the same run every time",
+     "fix": "Listen, then make that run",
+     "work": 30,
+     "rest": 60,
+     "rounds": 8,
+     "reps": "8 runs",
+     "cue": "run"
     }
    ],
    "positions": [
@@ -1891,6 +1949,1269 @@
    ],
    "source": {
     "label": "3 crossing techniques (YouTube Unisport); winger session (YouTube 7mlc)"
+   }
+  },
+  {
+   "id": "crossing-setups",
+   "name": "Crossing setups",
+   "category": "crossing",
+   "demo": "pass-long",
+   "setup": "solo",
+   "equipment": [
+    "ball",
+    "markers",
+    "wall",
+    "goal or target"
+   ],
+   "gameDay": [
+    "full"
+   ],
+   "levels": [
+    {
+     "name": "Wall first-time cross",
+     "how": "Stand 8 to 10 m from the wall at an angle. Pass firmly into it and cross the rebound first time at a cone or marked area. Open your body to the target.",
+     "mistake": "Leaning back so the ball goes high and over",
+     "fix": "Standing foot beside the ball, chest over it",
+     "work": 60,
+     "rest": 45,
+     "rounds": 3,
+     "reps": "8 each foot"
+    },
+    {
+     "name": "Cut-back from the corner",
+     "how": "Line up balls at the corner of the 6-yard box near the byline. Cross or cut back to cone targets on the penalty spot and the far post. Technique through repetition.",
+     "mistake": "Hitting every ball to the same target",
+     "fix": "Alternate the targets",
+     "work": 90,
+     "rest": 45,
+     "rounds": 3,
+     "reps": "20 balls"
+    },
+    {
+     "name": "Cone weave, then cross",
+     "how": "Weave 4 to 6 cones down the wing, take a set-up touch out of the last cone, look up once and cross to cone targets in the box.",
+     "mistake": "Crossing with the ball under the body",
+     "fix": "Push the last touch slightly forward and wide",
+     "work": 60,
+     "rest": 45,
+     "rounds": 4,
+     "reps": "6 each side"
+    },
+    {
+     "name": "First touch, then cross",
+     "how": "Receive a pass from the wall, take one touch out of your feet towards the byline, then cross.",
+     "mistake": "Taking two touches",
+     "fix": "One touch out of your feet, then cross",
+     "work": 60,
+     "rest": 45,
+     "rounds": 3,
+     "reps": "6 each side"
+    },
+    {
+     "name": "1v1 to cross",
+     "how": "A cone is the defender. Dribble at it, beat it with a move to the outside, then cross.",
+     "mistake": "Crossing before beating the cone",
+     "fix": "Beat it first, then look up and cross",
+     "work": 60,
+     "rest": 45,
+     "rounds": 4,
+     "reps": "6 each side"
+    },
+    {
+     "name": "Give-and-go to cross",
+     "how": "Play a one-two off the wall (the wall is your teammate), then cross on the run.",
+     "mistake": "Playing the wall pass too softly",
+     "fix": "Firm pass, run onto the return, then cross",
+     "work": 60,
+     "rest": 45,
+     "rounds": 4,
+     "reps": "6 each side"
+    }
+   ],
+   "positions": [
+    "fb",
+    "winger"
+   ],
+   "source": {
+    "label": "C1 to C6 crossing drills (TikTok @cooket5training)"
+   }
+  },
+  {
+   "id": "defender-circuits",
+   "name": "Defender circuits",
+   "category": "defending",
+   "demo": "jockey",
+   "setup": "solo",
+   "equipment": [
+    "markers"
+   ],
+   "gameDay": [
+    "full"
+   ],
+   "levels": [
+    {
+     "name": "Box footwork",
+     "how": "4 cones in a box about 5 m apart. Run up, side shuffle, backpedal, side shuffle, then sprint away 5 to 10 yards. Both sides.",
+     "mistake": "Standing tall in the shuffle",
+     "fix": "Hips low and feet never cross",
+     "work": 20,
+     "rest": 45,
+     "rounds": 4,
+     "reps": "2 each side"
+    },
+    {
+     "name": "Close down and jockey",
+     "how": "Sprint to the first cone and close it down, jockey back, run to the next cone and jockey the other way, return, sprint away 5 to 10 yards. Decelerate in the last steps, force it outside, be patient.",
+     "mistake": "Diving in from behind",
+     "fix": "Get parallel first and never tackle from behind",
+     "work": 25,
+     "rest": 45,
+     "rounds": 4,
+     "reps": "2 each side"
+    },
+    {
+     "name": "Jump and recover",
+     "how": "Run to the cones, jump as high as you can to win the ball in the air, backpedal back. Three reps taking off from the right foot, then three from the left. Jump volume: full days only.",
+     "mistake": "Landing stiff",
+     "fix": "Land on both feet, knees soft, then backpedal",
+     "work": 30,
+     "rest": 60,
+     "rounds": 3,
+     "reps": "3 each foot"
+    }
+   ],
+   "positions": [
+    "cb",
+    "fb",
+    "cm"
+   ],
+   "source": {
+    "label": "D1 to D3 (TikTok @prolific.soccer); FIFA Training Centre"
+   }
+  },
+  {
+   "id": "heading",
+   "name": "Heading",
+   "category": "defending",
+   "demo": "jump-squat",
+   "setup": "solo",
+   "equipment": [
+    "ball",
+    "wall"
+   ],
+   "gameDay": [
+    "full"
+   ],
+   "levels": [
+    {
+     "name": "Defensive header technique",
+     "how": "Stand side-on and create space from your opponent. Jump off both feet for balance when set (one foot when running in), meet the ball at its highest point and snap through it so it goes high and far. Shout so everyone knows it is your ball.",
+     "mistake": "Heading it back up instead of through it",
+     "fix": "Meet it at its highest point and snap through",
+     "work": 30,
+     "rest": 60,
+     "rounds": 3,
+     "reps": "3 headers",
+     "headers": 9
+    },
+    {
+     "name": "Headers against the wall",
+     "how": "Self-serve and head the ball against the wall. Light ball or a soft ball.",
+     "mistake": "Heading with the top of the head",
+     "fix": "Contact with the forehead, eyes open",
+     "work": 30,
+     "rest": 60,
+     "rounds": 3,
+     "reps": "3 headers",
+     "headers": 9
+    },
+    {
+     "name": "Clearance headers",
+     "how": "Toss it up and head it high and far, as a defender clearing a cross. Drive it from your neck and back.",
+     "mistake": "Heading it short",
+     "fix": "Use the neck and back to drive it",
+     "work": 30,
+     "rest": 60,
+     "rounds": 3,
+     "reps": "3 headers",
+     "headers": 9
+    },
+    {
+     "name": "Attacking headers",
+     "how": "Head downwards at a goal or target, from a self-toss or a partner's.",
+     "mistake": "Heading it up and over",
+     "fix": "Get above the ball and head it down",
+     "work": 30,
+     "rest": 60,
+     "rounds": 3,
+     "reps": "3 headers",
+     "headers": 9
+    }
+   ],
+   "positions": [
+    "cb",
+    "striker"
+   ],
+   "source": {
+    "label": "Heading drills (TikTok @cooket5training); heading dose: English FA"
+   },
+   "note": "At most 10 headers a session and one heading session a week. Use a light ball. Not after a head injury.",
+   "heading": true
+  },
+  {
+   "id": "finishing-drills",
+   "name": "Finishing drills",
+   "category": "finishing",
+   "demo": "shoot",
+   "setup": "solo",
+   "equipment": [
+    "ball",
+    "markers",
+    "goal or target",
+    "wall"
+   ],
+   "gameDay": [
+    "full"
+   ],
+   "levels": [
+    {
+     "name": "Laces across goal",
+     "how": "Strike across the keeper into the far side. Chest over the ball, land on the striking foot.",
+     "mistake": "Leaning back",
+     "fix": "Chest over the ball",
+     "work": 40,
+     "rest": 45,
+     "rounds": 4,
+     "reps": "6 each foot"
+    },
+    {
+     "name": "Skill move to shot",
+     "how": "Dribble at a cone, do a move, then shoot.",
+     "mistake": "Slowing down for the move",
+     "fix": "Move at speed, then strike",
+     "work": 40,
+     "rest": 45,
+     "rounds": 4,
+     "reps": "6 each foot"
+    },
+    {
+     "name": "Through ball, finish",
+     "how": "Pass ahead of yourself through the cones, run onto it and finish.",
+     "mistake": "Passing it too far ahead",
+     "fix": "Weight it so you arrive on it",
+     "work": 40,
+     "rest": 45,
+     "rounds": 4,
+     "reps": "6 each foot"
+    },
+    {
+     "name": "Fake shot to whip",
+     "how": "Fake the shot, take it across, whip the ball to the far post.",
+     "mistake": "Faking with your head down",
+     "fix": "Head up, show the shot, take it across, then whip",
+     "work": 40,
+     "rest": 45,
+     "rounds": 4,
+     "reps": "6 each foot"
+    },
+    {
+     "name": "Half volleys",
+     "how": "Self-toss and strike on the half volley, low to the ground.",
+     "mistake": "Leaning back",
+     "fix": "Chest over the ball, strike down through the bounce",
+     "work": 40,
+     "rest": 45,
+     "rounds": 4,
+     "reps": "6 each foot"
+    },
+    {
+     "name": "Inside-foot placement",
+     "how": "Placement over power, with both feet. A good item for the day before a game.",
+     "mistake": "Hitting it too hard",
+     "fix": "Side foot, low, into the corner",
+     "work": 40,
+     "rest": 45,
+     "rounds": 3,
+     "reps": "6 each foot"
+    },
+    {
+     "name": "Whip to the far corner",
+     "how": "Curl the ball into the far corner with the instep.",
+     "mistake": "Hitting it straight",
+     "fix": "Wrap the foot around the ball",
+     "work": 40,
+     "rest": 45,
+     "rounds": 4,
+     "reps": "6 each foot"
+    },
+    {
+     "name": "Turn and finish",
+     "how": "Back to goal, receive off the wall, turn and shoot.",
+     "mistake": "Turning slowly",
+     "fix": "Scan, turn on the first touch, shoot",
+     "work": 40,
+     "rest": 45,
+     "rounds": 4,
+     "reps": "6 each foot"
+    },
+    {
+     "name": "Wall first-time finish",
+     "how": "Pass into the wall at an angle and finish the rebound first time into a goal or target.",
+     "mistake": "Taking a touch first",
+     "fix": "Hit it first time",
+     "work": 40,
+     "rest": 45,
+     "rounds": 4,
+     "reps": "6 each foot"
+    },
+    {
+     "name": "Called corner",
+     "how": "The server rolls the ball and calls a corner as you arrive. The app can call LEFT CORNER, RIGHT CORNER, LOW or HIGH on your last touch. Choose late.",
+     "mistake": "Picking the corner early",
+     "fix": "Wait for the call, then strike",
+     "work": 40,
+     "rest": 45,
+     "rounds": 4,
+     "reps": "6 shots",
+     "cue": "corner"
+    },
+    {
+     "name": "Tight-turn finishing",
+     "how": "Turn in a tight space, then finish like in a match.",
+     "mistake": "Turning too wide",
+     "fix": "Quick turn, then shoot",
+     "work": 40,
+     "rest": 45,
+     "rounds": 4,
+     "reps": "6 shots"
+    }
+   ],
+   "positions": [
+    "striker",
+    "winger"
+   ],
+   "source": {
+    "label": "F1 to F11 (TikTok @elevateperformance_, YouTube BallersBasicsTV, Cooper Coaching)"
+   },
+   "note": "Miss low and far for rebounds. Follow up every shot."
+  },
+  {
+   "id": "shooting-plan",
+   "name": "Shooting plan",
+   "category": "finishing",
+   "demo": "shoot",
+   "setup": "solo",
+   "equipment": [
+    "ball",
+    "markers",
+    "goal or target",
+    "wall"
+   ],
+   "gameDay": [
+    "full"
+   ],
+   "levels": [
+    {
+     "name": "Wall shooting",
+     "how": "Shoot against a wall, as many reps as you can in a timed block. Taxing: 2 to 3 times a week at most.",
+     "mistake": "Shooting tired and sloppy",
+     "fix": "Stop when the strike goes loose",
+     "work": 120,
+     "rest": 60,
+     "rounds": 3,
+     "reps": "timed block"
+    },
+    {
+     "name": "Penalties and free kicks",
+     "how": "Aim for the corners every time. About 20 to 30 minutes, 2 to 4 times a week.",
+     "mistake": "Hitting the middle",
+     "fix": "Pick a corner and commit",
+     "work": 120,
+     "rest": 60,
+     "rounds": 3,
+     "reps": "corners only"
+    },
+    {
+     "name": "1v1 to shot",
+     "how": "4 cones in the middle act as a defender: engage, beat, finish. Middle, left and right channels. 6 reps per side with 4 balls.",
+     "mistake": "Always going the same way",
+     "fix": "Use all three channels",
+     "work": 90,
+     "rest": 60,
+     "rounds": 3,
+     "reps": "6 per side"
+    },
+    {
+     "name": "Box touch to shot",
+     "how": "A defender on your back. Touch out left or right with different surfaces to create separation, then finish.",
+     "mistake": "Turning without separation",
+     "fix": "Touch out first, then shoot",
+     "work": 90,
+     "rest": 60,
+     "rounds": 3,
+     "reps": "6 each side"
+    },
+    {
+     "name": "Diamond",
+     "how": "4 cones in a diamond. Close control and speed, change direction round the cones, then a 1v1 and a shot in motion. 8 balls, a minute's rest, repeat.",
+     "mistake": "Slowing down at the cones",
+     "fix": "Keep the ball moving at speed",
+     "work": 90,
+     "rest": 60,
+     "rounds": 3,
+     "reps": "8 balls"
+    },
+    {
+     "name": "Cone maze to 1v1 to shot",
+     "how": "A cluster of cones: close control and creativity in traffic, then a 1v1 and a shot.",
+     "mistake": "Lifting your head too late",
+     "fix": "Head up as you leave the maze",
+     "work": 120,
+     "rest": 120,
+     "rounds": 3,
+     "reps": "all the cones"
+    },
+    {
+     "name": "Positional shooting",
+     "how": "Play as you would in your position (a winger wide), engage and disengage 1v1s, create your own shot with no restrictions.",
+     "mistake": "Shooting from anywhere",
+     "fix": "Create the shot the way you would in a match",
+     "work": 120,
+     "rest": 60,
+     "rounds": 3,
+     "reps": "free play"
+    }
+   ],
+   "positions": [
+    "striker",
+    "winger"
+   ],
+   "source": {
+    "label": "7-drill shooting plan (YouTube ZTH Training)"
+   },
+   "note": "High-volume shooting 2 to 3 days a week at most."
+  },
+  {
+   "id": "pp-box",
+   "name": "Box one-touch",
+   "category": "passing",
+   "demo": "pass-wall-quick",
+   "setup": "partner",
+   "equipment": [
+    "ball",
+    "markers",
+    "partner"
+   ],
+   "gameDay": [
+    "md-1",
+    "recovery",
+    "full"
+   ],
+   "levels": [
+    {
+     "name": "Foot rules",
+     "how": "A box of cones. On the right side of the box use the right foot, on the left side the left, either foot in the middle. Follow the passing sequence.",
+     "mistake": "Using the wrong foot",
+     "fix": "Right side right foot, left side left foot",
+     "work": 90,
+     "rest": 30,
+     "rounds": 3,
+     "reps": "2 min"
+    }
+   ],
+   "source": {
+    "label": "Partner passing family 1 (YouTube Become Elite)"
+   }
+  },
+  {
+   "id": "pp-bounce-turn",
+   "name": "Bounce, drop and turn",
+   "category": "passing",
+   "demo": "pass-wall-quick",
+   "setup": "partner",
+   "equipment": [
+    "ball",
+    "markers",
+    "partner"
+   ],
+   "gameDay": [
+    "md-1",
+    "recovery",
+    "full"
+   ],
+   "levels": [
+    {
+     "name": "Outside foot turn",
+     "how": "Bounce with one foot, bounce with the other, drop back checking your shoulder, then a 90-degree touch back to the start with the outside foot, across the body.",
+     "mistake": "Dropping back without a look",
+     "fix": "Check your shoulder before every drop",
+     "work": 90,
+     "rest": 30,
+     "rounds": 3,
+     "reps": "2 min"
+    },
+    {
+     "name": "Inside foot turn",
+     "how": "Same pattern. The turning touch is the inside of the foot, popping the ball out and opening the body 90 degrees.",
+     "mistake": "Turning the hips late",
+     "fix": "Open the body as the touch goes",
+     "work": 90,
+     "rest": 30,
+     "rounds": 3,
+     "reps": "2 min"
+    },
+    {
+     "name": "Outside of the other foot",
+     "how": "Same pattern with the outside of the other foot.",
+     "mistake": "Using the same foot every time",
+     "fix": "Alternate the turning foot",
+     "work": 90,
+     "rest": 30,
+     "rounds": 3,
+     "reps": "2 min"
+    },
+    {
+     "name": "Sole roll turn",
+     "how": "Same pattern. The turning touch is a sole roll, 90 degrees.",
+     "mistake": "Rolling it too far",
+     "fix": "Short roll, then play",
+     "work": 90,
+     "rest": 30,
+     "rounds": 3,
+     "reps": "2 min"
+    }
+   ],
+   "source": {
+    "label": "Partner passing family 2, #2 to #5 (YouTube Become Elite)"
+   }
+  },
+  {
+   "id": "passing-calls",
+   "name": "Passing calls",
+   "category": "passing",
+   "demo": "pass-wall-quick",
+   "setup": "solo",
+   "equipment": [
+    "ball",
+    "wall",
+    "markers"
+   ],
+   "gameDay": [
+    "full"
+   ],
+   "levels": [
+    {
+     "name": "Shuffle and bounce",
+     "how": "Shuffle right and left, bouncing the ball back off the wall with one or two touches.",
+     "mistake": "Standing flat-footed",
+     "fix": "Stay light and moving",
+     "work": 60,
+     "rest": 30,
+     "rounds": 4,
+     "reps": "1 min"
+    },
+    {
+     "name": "One or two touches",
+     "how": "The app calls ONE or TWO: use that many touches before the bounce back.",
+     "mistake": "Using the wrong number of touches",
+     "fix": "Listen, then play exactly that many",
+     "work": 60,
+     "rest": 30,
+     "rounds": 4,
+     "reps": "20 calls",
+     "cue": "touches"
+    },
+    {
+     "name": "Turn or man on",
+     "how": "The app calls TURN (receive on the half-turn, open up and hit a 15 yard pass into a mini goal) or MAN ON (bounce it back).",
+     "mistake": "Turning when the call is man on",
+     "fix": "Listen, then play the call",
+     "work": 60,
+     "rest": 30,
+     "rounds": 4,
+     "reps": "20 calls",
+     "cue": "scan"
+    },
+    {
+     "name": "Colour call",
+     "how": "The app calls a colour: after the bounce, touch the ball out towards that cone.",
+     "mistake": "Looking at the wrong cone",
+     "fix": "Listen, then touch towards that colour",
+     "work": 60,
+     "rest": 30,
+     "rounds": 4,
+     "reps": "20 calls",
+     "cue": "colours"
+    },
+    {
+     "name": "Colour and touches",
+     "how": "A colour and a number: round that colour's cone with that many touches.",
+     "mistake": "Rushing the touches",
+     "fix": "Count them, stay in control",
+     "work": 60,
+     "rest": 30,
+     "rounds": 4,
+     "reps": "12 calls",
+     "cue": "colours"
+    }
+   ],
+   "source": {
+    "label": "Partner passing family 3, #6 to #8, #12 to #14, #20, #21 (YouTube Become Elite)"
+   }
+  },
+  {
+   "id": "receiving-surfaces",
+   "name": "Receiving surfaces",
+   "category": "first-touch",
+   "demo": "pass-wall",
+   "setup": "partner",
+   "equipment": [
+    "ball",
+    "partner"
+   ],
+   "gameDay": [
+    "md-1",
+    "recovery",
+    "full"
+   ],
+   "levels": [
+    {
+     "name": "Inside, tap back outside",
+     "how": "Receive with the inside of the foot, a small body feint, tap back with the outside of the same foot. The basics, mastered.",
+     "mistake": "Stopping the ball dead",
+     "fix": "Receive and play in one move",
+     "work": 60,
+     "rest": 30,
+     "rounds": 3,
+     "reps": "2 min"
+    },
+    {
+     "name": "Inside, tap back with the other",
+     "how": "Receive with the inside of one foot, tap back with the outside of the other.",
+     "mistake": "Using the wrong foot to return",
+     "fix": "Receive with one, return with the other",
+     "work": 60,
+     "rest": 30,
+     "rounds": 3,
+     "reps": "2 min"
+    },
+    {
+     "name": "Inside receive, inside pass",
+     "how": "Receive with the inside of one foot, then an inside pass with the other. Snap the ball across quickly, a little deception, the same weight.",
+     "mistake": "Passing with a different weight",
+     "fix": "Same weight every time",
+     "work": 60,
+     "rest": 30,
+     "rounds": 3,
+     "reps": "2 min"
+    }
+   ],
+   "source": {
+    "label": "Partner passing family 4, #9 to #11 (YouTube Become Elite)"
+   }
+  },
+  {
+   "id": "t-patterns",
+   "name": "T-shape patterns",
+   "category": "passing",
+   "demo": "pass-wall",
+   "setup": "partner",
+   "equipment": [
+    "ball",
+    "markers",
+    "partner"
+   ],
+   "gameDay": [
+    "md-1",
+    "recovery",
+    "full"
+   ],
+   "levels": [
+    {
+     "name": "Foot follows direction",
+     "how": "A T of cones. One touch everywhere except two touches at the back of the T. Going right, use the right foot.",
+     "mistake": "Using the wrong foot for the direction",
+     "fix": "Right foot going right, left foot going left",
+     "work": 90,
+     "rest": 30,
+     "rounds": 3,
+     "reps": "2 min"
+    },
+    {
+     "name": "Turn behind",
+     "how": "At the back of the T take a touch and turn 45 degrees behind you, out to the side.",
+     "mistake": "Turning too square",
+     "fix": "Open your hips as you take the touch",
+     "work": 90,
+     "rest": 30,
+     "rounds": 3,
+     "reps": "2 min"
+    },
+    {
+     "name": "Scuffed ball",
+     "how": "At the back of the T the partner scuffs the pass to shin or knee height. Kill it, control it fast and play back.",
+     "mistake": "Letting it bounce off the shin",
+     "fix": "Cushion it and control it in one move",
+     "work": 90,
+     "rest": 30,
+     "rounds": 3,
+     "reps": "2 min"
+    }
+   ],
+   "source": {
+    "label": "Partner passing family 5, #15 to #17 (YouTube Become Elite)"
+   }
+  },
+  {
+   "id": "half-turn-switch",
+   "name": "Half-turn and switch",
+   "category": "passing",
+   "demo": "receive-turn",
+   "setup": "partner",
+   "equipment": [
+    "ball",
+    "markers",
+    "partner"
+   ],
+   "gameDay": [
+    "full"
+   ],
+   "levels": [
+    {
+     "name": "Half-turn, 180 degree pass",
+     "how": "Bounce the first pass, pop the ball a few yards wide, receive on the half-turn, then hit a 10 to 15 yard pass. Simple, and game-realistic at the pro level.",
+     "mistake": "Receiving square",
+     "fix": "Open up before the ball arrives",
+     "work": 90,
+     "rest": 30,
+     "rounds": 3,
+     "reps": "2 min"
+    },
+    {
+     "name": "Half-turn, 90 degree pass",
+     "how": "The same, but the pass comes from the side, at 90 degrees instead of 180.",
+     "mistake": "Turning the wrong way",
+     "fix": "Open to the side the pass comes from",
+     "work": 90,
+     "rest": 30,
+     "rounds": 3,
+     "reps": "2 min"
+    }
+   ],
+   "source": {
+    "label": "Partner passing family 6, #18, #19 (YouTube Become Elite)"
+   }
+  },
+  {
+   "id": "check-away",
+   "name": "Check away, check back",
+   "category": "passing",
+   "demo": "receive-turn",
+   "setup": "partner",
+   "equipment": [
+    "ball",
+    "markers",
+    "partner"
+   ],
+   "gameDay": [
+    "full"
+   ],
+   "levels": [
+    {
+     "name": "Two touches, bounce, high steps",
+     "how": "At the back cone two touches to kill the ball, play back, a one-touch bounce, then high steps through three cones.",
+     "mistake": "Dead feet after the pass",
+     "fix": "Move straight into the high steps",
+     "work": 90,
+     "rest": 30,
+     "rounds": 3,
+     "reps": "2 min"
+    },
+    {
+     "name": "Touch inside the cone",
+     "how": "The same, but take the touch inside the cone.",
+     "mistake": "Taking the touch outside the cone",
+     "fix": "Take it inside the cone",
+     "work": 90,
+     "rest": 30,
+     "rounds": 3,
+     "reps": "2 min"
+    },
+    {
+     "name": "Check away, plant, check back",
+     "how": "Check away, plant beside a marked circle, check back, return with one or two touches, varying each time.",
+     "mistake": "Always checking the same way",
+     "fix": "Disguise it: check away, then check to the ball",
+     "work": 90,
+     "rest": 30,
+     "rounds": 3,
+     "reps": "2 min"
+    },
+    {
+     "name": "Check and combine",
+     "how": "Add a short touch-and-pass sequence behind the circle after the check.",
+     "mistake": "Rushing the sequence",
+     "fix": "Check, then combine at the right speed",
+     "work": 90,
+     "rest": 30,
+     "rounds": 3,
+     "reps": "2 min"
+    }
+   ],
+   "source": {
+    "label": "Partner passing family 7, #22 to #25 (YouTube Become Elite)"
+   }
+  },
+  {
+   "id": "cod-turns",
+   "name": "Change of direction",
+   "category": "speed",
+   "demo": "cut",
+   "setup": "solo",
+   "equipment": [
+    "markers"
+   ],
+   "gameDay": [
+    "md-1",
+    "full"
+   ],
+   "levels": [
+    {
+     "name": "505 turn",
+     "how": "A start line, a turn line 15 m away and a timing cone 5 m before it. Sprint, turn 180 degrees on the turn line, sprint 5 m back through the cone. Do both turning legs. Modified: a 5 m approach.",
+     "mistake": "Planting hard on the last step only",
+     "fix": "Brake a step early: slam on the brakes",
+     "work": 10,
+     "rest": 90,
+     "rounds": 4,
+     "reps": "2 each leg"
+    },
+    {
+     "name": "T-drill",
+     "how": "4 cones in a T. Sprint to the middle cone, shuffle to one side cone and touch it, shuffle across to the other, back to the middle, backpedal home. Classic layout: 10 yards up, 5 yards either side of the middle.",
+     "mistake": "Crossing the feet in the shuffle",
+     "fix": "Stay low and shuffle without crossing",
+     "work": 12,
+     "rest": 90,
+     "rounds": 4,
+     "reps": "2 each way"
+    },
+    {
+     "name": "Box drill",
+     "how": "A square of 4 cones. Sprint, shuffle, backpedal, shuffle around the box. The same layout as the defender box.",
+     "mistake": "Rounding the corners",
+     "fix": "Square corners, quick feet",
+     "work": 15,
+     "rest": 60,
+     "rounds": 4,
+     "reps": "2 each way"
+    },
+    {
+     "name": "Non-stop change of direction",
+     "how": "2 cones 5 big steps apart. Change direction continuously from side to side, always facing the same way. 4 x 45 s (2 with the ball, 2 without).",
+     "mistake": "Turning your body round",
+     "fix": "Always face the direction of travel",
+     "work": 45,
+     "rest": 45,
+     "rounds": 4,
+     "reps": "45 s"
+    },
+    {
+     "name": "Double change",
+     "how": "Follow the cones and make 2 cuts at full speed. 4 each side, 2 with the ball, 2 without, 6 reps per set.",
+     "mistake": "Slowing down before the cuts",
+     "fix": "Full speed in, brake, push the ground away",
+     "work": 20,
+     "rest": 60,
+     "rounds": 4,
+     "reps": "6 reps"
+    },
+    {
+     "name": "M changes",
+     "how": "Cones in an M. Sharp cuts at each cone, staying as close to the cones as you can. The tight-spaces drill.",
+     "mistake": "Running wide of the cones",
+     "fix": "Hug the cones, cut sharply",
+     "work": 20,
+     "rest": 60,
+     "rounds": 4,
+     "reps": "8 reps"
+    },
+    {
+     "name": "Deceleration box",
+     "how": "A 4 x 4 yard box and a stop gate 5 yards out. Do the agility pattern in the box, sprint 5 yards and stop dead between the gate cones. Patterns: triangles, up and back with circles or a figure 8, a Z. Left and right.",
+     "mistake": "Gliding through the stop",
+     "fix": "Slam on the brakes and stop dead",
+     "work": 20,
+     "rest": 60,
+     "rounds": 4,
+     "reps": "1 each side"
+    },
+    {
+     "name": "Reactive cuts",
+     "how": "At the cut cone the app calls LEFT or RIGHT, so you cannot plan the cut. Advanced: only after the 45 to 90 degree cuts feel easy.",
+     "mistake": "Deciding before the call",
+     "fix": "React to the call, push the ground away",
+     "work": 20,
+     "rest": 60,
+     "rounds": 6,
+     "reps": "6 reps",
+     "cue": true
+    }
+   ],
+   "source": {
+    "label": "K1, K2, K5, K7 to K9, K12, K15 (Dos'Santos 2019, Lockie 2017; YouTube Cooper Coaching, Futbol Fit)"
+   },
+   "note": "Cues: slam on the brakes, push the ground away, face the direction of travel."
+  },
+  {
+   "id": "sprint-layouts",
+   "name": "Sprint layouts",
+   "category": "speed",
+   "demo": "sprint",
+   "setup": "solo",
+   "equipment": [
+    "markers"
+   ],
+   "gameDay": [
+    "full"
+   ],
+   "levels": [
+    {
+     "name": "Illinois",
+     "how": "A 10 x 5 m rectangle of 4 cones and 4 cones down the middle, 3.3 m apart. Sprint 10 m and turn, weave the middle cones up and back, sprint 10 m, turn and sprint to the finish. About 12 to 18 s a rep: partly conditioning, full days only.",
+     "mistake": "Cutting the corners",
+     "fix": "Go round every cone",
+     "work": 18,
+     "rest": 90,
+     "rounds": 4,
+     "reps": "3 reps"
+    },
+    {
+     "name": "Zig-zag sprints",
+     "how": "4 cones in a zig-zag, 5 m apart, and the last cone 10 m beyond the 4th. Sprint to cone 1, zig-zag through, then accelerate the final 10 m.",
+     "mistake": "Slowing into the last cone",
+     "fix": "Drop the shoulder and explode out",
+     "work": 12,
+     "rest": 75,
+     "rounds": 5,
+     "reps": "4 reps"
+    },
+    {
+     "name": "Shuttles",
+     "how": "Lines at 5, 10 and 15 m. Run 0-5-0, 0-10-0, 0-15-0, touching each line with alternating hands.",
+     "mistake": "Turning without braking",
+     "fix": "Brake a step early and turn low",
+     "work": 30,
+     "rest": 90,
+     "rounds": 3,
+     "reps": "3 sets"
+    },
+    {
+     "name": "Weave to zig-zag",
+     "how": "A straight line of cones, then a zig-zag. Weave the straight line, then go straight into the zig-zag. 4 sets of 7.",
+     "mistake": "Losing speed at the join",
+     "fix": "Keep the speed through the transition",
+     "work": 20,
+     "rest": 60,
+     "rounds": 4,
+     "reps": "7 reps"
+    },
+    {
+     "name": "Fast feet to change",
+     "how": "Fast feet over a line of cones, sprint to the cone ahead on the same side, then cut straight to the last cone. 8 sets of 6.",
+     "mistake": "Slow feet in the line",
+     "fix": "Quick light feet, then a hard sprint",
+     "work": 15,
+     "rest": 60,
+     "rounds": 5,
+     "reps": "6 reps"
+    },
+    {
+     "name": "Curved sprint",
+     "how": "Sprint along an arc, a 20 to 30 m arc of cones or the penalty-box D. Maintain your speed. About 85 percent of match sprints are curved. Both directions.",
+     "mistake": "Slowing round the bend",
+     "fix": "Lean into the curve and keep the speed",
+     "work": 12,
+     "rest": 90,
+     "rounds": 6,
+     "reps": "6 x 25 m"
+    },
+    {
+     "name": "Partner 3-cone race",
+     "how": "3 cones a few metres apart. Two players race the same pattern side by side with low, sharp cuts.",
+     "mistake": "Rounding the cones",
+     "fix": "Low, sharp cuts",
+     "work": 15,
+     "rest": 60,
+     "rounds": 6,
+     "reps": "6 races"
+    }
+   ],
+   "source": {
+    "label": "K3, K4, K6, K10, K11, K13, K14 (Coaches Insider, STATSports, Caldbeck, TikTok @lq_strengthcoach)"
+   },
+   "note": "At least one true max-speed run a week: the curved sprint or a flying 20."
+  },
+  {
+   "id": "off-the-ball",
+   "name": "Off the ball",
+   "category": "off-ball",
+   "demo": "sprint",
+   "setup": "solo",
+   "equipment": [
+    "ball",
+    "wall",
+    "markers"
+   ],
+   "gameDay": [
+    "full"
+   ],
+   "levels": [
+    {
+     "name": "Come short, spin in behind",
+     "how": "Start away from the ball, check short to drag the defender, bounce the pass back and spin into the space behind. Solo: 10 m from a wall, check 2 to 3 steps, pass, spin and sprint 10 to 15 m to a cone.",
+     "mistake": "Checking short with no change of pace",
+     "fix": "Check, drag the defender, then spin and go",
+     "work": 20,
+     "rest": 60,
+     "rounds": 6,
+     "reps": "6 runs"
+    },
+    {
+     "name": "Come short, pull wide",
+     "how": "Check short, bounce it back, then peel away wide to isolate the defender 1v1.",
+     "mistake": "Peeling off too early",
+     "fix": "Check first, then peel",
+     "work": 20,
+     "rest": 60,
+     "rounds": 6,
+     "reps": "6 runs"
+    },
+    {
+     "name": "Come short, curve inside",
+     "how": "Bounce it back, sell the wide run, then curve inside to attack the space while staying onside.",
+     "mistake": "Running straight",
+     "fix": "Curve the run and stay onside",
+     "work": 20,
+     "rest": 60,
+     "rounds": 6,
+     "reps": "6 runs"
+    },
+    {
+     "name": "Check away, check to",
+     "how": "Disguise it: check away, then check to the ball, at an angle into the gaps. Check your shoulder. A diagonal run gets a straight pass; a straight run gets a diagonal pass.",
+     "mistake": "Checking the same way each time",
+     "fix": "Check away, then to the ball",
+     "work": 20,
+     "rest": 60,
+     "rounds": 6,
+     "reps": "6 runs"
+    },
+    {
+     "name": "2v1 to 2v2",
+     "how": "With 4 to 5 players. Phase 1: 2v1 with a bounce player, create space after the pass. Phase 2: 2v2, never on the same line as your teammate. Phase 3: score only in their half. Phase 4: first-time finishes only.",
+     "mistake": "Standing level with your teammate",
+     "fix": "Create space with a movement after the pass",
+     "work": 120,
+     "rest": 60,
+     "rounds": 4,
+     "reps": "2 min"
+    },
+    {
+     "name": "Blind-side run",
+     "how": "Approach the defender on their blind side so they are between facing you and facing the ball. The moment they turn to look at the ball, cut across them.",
+     "mistake": "Running into their eyeline",
+     "fix": "Stay behind them, then cut across",
+     "work": 20,
+     "rest": 60,
+     "rounds": 6,
+     "reps": "6 runs"
+    },
+    {
+     "name": "Near-post fake run",
+     "how": "Leave the defender one way with a fake run, then change direction quickly to attack the near post and finish.",
+     "mistake": "A slow change of direction",
+     "fix": "Sell the fake, then explode",
+     "work": 20,
+     "rest": 60,
+     "rounds": 6,
+     "reps": "6 runs"
+    },
+    {
+     "name": "Bounce and run in behind",
+     "how": "With the defender on your back, play a bounce pass to drag them out, then run into the space left behind and finish.",
+     "mistake": "Stopping after the pass",
+     "fix": "Pass, then go straight into the space",
+     "work": 20,
+     "rest": 60,
+     "rounds": 6,
+     "reps": "6 runs"
+    }
+   ],
+   "positions": [
+    "striker",
+    "winger",
+    "cm"
+   ],
+   "source": {
+    "label": "O1 to O8 (TikTok @the_jwl, @training121; YouTube Pelota Academy; Sport Session Planner)"
+   }
+  },
+  {
+   "id": "conditioning",
+   "name": "Conditioning",
+   "category": "conditioning",
+   "demo": "sprint",
+   "setup": "solo",
+   "equipment": [
+    "markers",
+    "ball"
+   ],
+   "gameDay": [
+    "full"
+   ],
+   "levels": [
+    {
+     "name": "Repeated sprints 5-15",
+     "how": "5 s sprint, 15 s rest. 2 sets of 6 sprints.",
+     "mistake": "Slowing down in the later sprints",
+     "fix": "Stop the set when your speed drops",
+     "work": 5,
+     "rest": 15,
+     "rounds": 12,
+     "reps": "2 sets of 6"
+    },
+    {
+     "name": "Repeated sprints 5-30",
+     "how": "5 s sprint, 30 s rest. 2 sets of 6 sprints.",
+     "mistake": "Resting too little",
+     "fix": "Full 30 s, sprint every one hard",
+     "work": 5,
+     "rest": 30,
+     "rounds": 12,
+     "reps": "2 sets of 6"
+    },
+    {
+     "name": "Speed endurance",
+     "how": "4 sprints of 15 s with 75 s of recovery, twice a week.",
+     "mistake": "Going out too fast",
+     "fix": "Hold your speed to the end of every sprint",
+     "work": 15,
+     "rest": 75,
+     "rounds": 4,
+     "reps": "4 x 15 s"
+    },
+    {
+     "name": "Dribble intervals 20/10",
+     "how": "Dribble between cones, 20 s on and 10 s off, 8 rounds (4 minutes a block). Indoors or out.",
+     "mistake": "Dribbling at half speed",
+     "fix": "Full effort for the 20 s",
+     "work": 20,
+     "rest": 10,
+     "rounds": 8,
+     "reps": "8 rounds"
+    }
+   ],
+   "source": {
+    "label": "RSA protocols (PMC5310862, PMC11622046); BM2 (YouTube Coach Hafid Arellano)"
+   },
+   "note": "Full days only, never the day before a game, and always last in the session."
+  },
+  {
+   "id": "recovery-runs",
+   "name": "Recovery runs",
+   "category": "defending",
+   "demo": "sprint",
+   "setup": "group",
+   "equipment": [
+    "ball",
+    "markers",
+    "partner"
+   ],
+   "gameDay": [
+    "full"
+   ],
+   "levels": [
+    {
+     "name": "2v1 to 2v2",
+     "how": "A grid with two small goals at each end. Two attackers v one defender; a second defender sprints round the goal and recovers into a 2v2. First defender delays, the recovering defender communicates and picks up the free runner.",
+     "mistake": "Diving in too early",
+     "fix": "Delay until help arrives",
+     "work": 120,
+     "rest": 60,
+     "rounds": 4,
+     "reps": "2 min"
+    },
+    {
+     "name": "Recovery to goal side",
+     "how": "Defenders run to get goal side. A point to the defender for forcing the attacker out or clearing past halfway, a point to the attacker for a goal.",
+     "mistake": "Running behind the ball",
+     "fix": "Run to goal side first",
+     "work": 90,
+     "rest": 60,
+     "rounds": 4,
+     "reps": "90 s"
+    },
+    {
+     "name": "3v2 overload",
+     "how": "3 pairs of cones, each attacker matched with a defender. The attackers make a 3v2 while the defenders delay, talk and stay compact until support arrives.",
+     "mistake": "Chasing the ball",
+     "fix": "Stay compact and talk",
+     "work": 120,
+     "rest": 60,
+     "rounds": 4,
+     "reps": "2 min"
+    }
+   ],
+   "positions": [
+    "fb",
+    "cb"
+   ],
+   "players": "3 to 4",
+   "source": {
+    "label": "RR1 to RR3 (YouTube At7letic, Cincy SC, Grassroots Football UK)"
+   }
+  },
+  {
+   "id": "duels",
+   "name": "Duels with friends",
+   "category": "1v1",
+   "demo": "1v1",
+   "setup": "group",
+   "equipment": [
+    "ball",
+    "markers",
+    "goal or target",
+    "partner"
+   ],
+   "gameDay": [
+    "full"
+   ],
+   "levels": [
+    {
+     "name": "Sprint into a duel",
+     "how": "Each player completes two passes, then sprints round a cone. A ball is played in; the first player there attacks the big goal, the other defends and counters into the mini goals. A goal earns a bonus ball.",
+     "mistake": "Slowing after the sprint",
+     "fix": "Win the race, then attack at once",
+     "work": 120,
+     "rest": 60,
+     "rounds": 4,
+     "reps": "2 min"
+    },
+    {
+     "name": "Finish, recover, 1v1",
+     "how": "Two lanes. A slaloms the cones and beats a mannequin; B weaves the poles and shoots far post. B then turns into a 1v1 against A. Defender: close down before the attacker gets going. Swap lanes.",
+     "mistake": "Looking down in the cones",
+     "fix": "Eyes up out of the last cone, shoot early",
+     "work": 120,
+     "rest": 60,
+     "rounds": 4,
+     "reps": "2 min"
+    }
+   ],
+   "players": "2 to 4",
+   "source": {
+    "label": "V2, V3 (YouTube Coach to Coach, TotalFootball Studio)"
    }
   }
  ]

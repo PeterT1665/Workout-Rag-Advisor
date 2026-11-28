@@ -1,0 +1,1576 @@
+{
+ "scenarios": [
+  {
+   "id": "s01",
+   "for": [
+    "winger"
+   ],
+   "title": "Early cross or take him on?",
+   "setup": "You are on the right wing with the ball. The full-back is a few steps away and has not closed you down. Your far-post runner is free; the striker is marked.",
+   "you": [
+    68,
+    8
+   ],
+   "mates": [
+    [
+     91,
+     30
+    ],
+    [
+     88,
+     46
+    ],
+    [
+     55,
+     28
+    ]
+   ],
+   "opps": [
+    [
+     77,
+     13
+    ],
+    [
+     89,
+     28
+    ],
+    [
+     84,
+     38
+    ]
+   ],
+   "onBall": true,
+   "options": [
+    {
+     "label": "Whip an early cross to the free far-post runner",
+     "kind": "pass",
+     "to": [
+      88,
+      46
+     ],
+     "why": "The full-back has not closed you down, so you have time to look up and deliver before the defence shifts to the far post."
+    },
+    {
+     "label": "Dribble at the full-back first",
+     "kind": "dribble",
+     "to": [
+      77,
+      13
+     ],
+     "why": "You can beat him, but it costs time and the box shifts to cover the far post."
+    },
+    {
+     "label": "Pass back to the midfielder",
+     "kind": "pass",
+     "to": [
+      55,
+      28
+     ],
+     "why": "Safe, but it gives up a good chance while the far post is free."
+    },
+    {
+     "label": "Cross to the marked striker at the near post",
+     "kind": "pass",
+     "to": [
+      91,
+      30
+     ],
+     "why": "He is tight to his marker, so it is easy to intercept."
+    }
+   ],
+   "best": 0
+  },
+  {
+   "id": "s02",
+   "for": [
+    "striker"
+   ],
+   "title": "Come short or run in behind?",
+   "setup": "Your marker is tight on your back and the defence is playing a high line. Your midfielder has the ball and is looking up.",
+   "you": [
+    80,
+    31
+   ],
+   "mates": [
+    [
+     60,
+     30
+    ]
+   ],
+   "opps": [
+    [
+     82,
+     31
+    ],
+    [
+     78,
+     18
+    ],
+    [
+     78,
+     44
+    ]
+   ],
+   "onBall": false,
+   "options": [
+    {
+     "label": "Check short to drag your marker out, then spin in behind",
+     "kind": "run",
+     "to": [
+      88,
+      26
+     ],
+     "why": "The first movement creates the space: the defender follows you out, and the ball goes into the gap he left."
+    },
+    {
+     "label": "Stand still and ask for the ball to feet",
+     "kind": "hold",
+     "to": [
+      80,
+      31
+     ],
+     "why": "With a defender tight on your back you cannot turn, and the high line stays compact."
+    },
+    {
+     "label": "Sprint in behind right away",
+     "kind": "run",
+     "to": [
+      92,
+      31
+     ],
+     "why": "You start level with the line, so you risk being offside and the defender is not dragged anywhere."
+    },
+    {
+     "label": "Run sideways, away from the ball",
+     "kind": "run",
+     "to": [
+      80,
+      52
+     ],
+     "why": "It takes you out of the game and does not help your midfielder."
+    }
+   ],
+   "best": 0
+  },
+  {
+   "id": "s03",
+   "for": [
+    "midfielder"
+   ],
+   "title": "Man on",
+   "setup": "You receive the ball in midfield and a defender is pressing hard right behind you. A teammate is free on your left, facing forward.",
+   "you": [
+    45,
+    32
+   ],
+   "mates": [
+    [
+     40,
+     20
+    ],
+    [
+     30,
+     32
+    ]
+   ],
+   "opps": [
+    [
+     42,
+     33
+    ],
+    [
+     56,
+     38
+    ]
+   ],
+   "onBall": true,
+   "options": [
+    {
+     "label": "One touch to the free teammate on your left",
+     "kind": "pass",
+     "to": [
+      40,
+      20
+     ],
+     "why": "With a defender on your back you play first time to the free player: you keep the ball and keep the move going."
+    },
+    {
+     "label": "Turn into the pressure",
+     "kind": "dribble",
+     "to": [
+      42,
+      33
+     ],
+     "why": "Turning with a defender right behind you risks losing it in a dangerous area."
+    },
+    {
+     "label": "Take a touch and shield the ball",
+     "kind": "hold",
+     "to": [
+      45,
+      32
+     ],
+     "why": "Shielding buys a second, but the defender and a second presser close you down."
+    },
+    {
+     "label": "Hit a long ball over the top",
+     "kind": "pass",
+     "to": [
+      75,
+      32
+     ],
+     "why": "A low-percentage ball: nobody is set to win it and it gives possession away."
+    }
+   ],
+   "best": 0
+  },
+  {
+   "id": "s04",
+   "for": [
+    "fb",
+    "cb"
+   ],
+   "title": "Jockey or tackle?",
+   "setup": "A winger is dribbling at you with the ball a stride ahead of him. Your centre-back is covering behind you.",
+   "you": [
+    52,
+    24
+   ],
+   "mates": [
+    [
+     50,
+     34
+    ]
+   ],
+   "opps": [
+    [
+     60,
+     20
+    ]
+   ],
+   "onBall": false,
+   "options": [
+    {
+     "label": "Jockey, show him outside and wait for a bad touch",
+     "kind": "hold",
+     "to": [
+      54,
+      22
+     ],
+     "why": "Stay on your feet, slow him down and force him wide: your cover is behind you, so there is no need to gamble."
+    },
+    {
+     "label": "Slide in now",
+     "kind": "dribble",
+     "to": [
+      58,
+      21
+     ],
+     "why": "If you miss, he is past you and the defence is broken."
+    },
+    {
+     "label": "Backpedal as fast as you can",
+     "kind": "run",
+     "to": [
+      40,
+      24
+     ],
+     "why": "It gives him all the space and the time to pick a pass."
+    },
+    {
+     "label": "Dive in and poke at the ball",
+     "kind": "dribble",
+     "to": [
+      58,
+      21
+     ],
+     "why": "Diving in lets him go past with one touch."
+    }
+   ],
+   "best": 0
+  },
+  {
+   "id": "s05",
+   "for": [
+    "cb"
+   ],
+   "title": "The striker drops deep",
+   "setup": "Your marker drops into midfield, away from your line. Your holding midfielder is nearby and can see him.",
+   "you": [
+    22,
+    30
+   ],
+   "mates": [
+    [
+     34,
+     30
+    ],
+    [
+     18,
+     18
+    ],
+    [
+     18,
+     44
+    ]
+   ],
+   "opps": [
+    [
+     25,
+     31
+    ],
+    [
+     40,
+     40
+    ]
+   ],
+   "onBall": false,
+   "options": [
+    {
+     "label": "Let him go, pass him on to your midfielder and keep the line",
+     "kind": "hold",
+     "to": [
+      22,
+      30
+     ],
+     "why": "Do not follow him out of the back line: tell the midfielder to pick him up and keep the shape behind."
+    },
+    {
+     "label": "Follow him all the way into midfield",
+     "kind": "run",
+     "to": [
+      34,
+      31
+     ],
+     "why": "You leave a big gap behind you that a runner can attack."
+    },
+    {
+     "label": "Step up tight to win the ball",
+     "kind": "run",
+     "to": [
+      28,
+      31
+     ],
+     "why": "If he turns, you are out of position and beaten with the line broken."
+    },
+    {
+     "label": "Drop back into your own box",
+     "kind": "run",
+     "to": [
+      8,
+      30
+     ],
+     "why": "You give him all the time and space in front of goal."
+    }
+   ],
+   "best": 0
+  },
+  {
+   "id": "s06",
+   "for": [
+    "striker",
+    "winger"
+   ],
+   "title": "Shoot or square?",
+   "setup": "You are in on goal. The keeper has come out to close you down and a teammate is unmarked close to an empty goal.",
+   "you": [
+    88,
+    26
+   ],
+   "mates": [
+    [
+     92,
+     38
+    ]
+   ],
+   "opps": [
+    [
+     96,
+     30
+    ]
+   ],
+   "onBall": true,
+   "options": [
+    {
+     "label": "Square it to your free teammate",
+     "kind": "pass",
+     "to": [
+      92,
+      38
+     ],
+     "why": "The keeper has committed to you, so the pass leaves your teammate a tap-in at an open goal."
+    },
+    {
+     "label": "Shoot at the keeper",
+     "kind": "shoot",
+     "to": [
+      100,
+      32
+     ],
+     "why": "He has closed the angle, so you are likely to hit him."
+    },
+    {
+     "label": "Try to dribble round the keeper",
+     "kind": "dribble",
+     "to": [
+      96,
+      34
+     ],
+     "why": "It is a risk you do not need to take when a teammate is free."
+    },
+    {
+     "label": "Hold it and wait for the defence to arrive",
+     "kind": "hold",
+     "to": [
+      88,
+      26
+     ],
+     "why": "Waiting gives a recovering defender time to close the pass down."
+    }
+   ],
+   "best": 0
+  },
+  {
+   "id": "s07",
+   "for": [
+    "striker",
+    "am"
+   ],
+   "title": "Shoot from distance or pass?",
+   "setup": "Two defenders are closing you down. A teammate is unmarked in the box with a clear passing lane.",
+   "you": [
+    74,
+    32
+   ],
+   "mates": [
+    [
+     86,
+     22
+    ]
+   ],
+   "opps": [
+    [
+     78,
+     30
+    ],
+    [
+     78,
+     36
+    ],
+    [
+     90,
+     30
+    ]
+   ],
+   "onBall": true,
+   "options": [
+    {
+     "label": "Pass to the unmarked teammate in the box",
+     "kind": "pass",
+     "to": [
+      86,
+      22
+     ],
+     "why": "A clear lane to a free player in a better position beats a long shot through two defenders."
+    },
+    {
+     "label": "Shoot from here",
+     "kind": "shoot",
+     "to": [
+      100,
+      32
+     ],
+     "why": "The two defenders are in the way and the shot is a long one."
+    },
+    {
+     "label": "Dribble between the two defenders",
+     "kind": "dribble",
+     "to": [
+      78,
+      33
+     ],
+     "why": "You are likely to lose it in the most dangerous area of the pitch."
+    },
+    {
+     "label": "Play it back to the midfield",
+     "kind": "pass",
+     "to": [
+      60,
+      32
+     ],
+     "why": "Safe, but you give up a clear chance."
+    }
+   ],
+   "best": 0
+  },
+  {
+   "id": "s08",
+   "for": [
+    "winger",
+    "am",
+    "striker"
+   ],
+   "title": "The 3v2 counter-attack",
+   "setup": "You break away in the middle with a runner on each side. Two defenders are back.",
+   "you": [
+    55,
+    32
+   ],
+   "mates": [
+    [
+     55,
+     16
+    ],
+    [
+     57,
+     48
+    ]
+   ],
+   "opps": [
+    [
+     68,
+     28
+    ],
+    [
+     68,
+     36
+    ]
+   ],
+   "onBall": true,
+   "options": [
+    {
+     "label": "Carry the ball at the defenders until one commits, then pass to the free runner",
+     "kind": "dribble",
+     "to": [
+      66,
+      32
+     ],
+     "why": "Running at them fixes both defenders, and whoever steps to you leaves a runner free on the other side."
+    },
+    {
+     "label": "Pass wide the moment you get it",
+     "kind": "pass",
+     "to": [
+      55,
+      16
+     ],
+     "why": "The defenders have time to slide across and cover."
+    },
+    {
+     "label": "Shoot from 30 metres",
+     "kind": "shoot",
+     "to": [
+      100,
+      32
+     ],
+     "why": "A low-percentage shot when you have two free runners."
+    },
+    {
+     "label": "Slow down and wait for support",
+     "kind": "hold",
+     "to": [
+      55,
+      32
+     ],
+     "why": "The other defenders recover and the chance is gone."
+    }
+   ],
+   "best": 0
+  },
+  {
+   "id": "s09",
+   "for": [
+    "midfielder",
+    "cb"
+   ],
+   "title": "Switch the play",
+   "setup": "You are on the right with the ball and three opponents have shifted over. A teammate is free on the far side with plenty of space.",
+   "you": [
+    50,
+    12
+   ],
+   "mates": [
+    [
+     52,
+     54
+    ],
+    [
+     40,
+     24
+    ]
+   ],
+   "opps": [
+    [
+     56,
+     14
+    ],
+    [
+     52,
+     20
+    ],
+    [
+     58,
+     24
+    ]
+   ],
+   "onBall": true,
+   "options": [
+    {
+     "label": "Switch it with a long diagonal to the free player on the far side",
+     "kind": "pass",
+     "to": [
+      52,
+      54
+     ],
+     "why": "The opposition has shifted across, so the far side is open: one pass changes the whole picture."
+    },
+    {
+     "label": "Dribble into the crowd",
+     "kind": "dribble",
+     "to": [
+      55,
+      17
+     ],
+     "why": "Three defenders are waiting for you."
+    },
+    {
+     "label": "Play it short to the marked teammate",
+     "kind": "pass",
+     "to": [
+      40,
+      24
+     ],
+     "why": "It keeps the ball on the crowded side, where the pressure is."
+    },
+    {
+     "label": "Play it long down the line",
+     "kind": "pass",
+     "to": [
+      80,
+      4
+     ],
+     "why": "It gives the ball away and the team cannot get up in support."
+    }
+   ],
+   "best": 0
+  },
+  {
+   "id": "s11",
+   "for": [
+    "midfielder"
+   ],
+   "title": "Where do you support?",
+   "setup": "Your teammate has the ball wide on the right with a defender in front of him. You want to give him an option.",
+   "you": [
+    50,
+    40
+   ],
+   "mates": [
+    [
+     62,
+     10
+    ]
+   ],
+   "opps": [
+    [
+     68,
+     14
+    ],
+    [
+     56,
+     22
+    ]
+   ],
+   "onBall": false,
+   "options": [
+    {
+     "label": "Behind the ball and inside, at about 45 degrees, in a clear passing lane",
+     "kind": "run",
+     "to": [
+      56,
+      20
+     ],
+     "why": "A support angle gives a clear pass line and keeps the ball moving."
+    },
+    {
+     "label": "Level with the ball, in the same line",
+     "kind": "run",
+     "to": [
+      62,
+      26
+     ],
+     "why": "A pass can go through two of you at once, and a defender can mark both."
+    },
+    {
+     "label": "Stay where you are, far away",
+     "kind": "hold",
+     "to": [
+      50,
+      40
+     ],
+     "why": "The ball carrier has no option and gets closed down."
+    },
+    {
+     "label": "Run in front of him down the line",
+     "kind": "run",
+     "to": [
+      78,
+      8
+     ],
+     "why": "He cannot pass it forward without the offside risk, and he gets squeezed."
+    }
+   ],
+   "best": 0
+  },
+  {
+   "id": "s12",
+   "for": [
+    "striker",
+    "winger"
+   ],
+   "title": "Near post or far post?",
+   "setup": "A cross is coming in from the right wing. The keeper is cheating towards the near post and the defenders are watching the ball.",
+   "you": [
+    84,
+    30
+   ],
+   "mates": [
+    [
+     70,
+     8
+    ]
+   ],
+   "opps": [
+    [
+     88,
+     26
+    ],
+    [
+     86,
+     34
+    ],
+    [
+     97,
+     29
+    ]
+   ],
+   "onBall": false,
+   "options": [
+    {
+     "label": "Attack the far post, arriving late",
+     "kind": "run",
+     "to": [
+      95,
+      42
+     ],
+     "why": "The keeper and defenders are drawn to the near post, so the far post is where the space is."
+    },
+    {
+     "label": "Run to the near post",
+     "kind": "run",
+     "to": [
+      95,
+      28
+     ],
+     "why": "The keeper is already guarding it and the defenders are close."
+    },
+    {
+     "label": "Stay on the penalty spot",
+     "kind": "hold",
+     "to": [
+      88,
+      32
+     ],
+     "why": "You are easy to mark and you wait for the ball to arrive."
+    },
+    {
+     "label": "Drop off to the edge of the box",
+     "kind": "run",
+     "to": [
+      76,
+      32
+     ],
+     "why": "You give up your best chance to score from the cross."
+    }
+   ],
+   "best": 0
+  },
+  {
+   "id": "s13",
+   "for": [
+    "fb",
+    "cb"
+   ],
+   "title": "The recovery run",
+   "setup": "The attacker has beaten your line and is running at goal. You are chasing back from behind.",
+   "you": [
+    38,
+    22
+   ],
+   "mates": [
+    [
+     10,
+     32
+    ]
+   ],
+   "opps": [
+    [
+     44,
+     26
+    ]
+   ],
+   "onBall": false,
+   "options": [
+    {
+     "label": "Curve your run to the goal side, between the ball and goal",
+     "kind": "run",
+     "to": [
+      22,
+      30
+     ],
+     "why": "Getting goal side first stops the attacker running straight at goal."
+    },
+    {
+     "label": "Chase straight after the ball",
+     "kind": "run",
+     "to": [
+      44,
+      26
+     ],
+     "why": "You will not catch him and you stay behind the ball."
+    },
+    {
+     "label": "Stop and shout for help",
+     "kind": "hold",
+     "to": [
+      38,
+      22
+     ],
+     "why": "You are out of the play and he runs through."
+    },
+    {
+     "label": "Slide in from behind",
+     "kind": "dribble",
+     "to": [
+      44,
+      26
+     ],
+     "why": "A tackle from behind is a foul and a card."
+    }
+   ],
+   "best": 0
+  },
+  {
+   "id": "s15",
+   "for": [
+    "midfielder"
+   ],
+   "title": "Dummy or half turn?",
+   "setup": "A pass is coming to you. You scanned: there is space directly behind you and the nearest defender is far away.",
+   "you": [
+    48,
+    32
+   ],
+   "mates": [
+    [
+     38,
+     32
+    ],
+    [
+     60,
+     24
+    ]
+   ],
+   "opps": [
+    [
+     58,
+     38
+    ],
+    [
+     66,
+     30
+    ]
+   ],
+   "onBall": false,
+   "options": [
+    {
+     "label": "Dummy it: let it roll past you and spin after it",
+     "kind": "dribble",
+     "to": [
+      44,
+      32
+     ],
+     "why": "Space behind you and no pressure: the dummy takes a defender out of the game and wins you time."
+    },
+    {
+     "label": "Take it with your back to goal and stand still",
+     "kind": "hold",
+     "to": [
+      48,
+      32
+     ],
+     "why": "You waste the space behind you."
+    },
+    {
+     "label": "Play it first time back",
+     "kind": "pass",
+     "to": [
+      38,
+      32
+     ],
+     "why": "Safe, but it throws away a chance to keep the attack moving."
+    },
+    {
+     "label": "Hit it long first time",
+     "kind": "pass",
+     "to": [
+      75,
+      32
+     ],
+     "why": "You have not looked up, so it is a guess."
+    }
+   ],
+   "best": 0
+  },
+  {
+   "id": "s17",
+   "for": [
+    "fb"
+   ],
+   "title": "Overlap or underlap?",
+   "setup": "Your winger has the ball facing his full-back. The inside lane is crowded with two defenders, the outside lane is free.",
+   "you": [
+    60,
+    10
+   ],
+   "mates": [
+    [
+     70,
+     14
+    ],
+    [
+     78,
+     30
+    ]
+   ],
+   "opps": [
+    [
+     76,
+     16
+    ],
+    [
+     74,
+     24
+    ],
+    [
+     78,
+     28
+    ]
+   ],
+   "onBall": false,
+   "options": [
+    {
+     "label": "Overlap: run round the outside past your winger",
+     "kind": "run",
+     "to": [
+      78,
+      6
+     ],
+     "why": "The inside is crowded and the outside is empty: the overlap gives him an extra option and pulls the full-back out."
+    },
+    {
+     "label": "Underlap through the crowded inside lane",
+     "kind": "run",
+     "to": [
+      74,
+      22
+     ],
+     "why": "There are two defenders waiting there."
+    },
+    {
+     "label": "Stay behind the ball",
+     "kind": "hold",
+     "to": [
+      60,
+      10
+     ],
+     "why": "Your winger is on his own against two players."
+    },
+    {
+     "label": "Run to the middle",
+     "kind": "run",
+     "to": [
+      70,
+      32
+     ],
+     "why": "You take yourself away from the winger and give him no option."
+    }
+   ],
+   "best": 0
+  },
+  {
+   "id": "s18",
+   "for": [
+    "striker"
+   ],
+   "title": "Hold it up or turn?",
+   "setup": "You receive the ball with your back to goal and a centre-back tight behind you. A midfielder is arriving from deep.",
+   "you": [
+    76,
+    32
+   ],
+   "mates": [
+    [
+     66,
+     40
+    ],
+    [
+     88,
+     20
+    ]
+   ],
+   "opps": [
+    [
+     78,
+     32
+    ],
+    [
+     82,
+     24
+    ]
+   ],
+   "onBall": true,
+   "options": [
+    {
+     "label": "Hold it up, shield it and lay it off to the arriving midfielder",
+     "kind": "hold",
+     "to": [
+      66,
+      40
+     ],
+     "why": "With a defender tight on your back you cannot turn: shield it and play the runner coming onto it."
+    },
+    {
+     "label": "Turn quickly with him on your back",
+     "kind": "dribble",
+     "to": [
+      78,
+      32
+     ],
+     "why": "If you cannot see him, you will lose it."
+    },
+    {
+     "label": "Shoot with your back to goal",
+     "kind": "shoot",
+     "to": [
+      100,
+      32
+     ],
+     "why": "You cannot hit the target facing the wrong way."
+    },
+    {
+     "label": "Pass it back to the centre-back",
+     "kind": "pass",
+     "to": [
+      50,
+      32
+     ],
+     "why": "It kills the attack: you give up the ball and the move."
+    }
+   ],
+   "best": 0
+  },
+  {
+   "id": "s19",
+   "for": [
+    "cb"
+   ],
+   "title": "Play out or clear?",
+   "setup": "You are on the ball in your own box and the striker is pressing you. Your full-back is free and unmarked in the wide channel.",
+   "you": [
+    15,
+    32
+   ],
+   "mates": [
+    [
+     12,
+     10
+    ],
+    [
+     30,
+     24
+    ]
+   ],
+   "opps": [
+    [
+     20,
+     32
+    ],
+    [
+     26,
+     20
+    ],
+    [
+     24,
+     40
+    ]
+   ],
+   "onBall": true,
+   "options": [
+    {
+     "label": "Play it to the free full-back",
+     "kind": "pass",
+     "to": [
+      12,
+      10
+     ],
+     "why": "A free outlet beats a panic clearance: you keep possession and play away from the press."
+    },
+    {
+     "label": "Clear it as far as you can",
+     "kind": "pass",
+     "to": [
+      70,
+      32
+     ],
+     "why": "It gives the ball away and the press starts again."
+    },
+    {
+     "label": "Dribble past the striker",
+     "kind": "dribble",
+     "to": [
+      22,
+      32
+     ],
+     "why": "A mistake in your own box leads to a goal."
+    },
+    {
+     "label": "Pass across your own box",
+     "kind": "pass",
+     "to": [
+      15,
+      48
+     ],
+     "why": "It risks an interception right in front of goal."
+    }
+   ],
+   "best": 0
+  },
+  {
+   "id": "s20",
+   "for": [
+    "striker",
+    "winger",
+    "am"
+   ],
+   "title": "The 2v1",
+   "setup": "You and a teammate are attacking one defender near the box. He is between you and goal.",
+   "you": [
+    80,
+    28
+   ],
+   "mates": [
+    [
+     80,
+     38
+    ]
+   ],
+   "opps": [
+    [
+     88,
+     32
+    ]
+   ],
+   "onBall": true,
+   "options": [
+    {
+     "label": "Run at the defender and pass when he commits",
+     "kind": "dribble",
+     "to": [
+      86,
+      30
+     ],
+     "why": "Attack him with the ball: when he steps to you the pass opens, and your teammate is free to finish."
+    },
+    {
+     "label": "Pass straight away from here",
+     "kind": "pass",
+     "to": [
+      80,
+      38
+     ],
+     "why": "It lets the defender stay where he is and cover both of you."
+    },
+    {
+     "label": "Shoot from here",
+     "kind": "shoot",
+     "to": [
+      100,
+      32
+     ],
+     "why": "You are well out, and the defender is in the way."
+    },
+    {
+     "label": "Dribble round him alone",
+     "kind": "dribble",
+     "to": [
+      88,
+      34
+     ],
+     "why": "You are throwing away a free teammate."
+    }
+   ],
+   "best": 0
+  },
+  {
+   "id": "s21",
+   "for": [
+    "fb",
+    "cb",
+    "cm"
+   ],
+   "title": "Force him wide",
+   "setup": "A winger comes at you in the middle of the pitch. You want to steer him away from the goal and onto his weaker foot.",
+   "you": [
+    50,
+    32
+   ],
+   "mates": [
+    [
+     46,
+     22
+    ]
+   ],
+   "opps": [
+    [
+     58,
+     32
+    ]
+   ],
+   "onBall": false,
+   "options": [
+    {
+     "label": "Show him to the touchline, side-on, blocking the inside route",
+     "kind": "hold",
+     "to": [
+      52,
+      24
+     ],
+     "why": "Force him wide and onto his weaker foot: the touchline is a defender too."
+    },
+    {
+     "label": "Stand square in front of him",
+     "kind": "hold",
+     "to": [
+      52,
+      32
+     ],
+     "why": "He can go either way."
+    },
+    {
+     "label": "Back off towards your goal",
+     "kind": "run",
+     "to": [
+      40,
+      32
+     ],
+     "why": "You give him all the time and the space to run at the box."
+    },
+    {
+     "label": "Dive in with your foot out",
+     "kind": "dribble",
+     "to": [
+      56,
+      32
+     ],
+     "why": "You get dribbled past and the middle is open."
+    }
+   ],
+   "best": 0
+  },
+  {
+   "id": "s23",
+   "for": [
+    "striker",
+    "winger",
+    "cm"
+   ],
+   "title": "Press or hold?",
+   "setup": "Their midfielder takes a heavy first touch away from his body, and you are close to the ball.",
+   "you": [
+    40,
+    38
+   ],
+   "mates": [
+    [
+     30,
+     30
+    ],
+    [
+     34,
+     46
+    ]
+   ],
+   "opps": [
+    [
+     35,
+     40
+    ],
+    [
+     24,
+     32
+    ]
+   ],
+   "onBall": false,
+   "options": [
+    {
+     "label": "Press now: a heavy touch is a trigger",
+     "kind": "run",
+     "to": [
+      35,
+      40
+     ],
+     "why": "A bad touch is the best moment to press: you win it or force a mistake."
+    },
+    {
+     "label": "Hold your position and wait",
+     "kind": "hold",
+     "to": [
+      40,
+      38
+     ],
+     "why": "The moment passes and he recovers the ball."
+    },
+    {
+     "label": "Drop back to your own half",
+     "kind": "run",
+     "to": [
+      20,
+      38
+     ],
+     "why": "You give up a great chance to win it high."
+    },
+    {
+     "label": "Slide in from far away",
+     "kind": "dribble",
+     "to": [
+      35,
+      40
+     ],
+     "why": "You will arrive late and miss."
+    }
+   ],
+   "best": 0
+  },
+  {
+   "id": "s24",
+   "for": [
+    "midfielder",
+    "fb"
+   ],
+   "title": "Carry it or pass it?",
+   "setup": "You have the ball in midfield. There is open space ahead and nobody is pressing you.",
+   "you": [
+    48,
+    32
+   ],
+   "mates": [
+    [
+     58,
+     22
+    ],
+    [
+     56,
+     44
+    ]
+   ],
+   "opps": [
+    [
+     66,
+     32
+    ],
+    [
+     60,
+     38
+    ]
+   ],
+   "onBall": true,
+   "options": [
+    {
+     "label": "Drive forward with the ball into the space",
+     "kind": "dribble",
+     "to": [
+      60,
+      32
+     ],
+     "why": "Carrying it forward draws a defender towards you and opens a passing lane for a teammate."
+    },
+    {
+     "label": "Pass it back",
+     "kind": "pass",
+     "to": [
+      34,
+      32
+     ],
+     "why": "There is no pressure, so there is no reason to give it up."
+    },
+    {
+     "label": "Hit a long ball immediately",
+     "kind": "pass",
+     "to": [
+      78,
+      32
+     ],
+     "why": "You have time, so make a better choice."
+    },
+    {
+     "label": "Stand still and look for options",
+     "kind": "hold",
+     "to": [
+      48,
+      32
+     ],
+     "why": "The opposition has time to recover and close the gaps."
+    }
+   ],
+   "best": 0
+  },
+  {
+   "id": "s25",
+   "for": [
+    "winger",
+    "fb"
+   ],
+   "title": "Cut it back",
+   "setup": "You have beaten your man to the goal line. The defenders are covering the near post, and a teammate is arriving at the penalty spot.",
+   "you": [
+    96,
+    12
+   ],
+   "mates": [
+    [
+     90,
+     32
+    ]
+   ],
+   "opps": [
+    [
+     96,
+     26
+    ],
+    [
+     93,
+     32
+    ]
+   ],
+   "onBall": true,
+   "options": [
+    {
+     "label": "Cut it back along the ground to the penalty spot",
+     "kind": "pass",
+     "to": [
+      90,
+      32
+     ],
+     "why": "It buys time for the runner and the defenders are moving against the ball."
+    },
+    {
+     "label": "Cross it high to the near post",
+     "kind": "pass",
+     "to": [
+      96,
+      28
+     ],
+     "why": "The defenders are standing there, and a high ball goes straight to them."
+    },
+    {
+     "label": "Shoot from the tight angle",
+     "kind": "shoot",
+     "to": [
+      100,
+      32
+     ],
+     "why": "The angle is tight and the keeper has it covered."
+    },
+    {
+     "label": "Take another touch",
+     "kind": "hold",
+     "to": [
+      96,
+      12
+     ],
+     "why": "You give a defender time to get back and block it."
+    }
+   ],
+   "best": 0
+  },
+  {
+   "id": "s27",
+   "for": [
+    "striker"
+   ],
+   "title": "Time your run",
+   "setup": "A teammate is about to play a through ball. The last defender is level with you and the defensive line is high.",
+   "you": [
+    79,
+    30
+   ],
+   "mates": [
+    [
+     58,
+     32
+    ]
+   ],
+   "opps": [
+    [
+     80,
+     26
+    ],
+    [
+     80,
+     36
+    ]
+   ],
+   "onBall": false,
+   "options": [
+    {
+     "label": "Hold your run, then go as the pass is played",
+     "kind": "run",
+     "to": [
+      92,
+      31
+     ],
+     "why": "Start from behind the line and go on the pass, so you stay onside."
+    },
+    {
+     "label": "Run now before the pass",
+     "kind": "run",
+     "to": [
+      90,
+      31
+     ],
+     "why": "You will be in an offside position when the ball is played."
+    },
+    {
+     "label": "Stand level and wait for the ball to arrive",
+     "kind": "hold",
+     "to": [
+      79,
+      30
+     ],
+     "why": "The defence steps up and catches you offside."
+    },
+    {
+     "label": "Run towards the ball",
+     "kind": "run",
+     "to": [
+      68,
+      30
+     ],
+     "why": "You drag nobody out and you leave the space behind alone."
+    }
+   ],
+   "best": 0
+  }
+ ]
+}

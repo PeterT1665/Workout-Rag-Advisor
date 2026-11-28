@@ -5,6 +5,7 @@ import { FAMILIES } from '../lib/drills'
 import { Button, Screen, Title, TopBar } from '../components/ui'
 import { CATEGORY_LABELS, categories, drillPhoto, drillStill, exerciseBlock, EXERCISES, SPORTS, type Sport } from '../lib/library'
 import type { Block } from '../lib/types'
+import { useProfile } from '../lib/profile'
 import { t } from '../i18n'
 
 // Every exercise in the app, by place and category: tap one for its how-to and 3D demo. Build a session from here too.
@@ -15,7 +16,8 @@ export function ExerciseLibrary({ onSessions, onNew, onBack }: { onSessions: () 
   const [family, setFamily] = useState<string | null>(null)
   const cats = categories(sport)
   // a drill family is one row (its first level stands for it); its other levels are inside it
-  const list = EXERCISES.filter((e) => e.sport === sport && (!cat || e.category === cat) && (!e.family || e.level === 1))
+  const noHeading = useProfile().noHeading
+  const list = EXERCISES.filter((e) => e.sport === sport && (!cat || e.category === cat) && (!e.family || e.level === 1) && !(noHeading && e.heading))
   return (
     <Screen>
       <TopBar left={<Title>{t('Exercises')}</Title>} right={<Button variant="ghost" size="sm" onClick={onBack}>{t('Back')}</Button>} />

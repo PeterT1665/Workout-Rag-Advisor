@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { Button, Pill, SectionHead } from '../components/ui'
 import { BallIcon, FlameIcon, KitGlyph, MoreIcon } from '../components/icons'
 import { MoreMenu } from '../components/MoreMenu'
+import { answerFor, dailyStreak, dayNumber, scenarioFor } from '../lib/daily'
 import type { Streak } from '../lib/streak'
 import { NotifyPrompt } from '../components/Notifications'
 import { usePersonalImage } from '../lib/personal'
@@ -28,6 +29,7 @@ type Props = {
   onSettings: () => void
   onAllSessions: () => void
   onExercises: () => void
+  onDaily?: () => void
   onAddClips: () => void
   onPlayer: () => void
   active?: { title: string; onResume: () => void; onDiscard: () => void } | null // unfinished session
@@ -200,6 +202,22 @@ export function WeekStrip({ today, kindFor }: { today: Today; kindFor?: (day: nu
 
 
 
+// Daily play: today's tactical scenario, the same for everyone. Shows the streak, or the result once you've played.
+function DailyCard({ onDaily }: { onDaily: () => void }) {
+  const now = new Date()
+  const s = scenarioFor(now), a = answerFor(now), streak = dailyStreak(now)
+  return (
+    <button onClick={onDaily} className="mt-3 flex w-full items-center gap-3 rounded-[22px] bg-surface p-4 text-left active:scale-[0.99]">
+      <span className="grid h-11 w-11 shrink-0 place-items-center rounded-full bg-surface-2 text-xl" aria-hidden="true">{a ? (a.correct ? '✅' : '❌') : '⚽'}</span>
+      <span className="min-w-0 flex-1">
+        <span className="block font-display text-sm uppercase">{t('Daily play')} <span className="tabular-nums text-muted">#{dayNumber(now)}</span></span>
+        <span className="block truncate text-sm text-muted">{a ? t('Played. Come back tomorrow.') : t(s.title)}{streak > 0 ? ` · 🔥 ${streak}` : ''}</span>
+      </span>
+      <span className="shrink-0 text-red-ink" aria-hidden="true">→</span>
+    </button>
+  )
+}
+
 // Ask the coach: a box that looks like the chat's, and two questions to tap.
 function CoachBar({ onCoach }: { onCoach: (ask?: string) => void }) {
   const qs = [t('What should I do today?'), t('How was my week?')]
@@ -260,6 +278,7 @@ export function Home(p: Props) {
       )}
       <NotifyPrompt />
       {p.onCoach && <CoachBar onCoach={p.onCoach} />}
+      {p.onDaily && <DailyCard onDaily={p.onDaily} />}
 
       <SectionHead title={t("Today's drills")} right={<button onClick={p.onAllSessions} className="text-sm font-semibold text-muted">{t('All sessions')}</button>} />
       <div className="no-scrollbar -mx-4 flex snap-x scroll-px-4 gap-3 overflow-x-auto px-4">

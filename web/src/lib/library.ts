@@ -8,7 +8,7 @@ import { demoFor } from './demo3d/catalog'
 import { drillExercises } from './drills'
 
 export type Sport = 'football' | 'gym' | 'home' | 'mobility'
-export type Exercise = Block & { id: string; sport: Sport; category: string; positions?: string[]; mine?: boolean; mistake?: string; fix?: string; family?: string; level?: number; setup?: 'solo' | 'partner' | 'group'; gameDay?: string[] } // mistake + fix: a text line for exercises without a Form check in the 3D demo // mine: the player's own (lib/myExercises)
+export type Exercise = Block & { id: string; sport: Sport; category: string; positions?: string[]; mine?: boolean; mistake?: string; fix?: string; family?: string; level?: number; setup?: 'solo' | 'partner' | 'group'; gameDay?: string[]; heading?: boolean } // mistake + fix: a text line for exercises without a Form check in the 3D demo // mine: the player's own (lib/myExercises)
 export type Item = { ex: string; work?: number; rest?: number; rounds?: number; how?: string; superset?: boolean }
 export type Template = { id: string; title: string; type: string; summary: string; needs: string[]; items: Item[]; positions?: string[] } // positions: for players who play there (the football picker prefers them)
 export type MySession = Template & { mine: true; updated: string }
@@ -45,7 +45,7 @@ export const CATEGORY_LABELS: Record<string, string> = {
   finishing: t('Finishing'), '1v1': '1v1', speed: t('Speed & agility'), conditioning: t('Conditioning'),
   olympic: t('Olympic lifts'), explosive: t('Explosive'), plyometrics: t('Plyo & jumps'), sprints: t('Sprints'),
   'lower-strength': t('Lower body'), 'upper-strength': t('Upper body'), 'single-limb': t('Single leg / arm'), isometrics: t('Isometrics'),
-  core: t('Core'), 'gym-conditioning': t('Conditioning'), mobility: t('Mobility'), crossing: t('Crossing'), defending: t('Defending'), mine: t('My exercises'),
+  core: t('Core'), 'gym-conditioning': t('Conditioning'), mobility: t('Mobility'), crossing: t('Crossing'), defending: t('Defending'), 'off-ball': t('Off the ball'), mine: t('My exercises'),
 }
 // Categories in display order for one sport, only those that have exercises.
 export function categories(sport: Sport) {
@@ -94,7 +94,7 @@ const PHOTO_GROUP: Record<string, string> = {
   'ball-mastery': 'dribble', 'first-touch': 'dribble', '1v1': 'dribble', passing: 'pass', finishing: 'shoot',
   speed: 'speed', sprints: 'speed', plyometrics: 'speed', warmup: 'warmup', conditioning: 'run', 'gym-conditioning': 'run',
   'lower-strength': 'gym', 'upper-strength': 'gym', olympic: 'gym', explosive: 'gym', 'single-limb': 'gym', isometrics: 'gym', core: 'gym',
-  mobility: 'stretch', cooldown: 'stretch', crossing: 'pass', defending: 'speed',
+  mobility: 'stretch', cooldown: 'stretch', crossing: 'pass', defending: 'speed', 'off-ball': 'speed',
 }
 export const drillPhoto = (category?: string) => `${import.meta.env.BASE_URL}drill-img/${PHOTO_GROUP[category ?? ''] ?? 'run'}.jpg`
 // A drill's picture: a still of its 3D demo (public/demo-still, made by scripts/demo-stills.mjs); null when it has none.
@@ -113,7 +113,7 @@ export function exerciseBlock(id: string): Block | undefined {
   return block
 }
 export const alternativesFor = (b: Block) =>
-  EXERCISES.filter((e) => e.category === b.category && e.name !== b.name && e.kind === b.kind)
+  EXERCISES.filter((e) => e.category === b.category && e.name !== b.name && e.kind === b.kind && !e.heading)
 
 // No gym today: the home session closest to a gym session (bodyweight and household kit only).
 const HOME_VERSION: Record<string, string> = {
