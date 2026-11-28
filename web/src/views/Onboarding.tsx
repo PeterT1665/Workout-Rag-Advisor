@@ -10,7 +10,7 @@ import { InAppNotice } from '../components/InAppNotice'
 import { InstallButton } from '../components/InstallButton'
 import { injurySafe, partLabel, safestInstead, seriousInjury, type Part, type Severity } from '../lib/injuries'
 import { BUILTIN_SESSIONS } from '../lib/library'
-import { planToday, setPlanGoals } from '../lib/today'
+import { planToday, setPlanGoals, setPlanPositions } from '../lib/today'
 import { fitSession } from '../lib/fit'
 import { sessionMinutes } from '../lib/logic'
 import { t } from '../i18n'
@@ -429,7 +429,7 @@ function Building({ p, games, onDone }: { p: Profile; games: Game[]; onDone: () 
 
 // The plan it made: the week, today's session and why, one button.
 function Reveal({ p, games, onGo }: { p: Profile; games: Game[]; onGo: () => void }) {
-  const td = useMemo(() => { setPlanGoals(p.goals); return planToday(BUILTIN_SESSIONS, games, new Date(), planOptsOf(p)) }, [p, games])
+  const td = useMemo(() => { setPlanGoals(p.goals); setPlanPositions(p.positions); return planToday(BUILTIN_SESSIONS, games, new Date(), planOptsOf(p)) }, [p, games])
   const injuries = (p.injuries ?? []).filter((i) => !i.healed)
   const session = injurySafe(fitSession(safestInstead(td.session, BUILTIN_SESSIONS, injuries) ?? td.session, p).session, injuries).session
   const off = seriousInjury(injuries)

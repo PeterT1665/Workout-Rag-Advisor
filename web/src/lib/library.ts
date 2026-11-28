@@ -5,17 +5,18 @@ import { load, save } from './storage'
 import type { Block, Session } from './types'
 import { mark, t } from '../i18n'
 import { demoFor } from './demo3d/catalog'
+import { drillExercises } from './drills'
 
 export type Sport = 'football' | 'gym' | 'home' | 'mobility'
-export type Exercise = Block & { id: string; sport: Sport; category: string; positions?: string[]; mine?: boolean; mistake?: string; fix?: string } // mistake + fix: a text line for exercises without a Form check in the 3D demo // mine: the player's own (lib/myExercises)
+export type Exercise = Block & { id: string; sport: Sport; category: string; positions?: string[]; mine?: boolean; mistake?: string; fix?: string; family?: string; level?: number; setup?: 'solo' | 'partner' | 'group'; gameDay?: string[] } // mistake + fix: a text line for exercises without a Form check in the 3D demo // mine: the player's own (lib/myExercises)
 export type Item = { ex: string; work?: number; rest?: number; rounds?: number; how?: string; superset?: boolean }
-export type Template = { id: string; title: string; type: string; summary: string; needs: string[]; items: Item[] }
+export type Template = { id: string; title: string; type: string; summary: string; needs: string[]; items: Item[]; positions?: string[] } // positions: for players who play there (the football picker prefers them)
 export type MySession = Template & { mine: true; updated: string }
 
 // Instructions and descriptive reps ("8 each leg") in the app's language; names stay English, and "needs"
 // stay English data (the kit check reads them) and are translated where they're shown.
 const tReps = (r?: string) => (r && !/^\d+(-\d+)?$/.test(r) ? t(r) : r)
-export const EXERCISES = (data.exercises as Exercise[]).map((e) => ({ ...e, how: e.how && t(e.how), safe: e.safe && t(e.safe), mistake: e.mistake && t(e.mistake), fix: e.fix && t(e.fix), reps: tReps(e.reps) }))
+export const EXERCISES = [...(data.exercises as Exercise[]), ...(drillExercises() as Exercise[])].map((e) => ({ ...e, how: e.how && t(e.how), safe: e.safe && t(e.safe), mistake: e.mistake && t(e.mistake), fix: e.fix && t(e.fix), reps: tReps(e.reps) }))
 export const TEMPLATES = data.templates as Template[]
 const byId = new Map(EXERCISES.map((e) => [e.id, e]))
 export const exercise = (id: string) => byId.get(id)
@@ -44,7 +45,7 @@ export const CATEGORY_LABELS: Record<string, string> = {
   finishing: t('Finishing'), '1v1': '1v1', speed: t('Speed & agility'), conditioning: t('Conditioning'),
   olympic: t('Olympic lifts'), explosive: t('Explosive'), plyometrics: t('Plyo & jumps'), sprints: t('Sprints'),
   'lower-strength': t('Lower body'), 'upper-strength': t('Upper body'), 'single-limb': t('Single leg / arm'), isometrics: t('Isometrics'),
-  core: t('Core'), 'gym-conditioning': t('Conditioning'), mobility: t('Mobility'), mine: t('My exercises'),
+  core: t('Core'), 'gym-conditioning': t('Conditioning'), mobility: t('Mobility'), crossing: t('Crossing'), defending: t('Defending'), mine: t('My exercises'),
 }
 // Categories in display order for one sport, only those that have exercises.
 export function categories(sport: Sport) {
@@ -68,7 +69,7 @@ export function toSession(tpl: Template): Session {
   }
   const needs = tpl.needs.length ? tpl.needs : [...new Set(blocks.flatMap((b) => b.needs || []))].map((n) => NEED_LABELS[n] || n)
   // your own sessions keep the title you gave them (t() leaves text it doesn't know as it is)
-  return { id: tpl.id, title: t(tpl.title), type: tpl.type, summary: t(tpl.summary), needs, blocks }
+  return { id: tpl.id, title: t(tpl.title), type: tpl.type, summary: t(tpl.summary), needs, blocks, ...(tpl.positions ? { positions: tpl.positions } : {}) }
 }
 
 const stripUndefined = (o: object) => Object.fromEntries(Object.entries(o).filter(([, v]) => v !== undefined))
@@ -93,7 +94,7 @@ const PHOTO_GROUP: Record<string, string> = {
   'ball-mastery': 'dribble', 'first-touch': 'dribble', '1v1': 'dribble', passing: 'pass', finishing: 'shoot',
   speed: 'speed', sprints: 'speed', plyometrics: 'speed', warmup: 'warmup', conditioning: 'run', 'gym-conditioning': 'run',
   'lower-strength': 'gym', 'upper-strength': 'gym', olympic: 'gym', explosive: 'gym', 'single-limb': 'gym', isometrics: 'gym', core: 'gym',
-  mobility: 'stretch', cooldown: 'stretch',
+  mobility: 'stretch', cooldown: 'stretch', crossing: 'pass', defending: 'speed',
 }
 export const drillPhoto = (category?: string) => `${import.meta.env.BASE_URL}drill-img/${PHOTO_GROUP[category ?? ''] ?? 'run'}.jpg`
 // A drill's picture: a still of its 3D demo (public/demo-still, made by scripts/demo-stills.mjs); null when it has none.

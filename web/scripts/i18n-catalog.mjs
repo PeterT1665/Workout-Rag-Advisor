@@ -29,6 +29,12 @@ export function catalog() {
     if (e.reps && !/^\d+(-\d+)?$/.test(e.reps)) out.add(e.reps)
     for (const n of e.needs ?? []) out.add(n)
   }
+  // drill families (data/drills.json): every level's how-to, mistake and fix, and its descriptive reps
+  const drills = JSON.parse(readFileSync(join(SRC, 'data/drills.json'), 'utf8'))
+  for (const f of drills.families) for (const l of f.levels) {
+    out.add(l.how); out.add(l.mistake); out.add(l.fix)
+    if (l.reps && !/^\d+(-\d+)?$/.test(l.reps)) out.add(l.reps)
+  }
   for (const tpl of lib.templates) {
     out.add(tpl.title); out.add(tpl.summary)
     for (const n of tpl.needs ?? []) out.add(n)

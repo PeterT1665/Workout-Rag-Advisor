@@ -40,7 +40,7 @@ import { beep, realAudio, unlockAudio } from './lib/audio'
 import { createPlayer, trainedMinutes, type Player, type Snapshot } from './lib/player'
 import { nextQuote } from './lib/quotes'
 import { addHistory, loadHistory, loadSettings, save } from './lib/storage'
-import { loadGames, planToday, saveGames, setPlanGoals, withChange } from './lib/today'
+import { loadGames, planToday, saveGames, setPlanGoals, setPlanPositions, withChange } from './lib/today'
 import { fitSession } from './lib/fit'
 import { planStreak, counts } from './lib/streak'
 import { planOptsOf } from './lib/weekplan'
@@ -109,7 +109,7 @@ export default function App({ onSignUp, onSignIn }: { onSignUp?: () => void; onS
   // what's already in today's log (football, gym, recovery), so Kick off moves on to the next one
   const doneToday = [...new Set(loadHistory().filter((h) => h.date === new Date().toLocaleDateString('en-CA') && counts(h))
     .map((h) => (h.type === 'gym' || h.type === 'home' ? 'gym' : h.type === 'recovery' ? 'recovery' : 'football')))].sort().join(',')
-  const planned = useMemo(() => { setPlanGoals(profile.goals); return planToday(sessions, games, new Date(), planOptsOf(profile), doneToday ? doneToday.split(',') : []) }, [games, profile.gym, profile.footballPerWeek, profile.season, profile.doubleDays, doneToday, profile.goals])
+  const planned = useMemo(() => { setPlanGoals(profile.goals); setPlanPositions(profile.positions); return planToday(sessions, games, new Date(), planOptsOf(profile), doneToday ? doneToday.split(',') : []) }, [games, profile.gym, profile.footballPerWeek, profile.season, profile.doubleDays, profile.positions, doneToday, profile.goals])
   const [library, setLibrary] = useState(allSessions) // recommended + the user's own
   // your way of doing it (what you changed last time), inside the match-day rules
   // and an injury that guts a leg day turns it into the gym session it leaves most of (lib/injuries)

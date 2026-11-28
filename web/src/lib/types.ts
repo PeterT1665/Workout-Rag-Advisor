@@ -22,6 +22,7 @@ export type Session = {
   summary: string
   needs: string[]
   blocks: Block[]
+  positions?: string[] // positions this session is made for (football position sessions)
 }
 
 export type Step = {

@@ -10,6 +10,9 @@ import type { Goal } from './profile'
 // The player's goals (onboarding): sessions that train them come first in each rotation. Set by the app from the profile.
 let goals: Goal[] = []
 export const setPlanGoals = (g: Goal[] = []) => { goals = g }
+// ...and where they play: a football session made for their position comes first; sessions made for other positions are left out.
+let positions: string[] = []
+export const setPlanPositions = (p: string[] = []) => { positions = p }
 
 // Recommended gym sessions for each job (MD-4+ legs, MD-3 core, MD-2 upper power, MD-1 activation).
 export const GYM_FOR: Record<GymFocus, string[]> = {
@@ -35,7 +38,11 @@ export type Today = {
   changed?: 'session' | 'rest' // the player changed today by hand (Week screen or a session's Do it today)
 }
 
-const soloFootball = (all: Session[]) => byGoals(all.filter((s) => s.type === 'football' && !s.id.includes('partner')), goals)
+const soloFootball = (all: Session[]) => {
+  const solo = all.filter((s) => s.type === 'football' && !s.id.includes('partner'))
+  const mine = solo.filter((s) => s.positions?.some((p) => positions.includes(p)))
+  return [...byGoals(mine, goals), ...byGoals(solo.filter((s) => !s.positions), goals)]
+}
 
 export function sessionForSlot(slot: Slot, plan: WeekPlan, all: Session[]): Session | null {
   if (slot.kind === 'recovery') return all.find((s) => s.type === 'recovery') ?? null

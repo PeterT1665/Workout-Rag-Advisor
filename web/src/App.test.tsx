@@ -194,7 +194,7 @@ describe('app', () => {
     expect((screen.getByLabelText(/Session name/) as HTMLInputElement).value).toMatch(/\(mine\)/)
     click(/Add exercises/)
     fireEvent.click(screen.getByRole('button', { name: /^Dribbling$/ }))
-    click(/Add Toe taps/)
+    click(/^Add Toe taps$/)
     click(/Remove Toe taps/) // added by mistake: take it back
     expect(screen.queryByRole('button', { name: /Remove Toe taps/ })).toBeNull()
     click(/^Cone weave dribble$/) // tap the name: details sheet
@@ -425,8 +425,8 @@ describe('app', () => {
     render(<App />)
     click(/All sessions/)
     click(/Build a session/)
-    click(/Add Juggling/)
-    click(/Add Toe taps/)
+    click(/^Add Juggling$/)
+    click(/^Add Toe taps$/)
     click(/^Done/)
     const grip = screen.getByRole('button', { name: /Reorder Toe taps/ })
     fireEvent.keyDown(grip, { key: 'ArrowUp' })

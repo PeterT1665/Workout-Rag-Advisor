@@ -1,12 +1,13 @@
 import { describe, expect, test } from 'vitest'
 import data from '../../data/library.json'
 import { DEMOS, demoFor } from './catalog'
+import { FAMILIES, drillId } from '../drills'
 import { MOVES } from './moves'
 import { poseAt } from './pose'
 
 describe('3D demos', () => {
   test('every exercise in the library has a demo, and every demo a move', () => {
-    const ids = (data.exercises as { id: string }[]).map((e) => e.id)
+    const ids = [...(data.exercises as { id: string }[]).map((e) => e.id), ...FAMILIES.flatMap((f) => f.levels.map((_, i) => drillId(f, i)))]
     expect(ids.filter((id) => !DEMOS[id])).toEqual([])
     expect(Object.values(DEMOS).filter((d) => !MOVES[d.move]).map((d) => d.move)).toEqual([])
   })

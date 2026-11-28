@@ -1,0 +1,1897 @@
+{
+ "families": [
+  {
+   "id": "wall-ladder",
+   "name": "Wall ladder",
+   "category": "first-touch",
+   "demo": "pass-wall",
+   "setup": "solo",
+   "equipment": [
+    "ball",
+    "wall"
+   ],
+   "gameDay": [
+    "md-1",
+    "recovery",
+    "full"
+   ],
+   "levels": [
+    {
+     "name": "Two-touch, each foot",
+     "how": "3 m from the wall. Pass with the inside of the foot, control with one touch, pass again. Right foot, then left. Soft ankle, ball on the ground.",
+     "mistake": "Stabbing at the ball with a stiff foot",
+     "fix": "Soft ankle, cushion it, then pass",
+     "work": 60,
+     "rest": 30,
+     "rounds": 4,
+     "reps": "20 each foot"
+    },
+    {
+     "name": "One-touch, each foot",
+     "how": "Pass back first time with the same foot. Keep a steady rhythm and pass firmly.",
+     "mistake": "Letting the ball stop before you strike",
+     "fix": "Strike it as it comes back, keep the feet moving",
+     "work": 60,
+     "rest": 30,
+     "rounds": 4,
+     "reps": "30 each foot"
+    },
+    {
+     "name": "One-touch, alternating feet",
+     "how": "Right foot, then left, one touch each time. Step to the ball with the foot that is next.",
+     "mistake": "Always favouring the strong foot",
+     "fix": "Alternate every pass, even if the left is slower",
+     "work": 60,
+     "rest": 30,
+     "rounds": 4,
+     "reps": "40 touches"
+    },
+    {
+     "name": "Inside to outside",
+     "how": "Receive with the inside of the foot, take it away with the outside of the same foot, play it back. Both feet.",
+     "mistake": "Taking the second touch with a flat foot",
+     "fix": "Open the foot: inside, then roll over to the outside",
+     "work": 60,
+     "rest": 30,
+     "rounds": 4,
+     "reps": "15 each foot"
+    },
+    {
+     "name": "Half-turn off the wall",
+     "how": "Pass in, check your shoulder, receive side-on and turn away from an imaginary defender, then play forward to a target.",
+     "mistake": "Receiving square, facing the wall",
+     "fix": "Open your body before the ball arrives",
+     "work": 60,
+     "rest": 30,
+     "rounds": 4,
+     "reps": "10 each side"
+    },
+    {
+     "name": "Bounce and aerial",
+     "how": "Lift or throw the ball against the wall and control it out of the air with thigh, chest or instep, then play it back.",
+     "mistake": "Sticking the leg out like a tree trunk",
+     "fix": "Match the ball's speed and draw the foot back as it lands",
+     "work": 60,
+     "rest": 30,
+     "rounds": 4,
+     "reps": "12 reps"
+    },
+    {
+     "name": "Step back, driven and long",
+     "how": "Move back 2 m, then play driven and long passes. Plant beside the ball, lock the ankle, chest over it.",
+     "mistake": "Leaning back so the ball sails high",
+     "fix": "Plant beside the ball, strike the middle, follow through low",
+     "work": 60,
+     "rest": 45,
+     "rounds": 4,
+     "reps": "10 each foot"
+    }
+   ],
+   "source": {
+    "label": "W-A, W-B, W-C wall sessions (YouTube Club Kick, TikTok @aaron_at)"
+   }
+  },
+  {
+   "id": "gate-pass",
+   "name": "Gate pass",
+   "category": "passing",
+   "demo": "pass-wall-quick",
+   "setup": "partner",
+   "equipment": [
+    "ball",
+    "markers",
+    "partner"
+   ],
+   "gameDay": [
+    "md-1",
+    "recovery",
+    "full"
+   ],
+   "levels": [
+    {
+     "name": "One touch through the gate",
+     "how": "Two cones a big step apart, a partner serving. One touch through the gate with the right foot, then to the right of the cones; switch to the left. Swap roles.",
+     "mistake": "Passing to the wrong foot",
+     "fix": "Pass to your partner's correct foot, hard and on the ground",
+     "work": 60,
+     "rest": 30,
+     "rounds": 3,
+     "reps": "5 each side"
+    },
+    {
+     "name": "Two touches, then one",
+     "how": "Two touches to the side of the cone, then a one-touch pass; alternate two-touch and one-touch, then go the other way.",
+     "mistake": "Touching the ball into your own feet",
+     "fix": "Touch into space, keep it on the ground",
+     "work": 60,
+     "rest": 30,
+     "rounds": 3,
+     "reps": "5 each side"
+    },
+    {
+     "name": "Drop, check and fast feet",
+     "how": "Pass one-touch, drop back while checking your shoulder, receive with two touches to the left, then fast feet through a small box and pass one-touch.",
+     "mistake": "Dropping back without a look",
+     "fix": "Check your shoulder every time before the ball comes",
+     "work": 60,
+     "rest": 30,
+     "rounds": 3,
+     "reps": "4 sequences"
+    }
+   ],
+   "source": {
+    "label": "PP1 to PP3 (YouTube Prolific Soccer)"
+   }
+  },
+  {
+   "id": "cone-weave",
+   "name": "Cone weave",
+   "category": "ball-mastery",
+   "demo": "cone-weave",
+   "setup": "solo",
+   "equipment": [
+    "ball",
+    "markers"
+   ],
+   "gameDay": [
+    "md-1",
+    "recovery",
+    "full"
+   ],
+   "levels": [
+    {
+     "name": "Inside and outside",
+     "how": "8 to 10 cones about a ball-width apart. Inside touch, outside touch with one foot round each cone.",
+     "mistake": "Pushing the ball too far ahead",
+     "fix": "Small touches, ball always within a stride",
+     "work": 45,
+     "rest": 30,
+     "rounds": 4,
+     "reps": "2 lengths"
+    },
+    {
+     "name": "Right foot only",
+     "how": "Weave the line using only the right foot.",
+     "mistake": "Switching to the left when it gets hard",
+     "fix": "Stay on the weaker foot and slow down",
+     "work": 45,
+     "rest": 30,
+     "rounds": 4,
+     "reps": "2 lengths"
+    },
+    {
+     "name": "Left foot only",
+     "how": "Weave the line using only the left foot.",
+     "mistake": "Switching to the right when it gets hard",
+     "fix": "Stay on the weaker foot and slow down",
+     "work": 45,
+     "rest": 30,
+     "rounds": 4,
+     "reps": "2 lengths"
+    },
+    {
+     "name": "Tight touches",
+     "how": "A touch on every step, close control at speed. Right foot, then left.",
+     "mistake": "Long strides between touches",
+     "fix": "A touch with every step, ball close to the body",
+     "work": 45,
+     "rest": 30,
+     "rounds": 4,
+     "reps": "2 lengths"
+    },
+    {
+     "name": "Rollover",
+     "how": "Sole roll across each cone, switching feet.",
+     "mistake": "Looking down the whole time",
+     "fix": "Look up between rolls",
+     "work": 45,
+     "rest": 30,
+     "rounds": 4,
+     "reps": "2 lengths"
+    },
+    {
+     "name": "Push and pull",
+     "how": "Push the ball forward with the sole, pull it back, then change direction round the cone.",
+     "mistake": "Rushing the pull-back",
+     "fix": "Pull back, then push out of the turn at pace",
+     "work": 45,
+     "rest": 30,
+     "rounds": 4,
+     "reps": "2 lengths"
+    }
+   ],
+   "source": {
+    "label": "DR1 cone weave set (YouTube GCFC Training)"
+   }
+  },
+  {
+   "id": "sole-skills",
+   "name": "Sole skills",
+   "category": "ball-mastery",
+   "demo": "sole-roll",
+   "setup": "solo",
+   "equipment": [
+    "ball"
+   ],
+   "gameDay": [
+    "md-1",
+    "recovery",
+    "full"
+   ],
+   "levels": [
+    {
+     "name": "Sole roll",
+     "how": "The underside of the foot just below the toes grabs the top of the ball. Roll it to the other foot and back.",
+     "mistake": "Pressing down on the ball",
+     "fix": "Light touch, roll it, keep the ball moving",
+     "work": 30,
+     "rest": 15,
+     "rounds": 3,
+     "reps": "30 s"
+    },
+    {
+     "name": "Roll stop",
+     "how": "Roll the ball further across the body; the other foot stops it on top and rolls it back.",
+     "mistake": "Rolling it too hard",
+     "fix": "Roll it softly so the other foot can stop it",
+     "work": 30,
+     "rest": 15,
+     "rounds": 3,
+     "reps": "30 s"
+    },
+    {
+     "name": "Brazilian taps",
+     "how": "Tap with the sole of one foot, hop, tap with the other, wrapping around the opposite leg. Start slowly.",
+     "mistake": "Rushing and losing the rhythm",
+     "fix": "Slow first, then speed up",
+     "work": 30,
+     "rest": 15,
+     "rounds": 3,
+     "reps": "30 s"
+    },
+    {
+     "name": "Push and pull",
+     "how": "Push forward with the sole, drag back with the same foot. Exchange feet with a hop. Use your arms for balance.",
+     "mistake": "Stiff, flat-footed hops",
+     "fix": "Stay on the toes, find a rhythm",
+     "work": 30,
+     "rest": 15,
+     "rounds": 3,
+     "reps": "30 s"
+    },
+    {
+     "name": "Sole square",
+     "how": "Draw a square with the ball: push forward, across, exchange feet, drag back, across. Switch direction halfway.",
+     "mistake": "Skipping a side of the square",
+     "fix": "Say the sides in your head: forward, across, back, across",
+     "work": 30,
+     "rest": 15,
+     "rounds": 3,
+     "reps": "30 s"
+    }
+   ],
+   "source": {
+    "label": "Sole roll mastery skills (YouTube 7mlc)"
+   }
+  },
+  {
+   "id": "juggling-ladder",
+   "name": "Juggling ladder",
+   "category": "ball-mastery",
+   "demo": "juggle",
+   "setup": "solo",
+   "equipment": [
+    "ball"
+   ],
+   "gameDay": [
+    "md-1",
+    "recovery",
+    "full"
+   ],
+   "levels": [
+    {
+     "name": "Drop juggles",
+     "how": "Drop the ball from your hands, kick it up once, catch it. Both feet. Learn how hard to kick. Toe forward, standing leg slightly bent.",
+     "mistake": "Missing the centre of the ball",
+     "fix": "Centre of the foot on the centre of the ball",
+     "work": 60,
+     "rest": 30,
+     "rounds": 3,
+     "reps": "20 reps"
+    },
+    {
+     "name": "Bounce juggles",
+     "how": "One bounce between each touch. Work towards 100 in a row.",
+     "mistake": "Chasing the ball",
+     "fix": "Hit it straight up so it comes back to you",
+     "work": 60,
+     "rest": 30,
+     "rounds": 3,
+     "reps": "best streak"
+    },
+    {
+     "name": "Full juggles",
+     "how": "Drop it from your hands, then keep it up with both feet, close so you do not need to move.",
+     "mistake": "Kicking it too high",
+     "fix": "Low and controlled, a hand's width off the foot",
+     "work": 60,
+     "rest": 30,
+     "rounds": 3,
+     "reps": "best streak"
+    },
+    {
+     "name": "The flicker",
+     "how": "Sole on the ball, roll it back, get the toes under it and flick it up without hands.",
+     "mistake": "Scooping with the foot",
+     "fix": "Roll back first, toes under, then flick",
+     "work": 60,
+     "rest": 30,
+     "rounds": 3,
+     "reps": "10 reps"
+    },
+    {
+     "name": "Thigh juggling",
+     "how": "Contact with the thigh, the knee at 90 degrees to the body. Mix with the feet.",
+     "mistake": "Using the knee instead of the thigh",
+     "fix": "Keep the thigh flat, knee bent to 90",
+     "work": 60,
+     "rest": 30,
+     "rounds": 3,
+     "reps": "best streak"
+    },
+    {
+     "name": "Maradona 7",
+     "how": "Seven touches without a drop: right foot, right thigh, right shoulder, head, left shoulder, left thigh, left foot.",
+     "mistake": "Rushing the shoulder touches",
+     "fix": "Keep the ball high enough to get under it",
+     "work": 60,
+     "rest": 30,
+     "rounds": 3,
+     "reps": "best attempt"
+    }
+   ],
+   "source": {
+    "label": "Juggling for beginners (YouTube Daniel Meyn Football)"
+   },
+   "note": "Log your best per level."
+  },
+  {
+   "id": "aerial-control",
+   "name": "Aerial control",
+   "category": "first-touch",
+   "demo": "control-air",
+   "setup": "solo",
+   "equipment": [
+    "ball"
+   ],
+   "gameDay": [
+    "full"
+   ],
+   "levels": [
+    {
+     "name": "Use the ground",
+     "how": "Let it bounce and stop it with the sole as it comes up. Protect it at once: body between the defender and the ball, then turn.",
+     "mistake": "Trying to catch it on the full",
+     "fix": "Let it bounce once, the ground is your friend",
+     "work": 45,
+     "rest": 30,
+     "rounds": 4,
+     "reps": "10 reps"
+    },
+    {
+     "name": "Thigh",
+     "how": "The thigh takes the pace off. Put the ball down at your feet, not back up in the air.",
+     "mistake": "Stabbing at it with a stiff leg",
+     "fix": "Give with the thigh as it lands",
+     "work": 45,
+     "rest": 30,
+     "rounds": 4,
+     "reps": "10 reps"
+    },
+    {
+     "name": "Directional control",
+     "how": "Instead of killing it, control it into the direction you want: a touch away, or keep it up and juggle.",
+     "mistake": "Killing the ball dead every time",
+     "fix": "Take it where you want to go",
+     "work": 45,
+     "rest": 30,
+     "rounds": 4,
+     "reps": "10 each foot"
+    },
+    {
+     "name": "Foot trap",
+     "how": "Match the ball's speed: as it comes down, your foot comes down, ankle locked, then draw back so it kisses your foot. Start with low tosses, then higher.",
+     "mistake": "Sticking the leg out like a tree trunk",
+     "fix": "Foot comes down with the ball, then draws back",
+     "work": 45,
+     "rest": 30,
+     "rounds": 4,
+     "reps": "8 each foot"
+    }
+   ],
+   "source": {
+    "label": "How to control any ball out of the air (YouTube Unisport)"
+   }
+  },
+  {
+   "id": "midfield-turns",
+   "name": "Midfield turns",
+   "category": "first-touch",
+   "demo": "receive-turn",
+   "setup": "solo",
+   "equipment": [
+    "ball",
+    "wall",
+    "markers"
+   ],
+   "gameDay": [
+    "full"
+   ],
+   "levels": [
+    {
+     "name": "Half turn",
+     "how": "A square of 4 cones two steps apart, 4 steps from a wall. Pass in, check into the square, scan, open your body and take it across, then play to a target.",
+     "mistake": "Staying static so the defender steps in",
+     "fix": "Check into the square, scan, then turn",
+     "work": 60,
+     "rest": 30,
+     "rounds": 4,
+     "reps": "8 reps"
+    },
+    {
+     "name": "Barcelona turn",
+     "how": "Open up as if half-turning, then go the other way with the next touch. Scan before the ball returns.",
+     "mistake": "Telegraphing which way you go",
+     "fix": "Open as if to turn, then change the other way",
+     "work": 60,
+     "rest": 30,
+     "rounds": 4,
+     "reps": "8 reps"
+    },
+    {
+     "name": "Dummy turn",
+     "how": "When the scan shows space behind you: body feint towards the ball (drop the knee and shoulder), let it roll past and spin after it.",
+     "mistake": "Stopping the ball on the spot",
+     "fix": "Let it run past you, then spin onto it",
+     "work": 60,
+     "rest": 30,
+     "rounds": 4,
+     "reps": "8 reps"
+    },
+    {
+     "name": "Cruyff turn",
+     "how": "Fake a pass or strike, then hook the ball behind your standing leg with the inside of the same foot.",
+     "mistake": "Dropping your head after the fake",
+     "fix": "Sell the fake, then hook it quickly",
+     "work": 60,
+     "rest": 30,
+     "rounds": 4,
+     "reps": "8 each foot"
+    },
+    {
+     "name": "De Jong turn",
+     "how": "With the defender tight: bait with a first touch slightly across the body using the inside of the foot, then go the other way.",
+     "mistake": "Making the bait touch too big",
+     "fix": "Small bait touch, then change direction fast",
+     "work": 60,
+     "rest": 30,
+     "rounds": 4,
+     "reps": "8 each foot"
+    }
+   ],
+   "positions": [
+    "cm",
+    "dm",
+    "am"
+   ],
+   "source": {
+    "label": "5 turns every midfielder should master (YouTube 7mlc)"
+   }
+  },
+  {
+   "id": "snapshot",
+   "name": "Snapshot finishing",
+   "category": "finishing",
+   "demo": "shoot",
+   "setup": "solo",
+   "equipment": [
+    "ball",
+    "markers",
+    "goal or target"
+   ],
+   "gameDay": [
+    "md-1",
+    "full"
+   ],
+   "levels": [
+    {
+     "name": "Snapshot",
+     "how": "Cones as defenders just outside the box. Start light on your feet, shift the ball just outside your body into a gap and strike at once. Getting it on target quickly beats a perfect corner.",
+     "mistake": "Waiting between the shift and the shot",
+     "fix": "No delay: shift, then shoot",
+     "work": 40,
+     "rest": 45,
+     "rounds": 3,
+     "reps": "4 shots"
+    },
+    {
+     "name": "Hesitation snapshot",
+     "how": "Shift as if to shoot, take an extra touch past the second cone, then shoot. Getting it on target quickly beats a perfect corner.",
+     "mistake": "Shooting before the second touch",
+     "fix": "Show the shot, take the extra touch, then strike",
+     "work": 40,
+     "rest": 45,
+     "rounds": 3,
+     "reps": "4 shots"
+    },
+    {
+     "name": "V-cut snapshot",
+     "how": "Shift, fake, drag back 45 degrees with the sole, swap feet and push into space with the inside of the other foot, then shoot. Getting it on target quickly beats a perfect corner.",
+     "mistake": "Dragging back too far",
+     "fix": "Short drag, swap feet, then shoot",
+     "work": 40,
+     "rest": 45,
+     "rounds": 3,
+     "reps": "4 shots"
+    },
+    {
+     "name": "Sole roll snapshot",
+     "how": "Shift, fake with a raised opposite arm and slight backlift, sole roll across, then shoot. Getting it on target quickly beats a perfect corner.",
+     "mistake": "Rolling without selling the fake",
+     "fix": "Raise the arm, small backlift, then roll",
+     "work": 40,
+     "rest": 45,
+     "rounds": 3,
+     "reps": "4 shots"
+    },
+    {
+     "name": "Double cut snapshot",
+     "how": "Shift, slight backlift to get defenders on their heels, chop with the inside of the striking foot, transfer to the other foot, then shoot. Getting it on target quickly beats a perfect corner.",
+     "mistake": "Chopping with no backlift",
+     "fix": "Backlift first, then chop and transfer",
+     "work": 40,
+     "rest": 45,
+     "rounds": 3,
+     "reps": "4 shots"
+    },
+    {
+     "name": "Croqueta snapshot",
+     "how": "From behind the cones, inside-to-inside transfer, push into space with the outside of the other foot, then shoot. Getting it on target quickly beats a perfect corner.",
+     "mistake": "Transferring too slowly",
+     "fix": "Quick inside to inside, then push away",
+     "work": 40,
+     "rest": 45,
+     "rounds": 3,
+     "reps": "4 shots"
+    },
+    {
+     "name": "Fake shot snapshot",
+     "how": "Shift with the outside of the foot, fake the shot by raising the striking leg, cut, then shoot. Getting it on target quickly beats a perfect corner.",
+     "mistake": "Fake with the head down",
+     "fix": "Head up, show the shot, then cut",
+     "work": 40,
+     "rest": 45,
+     "rounds": 3,
+     "reps": "4 shots"
+    },
+    {
+     "name": "Inside-outside snapshot",
+     "how": "Push past the first cone at 45 degrees with the inside, transfer to the outside of the same foot, then shoot. Getting it on target quickly beats a perfect corner.",
+     "mistake": "Pushing it too wide",
+     "fix": "Small push, then take it with the outside",
+     "work": 40,
+     "rest": 45,
+     "rounds": 3,
+     "reps": "4 shots"
+    },
+    {
+     "name": "Double croqueta snapshot",
+     "how": "Croqueta round the first cone, then a second one, then shoot. Getting it on target quickly beats a perfect corner.",
+     "mistake": "Losing speed between the two",
+     "fix": "Two quick transfers, then strike",
+     "work": 40,
+     "rest": 45,
+     "rounds": 3,
+     "reps": "4 shots"
+    },
+    {
+     "name": "Fake shot and croqueta",
+     "how": "Outside shift, fake the shot, croqueta, then shoot. Getting it on target quickly beats a perfect corner.",
+     "mistake": "Rushing the sequence",
+     "fix": "Fake, croqueta, strike in one rhythm",
+     "work": 40,
+     "rest": 45,
+     "rounds": 3,
+     "reps": "4 shots"
+    }
+   ],
+   "positions": [
+    "striker",
+    "winger"
+   ],
+   "source": {
+    "label": "Snapshot finishing family (YouTube 7mlc, striker training)"
+   },
+   "note": "At most 6 to 8 shots the day before a game."
+  },
+  {
+   "id": "volley-ladder",
+   "name": "Volley ladder",
+   "category": "finishing",
+   "demo": "volley",
+   "setup": "solo",
+   "equipment": [
+    "ball",
+    "goal or target"
+   ],
+   "gameDay": [
+    "full"
+   ],
+   "levels": [
+    {
+     "name": "Partner down and back",
+     "how": "A partner tosses from close range, you volley back into their hands, working down the field. Lots of controlled reps.",
+     "mistake": "Swinging too hard",
+     "fix": "Lock the ankle and make clean contact",
+     "work": 60,
+     "rest": 30,
+     "rounds": 3,
+     "reps": "15 reps"
+    },
+    {
+     "name": "Self-toss, one bounce",
+     "how": "Toss up, let it bounce once, volley into a goal or at a wall. Vary the height and angle.",
+     "mistake": "Letting it drop too low",
+     "fix": "Strike it at knee height",
+     "work": 60,
+     "rest": 30,
+     "rounds": 3,
+     "reps": "10 each foot"
+    },
+    {
+     "name": "Self-toss, no bounce",
+     "how": "Toss up and finish before it lands. In a match the ball often comes straight through the air.",
+     "mistake": "Leaning back",
+     "fix": "Chest over the ball, knee over it",
+     "work": 60,
+     "rest": 30,
+     "rounds": 3,
+     "reps": "10 each foot"
+    },
+    {
+     "name": "Juggle then volley",
+     "how": "Juggle, play a high ball up, then finish before it lands. Partner version: toss over your back, turn and shoot.",
+     "mistake": "Taking your eyes off the ball",
+     "fix": "Eyes on the ball until contact",
+     "work": 60,
+     "rest": 30,
+     "rounds": 3,
+     "reps": "8 reps"
+    },
+    {
+     "name": "Cross or lob, first time",
+     "how": "A partner crosses or lobs it and you finish first time. Easier: allow one bounce, or use a toss.",
+     "mistake": "Taking a touch first",
+     "fix": "Hit it first time, laces or inside of the foot",
+     "work": 60,
+     "rest": 45,
+     "rounds": 3,
+     "reps": "6 each foot"
+    }
+   ],
+   "source": {
+    "label": "5 exercises to improve volleys (YouTube 360Player)"
+   }
+  },
+  {
+   "id": "strike-types",
+   "name": "Five ways to strike",
+   "category": "finishing",
+   "demo": "shoot",
+   "setup": "solo",
+   "equipment": [
+    "ball",
+    "goal or target"
+   ],
+   "gameDay": [
+    "full"
+   ],
+   "levels": [
+    {
+     "name": "Placement (inside)",
+     "how": "Inside of the foot, aim low across the keeper. Learn this one first.",
+     "mistake": "Hitting it with the toe",
+     "fix": "Open the foot and strike through the middle",
+     "work": 45,
+     "rest": 45,
+     "rounds": 4,
+     "reps": "6 shots"
+    },
+    {
+     "name": "Power (laces)",
+     "how": "3 to 4 long strides straight at the ball. Plant foot points at the target, knee slightly bent, big backswing, chest over the ball.",
+     "mistake": "A short backswing",
+     "fix": "Foot back to hip height, chest over the ball",
+     "work": 45,
+     "rest": 45,
+     "rounds": 4,
+     "reps": "6 shots"
+    },
+    {
+     "name": "Curl (instep)",
+     "how": "Approach at 45 degrees, plant beside the ball, strike a little below the middle with the instep and twist the hips.",
+     "mistake": "Approaching straight on",
+     "fix": "Come in at 45 degrees and wrap around the ball",
+     "work": 45,
+     "rest": 45,
+     "rounds": 4,
+     "reps": "6 each foot"
+    },
+    {
+     "name": "Trivela (outside)",
+     "how": "When the ball is on your weak side, strike it with the outside of your strong foot instead of switching feet. Approach at 45 degrees.",
+     "mistake": "Switching to the weak foot",
+     "fix": "Use the outside of your strong foot",
+     "work": 45,
+     "rest": 45,
+     "rounds": 4,
+     "reps": "6 each foot"
+    },
+    {
+     "name": "Half volley",
+     "how": "Strike on the bounce, as low to the ground as possible. Eyes on the middle of the ball, plant foot facing the target.",
+     "mistake": "Leaning back",
+     "fix": "Strike down through the bounce",
+     "work": 45,
+     "rest": 45,
+     "rounds": 4,
+     "reps": "6 each foot"
+    }
+   ],
+   "source": {
+    "label": "5 shooting techniques explained (YouTube 7mlc)"
+   }
+  },
+  {
+   "id": "sprint-starts",
+   "name": "Sprint starts",
+   "category": "speed",
+   "demo": "accel",
+   "setup": "solo",
+   "equipment": [
+    "markers"
+   ],
+   "gameDay": [
+    "md-1",
+    "full"
+   ],
+   "levels": [
+    {
+     "name": "3-point start",
+     "how": "One hand on the ground, sprint out for 10 m. Drive the knees, stay low.",
+     "mistake": "Standing up too early",
+     "fix": "Stay low for the first 3 to 4 steps",
+     "work": 12,
+     "rest": 90,
+     "rounds": 5,
+     "reps": "10 m"
+    },
+    {
+     "name": "Falling start",
+     "how": "Stand tall on the balls of the feet, lean forward as one stiff line until you fall, then sprint.",
+     "mistake": "Bending at the hips",
+     "fix": "Lean as one stiff line from head to heels",
+     "work": 12,
+     "rest": 90,
+     "rounds": 5,
+     "reps": "10 m"
+    },
+    {
+     "name": "Side-step start",
+     "how": "Stand side-on, take a small lateral step, then sprint.",
+     "mistake": "Crossing the feet",
+     "fix": "Small step, then drive",
+     "work": 12,
+     "rest": 90,
+     "rounds": 5,
+     "reps": "10 m"
+    },
+    {
+     "name": "180 turn start",
+     "how": "Face backwards, jump-turn 180 degrees off both feet, then sprint. For turning to chase a ball over the top.",
+     "mistake": "Turning slowly",
+     "fix": "Jump-turn and drive in one move",
+     "work": 12,
+     "rest": 90,
+     "rounds": 5,
+     "reps": "10 m"
+    },
+    {
+     "name": "Floating start",
+     "how": "A slow rolling run-in, then accelerate between two cones. For a change of pace when already jogging.",
+     "mistake": "Accelerating too early",
+     "fix": "Float, then burst at the cones",
+     "work": 12,
+     "rest": 90,
+     "rounds": 5,
+     "reps": "15 m"
+    },
+    {
+     "name": "Reactive start",
+     "how": "Stand ready and start on a partner's GO (or a random beep). React, do not anticipate.",
+     "mistake": "Guessing the cue",
+     "fix": "Wait for the call, then go",
+     "work": 10,
+     "rest": 90,
+     "rounds": 6,
+     "reps": "10 m"
+    }
+   ],
+   "source": {
+    "label": "S1 sprint starts (YouTube FootballFitnessBootcamp)"
+   }
+  },
+  {
+   "id": "defender-footwork",
+   "name": "Defender footwork",
+   "category": "speed",
+   "demo": "jockey",
+   "setup": "solo",
+   "equipment": [
+    "markers"
+   ],
+   "gameDay": [
+    "md-1",
+    "full"
+   ],
+   "levels": [
+    {
+     "name": "Zig-zag sprint",
+     "how": "Cones 6 steps apart in a zig-zag. Sprint, drop your inside shoulder round each cone, tight feet, explode out. Finish with a 5 to 10 m sprint.",
+     "mistake": "Wide, slow turns",
+     "fix": "Drop the inside shoulder and keep the feet tight",
+     "work": 15,
+     "rest": 60,
+     "rounds": 5,
+     "reps": "2 runs"
+    },
+    {
+     "name": "Zig-zag shuffle",
+     "how": "Side shuffle through the same zig-zag. Stay low, low centre of gravity.",
+     "mistake": "Standing up",
+     "fix": "Stay low the whole way",
+     "work": 15,
+     "rest": 60,
+     "rounds": 5,
+     "reps": "2 runs"
+    },
+    {
+     "name": "Backpedal and forward",
+     "how": "Backpedal to a cone, then run forward. Get your hips low, arms with the legs, push off hard.",
+     "mistake": "Leaning back",
+     "fix": "Chest over the toes, short steps",
+     "work": 15,
+     "rest": 60,
+     "rounds": 5,
+     "reps": "2 runs"
+    },
+    {
+     "name": "Hip switch",
+     "how": "Move at speed backwards and switch the hips. Defenders mostly track backwards or sideways.",
+     "mistake": "Turning the whole body",
+     "fix": "Turn only the hips, keep the shoulders square",
+     "work": 15,
+     "rest": 60,
+     "rounds": 5,
+     "reps": "2 runs"
+    },
+    {
+     "name": "Crossover and turn",
+     "how": "Sideways angle, cross the feet, plant, switch the hips, look over your shoulder, plant and go. Stay low.",
+     "mistake": "Crossing too high",
+     "fix": "Cross low, plant, then turn and go",
+     "work": 15,
+     "rest": 60,
+     "rounds": 5,
+     "reps": "2 runs"
+    },
+    {
+     "name": "Jockey a wall ball",
+     "how": "Play a pass off the wall and jockey backwards as it returns: light on the toes, switching hips. When it reaches you, step forward with a touch.",
+     "mistake": "Committing early",
+     "fix": "Stay patient and contain, step in only at the end",
+     "work": 30,
+     "rest": 45,
+     "rounds": 4,
+     "reps": "10 reps"
+    }
+   ],
+   "positions": [
+    "cb",
+    "fb",
+    "dm"
+   ],
+   "source": {
+    "label": "How to become an elite defender, CB3 (YouTube Prolific Soccer, 7mlc)"
+   }
+  },
+  {
+   "id": "tackling-ladder",
+   "name": "Tackling ladder",
+   "category": "defending",
+   "demo": "jockey",
+   "setup": "partner",
+   "equipment": [
+    "ball",
+    "partner"
+   ],
+   "gameDay": [
+    "full"
+   ],
+   "levels": [
+    {
+     "name": "Interception reads",
+     "how": "Partner receives, you stay goal side. Step in front when they are flat-footed after checking in. Win it before they settle.",
+     "mistake": "Rushing in early",
+     "fix": "Read the trigger, then step in front",
+     "work": 45,
+     "rest": 45,
+     "rounds": 4,
+     "reps": "6 reps"
+    },
+    {
+     "name": "Jab and poke",
+     "how": "1v1 in a channel, side-on and low. Jab to provoke a reaction; poke the ball only after a jab, with both feet.",
+     "mistake": "Poking without a trigger",
+     "fix": "Jab first, poke only if the ball stays",
+     "work": 45,
+     "rest": 45,
+     "rounds": 4,
+     "reps": "6 each foot"
+    },
+    {
+     "name": "Block tackle and second ball",
+     "how": "Static ball first, then walking pace. Contact with the inside of the foot, body behind the ball, never from behind. After contact, sprint to the loose ball.",
+     "mistake": "Going in with the toe",
+     "fix": "Inside of the foot, body behind the ball",
+     "work": 45,
+     "rest": 45,
+     "rounds": 4,
+     "reps": "6 reps"
+    }
+   ],
+   "positions": [
+    "cb",
+    "fb",
+    "dm"
+   ],
+   "source": {
+    "label": "How risky are your tackles (YouTube Beestera Soccer)"
+   },
+   "note": "No slide tackle: practising it alone does not help."
+  },
+  {
+   "id": "closing-down",
+   "name": "Closing down",
+   "category": "defending",
+   "demo": "jockey",
+   "setup": "solo",
+   "equipment": [
+    "ball",
+    "markers",
+    "wall"
+   ],
+   "gameDay": [
+    "full"
+   ],
+   "levels": [
+    {
+     "name": "Close down the wall ball",
+     "how": "Throw the ball against a wall, sprint to close the rebound as it travels, brake into a jockey stance 1 to 2 m from it, step in and win it, then pass to a cone within 4 s.",
+     "mistake": "Arriving too fast to stop",
+     "fix": "Brake, then jockey side-on",
+     "work": 30,
+     "rest": 60,
+     "rounds": 6,
+     "reps": "6 reps"
+    },
+    {
+     "name": "Curved press",
+     "how": "A ball on a cone is the carrier, a second cone is the passing lane. From 10 to 15 m sprint on a curve so your body blocks the lane, brake side-on 1 to 2 m away, show the touchline, step in.",
+     "mistake": "Running straight at the ball",
+     "fix": "Curve the run and block the lane",
+     "work": 25,
+     "rest": 60,
+     "rounds": 6,
+     "reps": "6 reps"
+    },
+    {
+     "name": "Recovery run",
+     "how": "Start facing upfield 20 m from a cone goal. On a TURN call (a partner, or a random beep), turn, sprint back on a curve to the goal side of an imaginary attacker, then brake into a jockey stance.",
+     "mistake": "Running straight back",
+     "fix": "Curve to the goal side, then brake",
+     "work": 25,
+     "rest": 60,
+     "rounds": 6,
+     "reps": "6 reps"
+    }
+   ],
+   "positions": [
+    "striker",
+    "winger",
+    "cm",
+    "fb",
+    "cb"
+   ],
+   "source": {
+    "label": "D7, PR1, recovery runs (YouTube Hidden Play Football, Football IQ)"
+   }
+  },
+  {
+   "id": "rondo",
+   "name": "Rondo",
+   "category": "passing",
+   "demo": "pass-wall-quick",
+   "setup": "group",
+   "equipment": [
+    "ball",
+    "markers",
+    "partner"
+   ],
+   "gameDay": [
+    "full"
+   ],
+   "levels": [
+    {
+     "name": "3v1",
+     "how": "Four players, a square about 10 yards. The defender wins it, the outside players keep it. Two-touch.",
+     "mistake": "Standing still after passing",
+     "fix": "Pass, then move to a new angle",
+     "work": 120,
+     "rest": 30,
+     "rounds": 4,
+     "reps": "2 min"
+    },
+    {
+     "name": "4v1",
+     "how": "Five players, a square about 8 yards. Fewer touches, quicker decisions. Mandatory two-touch forces firm passes.",
+     "mistake": "Passing too softly",
+     "fix": "Firm, quick passes",
+     "work": 120,
+     "rest": 30,
+     "rounds": 4,
+     "reps": "2 min"
+    },
+    {
+     "name": "4v1, tight",
+     "how": "Square down to 6 yards, one-touch.",
+     "mistake": "Looking at the ball only",
+     "fix": "Scan before it arrives",
+     "work": 120,
+     "rest": 30,
+     "rounds": 4,
+     "reps": "2 min"
+    },
+    {
+     "name": "5v2",
+     "how": "Seven players, a bigger square. Keep it with two defenders on.",
+     "mistake": "Bunching up",
+     "fix": "Spread out and keep the shape",
+     "work": 120,
+     "rest": 30,
+     "rounds": 4,
+     "reps": "2 min"
+    }
+   ],
+   "players": "3 to 7",
+   "source": {
+    "label": "6 best soccer rondo drills (YouTube Paul Spacey)"
+   }
+  },
+  {
+   "id": "small-sided",
+   "name": "Small-sided games",
+   "category": "passing",
+   "demo": "dribble",
+   "setup": "group",
+   "equipment": [
+    "ball",
+    "markers",
+    "goal or target",
+    "partner"
+   ],
+   "gameDay": [
+    "full"
+   ],
+   "levels": [
+    {
+     "name": "1v1 wide",
+     "how": "A wide channel, one attacker, one defender. Attack, beat, finish or cross.",
+     "mistake": "Dribbling without a plan",
+     "fix": "Pick your move before you reach the defender",
+     "work": 90,
+     "rest": 45,
+     "rounds": 4,
+     "reps": "2 min"
+    },
+    {
+     "name": "1v1 central",
+     "how": "The same in a central area, finishing at goal.",
+     "mistake": "Shooting too early",
+     "fix": "Beat the defender first, then shoot",
+     "work": 90,
+     "rest": 45,
+     "rounds": 4,
+     "reps": "2 min"
+    },
+    {
+     "name": "3v3 with shooting zones",
+     "how": "3v3 in a marked area with mini goals. Shots only from the shooting zones in front of each goal.",
+     "mistake": "Shooting from anywhere",
+     "fix": "Work the ball into the zone",
+     "work": 240,
+     "rest": 60,
+     "rounds": 3,
+     "reps": "4 min"
+    }
+   ],
+   "players": "2 to 6",
+   "source": {
+    "label": "SSG1, SSG2 (YouTube coachbetter, Jose Silva Caparros)"
+   }
+  },
+  {
+   "id": "fast-feet",
+   "name": "Fast feet",
+   "category": "speed",
+   "demo": "shuffle",
+   "setup": "solo",
+   "equipment": [
+    "markers"
+   ],
+   "gameDay": [
+    "md-1",
+    "full"
+   ],
+   "levels": [
+    {
+     "name": "Forwards, in and out",
+     "how": "Imagine a ladder on the floor. Two feet in forwards, one foot in forwards, in and outs. Stay on your toes, arms drive with the feet.",
+     "mistake": "Flat feet",
+     "fix": "Stay on the toes, quick and light",
+     "work": 20,
+     "rest": 30,
+     "rounds": 4,
+     "reps": "5 patterns"
+    },
+    {
+     "name": "Sideways",
+     "how": "Two feet in sideways, lateral in and out, icky shuffle and backwards icky shuffle, crossover.",
+     "mistake": "Looking at your feet",
+     "fix": "Head up, arms in rhythm",
+     "work": 20,
+     "rest": 30,
+     "rounds": 4,
+     "reps": "5 patterns"
+    },
+    {
+     "name": "Hops and hips",
+     "how": "Foot exchange, reverse crossover, hip twists, carioca, two-footed and one-footed hops.",
+     "mistake": "Rushing the pattern",
+     "fix": "Slow down and keep the rhythm",
+     "work": 20,
+     "rest": 30,
+     "rounds": 4,
+     "reps": "5 patterns"
+    }
+   ],
+   "source": {
+    "label": "15 fast footwork exercises (YouTube 7mlc)"
+   },
+   "note": "Follow with a 10 to 20 m acceleration."
+  },
+  {
+   "id": "warmup-11",
+   "name": "Warm-up 11+ style",
+   "category": "warmup",
+   "demo": "warmup",
+   "setup": "solo",
+   "equipment": [
+    "markers"
+   ],
+   "gameDay": [
+    "full"
+   ],
+   "levels": [
+    {
+     "name": "Level 1",
+     "how": "Part 1: slow running with active stretching. Part 2: bench (plank), single-leg stance, squats with toe raises, lateral jumps. Part 3: running across the pitch, plant and cut.",
+     "mistake": "Rushing through it",
+     "fix": "Control every rep, land softly",
+     "work": 600,
+     "rest": 0,
+     "rounds": 1,
+     "reps": "about 15 min"
+    },
+    {
+     "name": "Level 2",
+     "how": "Same three parts: side bench, single-leg stance throwing a ball to a partner or the wall, wall jumps, bounding, plant and cut at speed.",
+     "mistake": "Letting the knee cave in",
+     "fix": "Knee over the middle toe on every landing",
+     "work": 720,
+     "rest": 0,
+     "rounds": 1,
+     "reps": "about 18 min"
+    },
+    {
+     "name": "Level 3",
+     "how": "Same three parts: bench with leg lift, single-leg balance with a partner pushing, box jumps, bounding, plant and cut at 80 percent.",
+     "mistake": "Going to the next level too soon",
+     "fix": "Move up only when the level below feels easy",
+     "work": 840,
+     "rest": 0,
+     "rounds": 1,
+     "reps": "about 20 min"
+    }
+   ],
+   "source": {
+    "label": "FIFA 11+ (manual, sponet, PMC12371935)"
+   },
+   "note": "The day before a game and on match day, only the running parts."
+  },
+  {
+   "id": "weak-foot",
+   "name": "Weak foot",
+   "category": "ball-mastery",
+   "demo": "dribble",
+   "setup": "solo",
+   "equipment": [
+    "ball",
+    "wall"
+   ],
+   "gameDay": [
+    "md-1",
+    "recovery",
+    "full"
+   ],
+   "levels": [
+    {
+     "name": "Get familiar",
+     "how": "Juggle forcing the weak foot at least every other touch (R-L-R-L), then R-L-L-R-L-L. Then small dribbles across the pitch mainly with the weak foot.",
+     "mistake": "Always going back to the strong foot",
+     "fix": "Make the weak foot do most of the work",
+     "work": 60,
+     "rest": 30,
+     "rounds": 4,
+     "reps": "best streak"
+    },
+    {
+     "name": "Wall passing",
+     "how": "Pass against the wall with the weak foot only, receive with it only.",
+     "mistake": "Rushing the pass",
+     "fix": "Slow and accurate first, then speed up",
+     "work": 60,
+     "rest": 30,
+     "rounds": 4,
+     "reps": "30 reps"
+    },
+    {
+     "name": "Power and accuracy",
+     "how": "Target practice at a small goal (body position, plant foot, leg swing), then longer range, aiming at the crossbar.",
+     "mistake": "Leaning back",
+     "fix": "Plant beside the ball and strike the middle",
+     "work": 60,
+     "rest": 45,
+     "rounds": 4,
+     "reps": "10 shots"
+    }
+   ],
+   "source": {
+    "label": "How to improve your weak foot (YouTube Unisport)"
+   }
+  },
+  {
+   "id": "long-pass",
+   "name": "Long pass, three targets",
+   "category": "passing",
+   "demo": "pass-long",
+   "setup": "solo",
+   "equipment": [
+    "ball",
+    "wall",
+    "markers"
+   ],
+   "gameDay": [
+    "full"
+   ],
+   "levels": [
+    {
+     "name": "Comfortable distance",
+     "how": "Three targets spread apart, a wall to receive from. Look over your shoulder, receive, first touch, pick a target, long pass. Start at a distance where every pass is clean.",
+     "mistake": "Hitting it as hard as you can",
+     "fix": "Make every rep game-like and accurate",
+     "work": 90,
+     "rest": 30,
+     "rounds": 4,
+     "reps": "15 passes"
+    },
+    {
+     "name": "Demanding distance",
+     "how": "Move the targets back, only so far that you can still hit a good pass every time. 50 to 100 reps in total, both feet.",
+     "mistake": "Going too far too soon",
+     "fix": "Only as far as you can stay accurate",
+     "work": 90,
+     "rest": 30,
+     "rounds": 4,
+     "reps": "15 passes"
+    }
+   ],
+   "positions": [
+    "cb",
+    "cm",
+    "fb"
+   ],
+   "source": {
+    "label": "Easy way to improve long passing alone (YouTube Unisport)"
+   }
+  },
+  {
+   "id": "mirror-shuffle",
+   "name": "Mirror shuffle",
+   "category": "speed",
+   "demo": "shuffle",
+   "setup": "partner",
+   "equipment": [
+    "markers",
+    "partner"
+   ],
+   "gameDay": [
+    "md-1",
+    "full"
+   ],
+   "levels": [
+    {
+     "name": "Mirror shuffle",
+     "how": "Face a partner in an athletic stance. One leads with shuffles forwards, back and sideways, the other mirrors. Switch roles each round.",
+     "mistake": "Anticipating instead of reacting",
+     "fix": "Watch the hips and react",
+     "work": 20,
+     "rest": 20,
+     "rounds": 4,
+     "reps": "15 to 30 s"
+    },
+    {
+     "name": "Mirror on a cone line",
+     "how": "A line of 4 cones between you. The follower mirrors the leader's shuffles and cuts along the line, low and wide.",
+     "mistake": "Standing up",
+     "fix": "Stay low in an athletic stance",
+     "work": 20,
+     "rest": 20,
+     "rounds": 4,
+     "reps": "15 to 30 s"
+    }
+   ],
+   "source": {
+    "label": "RA1, RA2 (YouTube uoasportsagility, Beyondriven)"
+   }
+  },
+  {
+   "id": "one-v-one",
+   "name": "1v1 ladder",
+   "category": "1v1",
+   "demo": "1v1",
+   "setup": "solo",
+   "equipment": [
+    "ball",
+    "markers"
+   ],
+   "gameDay": [
+    "full"
+   ],
+   "levels": [
+    {
+     "name": "Solo, one cone",
+     "how": "One cone as the defender. Run at it, beat it with one move, accelerate away.",
+     "mistake": "Slowing down for the move",
+     "fix": "Do the move at speed, then explode",
+     "work": 40,
+     "rest": 45,
+     "rounds": 6,
+     "reps": "6 reps"
+    },
+    {
+     "name": "Solo, gates and finish",
+     "how": "Cone gates, a move at each, then a finish.",
+     "mistake": "Looking down",
+     "fix": "Eyes up out of the last gate, shoot early",
+     "work": 40,
+     "rest": 45,
+     "rounds": 6,
+     "reps": "6 reps"
+    },
+    {
+     "name": "Called direction",
+     "how": "The app calls LEFT or RIGHT. React and go the other way.",
+     "mistake": "Guessing the direction",
+     "fix": "React to the cue, don't guess",
+     "work": 40,
+     "rest": 45,
+     "rounds": 8,
+     "reps": "8 reps"
+    },
+    {
+     "name": "Partner, passive defender",
+     "how": "Attack a partner who stays passive. Learn to read their feet.",
+     "mistake": "Going before you read the defender",
+     "fix": "Read their feet, then choose",
+     "work": 40,
+     "rest": 45,
+     "rounds": 6,
+     "reps": "6 reps"
+    },
+    {
+     "name": "Partner, live feint",
+     "how": "Run at the defender, fake one way, push the ball past on the other side with the outside of the foot and accelerate. Goals out of 3, then swap.",
+     "mistake": "Committing early",
+     "fix": "Fake, change pace, then go",
+     "work": 45,
+     "rest": 45,
+     "rounds": 6,
+     "reps": "3 each"
+    },
+    {
+     "name": "Race to goal",
+     "how": "Side by side: a ladder or fast feet, an explosive dribble, then a finish. Win the race.",
+     "mistake": "Losing the ball at speed",
+     "fix": "Tight ball control, then win the race",
+     "work": 40,
+     "rest": 60,
+     "rounds": 6,
+     "reps": "6 races"
+    }
+   ],
+   "positions": [
+    "winger",
+    "striker",
+    "am"
+   ],
+   "source": {
+    "label": "B1, V1 to V4 (YouTube Football Class, Coach to Coach, TotalFootball Studio, SoccerExercises)"
+   }
+  },
+  {
+   "id": "skill-moves",
+   "name": "Skill moves",
+   "category": "1v1",
+   "demo": "step-over",
+   "setup": "solo",
+   "equipment": [
+    "ball",
+    "markers"
+   ],
+   "gameDay": [
+    "full"
+   ],
+   "levels": [
+    {
+     "name": "The lift (on the wing, little space)",
+     "how": "Lift the ball down the line past the defender. The ball in the air avoids an outstretched leg.",
+     "mistake": "Lifting it too high",
+     "fix": "Flick it just past the foot",
+     "work": 40,
+     "rest": 45,
+     "rounds": 5,
+     "reps": "5 each foot"
+    },
+    {
+     "name": "Cruyff turn (faking a cross)",
+     "how": "Shape to cross, then cut the ball behind your standing leg with the inside of the foot.",
+     "mistake": "Telegraphing the fake",
+     "fix": "Sell the cross, then cut it back",
+     "work": 40,
+     "rest": 45,
+     "rounds": 5,
+     "reps": "5 each foot"
+    },
+    {
+     "name": "Puskas (defender reaches in)",
+     "how": "Pull back with the sole, then push away with the inside of the foot.",
+     "mistake": "Pulling back too slowly",
+     "fix": "Quick pull, quick push",
+     "work": 40,
+     "rest": 45,
+     "rounds": 5,
+     "reps": "5 each foot"
+    },
+    {
+     "name": "Fake cross (wide 1v1)",
+     "how": "Touch to the side, shape for a big cross, drag past with the inside of the foot.",
+     "mistake": "Not selling the cross",
+     "fix": "Show the cross, then drag past",
+     "work": 40,
+     "rest": 45,
+     "rounds": 5,
+     "reps": "5 each foot"
+    },
+    {
+     "name": "Inside-out (facing up)",
+     "how": "Drag across the body with the inside, wrap round, push the other way with the top of the foot.",
+     "mistake": "Dragging too far",
+     "fix": "Short drag, then push the other way",
+     "work": 40,
+     "rest": 45,
+     "rounds": 5,
+     "reps": "5 each foot"
+    },
+    {
+     "name": "Fake cut-back (running the channel)",
+     "how": "At speed, stop the ball briefly with the outside, then push down the line with the inside of the same foot.",
+     "mistake": "Stopping the ball dead",
+     "fix": "Brief stop, then drive down the line",
+     "work": 40,
+     "rest": 45,
+     "rounds": 5,
+     "reps": "5 each foot"
+    },
+    {
+     "name": "Change of speed",
+     "how": "Slow as you near the defender, then accelerate suddenly. Needs good acceleration.",
+     "mistake": "Slowing down too late",
+     "fix": "Slow early, then burst",
+     "work": 40,
+     "rest": 45,
+     "rounds": 5,
+     "reps": "5 reps"
+    },
+    {
+     "name": "Underfoot stop (defender catching up)",
+     "how": "Stop dead with the sole, then pass or change direction.",
+     "mistake": "Stopping too early",
+     "fix": "Stop as the defender arrives",
+     "work": 40,
+     "rest": 45,
+     "rounds": 5,
+     "reps": "5 each foot"
+    },
+    {
+     "name": "Drop your shoulder (facing a defender)",
+     "how": "Drop the shoulder and step as if going one way, push the other way with the top of the foot.",
+     "mistake": "Dropping the shoulder with no step",
+     "fix": "Shoulder and step together, then go the other way",
+     "work": 40,
+     "rest": 45,
+     "rounds": 5,
+     "reps": "5 each foot"
+    },
+    {
+     "name": "La croqueta (tight spaces)",
+     "how": "Inside-to-inside transfer across the body.",
+     "mistake": "Moving the ball too far",
+     "fix": "Small, quick transfer",
+     "work": 40,
+     "rest": 45,
+     "rounds": 5,
+     "reps": "5 each foot"
+    }
+   ],
+   "positions": [
+    "winger",
+    "striker",
+    "am"
+   ],
+   "source": {
+    "label": "10 easy skill moves to beat defenders (YouTube AllAttack)"
+   },
+   "note": "Pick 2 or 3 moves to master."
+  },
+  {
+   "id": "fullback-drills",
+   "name": "Full-back drills",
+   "category": "ball-mastery",
+   "demo": "dribble",
+   "setup": "solo",
+   "equipment": [
+    "ball",
+    "markers",
+    "wall"
+   ],
+   "gameDay": [
+    "full"
+   ],
+   "levels": [
+    {
+     "name": "One-two and turn",
+     "how": "One cone in the centre, two gates about 10 strides either side. Dribble to the centre, play a one-two off the wall, take the first touch towards one gate in your stride, turn 180 degrees and come back. Both feet.",
+     "mistake": "Slowing down for the turn",
+     "fix": "Take the ball in your stride and turn at pace",
+     "work": 60,
+     "rest": 30,
+     "rounds": 3,
+     "reps": "60 s"
+    },
+    {
+     "name": "Lateral weave",
+     "how": "Cones on a diagonal at very acute angles. Nudge the ball with the outside of the foot, light on your feet.",
+     "mistake": "Heavy touches",
+     "fix": "Light touches, razor-sharp control",
+     "work": 45,
+     "rest": 30,
+     "rounds": 4,
+     "reps": "3 lengths"
+    },
+    {
+     "name": "Ball shuttle",
+     "how": "4 cones about 10 yards apart. Ball to cone 1, stop it, run to cone 2 and back; ball to cone 3, run to cone 4 and back; ball to the last cone, there and back; final ball back to the start, stopped dead. About 80 percent.",
+     "mistake": "Sprinting it",
+     "fix": "Steady aerobic pace, you can still talk",
+     "work": 240,
+     "rest": 60,
+     "rounds": 3,
+     "reps": "1 circuit"
+    }
+   ],
+   "positions": [
+    "fb"
+   ],
+   "source": {
+    "label": "Individual fullback training (YouTube 7mlc)"
+   }
+  },
+  {
+   "id": "centre-back-drills",
+   "name": "Centre-back drills",
+   "category": "passing",
+   "demo": "pass-wall",
+   "setup": "solo",
+   "equipment": [
+    "ball",
+    "wall"
+   ],
+   "gameDay": [
+    "full"
+   ],
+   "levels": [
+    {
+     "name": "Pass, backpedal, weighted pass",
+     "how": "A clean first touch, a weighted pass across, then backpedal between reps for footwork coordination.",
+     "mistake": "Tripping over your own feet",
+     "fix": "Short steps, stay on the toes",
+     "work": 60,
+     "rest": 30,
+     "rounds": 4,
+     "reps": "10 reps"
+    }
+   ],
+   "positions": [
+    "cb"
+   ],
+   "source": {
+    "label": "Individual centre back training (YouTube 7mlc)"
+   },
+   "note": "The header drill is not here: headers are capped (10 a session, one session a week)."
+  },
+  {
+   "id": "midfielder-drills",
+   "name": "Midfielder drills",
+   "category": "ball-mastery",
+   "demo": "dribble",
+   "setup": "solo",
+   "equipment": [
+    "ball",
+    "markers"
+   ],
+   "gameDay": [
+    "full"
+   ],
+   "levels": [
+    {
+     "name": "Three-cone ball mastery",
+     "how": "One centre cone, one left and one right. A ball mastery combination in the middle (outside to inside, exchange feet), sole roll round the outside cone, back to the middle. 5 sets each side.",
+     "mistake": "Rushing the combination",
+     "fix": "Smooth and controlled first",
+     "work": 60,
+     "rest": 30,
+     "rounds": 3,
+     "reps": "5 each side"
+    },
+    {
+     "name": "360 control",
+     "how": "4 cones in a square with one in the centre. Dribble round a corner cone and back to the centre, then the next corner. After a full lap, repeat with the other foot.",
+     "mistake": "Going for speed",
+     "fix": "A touch every step, ball close to the body",
+     "work": 90,
+     "rest": 30,
+     "rounds": 3,
+     "reps": "1 lap each foot"
+    },
+    {
+     "name": "Aerial touch and turn",
+     "how": "A square with a gate on each side. Pop the ball up after a few juggles, take a directional first touch to one gate, turn sharply, cross to the other gate, turn, return.",
+     "mistake": "Letting the ball bounce away",
+     "fix": "Take it where you want to go, then turn",
+     "work": 90,
+     "rest": 30,
+     "rounds": 3,
+     "reps": "6 reps"
+    }
+   ],
+   "positions": [
+    "cm",
+    "dm",
+    "am"
+   ],
+   "source": {
+    "label": "Individual midfielder training (YouTube 7mlc)"
+   }
+  },
+  {
+   "id": "striker-footwork",
+   "name": "Striker footwork",
+   "category": "finishing",
+   "demo": "shoot",
+   "setup": "solo",
+   "equipment": [
+    "ball",
+    "markers",
+    "goal or target"
+   ],
+   "gameDay": [
+    "md-1",
+    "full"
+   ],
+   "levels": [
+    {
+     "name": "Obstacle course",
+     "how": "8 cones, 4 balls. Inside touch, outside touch, a touch round the cones, onto the ball, then guide it with the inside of the foot into the far high-percentage area. Then mirror with the other foot.",
+     "mistake": "Forcing power too early",
+     "fix": "Inside-foot placement first",
+     "work": 60,
+     "rest": 45,
+     "rounds": 3,
+     "reps": "4 balls each foot"
+    },
+    {
+     "name": "Second row",
+     "how": "Fake with the outside of the right foot, drag onto the left and shoot across goal. Next ball: inside touch, outside touch, sole on top, drag into space, slot near post. Now laces are allowed.",
+     "mistake": "Using laces cold",
+     "fix": "Inside-foot placement first, then add laces once warm",
+     "work": 60,
+     "rest": 45,
+     "rounds": 3,
+     "reps": "4 balls each foot"
+    },
+    {
+     "name": "Check into space",
+     "how": "Check back into space, take the ball with the inside of the foot, inside hook, slot near post. Next ball: push into space, hook back, push between two cones, far side.",
+     "mistake": "Staying static",
+     "fix": "Check into the space to create half a yard",
+     "work": 60,
+     "rest": 45,
+     "rounds": 3,
+     "reps": "4 balls each foot"
+    },
+    {
+     "name": "Near-post run",
+     "how": "Wall pass wide, then sprint diagonally to the near post in the defender's blind spot and finish a self-served ball low and first time. Call NEAR as you start.",
+     "mistake": "Running straight at the post",
+     "fix": "Start behind the defender, then cut across in front",
+     "work": 30,
+     "rest": 60,
+     "rounds": 6,
+     "reps": "6 runs"
+    },
+    {
+     "name": "Far-post run",
+     "how": "Start near the penalty spot out of the defender's reach, then run diagonally to the far post as the cross is delivered. Finish with your feet.",
+     "mistake": "Starting too early",
+     "fix": "Stay hidden, then arrive late",
+     "work": 30,
+     "rest": 60,
+     "rounds": 6,
+     "reps": "6 runs"
+    }
+   ],
+   "positions": [
+    "striker",
+    "winger"
+   ],
+   "source": {
+    "label": "Striker footwork (Alan Russell, YouTube 7mlc); near and far post runs (Dribble Dreams Academy)"
+   }
+  },
+  {
+   "id": "crossing",
+   "name": "Crossing",
+   "category": "crossing",
+   "demo": "pass-long",
+   "setup": "solo",
+   "equipment": [
+    "ball",
+    "markers",
+    "wall"
+   ],
+   "gameDay": [
+    "full"
+   ],
+   "levels": [
+    {
+     "name": "Swinger",
+     "how": "The whipped, curling cross. Plant foot a little away from the ball, swing the foot and strike the side of the ball a little below the middle with the instep. Follow through. Aim in front of the keeper.",
+     "mistake": "Planting too close to the ball",
+     "fix": "Plant a little away so you can swing through",
+     "work": 60,
+     "rest": 45,
+     "rounds": 4,
+     "reps": "8 each foot"
+    },
+    {
+     "name": "Floater",
+     "how": "The lofted, hanging cross. Plant beside the ball and strike with the very front of the forefoot, like chipping a golf ball. Aim for the back post.",
+     "mistake": "Hitting it with the laces",
+     "fix": "Use the front of the forefoot and lift it",
+     "work": 60,
+     "rest": 45,
+     "rounds": 4,
+     "reps": "8 each foot"
+    },
+    {
+     "name": "Low cross",
+     "how": "Driven along the ground into the cut-back zone. Point the planted foot slightly off line. Check the exact contact point with a coach.",
+     "mistake": "Missing the ball with a long stride",
+     "fix": "Short last step, low and firm",
+     "work": 60,
+     "rest": 45,
+     "rounds": 4,
+     "reps": "8 each foot"
+    },
+    {
+     "name": "Hesitate, push out, cross",
+     "how": "Dribble at a mannequin, a little hesitation, push the ball out at 45 degrees, then cross into the zone between the 6-yard box and the penalty spot. Mix whipped and lofted.",
+     "mistake": "Crossing from behind the ball",
+     "fix": "Hesitate, push it out, then cross at pace",
+     "work": 60,
+     "rest": 45,
+     "rounds": 4,
+     "reps": "6 each foot"
+    },
+    {
+     "name": "Goal-line cut-back",
+     "how": "Dribble explosively to the goal line, head up, then cut back along the ground. It buys time for runners.",
+     "mistake": "Crossing it into the keeper",
+     "fix": "Head up, cut it low into the zone",
+     "work": 60,
+     "rest": 45,
+     "rounds": 4,
+     "reps": "6 each foot"
+    }
+   ],
+   "positions": [
+    "winger",
+    "fb"
+   ],
+   "source": {
+    "label": "3 crossing techniques (YouTube Unisport); winger session (YouTube 7mlc)"
+   }
+  }
+ ]
+}

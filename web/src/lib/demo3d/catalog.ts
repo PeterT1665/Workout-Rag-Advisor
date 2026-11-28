@@ -1,5 +1,6 @@
 // Which 3D move shows each exercise (library.json id → moves.ts). Every exercise has one (catalog.test.ts).
 import data from '../../data/library.json'
+import { FAMILIES, drillId } from '../drills'
 
 type Demo = { move: string; speed?: number }
 const M = (move: string, speed?: number): Demo => ({ move, speed })
@@ -76,7 +77,10 @@ export const DEMOS: Record<string, Demo> = {
   'db-curtsy-lunge': M('db-curtsy-lunge'), 'db-bench-press': M('db-bench-press'), 'db-row': M('db-row'), 'db-hang-clean': M('db-hang-clean'), 'db-push-press': M('db-push-press'), 'db-jump-squat': M('db-jump-squat'),
 }
 
-const byName = new Map((data.exercises as { id: string; name: string }[]).map((e) => [e.name.toLowerCase(), e.id]))
+// every level of a drill family acts out its family's move
+for (const f of FAMILIES) f.levels.forEach((_, i) => { DEMOS[drillId(f, i)] = M(f.demo) })
+
+const byName = new Map([...(data.exercises as { id: string; name: string }[]), ...FAMILIES.flatMap((f) => f.levels.map((l, i) => ({ id: drillId(f, i), name: `${f.name}: ${l.name}` })))].map((e) => [e.name.toLowerCase(), e.id]))
 // The demo for an exercise by its name (steps and blocks carry names; the user's own exercises may have none).
 export function demoFor(name: string): Demo | null {
   const id = byName.get(name.replace(/\s*\([^)]*\)$/, '').trim().toLowerCase()) ?? byName.get(name.trim().toLowerCase())
